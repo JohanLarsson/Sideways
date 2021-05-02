@@ -139,7 +139,12 @@
 
             using var cmd = connection.CreateCommand();
             cmd.CommandText = "INSERT INTO candles (date, open, high, low, close, volume) VALUES (@date, @open, @high, @low, @close, @volume)\r\n" +
-                              "  ON CONFLICT(date) DO NOTHING";
+                              "  ON CONFLICT(date) DO UPDATE SET" +
+                              "    open = excluded.open," +
+                              "    high = excluded.high," +
+                              "    low = excluded.low," +
+                              "    close = excluded.close," +
+                              "    volume = excluded.volume";
             foreach (var candle in candles)
             {
                 cmd.Parameters.Clear();
@@ -168,7 +173,15 @@
 
             using var cmd = connection.CreateCommand();
             cmd.CommandText = "INSERT INTO candles (date, open, high, low, close, adjustedClose, volume, dividend, splitCoefficient) VALUES (@date, @open, @high, @low, @close, @adjustedClose, @volume, @dividend, @splitCoefficient)\r\n" +
-                              "  ON CONFLICT(date) DO NOTHING";
+                              "  ON CONFLICT(date) DO UPDATE SET" +
+                              "    open = excluded.open," +
+                              "    high = excluded.high," +
+                              "    low = excluded.low," +
+                              "    close = excluded.close," +
+                              "    adjustedClose = excluded.adjustedClose," +
+                              "    volume = excluded.volume," +
+                              "    dividend = excluded.dividend," +
+                              "    splitCoefficient = excluded.splitCoefficient";
             foreach (var candle in candles)
             {
                 cmd.Parameters.Clear();
