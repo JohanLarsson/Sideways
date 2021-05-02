@@ -18,7 +18,7 @@
 
         public async Task<ImmutableArray<AdjustedCandle>> DaysAsync(string symbol)
         {
-            var candles = await Database.ReadAdjustedDaysAsync(symbol).ConfigureAwait(false);
+            var candles = await Database.ReadDaysAsync(symbol).ConfigureAwait(false);
             if (candles.LastOrDefault().Time.Date == TradingDay.Last)
             {
                 return candles;
@@ -26,12 +26,12 @@
 
             if ((TradingDay.Last - candles.LastOrDefault().Time.Date).Days < 100)
             {
-                Database.WriteAdjustedDays(symbol, await this.client.DailyAdjustedAsync(symbol, OutputSize.Compact).ConfigureAwait(false));
-                return await Database.ReadAdjustedDaysAsync(symbol).ConfigureAwait(false);
+                Database.WriteDays(symbol, await this.client.DailyAdjustedAsync(symbol, OutputSize.Compact).ConfigureAwait(false));
+                return await Database.ReadDaysAsync(symbol).ConfigureAwait(false);
             }
 
             var adjusted = await this.client.DailyAdjustedAsync(symbol, OutputSize.Full).ConfigureAwait(false);
-            Database.WriteAdjustedDays(symbol, adjusted);
+            Database.WriteDays(symbol, adjusted);
             return adjusted;
         }
 
@@ -43,7 +43,7 @@
                 return candles;
             }
 
-            var adjusted = await this.client.IntervalExtendedAsync(symbol, Interval.Minute, Slice.Year1Month1).ConfigureAwait(false);
+            var adjusted = await this.client.IntervalExtendedAsync(symbol, Interval.Minute, Slice.Year1Month1, adjusted: false).ConfigureAwait(false);
             Database.WriteMinutes(symbol, adjusted);
             return await Database.ReadMinutesAsync(symbol).ConfigureAwait(false);
         }

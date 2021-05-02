@@ -170,7 +170,7 @@
         public static async Task IntervalExtendedAsync()
         {
             using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
-            var candles = await client.IntervalExtendedAsync("MSFT", Interval.Minute, Slice.Year1Month1, CancellationToken.None);
+            var candles = await client.IntervalExtendedAsync("MSFT", Interval.Minute, Slice.Year1Month1, adjusted: false, CancellationToken.None);
             Assert.AreEqual(100, candles.Length);
         }
 
@@ -182,7 +182,7 @@
                                "2021-04-01 19:59:00,242.55,242.55,242.55,242.55,209\r\n" +
                                "2021-04-01 19:55:00,243.12,243.13,243.14,243.15,265";
             using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty);
-            var candles = await client.IntervalExtendedAsync("MSFT", Interval.Minute, Slice.Year1Month1, CancellationToken.None);
+            var candles = await client.IntervalExtendedAsync("MSFT", Interval.Minute, Slice.Year1Month1, adjusted: false, CancellationToken.None);
             Assert.AreEqual(3, candles.Length);
             Assert.AreEqual(
                 new Candle(

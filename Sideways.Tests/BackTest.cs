@@ -17,7 +17,7 @@ namespace Sideways.Tests
         {
             const double gap = 0.10;
             Console.WriteLine($"{symbol} {100 * gap}% gap ups. Buy at open sell at close three days later.");
-            var candles = await Database.ReadAdjustedDaysAsync(symbol);
+            var candles = await Database.ReadDaysAsync(symbol);
             for (var i = 1; i < candles.Length - 5; i++)
             {
                 var candle = candles[i];
@@ -40,7 +40,7 @@ namespace Sideways.Tests
             Console.WriteLine("symbol;date;gap;relative_volume;relative_close;three_day;five_day;link");
             foreach (var symbol in Symbols)
             {
-                var candles = await Database.ReadAdjustedDaysAsync(symbol);
+                var candles = await Database.ReadDaysAsync(symbol);
                 for (var i = 10; i < candles.Length - 5; i++)
                 {
                     var candle = candles[i];

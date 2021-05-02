@@ -9,80 +9,17 @@
 
     public static class Database
     {
-        private const string Minutes = "MINUTES";
-        private const string Weeks = "WEEKS";
-        private const string Days = "DAYS";
-        private const string AdjustedDays = "ADJUSTEDDAYS";
-        private const string Hours = "HOURS";
+        private const string Minutes = "Minutes";
+        private const string Days = "Days";
 
-        public static Task<ImmutableArray<Candle>> ReadWeeksAsync(string symbol)
+        public static Task<ImmutableArray<AdjustedCandle>> ReadDaysAsync(string symbol)
         {
-            return ReadAsync(symbol, Weeks);
+            return ReadAdjustedAsync(symbol, Days);
         }
 
-        public static Task<ImmutableArray<Candle>> ReadWeeksAsync(string symbol, DateTimeOffset from, DateTimeOffset to)
-        {
-            return ReadAsync(symbol, Weeks, from, to);
-        }
-
-        public static Task<ImmutableArray<Candle>> ReadWeeksAsync(string symbol, int n, DateTimeOffset to)
-        {
-            return ReadAsync(symbol, Weeks, n, to);
-        }
-
-        public static void WriteWeeks(string symbol, IEnumerable<Candle> candles)
-        {
-            Write(symbol, Weeks, candles);
-        }
-
-        public static Task<ImmutableArray<Candle>> ReadDaysAsync(string symbol)
-        {
-            return ReadAsync(symbol, Days);
-        }
-
-        public static Task<ImmutableArray<Candle>> ReadDaysAsync(string symbol, DateTimeOffset from, DateTimeOffset to)
-        {
-            return ReadAsync(symbol, Days, from, to);
-        }
-
-        public static Task<ImmutableArray<Candle>> ReadDaysAsync(string symbol, int n, DateTimeOffset to)
-        {
-            return ReadAsync(symbol, Days, n, to);
-        }
-
-        public static void WriteDays(string symbol, IEnumerable<Candle> candles)
+        public static void WriteDays(string symbol, IEnumerable<AdjustedCandle> candles)
         {
             Write(symbol, Days, candles);
-        }
-
-        public static Task<ImmutableArray<AdjustedCandle>> ReadAdjustedDaysAsync(string symbol)
-        {
-            return ReadAdjustedAsync(symbol, AdjustedDays);
-        }
-
-        public static void WriteAdjustedDays(string symbol, IEnumerable<AdjustedCandle> candles)
-        {
-            Write(symbol, AdjustedDays, candles);
-        }
-
-        public static Task<ImmutableArray<Candle>> ReadHoursAsync(string symbol)
-        {
-            return ReadAsync(symbol, Hours);
-        }
-
-        public static Task<ImmutableArray<Candle>> ReadHoursAsync(string symbol, DateTimeOffset from, DateTimeOffset to)
-        {
-            return ReadAsync(symbol, Hours, from, to);
-        }
-
-        public static Task<ImmutableArray<Candle>> ReadHoursAsync(string symbol, int n, DateTimeOffset to)
-        {
-            return ReadAsync(symbol, Hours, n, to);
-        }
-
-        public static void WriteHours(string symbol, IEnumerable<Candle> candles)
-        {
-            Write(symbol, Hours, candles);
         }
 
         public static Task<ImmutableArray<Candle>> ReadMinutesAsync(string symbol)

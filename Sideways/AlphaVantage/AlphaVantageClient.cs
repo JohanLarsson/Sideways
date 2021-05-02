@@ -74,30 +74,30 @@
                 cancellationToken);
 
             string Interval() => interval switch
-                {
-                    AlphaVantage.Interval.Minute => "1min",
-                    AlphaVantage.Interval.FiveMinutes => "5min",
-                    AlphaVantage.Interval.FifteenMinutes => "15min",
-                    AlphaVantage.Interval.ThirtyMinutes => "30min",
-                    AlphaVantage.Interval.Hour => "60min",
-                    _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, null),
-                };
+            {
+                AlphaVantage.Interval.Minute => "1min",
+                AlphaVantage.Interval.FiveMinutes => "5min",
+                AlphaVantage.Interval.FifteenMinutes => "15min",
+                AlphaVantage.Interval.ThirtyMinutes => "30min",
+                AlphaVantage.Interval.Hour => "60min",
+                _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, null),
+            };
 
             string OutputSize() => outputSize switch
-                {
-                    AlphaVantage.OutputSize.Full => "full",
-                    AlphaVantage.OutputSize.Compact => "compact",
-                    _ => throw new ArgumentOutOfRangeException(nameof(outputSize), outputSize, null),
-                };
+            {
+                AlphaVantage.OutputSize.Full => "full",
+                AlphaVantage.OutputSize.Compact => "compact",
+                _ => throw new ArgumentOutOfRangeException(nameof(outputSize), outputSize, null),
+            };
         }
 
-        public Task<ImmutableArray<Candle>> IntervalExtendedAsync(string symbol, Interval interval, Slice slice, CancellationToken cancellationToken = default)
+        public Task<ImmutableArray<Candle>> IntervalExtendedAsync(string symbol, Interval interval, Slice slice, bool adjusted, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
 
             return this.client.GetCandlesFromCsvAsync(
 #pragma warning disable CA1308 // Normalize strings to uppercase
-                new Uri($"query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol={symbol}&interval={Interval()}&slice={slice.ToString().ToLowerInvariant()}&apikey={this.apiKey}", UriKind.Relative),
+                new Uri($"query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol={symbol}&interval={Interval()}&slice={slice.ToString().ToLowerInvariant()}&adjusted={(adjusted ? "true" : "false")}&apikey={this.apiKey}", UriKind.Relative),
 #pragma warning restore CA1308 // Normalize strings to uppercase
                 cancellationToken);
 
