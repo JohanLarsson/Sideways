@@ -131,8 +131,7 @@
         [TestCaseSource(nameof(SymbolsAndSlices))]
         public static async Task Minutes(string symbol, Slice slice)
         {
-            var end = DateTime.Today.AddDays(-30 * Offset());
-            var start = end.AddDays(-30);
+            var range = TimeRange.FromSlice(slice);
             var days = await Database.ReadDaysAsync(symbol).ConfigureAwait(false);
             if (days.IsEmpty ||
                 days.LastOrDefault().Time.Date != TradingDay.Last)
@@ -140,8 +139,8 @@
                 Assert.Inconclusive("Download days first");
             }
 
-            var minutes = await Database.ReadMinutesAsync(symbol, start, end).ConfigureAwait(false);
-            var sliceDays = days.Where(x => IsInSlice(x)).ToArray();
+            var minutes = await Database.ReadMinutesAsync(symbol, range.Min, range.Max).ConfigureAwait(false);
+            var sliceDays = days.Where(x => range.Contains(x.Time)).ToArray();
             CollectionAssert.IsNotEmpty(sliceDays);
             if (sliceDays.Any(d => !minutes.Any(m => m.Time.Date == d.Time.Date)))
             {
@@ -150,39 +149,6 @@
                 Database.WriteMinutes(symbol, candles);
                 await Task.Delay(TimeSpan.FromSeconds(12));
             }
-
-            bool IsInSlice(AdjustedCandle day)
-            {
-                return start <= day.Time.Date && day.Time.Date <= end;
-            }
-
-            int Offset() => slice switch
-            {
-                Slice.Year1Month1 => 0,
-                Slice.Year1Month2 => 1,
-                Slice.Year1Month3 => 2,
-                Slice.Year1Month4 => 3,
-                Slice.Year1Month5 => 4,
-                Slice.Year1Month6 => 5,
-                Slice.Year1Month7 => 6,
-                Slice.Year1Month8 => 7,
-                Slice.Year1Month9 => 8,
-                Slice.Year1Month10 => 9,
-                Slice.Year1Month11 => 10,
-                Slice.Year1Month12 => 11,
-                Slice.Year2Month1 => 12,
-                Slice.Year2Month2 => 13,
-                Slice.Year2Month3 => 14,
-                Slice.Year2Month4 => 15,
-                Slice.Year2Month5 => 16,
-                Slice.Year2Month6 => 17,
-                Slice.Year2Month7 => 18,
-                Slice.Year2Month8 => 19,
-                Slice.Year2Month9 => 20,
-                Slice.Year2Month10 => 21,
-                Slice.Year2Month11 => 22,
-                Slice.Year2Month12 => 23,
-            };
         }
     }
 }
