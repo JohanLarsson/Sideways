@@ -124,8 +124,6 @@
                 var downloadedDays = await client.DailyAdjustedAsync(symbol, OutputSize.Full).ConfigureAwait(false);
                 Database.WriteDays(symbol, downloadedDays);
             }
-
-            await Task.Delay(TimeSpan.FromSeconds(12));
         }
 
         [TestCaseSource(nameof(SymbolsAndSlices))]
@@ -147,7 +145,6 @@
                 using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
                 var candles = await client.IntervalExtendedAsync(symbol, Interval.Minute, slice, adjusted: false);
                 Database.WriteMinutes(symbol, candles);
-                await Task.Delay(TimeSpan.FromSeconds(12));
             }
         }
     }
