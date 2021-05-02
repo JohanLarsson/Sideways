@@ -1,5 +1,7 @@
 # Sideways
 
+[![Build Status](https://johan-larsson.visualstudio.com/Sideways/_apis/build/status/JohanLarsson.Sideways?branchName=main)](https://johan-larsson.visualstudio.com/Sideways/_build/latest?definitionId=18&branchName=main)
+
 App for backtesting and viewing charts.
 
 ## Get started
