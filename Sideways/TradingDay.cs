@@ -21,13 +21,20 @@
 
                 return date.Date;
 
-                bool IsTradingDay(DateTimeOffset candidate)
+                static bool IsTradingDay(DateTimeOffset candidate)
                 {
                     return candidate switch
                     {
                         { Month: 1, Day: 1 } => false,
-                        { Month: 2, Day: 15 } => false,
+                        //// Presidents day third Monday in February
+                        { Month: 2, DayOfWeek: DayOfWeek.Monday } => candidate.Day is > 14 and < 21,
                         { Month: 7, Day: 5 } => false,
+                        //// Memorial Day 4th Monday in May
+                        { Month: 5, DayOfWeek: DayOfWeek.Monday } => candidate.Day > 24,
+                        //// Labor Day 1st Monday in September
+                        { Month: 9, DayOfWeek: DayOfWeek.Monday } => candidate.Day < 7,
+                        //// Thanksgiving Day 4th Thursday in November
+                        { Month: 11, DayOfWeek: DayOfWeek.Thursday } => candidate.Day > 23,
                         { Month: 12, Day: 24 } => false,
                         { DayOfWeek: DayOfWeek.Saturday } => false,
                         { DayOfWeek: DayOfWeek.Sunday } => false,
