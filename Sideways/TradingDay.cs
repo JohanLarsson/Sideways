@@ -8,19 +8,32 @@
         {
             get
             {
-                var today = DateTimeOffset.UtcNow.Date;
-                return today switch
+                var date = DateTimeOffset.UtcNow;
+                if (date.Hour < 21)
                 {
-                    { Month: 1, Day: 1 } => today.AddDays(-1),
-                    { Month: 2, Day: 15 } => today.AddDays(-1),
-                    { Month: 7, Day: 5 } => today.AddDays(-1),
-                    { Month: 12, Day: 24 } => today.AddDays(-1),
-                    { DayOfWeek: DayOfWeek.Saturday } => today.AddDays(-1),
-                    { DayOfWeek: DayOfWeek.Sunday } => today.AddDays(-2),
-                    { DayOfWeek: DayOfWeek.Monday, Hour: < 21 } => today.AddDays(-3),
-                    { Hour: < 21 } => today.AddDays(-1),
-                    _ => today,
-                };
+                    date -= TimeSpan.FromDays(1);
+                }
+
+                while (!IsTradingDay(date))
+                {
+                    date -= TimeSpan.FromDays(1);
+                }
+
+                return date.Date;
+
+                bool IsTradingDay(DateTimeOffset candidate)
+                {
+                    return candidate switch
+                    {
+                        { Month: 1, Day: 1 } => false,
+                        { Month: 2, Day: 15 } => false,
+                        { Month: 7, Day: 5 } => false,
+                        { Month: 12, Day: 24 } => false,
+                        { DayOfWeek: DayOfWeek.Saturday } => false,
+                        { DayOfWeek: DayOfWeek.Sunday } => false,
+                        _ => true,
+                    };
+                }
             }
         }
     }
