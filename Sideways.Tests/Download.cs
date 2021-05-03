@@ -131,8 +131,7 @@
         {
             var range = TimeRange.FromSlice(slice);
             var days = await Database.ReadDaysAsync(symbol).ConfigureAwait(false);
-            if (days.IsEmpty ||
-                days.LastOrDefault().Time.Date != TradingDay.Last)
+            if (days.IsEmpty)
             {
                 Assert.Inconclusive("Download days first");
             }
