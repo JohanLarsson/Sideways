@@ -1,6 +1,8 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     [System.Diagnostics.DebuggerDisplay("{" + nameof(ToString) + "(),nq}")]
     public readonly struct Candle : IEquatable<Candle>
@@ -35,6 +37,17 @@
         public static bool operator !=(Candle left, Candle right)
         {
             return !left.Equals(right);
+        }
+
+        public static Candle Create(IReadOnlyList<Candle> candles)
+        {
+            return new(
+                candles[^1].Time,
+                candles[0].Open,
+                candles.Max(x => x.High),
+                candles.Min(x => x.Low),
+                candles[^1].Close,
+                candles.Sum(x => x.Volume));
         }
 
         public bool Equals(Candle other)

@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Globalization;
-    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Sideways.AlphaVantage;
@@ -123,7 +122,7 @@
                     {
                         if (week.Count > 0)
                         {
-                            yield return CreateWeek();
+                            yield return Candle.Create(week);
                         }
 
                         week.Clear();
@@ -135,16 +134,8 @@
 
                 if (week.Count > 0)
                 {
-                    yield return CreateWeek();
+                    yield return Candle.Create(week);
                 }
-
-                Candle CreateWeek() => new(
-                    week.Last().Time,
-                    week[0].Open,
-                    week.Max(x => x.High),
-                    week.Min(x => x.Low),
-                    week[^1].Close,
-                    week.Sum(x => x.Volume));
             }
 
             IEnumerable<Candle> Hours()
@@ -161,7 +152,7 @@
                     {
                         if (hour.Count > 0)
                         {
-                            yield return CreateHour();
+                            yield return Candle.Create(hour);
                         }
 
                         hour.Clear();
@@ -173,16 +164,8 @@
 
                 if (hour.Count > 0)
                 {
-                    yield return CreateHour();
+                    yield return Candle.Create(hour);
                 }
-
-                Candle CreateHour() => new(
-                    hour.Last().Time,
-                    hour[0].Open,
-                    hour.Max(x => x.High),
-                    hour.Min(x => x.Low),
-                    hour[^1].Close,
-                    hour.Sum(x => x.Volume));
             }
         }
 
