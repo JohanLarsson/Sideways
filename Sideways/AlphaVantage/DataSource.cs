@@ -19,12 +19,12 @@
         public async Task<ImmutableArray<AdjustedCandle>> DaysAsync(string symbol)
         {
             var candles = await Database.ReadDaysAsync(symbol).ConfigureAwait(false);
-            if (candles.LastOrDefault().Time.Date == TradingDay.Last)
+            if (candles.LastOrDefault().Time.Date == TradingDay.LastComplete)
             {
                 return candles;
             }
 
-            if ((TradingDay.Last - candles.LastOrDefault().Time.Date).Days < 100)
+            if ((TradingDay.LastComplete - candles.LastOrDefault().Time.Date).Days < 100)
             {
                 Database.WriteDays(symbol, await this.client.DailyAdjustedAsync(symbol, OutputSize.Compact).ConfigureAwait(false));
                 return await Database.ReadDaysAsync(symbol).ConfigureAwait(false);

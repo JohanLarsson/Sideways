@@ -107,14 +107,14 @@
         {
             var cached = await Database.ReadDaysAsync(symbol).ConfigureAwait(false);
             if (!cached.IsEmpty &&
-                cached.LastOrDefault().Time.Date == TradingDay.Last)
+                cached.LastOrDefault().Time.Date == TradingDay.LastComplete)
             {
                 return;
             }
 
             using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
             if (!cached.IsEmpty &&
-                (TradingDay.Last - cached.LastOrDefault().Time.Date).Days < 100)
+                (TradingDay.LastComplete - cached.LastOrDefault().Time.Date).Days < 100)
             {
                 var downloadedDays = await client.DailyAdjustedAsync(symbol, OutputSize.Compact).ConfigureAwait(false);
                 Database.WriteDays(symbol, downloadedDays);

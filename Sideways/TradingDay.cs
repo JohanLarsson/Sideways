@@ -4,7 +4,7 @@
 
     public static class TradingDay
     {
-        public static DateTimeOffset Last
+        public static DateTimeOffset LastComplete
         {
             get
             {
@@ -17,6 +17,8 @@
                     { Month: 12, Day: 24 } => today.AddDays(-1),
                     { DayOfWeek: DayOfWeek.Saturday } => today.AddDays(-1),
                     { DayOfWeek: DayOfWeek.Sunday } => today.AddDays(-2),
+                    { DayOfWeek: DayOfWeek.Monday, Hour: < 21 } => today.AddDays(-3),
+                    { Hour: < 21 } => today.AddDays(-1),
                     _ => today,
                 };
             }
