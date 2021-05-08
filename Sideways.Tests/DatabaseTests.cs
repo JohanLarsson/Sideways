@@ -6,24 +6,37 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+
     using NUnit.Framework;
 
     public static class DatabaseTests
     {
-        private static readonly ImmutableArray<AdjustedCandle> Candles = ImmutableArray.Create(new AdjustedCandle(new DateTimeOffset(2021, 04, 15, 00, 00, 00, 0, TimeSpan.Zero), 1.2f, 2.3f, 3.4f, 4.5f, 5.6f, 7, 8.9f, 9.1f));
+        private static readonly ImmutableArray<AdjustedCandle> DayCandles = ImmutableArray.Create(new AdjustedCandle(new DateTimeOffset(2021, 04, 15, 00, 00, 00, 0, TimeSpan.Zero), 1.2f, 2.3f, 3.4f, 4.5f, 5.6f, 7, 8.9f, 9.1f));
+        private static readonly ImmutableArray<Candle> MinuteCandles = ImmutableArray.Create(new Candle(new DateTimeOffset(2021, 04, 15, 00, 00, 00, 0, TimeSpan.Zero), 1.2f, 2.3f, 3.4f, 4.5f, 6));
         //// private static readonly ImmutableArray<Candle> Candles = ReadCandles();
 
         [Test]
-        public static void Write()
+        public static async Task Days()
         {
-            Database.WriteDays("_UNITTEST", Candles);
+            Database.WriteDays("UNIT_TEST", DayCandles);
+
+            var candles = await Database.ReadDaysAsync("UNIT_TEST");
+            CollectionAssert.AreEqual(DayCandles.Select(x => x.AsCandle(1)).OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
+
+            candles = await Database.ReadDaysAsync("UNIT_TEST", DayCandles.Min(x => x.Time), DayCandles.Max(x => x.Time));
+            CollectionAssert.AreEqual(DayCandles.Select(x => x.AsCandle(1)).OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
         }
 
         [Test]
-        public static async Task Read()
+        public static async Task WriteMinutes()
         {
-            var candles = await Database.ReadDaysAsync("_UNITTEST");
-            CollectionAssert.AreEqual(Candles.OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
+            Database.WriteMinutes("UNIT_TEST", MinuteCandles);
+
+            var candles = await Database.ReadMinutesAsync("UNIT_TEST");
+            CollectionAssert.AreEqual(MinuteCandles.OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
+
+            candles = await Database.ReadMinutesAsync("UNIT_TEST", DayCandles.Min(x => x.Time), DayCandles.Max(x => x.Time));
+            CollectionAssert.AreEqual(MinuteCandles.OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
         }
 
 #pragma warning disable IDE0051 // Remove unused private members

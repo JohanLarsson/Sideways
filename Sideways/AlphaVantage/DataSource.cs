@@ -1,62 +1,42 @@
 ﻿namespace Sideways.AlphaVantage
 {
     using System;
-    using System.Collections.Immutable;
     using System.Linq;
-    using System.Net.Http;
     using System.Threading.Tasks;
 
-    public sealed class DataSource : IDisposable
+    public sealed class DataSource
     {
-        private readonly AlphaVantageClient client;
-        private bool disposed;
+        private readonly Downloader downloader;
 
-        public DataSource(HttpMessageHandler messageHandler, string apiKey)
+        public DataSource(Downloader downloader)
         {
-            this.client = new AlphaVantageClient(messageHandler, apiKey);
+            this.downloader = downloader;
         }
 
-        public async Task<ImmutableArray<AdjustedCandle>> DaysAsync(string symbol)
+        public async Task<Days> DaysAsync(string symbol)
         {
             var candles = await Database.ReadDaysAsync(symbol).ConfigureAwait(false);
-            if (candles.LastOrDefault().Time.Date == TradingDay.LastComplete)
+            var splits = await Database.ReadSplitsAsync(symbol).ConfigureAwait(false);
+            var last = candles.IsDefaultOrEmpty ? (DateTimeOffset?)null : candles.Max(x => x.Time);
+            if (last == TradingDay.LastComplete)
             {
-                return candles;
+                return new Days(candles, splits, null);
             }
 
-            if ((TradingDay.LastComplete - candles.LastOrDefault().Time.Date).Days < 100)
-            {
-                Database.WriteDays(symbol, await this.client.DailyAdjustedAsync(symbol, OutputSize.Compact).ConfigureAwait(false));
-                return await Database.ReadDaysAsync(symbol).ConfigureAwait(false);
-            }
-
-            var adjusted = await this.client.DailyAdjustedAsync(symbol, OutputSize.Full).ConfigureAwait(false);
-            Database.WriteDays(symbol, adjusted);
-            return adjusted;
+            return new Days(candles, splits, this.downloader.DaysAsync(symbol, last));
         }
 
-        public async Task<ImmutableArray<Candle>> MinutesAsync(string symbol)
-        {
-            var candles = await Database.ReadMinutesAsync(symbol).ConfigureAwait(false);
-            if (candles.Length > 0)
-            {
-                return candles;
-            }
+        //public async Task<ImmutableArray<Candle>> MinutesAsync(string symbol)
+        //{
+        //    var candles = await Database.ReadMinutesAsync(symbol).ConfigureAwait(false);
+        //    if (candles.Length > 0)
+        //    {
+        //        return candles;
+        //    }
 
-            var adjusted = await this.client.IntervalExtendedAsync(symbol, Interval.Minute, Slice.Year1Month1, adjusted: false).ConfigureAwait(false);
-            Database.WriteMinutes(symbol, adjusted);
-            return await Database.ReadMinutesAsync(symbol).ConfigureAwait(false);
-        }
-
-        public void Dispose()
-        {
-            if (this.disposed)
-            {
-                return;
-            }
-
-            this.disposed = true;
-            this.client.Dispose();
-        }
+        //    var adjusted = await this.client.IntervalExtendedAsync(symbol, Interval.Minute, Slice.Year1Month1, adjusted: false).ConfigureAwait(false);
+        //    Database.WriteMinutes(symbol, adjusted);
+        //    return await Database.ReadMinutesAsync(symbol).ConfigureAwait(false);
+        //}
     }
 }

@@ -1,23 +1,25 @@
 ﻿namespace Sideways
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Globalization;
     using System.IO;
-    using System.Linq;
     using System.Net.Http;
     using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
     using Sideways.AlphaVantage;
 
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         private static readonly string ApiKeyFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways/AlphaVantage.key");
-        private readonly DataSource dataSource = new(new HttpClientHandler(), ApiKey());
+        private readonly Downloader downloader = new(new HttpClientHandler(), ApiKey());
+        private readonly DataSource dataSource;
         private DateTimeOffset endTime = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
         private bool disposed;
+
+        public MainViewModel()
+        {
+            this.dataSource = new DataSource(this.downloader);
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -59,11 +61,12 @@
             }
 
             this.disposed = true;
-            this.dataSource.Dispose();
+            this.downloader.Dispose();
         }
 
         public void Load(string symbol)
         {
+            this.ThrowIfDisposed();
             var symbolViewModel = new SymbolViewModel(symbol);
             this.CurrentSymbol = symbolViewModel;
             _ = symbolViewModel.LoadAsync(this.dataSource);

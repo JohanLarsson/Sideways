@@ -27,7 +27,7 @@
                 Foreground="Gray"
                 Text="W" />
             <sideways:Chart x:Name="WeeklyChart">
-                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Weeks}" RenderOptions.EdgeMode="Aliased" Time="{Binding EndTime}"/>
+                <sideways:CandleSticks RenderOptions.EdgeMode="Aliased" Time="{Binding EndTime}"/>
             </sideways:Chart>
         </Grid>
 
@@ -49,7 +49,7 @@
                 Foreground="Gray"
                 Text="h" />
             <sideways:Chart x:Name="HourlyChart">
-                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Hours}" RenderOptions.EdgeMode="Aliased" Time="{Binding EndTime}"/>
+                <sideways:CandleSticks RenderOptions.EdgeMode="Aliased" Time="{Binding EndTime}"/>
             </sideways:Chart>
         </Grid>
 

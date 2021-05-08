@@ -1,7 +1,7 @@
 ﻿namespace Sideways.Tests
 {
     using System;
-
+    using System.Collections.Immutable;
     using NUnit.Framework;
 
     public static class SortedCandlesTests
@@ -32,7 +32,7 @@
                 default,
                 default,
                 default);
-            var sorted = new SortedCandles(new[] { c1, c2, c3 });
+            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3), ImmutableArray<Split>.Empty);
             CollectionAssert.AreEqual(new[] { c3, c2, c1 }, sorted);
         }
 
@@ -62,7 +62,7 @@
                 default,
                 default,
                 default);
-            var sorted = new SortedCandles(new[] { c1, c2, c3 });
+            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3), ImmutableArray<Split>.Empty);
             Assert.AreEqual(c1, sorted.Previous(c2.Time));
         }
 
@@ -92,7 +92,7 @@
                 default,
                 default,
                 default);
-            var sorted = new SortedCandles(new[] { c1, c2, c3 });
+            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3), ImmutableArray<Split>.Empty);
             Assert.AreEqual(c3, sorted.Next(c2.Time));
         }
     }
