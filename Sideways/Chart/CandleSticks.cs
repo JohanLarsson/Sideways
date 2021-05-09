@@ -42,6 +42,13 @@
                 DateTimeOffset.Now,
                 FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+        /// <summary>Identifies the <see cref="CandleGrouping"/> dependency property.</summary>
+        public static readonly DependencyProperty CandleGroupingProperty = DependencyProperty.Register(
+            nameof(CandleGrouping),
+            typeof(CandleGrouping),
+            typeof(CandleSticks),
+            new PropertyMetadata(Sideways.CandleGrouping.None));
+
         private readonly DrawingVisual drawing;
 
         static CandleSticks()
@@ -77,6 +84,12 @@
         {
             get => (DateTimeOffset)this.GetValue(TimeProperty);
             set => this.SetValue(TimeProperty, value);
+        }
+
+        public CandleGrouping CandleGrouping
+        {
+            get => (CandleGrouping)this.GetValue(CandleGroupingProperty);
+            set => this.SetValue(CandleGroupingProperty, value);
         }
 
         protected override int VisualChildrenCount => 1;
@@ -119,7 +132,7 @@
                 var min = float.MaxValue;
                 var max = float.MinValue;
                 var x = 0.0;
-                foreach (var candle in itemsSource.Get(this.Time))
+                foreach (var candle in itemsSource.Get(this.Time, this.CandleGrouping))
                 {
                     if (x > size.Width)
                     {

@@ -26,6 +26,7 @@
                        Text="W" />
             <sideways:Chart x:Name="WeeklyChart">
                 <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Days}"
+                                       CandleGrouping="Week"
                                        Time="{Binding EndTime}" />
             </sideways:Chart>
         </Grid>

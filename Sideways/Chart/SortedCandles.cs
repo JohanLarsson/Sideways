@@ -21,6 +21,16 @@
             this.splits = splits;
         }
 
+        public IEnumerable<Candle> Get(DateTimeOffset start, CandleGrouping grouping)
+        {
+            return grouping switch
+            {
+                CandleGrouping.None => this.Get(start),
+                CandleGrouping.Week => this.Weeks(start),
+                _ => throw new ArgumentOutOfRangeException(nameof(grouping), grouping, "Unhandled grouping."),
+            };
+        }
+
         public IEnumerable<Candle> Get(DateTimeOffset start)
         {
             for (var i = Start(); i < this.candles.Length; i++)
