@@ -5,7 +5,6 @@
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Diagnostics;
-    using System.Globalization;
     using System.Linq;
 
     public class SortedCandles : IEnumerable<Candle>
@@ -47,7 +46,7 @@
             foreach (var day in this.Get(start))
             {
                 if (builder.Time is null ||
-                    Week(builder.Time.Value) == Week(day.Time))
+                    day.Time.IsSameWeek(builder.Time.Value))
                 {
                     builder.Add(day);
                 }
@@ -60,8 +59,6 @@
 
                     builder.Add(day);
                 }
-
-                static int Week(DateTimeOffset time) => CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
             }
 
             if (builder.Time is { })
@@ -99,13 +96,13 @@
             }
         }
 
-        public IEnumerable<Candle> Get(DateTimeOffset start, CandleGrouping grouping)
+        public IEnumerable<Candle> Get(DateTimeOffset start, CandleInterval interval)
         {
-            return grouping switch
+            return interval switch
             {
-                CandleGrouping.None => this.Get(start),
-                CandleGrouping.Week => this.Weeks(start),
-                _ => throw new ArgumentOutOfRangeException(nameof(grouping), grouping, "Unhandled grouping."),
+                CandleInterval.None => this.Get(start),
+                CandleInterval.Week => this.Weeks(start),
+                _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, "Unhandled grouping."),
             };
         }
 
@@ -124,31 +121,14 @@
             //}
         }
 
-        public Candle? Previous(DateTimeOffset time)
+        public Candle? Previous(DateTimeOffset time, CandleInterval interval)
         {
-            foreach (var candle in this.candles)
-            {
-                if (candle.Time < time)
-                {
-                    return candle;
-                }
-            }
-
-            return null;
+            return this.Get(time, interval).FirstOrNull(x => x.Time < time);
         }
 
-        public Candle? Next(DateTimeOffset time)
+        public Candle? Next(DateTimeOffset time, CandleInterval interval)
         {
-            for (var i = this.candles.Length - 1; i >= 0; i--)
-            {
-                var candle = this.candles[i];
-                if (candle.Time > time)
-                {
-                    return candle;
-                }
-            }
-
-            return null;
+            return this.Get(time.Add(TimeSpan.FromDays(10)), interval).LastOrNull(x => x.Time > time);
         }
 
         public int IndexOf(DateTimeOffset time)
@@ -158,7 +138,7 @@
                 return -1;
             }
 
-            var i = Math.Min((int)new TimeRange(this.candles[^1].Time, this.candles[0].Time).Interpolate(time) * this.candles.Length, this.candles.Length - 1);
+            var i = Clamp(new TimeRange(this.candles[^1].Time, this.candles[0].Time).Interpolate(time) * this.candles.Length);
 
             switch (time.CompareTo(this.candles[i].Time))
             {
@@ -194,6 +174,21 @@
                     }
 
                     return -1;
+            }
+
+            int Clamp(double value)
+            {
+                if (value < 0)
+                {
+                    return 0;
+                }
+
+                if (value >= this.candles.Length)
+                {
+                    return this.candles.Length - 1;
+                }
+
+                return (int)value;
             }
         }
 

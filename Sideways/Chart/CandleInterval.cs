@@ -1,6 +1,6 @@
 ﻿namespace Sideways
 {
-    public enum CandleGrouping
+    public enum CandleInterval
     {
         None,
         Week,

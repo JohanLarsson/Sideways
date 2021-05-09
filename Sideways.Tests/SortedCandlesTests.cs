@@ -64,7 +64,9 @@
                 default,
                 default);
             var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3), ImmutableArray<Split>.Empty);
-            Assert.AreEqual(c3, sorted.Previous(c2.Time));
+            Assert.AreEqual(c3, sorted.Previous(c2.Time, CandleInterval.None));
+            Assert.AreEqual(c2, sorted.Previous(c1.Time, CandleInterval.None));
+            Assert.AreEqual(null, sorted.Previous(c3.Time, CandleInterval.None));
         }
 
         [Test]
@@ -94,7 +96,9 @@
                 default,
                 default);
             var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3), ImmutableArray<Split>.Empty);
-            Assert.AreEqual(c1, sorted.Next(c2.Time));
+            Assert.AreEqual(c2, sorted.Next(c3.Time, CandleInterval.None));
+            Assert.AreEqual(c1, sorted.Next(c2.Time, CandleInterval.None));
+            Assert.AreEqual(null, sorted.Next(c1.Time, CandleInterval.None));
         }
 
         [TestCase(3, 2, 1)]

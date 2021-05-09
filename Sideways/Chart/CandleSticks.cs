@@ -42,12 +42,12 @@
                 DateTimeOffset.Now,
                 FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        /// <summary>Identifies the <see cref="CandleGrouping"/> dependency property.</summary>
-        public static readonly DependencyProperty CandleGroupingProperty = DependencyProperty.Register(
-            nameof(CandleGrouping),
-            typeof(CandleGrouping),
+        /// <summary>Identifies the <see cref="CandleInterval"/> dependency property.</summary>
+        public static readonly DependencyProperty CandleIntervalProperty = DependencyProperty.Register(
+            nameof(CandleInterval),
+            typeof(CandleInterval),
             typeof(CandleSticks),
-            new PropertyMetadata(Sideways.CandleGrouping.None));
+            new PropertyMetadata(Sideways.CandleInterval.None));
 
         private readonly DrawingVisual drawing;
 
@@ -86,10 +86,10 @@
             set => this.SetValue(TimeProperty, value);
         }
 
-        public CandleGrouping CandleGrouping
+        public CandleInterval CandleInterval
         {
-            get => (CandleGrouping)this.GetValue(CandleGroupingProperty);
-            set => this.SetValue(CandleGroupingProperty, value);
+            get => (CandleInterval)this.GetValue(CandleIntervalProperty);
+            set => this.SetValue(CandleIntervalProperty, value);
         }
 
         protected override int VisualChildrenCount => 1;
@@ -105,12 +105,12 @@
                 switch (e.Delta)
                 {
                     case < 0
-                        when candles.Previous(this.Time) is { } candle:
+                        when candles.Previous(this.Time, this.CandleInterval) is { } candle:
                         this.SetCurrentValue(TimeProperty, candle.Time);
                         break;
 
                     case > 0
-                        when candles.Next(this.Time) is { } candle:
+                        when candles.Next(this.Time, this.CandleInterval) is { } candle:
                         this.SetCurrentValue(TimeProperty, candle.Time);
                         break;
                 }
@@ -132,7 +132,7 @@
                 var min = float.MaxValue;
                 var max = float.MinValue;
                 var x = 0.0;
-                foreach (var candle in itemsSource.Get(this.Time, this.CandleGrouping))
+                foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval))
                 {
                     if (x > size.Width)
                     {
