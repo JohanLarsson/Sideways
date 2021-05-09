@@ -23,7 +23,22 @@
 
         public IEnumerable<Candle> Get(DateTimeOffset start)
         {
-            return this.candles.SkipWhile(x => x.Time > start);
+            for (var i = Start(); i < this.candles.Length; i++)
+            {
+                var candle = this.candles[i];
+                if (candle.Time > start)
+                {
+                    continue;
+                }
+
+                yield return candle;
+            }
+
+            int Start()
+            {
+                var indexOf = this.IndexOf(start);
+                return indexOf > 0 ? indexOf : 0;
+            }
         }
 
         public IEnumerable<Candle> GetSplitAdjusted(DateTimeOffset start)
@@ -126,6 +141,52 @@
             }
 
             return null;
+        }
+
+        public int IndexOf(DateTimeOffset time)
+        {
+            if (this.candles.IsEmpty)
+            {
+                return -1;
+            }
+
+            var i = Math.Min((int)new TimeRange(this.candles[^1].Time, this.candles[0].Time).Interpolate(time) * this.candles.Length, this.candles.Length - 1);
+
+            switch (time.CompareTo(this.candles[i].Time))
+            {
+                case 0:
+                    return i;
+                case < 0:
+                    for (var j = i; j < this.candles.Length; j++)
+                    {
+                        switch (time.CompareTo(this.candles[j].Time))
+                        {
+                            case 0:
+                                return j;
+                            case < 0:
+                                continue;
+                            case > 0:
+                                return -1;
+                        }
+                    }
+
+                    return -1;
+                case > 0:
+                    for (var j = i; j >= 0; j--)
+                    {
+                        switch (time.CompareTo(this.candles[j].Time))
+                        {
+                            case 0:
+                                return j;
+                            case > 0:
+                                continue;
+                            case < 0:
+                                return -1;
+                        }
+                    }
+
+                    return -1;
+            }
         }
 
         public IEnumerator<Candle> GetEnumerator() => ((IEnumerable<Candle>)this.candles).GetEnumerator();
