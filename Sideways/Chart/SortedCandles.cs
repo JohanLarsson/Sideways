@@ -21,16 +21,6 @@
             this.splits = splits;
         }
 
-        public IEnumerable<Candle> Get(DateTimeOffset start, CandleGrouping grouping)
-        {
-            return grouping switch
-            {
-                CandleGrouping.None => this.Get(start),
-                CandleGrouping.Week => this.Weeks(start),
-                _ => throw new ArgumentOutOfRangeException(nameof(grouping), grouping, "Unhandled grouping."),
-            };
-        }
-
         public IEnumerable<Candle> Get(DateTimeOffset start)
         {
             for (var i = Start(); i < this.candles.Length; i++)
@@ -51,6 +41,74 @@
             }
         }
 
+        public IEnumerable<Candle> Weeks(DateTimeOffset start)
+        {
+            var builder = new CandleBuilder();
+            foreach (var day in this.Get(start))
+            {
+                if (builder.Time is null ||
+                    Week(builder.Time.Value) == Week(day.Time))
+                {
+                    builder.Add(day);
+                }
+                else
+                {
+                    if (builder.Time is { })
+                    {
+                        yield return builder.Build();
+                    }
+
+                    builder.Add(day);
+                }
+
+                static int Week(DateTimeOffset time) => CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+            }
+
+            if (builder.Time is { })
+            {
+                yield return builder.Build();
+            }
+        }
+
+        IEnumerable<Candle> Hours(DateTimeOffset start)
+        {
+            var builder = new CandleBuilder();
+            foreach (var minute in this.Get(start))
+            {
+                if (builder.Time is null ||
+                    Hour(builder.Time.Value) == Hour(minute.Time))
+                {
+                    builder.Add(minute);
+                }
+                else
+                {
+                    if (builder.Time is { })
+                    {
+                        yield return builder.Build();
+                    }
+
+                    builder.Add(minute);
+                }
+
+                static int Hour(DateTimeOffset time) => time.DayOfYear + time.Hour;
+            }
+
+            if (builder.Time is { })
+            {
+                yield return builder.Build();
+            }
+        }
+
+        public IEnumerable<Candle> Get(DateTimeOffset start, CandleGrouping grouping)
+        {
+            return grouping switch
+            {
+                CandleGrouping.None => this.Get(start),
+                CandleGrouping.Week => this.Weeks(start),
+                _ => throw new ArgumentOutOfRangeException(nameof(grouping), grouping, "Unhandled grouping."),
+            };
+        }
+
         public IEnumerable<Candle> GetSplitAdjusted(DateTimeOffset start)
         {
             throw new NotImplementedException();
@@ -64,66 +122,6 @@
 
             //    yield return day.AsCandle(splitCoefficient);
             //}
-        }
-
-        public IEnumerable<Candle> Weeks(DateTimeOffset start)
-        {
-            var week = new List<Candle>();
-            foreach (var day in this.Get(start))
-            {
-                if (week.Count == 0 ||
-                    Week(week[0]) == Week(day))
-                {
-                    week.Add(day);
-                }
-                else
-                {
-                    if (week.Count > 0)
-                    {
-                        yield return Candle.Create(week);
-                    }
-
-                    week.Clear();
-                    week.Add(day);
-                }
-
-                static int Week(Candle c) => CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(c.Time.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-            }
-
-            if (week.Count > 0)
-            {
-                yield return Candle.Create(week);
-            }
-        }
-
-        IEnumerable<Candle> Hours(DateTimeOffset start)
-        {
-            var hour = new List<Candle>();
-            foreach (var minute in this.Get(start))
-            {
-                if (hour.Count == 0 ||
-                    Hour(hour[0]) == Hour(minute))
-                {
-                    hour.Add(minute);
-                }
-                else
-                {
-                    if (hour.Count > 0)
-                    {
-                        yield return Candle.Create(hour);
-                    }
-
-                    hour.Clear();
-                    hour.Add(minute);
-                }
-
-                static int Hour(Candle c) => c.Time.DayOfYear + c.Time.Hour;
-            }
-
-            if (hour.Count > 0)
-            {
-                yield return Candle.Create(hour);
-            }
         }
 
         public Candle? Previous(DateTimeOffset time)
