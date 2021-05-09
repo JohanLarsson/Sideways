@@ -107,16 +107,19 @@
                                      "    low = excluded.low," +
                                      "    close = excluded.close," +
                                      "    volume = excluded.volume";
+            insertDays.Prepare();
 
             using var insertSplits = connection.CreateCommand();
             insertSplits.CommandText = "INSERT INTO splits (symbol, date, coefficient) VALUES (@symbol, @date, @coefficient)" +
                                        "  ON CONFLICT(symbol, date) DO UPDATE SET" +
                                        "    coefficient = excluded.coefficient";
+            insertSplits.Prepare();
 
             using var insertDividends = connection.CreateCommand();
             insertDividends.CommandText = "INSERT INTO dividends (symbol, date, dividend) VALUES (@symbol, @date, @dividend)" +
                                           "  ON CONFLICT(symbol, date) DO UPDATE SET" +
                                           "    dividend = excluded.dividend";
+            insertDividends.Prepare();
 
             foreach (var candle in candles)
             {
@@ -128,7 +131,6 @@
                 insertDays.Parameters.AddWithValue("@low", candle.Low.AsInt());
                 insertDays.Parameters.AddWithValue("@close", candle.Close.AsInt());
                 insertDays.Parameters.AddWithValue("@volume", candle.Volume);
-                insertDays.Prepare();
                 insertDays.ExecuteNonQuery();
 
                 if (candle.SplitCoefficient is not 1 and not 0)
@@ -137,7 +139,6 @@
                     insertSplits.Parameters.AddWithValue("@symbol", symbol);
                     insertSplits.Parameters.AddWithValue("@date", candle.Time.ToUnixTimeSeconds());
                     insertSplits.Parameters.AddWithValue("@coefficient", candle.SplitCoefficient);
-                    insertSplits.Prepare();
                     insertSplits.ExecuteNonQuery();
                 }
 
@@ -147,7 +148,6 @@
                     insertDividends.Parameters.AddWithValue("@symbol", symbol);
                     insertDividends.Parameters.AddWithValue("@date", candle.Time.ToUnixTimeSeconds());
                     insertDividends.Parameters.AddWithValue("@dividend", candle.Dividend);
-                    insertDividends.Prepare();
                     insertDividends.ExecuteNonQuery();
                 }
             }
