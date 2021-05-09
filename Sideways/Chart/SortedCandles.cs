@@ -70,7 +70,7 @@
             }
         }
 
-        IEnumerable<Candle> Hours(DateTimeOffset start)
+        public IEnumerable<Candle> Hours(DateTimeOffset start)
         {
             var builder = new CandleBuilder();
             foreach (var minute in this.Get(start))

@@ -10,7 +10,7 @@
     {
         private SortedCandles? days;
         private SortedCandles? minutes;
-        private Exception exception;
+        private Exception? exception;
 
         public SymbolViewModel(string symbol)
         {
@@ -51,7 +51,7 @@
             }
         }
 
-        public Exception Exception
+        public Exception? Exception
         {
             get => this.exception;
             set
