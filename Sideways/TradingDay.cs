@@ -2,9 +2,20 @@
 {
     using System;
 
-    public static class TradingDay
+    public readonly struct TradingDay : IEquatable<TradingDay>
     {
-        public static DateTimeOffset LastComplete
+        public readonly int Year;
+        public readonly int Month;
+        public readonly int Day;
+
+        private TradingDay(int year, int month, int day)
+        {
+            this.Year = year;
+            this.Month = month;
+            this.Day = day;
+        }
+
+        public static TradingDay LastComplete
         {
             get
             {
@@ -19,7 +30,7 @@
                     date -= TimeSpan.FromDays(1);
                 }
 
-                return date.Date;
+                return TradingDay.Create(date);
 
                 static bool IsTradingDay(DateTimeOffset candidate)
                 {
@@ -42,6 +53,35 @@
                     };
                 }
             }
+        }
+
+        public static bool operator ==(TradingDay left, TradingDay right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(TradingDay left, TradingDay right)
+        {
+            return !left.Equals(right);
+        }
+
+        public static TradingDay Create(DateTime date) => new(date.Year, date.Month, date.Day);
+
+        public static TradingDay Create(DateTimeOffset date) => new(date.Year, date.Month, date.Day);
+
+        public bool Equals(TradingDay other)
+        {
+            return this.Year == other.Year && this.Month == other.Month && this.Day == other.Day;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is TradingDay other && this.Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Year, this.Month, this.Day);
         }
     }
 }

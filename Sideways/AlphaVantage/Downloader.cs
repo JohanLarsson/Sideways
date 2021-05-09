@@ -38,8 +38,8 @@
         public async Task<Days> DaysAsync(string symbol, DateTimeOffset? from)
         {
             this.ThrowIfDisposed();
-            var download = from is { } &&
-                           TradingDay.LastComplete - from < TimeSpan.FromDays(100)
+            var download = from.HasValue &&
+                           TradingDay.Since(from.GetValueOrDefault()) < 100
                 ? Create(OutputSize.Compact)
                 : Create(OutputSize.Full);
             this.Downloads = this.downloads.Add(download);
