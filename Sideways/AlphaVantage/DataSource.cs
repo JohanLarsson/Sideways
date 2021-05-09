@@ -17,7 +17,8 @@
             var candles = Database.ReadDays(symbol);
             var splits = Database.ReadSplits(symbol);
             var last = candles.IsDefaultOrEmpty ? (DateTimeOffset?)null : candles.Max(x => x.Time);
-            if (last == TradingDay.LastComplete)
+            if (last is { Date: var date } &&
+                date == TradingDay.LastComplete.Date)
             {
                 return new Days(candles, splits, null);
             }
