@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
+
     using NUnit.Framework;
 
     using Sideways.AlphaVantage;
@@ -121,22 +122,19 @@
         public static async Task Minutes(string symbol, Slice slice)
         {
             var range = TimeRange.FromSlice(slice);
-            var days = Database.ReadDays(symbol, range.Min, range.Max);
-            if (days.IsEmpty)
+            var days = Database.ReadDays(symbol, range.Min, range.Max).Select(x => TradingDay.Create(x.Time)).Distinct().ToArray();
+            if (days.Length == 0)
             {
                 Assert.Inconclusive("Download days first");
             }
 
-            Assert.Fail();
-            //var minutes = await Database.ReadMinutes(symbol, range.Min, range.Max).ConfigureAwait(false);
-            //var sliceDays = days.Where(x => range.Contains(x.Time)).ToArray();
-            //CollectionAssert.IsNotEmpty(sliceDays);
-            //if (sliceDays.Any(d => !minutes.Any(m => m.Time.Date == d.Time.Date)))
-            //{
-            //    using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
-            //    var candles = await client.IntervalExtendedAsync(symbol, Interval.Minute, slice, adjusted: false);
-            //    Database.WriteMinutes(symbol, candles);
-            //}
+            var minutes = Database.ReadMinutes(symbol, range.Min, range.Max).Select(x => TradingDay.Create(x.Time)).Distinct().ToArray();
+            if (!days.SequenceEqual(minutes))
+            {
+                using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
+                var candles = await client.IntervalExtendedAsync(symbol, Interval.Minute, slice, adjusted: false);
+                Database.WriteMinutes(symbol, candles);
+            }
         }
     }
 }
