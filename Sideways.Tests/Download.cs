@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
-
     using NUnit.Framework;
 
     using Sideways.AlphaVantage;
@@ -87,6 +86,7 @@
         };
 
         private static readonly TestCaseData[] SymbolsAndSlices = Symbols.SelectMany(x => Enum.GetValues(typeof(Slice)).Cast<Slice>().Select(y => new TestCaseData(x, y))).ToArray();
+        private static readonly Downloader Downloader = new(new HttpClientHandler(), ApiKey);
 
         private static string ApiKey
         {
@@ -105,24 +105,15 @@
         [TestCaseSource(nameof(Symbols))]
         public static async Task Days(string symbol)
         {
-            var cached = await Database.ReadDaysAsync(symbol).ConfigureAwait(false);
-            if (!cached.IsEmpty &&
-                cached.LastOrDefault().Time.Date == TradingDay.LastComplete)
+            var dataSource = new DataSource(Downloader);
+            var days = dataSource.Days(symbol);
+            if (days.Download is { } task)
             {
-                return;
-            }
-
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
-            if (!cached.IsEmpty &&
-                (TradingDay.LastComplete - cached.LastOrDefault().Time.Date).Days < 100)
-            {
-                var downloadedDays = await client.DailyAdjustedAsync(symbol, OutputSize.Compact).ConfigureAwait(false);
-                Database.WriteDays(symbol, downloadedDays);
+                await task;
             }
             else
             {
-                var downloadedDays = await client.DailyAdjustedAsync(symbol, OutputSize.Full).ConfigureAwait(false);
-                Database.WriteDays(symbol, downloadedDays);
+                Assert.Pass("Already downloaded.");
             }
         }
 
@@ -130,21 +121,22 @@
         public static async Task Minutes(string symbol, Slice slice)
         {
             var range = TimeRange.FromSlice(slice);
-            var days = await Database.ReadDaysAsync(symbol).ConfigureAwait(false);
+            var days = Database.ReadDays(symbol);
             if (days.IsEmpty)
             {
                 Assert.Inconclusive("Download days first");
             }
 
-            var minutes = await Database.ReadMinutesAsync(symbol, range.Min, range.Max).ConfigureAwait(false);
-            var sliceDays = days.Where(x => range.Contains(x.Time)).ToArray();
-            CollectionAssert.IsNotEmpty(sliceDays);
-            if (sliceDays.Any(d => !minutes.Any(m => m.Time.Date == d.Time.Date)))
-            {
-                using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
-                var candles = await client.IntervalExtendedAsync(symbol, Interval.Minute, slice, adjusted: false);
-                Database.WriteMinutes(symbol, candles);
-            }
+            Assert.Fail();
+            //var minutes = await Database.ReadMinutes(symbol, range.Min, range.Max).ConfigureAwait(false);
+            //var sliceDays = days.Where(x => range.Contains(x.Time)).ToArray();
+            //CollectionAssert.IsNotEmpty(sliceDays);
+            //if (sliceDays.Any(d => !minutes.Any(m => m.Time.Date == d.Time.Date)))
+            //{
+            //    using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
+            //    var candles = await client.IntervalExtendedAsync(symbol, Interval.Minute, slice, adjusted: false);
+            //    Database.WriteMinutes(symbol, candles);
+            //}
         }
     }
 }

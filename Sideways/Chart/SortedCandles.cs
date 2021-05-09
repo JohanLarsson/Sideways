@@ -26,7 +26,7 @@
             return this.candles.SkipWhile(x => x.Time > start);
         }
 
-        IEnumerable<Candle> GetAdjusted(DateTimeOffset start)
+        public IEnumerable<Candle> GetSplitAdjusted(DateTimeOffset start)
         {
             throw new NotImplementedException();
             //var splitCoefficient = 1f;

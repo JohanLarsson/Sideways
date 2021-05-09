@@ -46,8 +46,8 @@
             Database.WriteDays(symbol, await download.Task.ConfigureAwait(false));
 
             return new Days(
-                await Database.ReadDaysAsync(symbol).ConfigureAwait(false),
-                await Database.ReadSplitsAsync(symbol).ConfigureAwait(false),
+                Database.ReadDays(symbol),
+                Database.ReadSplits(symbol),
                 null);
 
             DaysDownload Create(OutputSize size)

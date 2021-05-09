@@ -4,31 +4,30 @@
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
-    using System.Threading.Tasks;
 
     using Microsoft.Data.Sqlite;
 
     public static class Database
     {
-        public static async Task<ImmutableArray<Candle>> ReadDaysAsync(string symbol)
+        public static ImmutableArray<Candle> ReadDays(string symbol)
         {
-            await using var connection = new SqliteConnection($"Data Source={Source()}");
-            await connection.OpenAsync().ConfigureAwait(false);
-            await using var command = new SqliteCommand(
+            using var connection = new SqliteConnection($"Data Source={Source()}");
+            connection.Open();
+            using var command = new SqliteCommand(
                 "SELECT date, open, high, low, close, volume FROM days" +
                 "  WHERE symbol = @symbol" +
                 "  ORDER BY date DESC",
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
-            await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+            using var reader = command.ExecuteReader();
             return ReadCandles(reader);
         }
 
-        public static async Task<ImmutableArray<Candle>> ReadDaysAsync(string symbol, DateTimeOffset from, DateTimeOffset to)
+        public static ImmutableArray<Candle> ReadDays(string symbol, DateTimeOffset from, DateTimeOffset to)
         {
-            await using var connection = new SqliteConnection($"Data Source={Source()}");
-            await connection.OpenAsync().ConfigureAwait(false);
-            await using var command = new SqliteCommand(
+            using var connection = new SqliteConnection($"Data Source={Source()}");
+            connection.Open();
+            using var command = new SqliteCommand(
                 "SELECT date, open, high, low, close, volume FROM days" +
                 "  WHERE symbol = @symbol AND date BETWEEN @from AND @to" +
                 "  ORDER BY date DESC",
@@ -36,29 +35,29 @@
             command.Parameters.AddWithValue("@symbol", symbol);
             command.Parameters.AddWithValue("@from", from.ToUnixTimeSeconds());
             command.Parameters.AddWithValue("@to", to.ToUnixTimeSeconds());
-            await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+            using var reader = command.ExecuteReader();
             return ReadCandles(reader);
         }
 
-        public static async Task<ImmutableArray<Candle>> ReadMinutesAsync(string symbol)
+        public static ImmutableArray<Candle> ReadMinutes(string symbol)
         {
-            await using var connection = new SqliteConnection($"Data Source={Source()}");
-            await connection.OpenAsync().ConfigureAwait(false);
-            await using var command = new SqliteCommand(
+            using var connection = new SqliteConnection($"Data Source={Source()}");
+            connection.Open();
+            using var command = new SqliteCommand(
                 "SELECT time, open, high, low, close, volume FROM minutes" +
                 " WHERE symbol = @symbol" +
                 " ORDER BY time DESC",
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
-            await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+            using var reader = command.ExecuteReader();
             return ReadCandles(reader);
         }
 
-        public static async Task<ImmutableArray<Candle>> ReadMinutesAsync(string symbol, DateTimeOffset from, DateTimeOffset to)
+        public static ImmutableArray<Candle> ReadMinutes(string symbol, DateTimeOffset from, DateTimeOffset to)
         {
-            await using var connection = new SqliteConnection($"Data Source={Source()}");
-            await connection.OpenAsync().ConfigureAwait(false);
-            await using var command = new SqliteCommand(
+            using var connection = new SqliteConnection($"Data Source={Source()}");
+            connection.Open();
+            using var command = new SqliteCommand(
                 "SELECT time, open, high, low, close, volume FROM minutes" +
                 "  WHERE symbol = @symbol AND time BETWEEN @from AND @to" +
                 "  ORDER BY time DESC",
@@ -66,23 +65,23 @@
             command.Parameters.AddWithValue("@symbol", symbol);
             command.Parameters.AddWithValue("@from", from.ToUnixTimeSeconds());
             command.Parameters.AddWithValue("@to", to.ToUnixTimeSeconds());
-            await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+            using var reader = command.ExecuteReader();
             return ReadCandles(reader);
         }
 
-        public static async Task<ImmutableArray<Split>> ReadSplitsAsync(string symbol)
+        public static ImmutableArray<Split> ReadSplits(string symbol)
         {
-            await using var connection = new SqliteConnection($"Data Source={Source()}");
-            await connection.OpenAsync().ConfigureAwait(false);
-            await using var command = new SqliteCommand(
+            using var connection = new SqliteConnection($"Data Source={Source()}");
+            connection.Open();
+            using var command = new SqliteCommand(
                 "SELECT date, coefficient FROM splits" +
                 " WHERE symbol = @symbol" +
                 " ORDER BY date DESC",
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
-            await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+            using var reader = command.ExecuteReader();
             var builder = ImmutableArray.CreateBuilder<Split>();
-            while (await reader.ReadAsync().ConfigureAwait(false))
+            while (reader.Read())
             {
                 builder.Add(
                     new Split(
@@ -208,15 +207,6 @@
             return builder.ToImmutable();
         }
 
-        private static ImmutableArray<T> ToImmutableOrEmpty<T>(this ImmutableArray<T>.Builder builder)
-        {
-            return builder switch
-            {
-                { Count: 0 } => ImmutableArray<T>.Empty,
-                _ => builder.ToImmutable(),
-            };
-        }
-
         private static int AsInt(this float f) => (int)Math.Round(f * 100);
 
         private static string Source()
@@ -227,13 +217,14 @@
                 Directory.CreateDirectory(dir);
             }
 
-            var combine = Path.Combine(dir, "Database.sqlite3");
-            if (!File.Exists(combine))
+            var file = Path.Combine(dir, "Database.sqlite3");
+            if (!File.Exists(file))
             {
-                using var connection = new SqliteConnection($"Data Source={combine}");
+                using var connection = new SqliteConnection($"Data Source={file}");
                 connection.Open();
                 using var transaction = connection.BeginTransaction();
-                using var createDays = new SqliteCommand(
+                using var command = connection.CreateCommand();
+                command.CommandText =
                     @"CREATE TABLE IF NOT EXISTS days(
                         symbol TEXT NOT NULL,
                         date INTEGER NOT NULL,
@@ -242,13 +233,11 @@
                         low INTEGER NOT NULL,
                         close INTEGER NOT NULL,
                         volume INTEGER NOT NULL,
-                        PRIMARY KEY(symbol, date))",
-                    connection,
-                    transaction);
-                createDays.ExecuteNonQuery();
+                        PRIMARY KEY(symbol, date))";
+                command.ExecuteNonQuery();
 
-                using var createMinutes = new SqliteCommand(
-                    @"CREATE TABLE IF NOT EXISTS minutes(
+                command.CommandText =
+                   @"CREATE TABLE IF NOT EXISTS minutes(
                         symbol TEXT NOT NULL,
                         time INTEGER NOT NULL,
                         open INTEGER NOT NULL,
@@ -256,35 +245,29 @@
                         low INTEGER NOT NULL,
                         close INTEGER NOT NULL,
                         volume INTEGER NOT NULL,
-                        PRIMARY KEY(symbol, time))",
-                    connection,
-                    transaction);
-                createMinutes.ExecuteNonQuery();
+                        PRIMARY KEY(symbol, time))";
+                command.ExecuteNonQuery();
 
-                using var createSplits = new SqliteCommand(
+                command.CommandText =
                     @"CREATE TABLE IF NOT EXISTS splits(
                         symbol TEXT NOT NULL,
                         date INTEGER NOT NULL,
                         coefficient REAL NOT NULL,
-                        PRIMARY KEY(symbol, date))",
-                    connection,
-                    transaction);
-                createSplits.ExecuteNonQuery();
+                        PRIMARY KEY(symbol, date))";
+                command.ExecuteNonQuery();
 
-                using var createDividends = new SqliteCommand(
+                command.CommandText =
                     @"CREATE TABLE IF NOT EXISTS dividends(
                         symbol TEXT NOT NULL,
                         date INTEGER NOT NULL,
                         dividend REAL NOT NULL,
-                        PRIMARY KEY(symbol, date))",
-                    connection,
-                    transaction);
-                createDividends.ExecuteNonQuery();
+                        PRIMARY KEY(symbol, date))";
+                command.ExecuteNonQuery();
 
                 transaction.Commit();
             }
 
-            return combine;
+            return file;
         }
     }
 }

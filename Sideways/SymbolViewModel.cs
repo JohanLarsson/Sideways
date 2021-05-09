@@ -70,7 +70,7 @@
         {
             try
             {
-                var days = await dataSource.DaysAsync(this.Symbol).ConfigureAwait(false);
+                var days = dataSource.Days(this.Symbol);
                 this.Days = new SortedCandles(days.Candles, days.Splits);
                 //this.Minutes = new SortedCandles(await dataSource.MinutesAsync(this.Symbol).ConfigureAwait(false));
                 if (days.Download is { } daysDownload)

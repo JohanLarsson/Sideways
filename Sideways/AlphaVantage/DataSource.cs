@@ -1,8 +1,8 @@
 ﻿namespace Sideways.AlphaVantage
 {
     using System;
+    using System.Diagnostics;
     using System.Linq;
-    using System.Threading.Tasks;
 
     public sealed class DataSource
     {
@@ -13,10 +13,17 @@
             this.downloader = downloader;
         }
 
-        public async Task<Days> DaysAsync(string symbol)
+        public Days Days(string symbol)
         {
-            var candles = await Database.ReadDaysAsync(symbol).ConfigureAwait(false);
-            var splits = await Database.ReadSplitsAsync(symbol).ConfigureAwait(false);
+            var sw = Stopwatch.StartNew();
+            var candles = Database.ReadDays(symbol);
+            sw.Stop();
+            Console.WriteLine($"ReadDaysAsync() {sw.ElapsedMilliseconds} ms");
+            sw.Start();
+            var splits = Database.ReadSplits(symbol);
+            sw.Stop();
+            Console.WriteLine($"ReadSplitsAsync() {sw.ElapsedMilliseconds} ms");
+            sw.Start();
             var last = candles.IsDefaultOrEmpty ? (DateTimeOffset?)null : candles.Max(x => x.Time);
             if (last == TradingDay.LastComplete)
             {

@@ -13,11 +13,11 @@ namespace Sideways.Tests
         private static readonly string[] Symbols = Download.Symbols;
 
         [TestCaseSource(nameof(Symbols))]
-        public static async Task GapUp(string symbol)
+        public static void GapUp(string symbol)
         {
             const double gap = 0.10;
             Console.WriteLine($"{symbol} {100 * gap}% gap ups. Buy at open sell at close three days later.");
-            var candles = await Database.ReadDaysAsync(symbol);
+            var candles = Database.ReadDays(symbol);
             for (var i = 1; i < candles.Length - 5; i++)
             {
                 var candle = candles[i];
@@ -34,13 +34,13 @@ namespace Sideways.Tests
         }
 
         [Test]
-        public static async Task AllGapUps()
+        public static void AllGapUps()
         {
             const double minGap = 0.05;
             Console.WriteLine("symbol;date;gap;relative_volume;relative_close;three_day;five_day;link");
             foreach (var symbol in Symbols)
             {
-                var candles = await Database.ReadDaysAsync(symbol);
+                var candles = Database.ReadDays(symbol);
                 for (var i = 10; i < candles.Length - 5; i++)
                 {
                     var candle = candles[i];
