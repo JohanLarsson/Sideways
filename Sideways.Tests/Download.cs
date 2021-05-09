@@ -121,7 +121,7 @@
         public static async Task Minutes(string symbol, Slice slice)
         {
             var range = TimeRange.FromSlice(slice);
-            var days = Database.ReadDays(symbol);
+            var days = Database.ReadDays(symbol, range.Min, range.Max);
             if (days.IsEmpty)
             {
                 Assert.Inconclusive("Download days first");
