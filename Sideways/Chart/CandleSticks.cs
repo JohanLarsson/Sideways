@@ -110,7 +110,7 @@
             var candleWidth = 5;
             if (this.ItemsSource is { } itemsSource)
             {
-                var builder = ImmutableArray.CreateBuilder<Candle>(1 + ((int)size.Width / candleWidth));
+                var builder = ImmutableArray.CreateBuilder<Candle>((int)Math.Ceiling(size.Width / candleWidth));
                 var min = float.MaxValue;
                 var max = float.MinValue;
                 var x = 0.0;
