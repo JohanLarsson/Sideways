@@ -44,6 +44,11 @@
 
         private readonly DrawingVisual drawing;
 
+        static CandleSticks()
+        {
+            RenderOptions.EdgeModeProperty.OverrideMetadata(typeof(CandleSticks), new UIPropertyMetadata(EdgeMode.Aliased));
+        }
+
         public CandleSticks()
         {
             this.drawing = new DrawingVisual();
