@@ -1,7 +1,6 @@
 ﻿namespace Sideways.AlphaVantage
 {
     using System;
-    using System.Diagnostics;
     using System.Linq;
 
     public sealed class DataSource
@@ -15,15 +14,8 @@
 
         public Days Days(string symbol)
         {
-            var sw = Stopwatch.StartNew();
             var candles = Database.ReadDays(symbol);
-            sw.Stop();
-            Console.WriteLine($"ReadDaysAsync() {sw.ElapsedMilliseconds} ms");
-            sw.Start();
             var splits = Database.ReadSplits(symbol);
-            sw.Stop();
-            Console.WriteLine($"ReadSplitsAsync() {sw.ElapsedMilliseconds} ms");
-            sw.Start();
             var last = candles.IsDefaultOrEmpty ? (DateTimeOffset?)null : candles.Max(x => x.Time);
             if (last == TradingDay.LastComplete)
             {
