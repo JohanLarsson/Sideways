@@ -35,13 +35,10 @@
             }
         }
 
-        public async Task<Days> DaysAsync(string symbol, DateTimeOffset? from)
+        public async Task<Days> DaysAsync(string symbol, TradingDay? from)
         {
             this.ThrowIfDisposed();
-            var download = from.HasValue &&
-                           TradingDay.Since(from.GetValueOrDefault()) < 100
-                ? Create(OutputSize.Compact)
-                : Create(OutputSize.Full);
+            var download = Create(OutputSize());
             this.Downloads = this.downloads.Add(download);
             Database.WriteDays(symbol, await download.Task.ConfigureAwait(false));
 
@@ -49,6 +46,18 @@
                 Database.ReadDays(symbol),
                 Database.ReadSplits(symbol),
                 null);
+
+            OutputSize OutputSize()
+            {
+                // Compact returns only last 100, below can b tweaked further s it includes nn trading day
+                if (from is { Year: var y, Month: var m, Day: var d } &&
+                    DateTime.Today - new DateTime(y, m, d) < TimeSpan.FromDays(100))
+                {
+                    return AlphaVantage.OutputSize.Compact;
+                }
+
+                return AlphaVantage.OutputSize.Full;
+            }
 
             DaysDownload Create(OutputSize size)
             {
