@@ -49,7 +49,7 @@
 
             OutputSize OutputSize()
             {
-                // Compact returns only last 100, below can b tweaked further s it includes nn trading day
+                // Compact returns only last 100, below can be tweaked further as it includes holidays but good enough for now
                 if (from is { Year: var y, Month: var m, Day: var d } &&
                     DateTime.Today - new DateTime(y, m, d) < TimeSpan.FromDays(100))
                 {
