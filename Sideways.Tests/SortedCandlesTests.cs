@@ -33,7 +33,7 @@
                 default,
                 default,
                 default);
-            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3), ImmutableArray<Split>.Empty);
+            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3));
             CollectionAssert.AreEqual(new[] { c1, c2, c3 }, sorted);
         }
 
@@ -63,7 +63,7 @@
                 default,
                 default,
                 default);
-            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3), ImmutableArray<Split>.Empty);
+            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3));
             Assert.AreEqual(c3, sorted.Previous(c2.Time, CandleInterval.None));
             Assert.AreEqual(c2, sorted.Previous(c1.Time, CandleInterval.None));
             Assert.AreEqual(null, sorted.Previous(c3.Time, CandleInterval.None));
@@ -95,7 +95,7 @@
                 default,
                 default,
                 default);
-            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3), ImmutableArray<Split>.Empty);
+            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3));
             Assert.AreEqual(c2, sorted.Next(c3.Time, CandleInterval.None));
             Assert.AreEqual(c1, sorted.Next(c2.Time, CandleInterval.None));
             Assert.AreEqual(null, sorted.Next(c1.Time, CandleInterval.None));
@@ -129,7 +129,7 @@
                 default,
                 default,
                 default);
-            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3), ImmutableArray<Split>.Empty);
+            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3));
             Assert.AreEqual(0, sorted.IndexOf(c1.Time));
         }
 
@@ -161,7 +161,7 @@
                 default,
                 default,
                 default);
-            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3), ImmutableArray<Split>.Empty);
+            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3));
             Assert.AreEqual(1, sorted.IndexOf(c2.Time));
         }
 
@@ -193,7 +193,7 @@
                 default,
                 default,
                 default);
-            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3), ImmutableArray<Split>.Empty);
+            var sorted = new SortedCandles(ImmutableArray.Create(c1, c2, c3));
             Assert.AreEqual(2, sorted.IndexOf(c3.Time));
         }
     }

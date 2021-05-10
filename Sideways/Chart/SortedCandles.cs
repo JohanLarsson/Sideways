@@ -10,14 +10,11 @@
     public class SortedCandles : IEnumerable<Candle>
     {
         private readonly ImmutableArray<Candle> candles;
-        private readonly ImmutableArray<Split> splits;
 
-        public SortedCandles(ImmutableArray<Candle> candles, ImmutableArray<Split> splits)
+        public SortedCandles(ImmutableArray<Candle> candles)
         {
             Debug.Assert(Enumerable.SequenceEqual(candles, candles.OrderByDescending(x => x.Time)), "Candles not sorted correctly.");
-            Debug.Assert(Enumerable.SequenceEqual(splits, splits.OrderByDescending(x => x.Date)), "Splits not sorted correctly.");
             this.candles = candles;
-            this.splits = splits;
         }
 
         public IEnumerable<Candle> Get(DateTimeOffset start)

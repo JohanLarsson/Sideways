@@ -107,8 +107,7 @@
         public static async Task Days(string symbol)
         {
             var dataSource = new DataSource(Downloader);
-            var days = dataSource.Days(symbol);
-            if (days.Download is { } task)
+            if (dataSource.Days(symbol).Download is { } task)
             {
                 await task;
             }
