@@ -72,7 +72,7 @@
             {
                 var days = dataSource.Days(this.Symbol);
                 this.Days = new Candles(days.Candles);
-                //this.Minutes = new SortedCandles(await dataSource.MinutesAsync(this.Symbol).ConfigureAwait(false));
+                this.Minutes = new Candles(Database.ReadMinutes(this.Symbol));
                 if (days.Download is { } daysDownload)
                 {
                     days = await daysDownload.ConfigureAwait(false);
