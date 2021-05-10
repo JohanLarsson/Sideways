@@ -37,6 +37,14 @@
             return !left.Equals(right);
         }
 
+        public Candle Adjust(double coefficient) => new(
+            time: this.Time,
+            open: (float)coefficient * this.Open,
+            high: (float)coefficient * this.High,
+            low: (float)coefficient * this.Low,
+            close: (float)coefficient * this.Close,
+            volume: this.Volume);
+
         public bool Equals(Candle other)
         {
             return this.Time.Equals(other.Time) &&
