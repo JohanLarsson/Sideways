@@ -63,85 +63,46 @@
             }
         }
 
-        public IEnumerable<Candle> Weeks(DateTimeOffset start)
+        public IEnumerable<Candle> MergeBy(DateTimeOffset start, Func<Candle, Candle, bool> criteria)
         {
-            var builder = new CandleBuilder();
-            foreach (var day in this.Get(start))
+            var merged = default(Candle);
+            foreach (var candle in this.Get(start))
             {
-                if (builder.Time is null ||
-                    day.Time.IsSameWeek(builder.Time.Value))
+                if (merged == default)
                 {
-                    builder.Add(day);
+                    merged = candle;
+                }
+                else if (criteria(merged, candle))
+                {
+                    merged = merged.Merge(candle);
                 }
                 else
                 {
-                    if (builder.Time is { })
-                    {
-                        yield return builder.Build();
-                    }
-
-                    builder.Add(day);
+                    yield return merged;
+                    merged = candle;
                 }
             }
 
-            if (builder.Time is { })
+            if (merged != default)
             {
-                yield return builder.Build();
+                yield return merged;
             }
         }
 
-        public IEnumerable<Candle> Hours(DateTimeOffset start)
+
+        public IEnumerable<Candle> Weeks(DateTimeOffset start)
         {
-            var builder = new CandleBuilder();
-            foreach (var minute in this.Get(start))
-            {
-                if (builder.Time is null ||
-                    builder.Time.Value.IsSameHour(minute.Time))
-                {
-                    builder.Add(minute);
-                }
-                else
-                {
-                    if (builder.Time is { })
-                    {
-                        yield return builder.Build();
-                    }
-
-                    builder.Add(minute);
-                }
-            }
-
-            if (builder.Time is { })
-            {
-                yield return builder.Build();
-            }
+            return this.MergeBy(start, (x, y) => x.Time.IsSameWeek(y.Time));
         }
 
         public IEnumerable<Candle> Days(DateTimeOffset start)
         {
-            var builder = new CandleBuilder();
-            foreach (var minute in this.Get(start))
-            {
-                if (builder.Time is null ||
-                    builder.Time.Value.IsSameDay(minute.Time))
-                {
-                    builder.Add(minute);
-                }
-                else
-                {
-                    if (builder.Time is { })
-                    {
-                        yield return builder.Build();
-                    }
+            return this.MergeBy(start, (x, y) => x.Time.IsSameDay(y.Time));
+        }
 
-                    builder.Add(minute);
-                }
-            }
-
-            if (builder.Time is { })
-            {
-                yield return builder.Build();
-            }
+        public IEnumerable<Candle> Hours(DateTimeOffset start)
+        {
+            return this.MergeBy(start, (x, y) => x.Time.IsSameHour(y.Time));
         }
 
         public IEnumerable<Candle> Get(DateTimeOffset start, CandleInterval interval)

@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Diagnostics;
 
     [System.Diagnostics.DebuggerDisplay("{" + nameof(ToString) + "(),nq}")]
     public readonly struct Candle : IEquatable<Candle>
@@ -66,5 +67,17 @@
         }
 
         public override string ToString() => $"{this.Time} o: {this.Open} h: {this.High} l: {this.Low} c: {this.Close} volume: {this.Volume}";
+
+        internal Candle Merge(Candle other)
+        {
+            Debug.Assert(other.Time < this.Time, "other.Time < this.Time");
+            return new(
+                time: this.Time,
+                open: other.Open,
+                high: Math.Max(this.High, other.High),
+                low: Math.Min(this.Low, other.Low),
+                close: this.Close,
+                volume: this.Volume + other.Volume);
+        }
     }
 }
