@@ -24,9 +24,9 @@
             return new Days(candles, splits, this.downloader.DaysAsync(symbol, last));
         }
 
-        //public async Task<ImmutableArray<Candle>> MinutesAsync(string symbol)
+        //public Minutes Minutes(string symbol)
         //{
-        //    var candles = await Database.ReadMinutesAsync(symbol).ConfigureAwait(false);
+        //    var candles = Database.ReadMinutes(symbol);
         //    if (candles.Length > 0)
         //    {
         //        return candles;

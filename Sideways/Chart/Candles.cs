@@ -7,11 +7,11 @@
     using System.Diagnostics;
     using System.Linq;
 
-    public class SortedCandles : IEnumerable<Candle>
+    public class Candles : IEnumerable<Candle>
     {
         private readonly ImmutableArray<Candle> candles;
 
-        public SortedCandles(ImmutableArray<Candle> candles)
+        public Candles(ImmutableArray<Candle> candles)
         {
             Debug.Assert(Enumerable.SequenceEqual(candles, candles.OrderByDescending(x => x.Time)), "Candles not sorted correctly.");
             this.candles = candles;

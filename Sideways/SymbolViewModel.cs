@@ -8,8 +8,8 @@
 
     public sealed class SymbolViewModel : INotifyPropertyChanged
     {
-        private SortedCandles? days;
-        private SortedCandles? minutes;
+        private Candles? days;
+        private Candles? minutes;
         private Exception? exception;
 
         public SymbolViewModel(string symbol)
@@ -21,7 +21,7 @@
 
         public string Symbol { get; }
 
-        public SortedCandles? Days
+        public Candles? Days
         {
             get => this.days;
             set
@@ -36,7 +36,7 @@
             }
         }
 
-        public SortedCandles? Minutes
+        public Candles? Minutes
         {
             get => this.minutes;
             set
@@ -71,12 +71,12 @@
             try
             {
                 var days = dataSource.Days(this.Symbol);
-                this.Days = new SortedCandles(days.Candles);
+                this.Days = new Candles(days.Candles);
                 //this.Minutes = new SortedCandles(await dataSource.MinutesAsync(this.Symbol).ConfigureAwait(false));
                 if (days.Download is { } daysDownload)
                 {
                     days = await daysDownload.ConfigureAwait(false);
-                    this.Days = new SortedCandles(days.Candles);
+                    this.Days = new Candles(days.Candles);
                 }
             }
 #pragma warning disable CA1031 // Do not catch general exception types

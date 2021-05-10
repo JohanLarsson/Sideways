@@ -11,10 +11,10 @@
         /// <summary>Identifies the <see cref="ItemsSource"/> dependency property.</summary>
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
             nameof(ItemsSource),
-            typeof(SortedCandles),
+            typeof(Candles),
             typeof(CandleSticks),
             new FrameworkPropertyMetadata(
-                default(SortedCandles),
+                default(Candles),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
         private static readonly DependencyPropertyKey VisibleCandlesPropertyKey = DependencyProperty.RegisterReadOnly(
@@ -62,9 +62,9 @@
             this.AddVisualChild(this.drawing);
         }
 
-        public SortedCandles? ItemsSource
+        public Candles? ItemsSource
         {
-            get => (SortedCandles?)this.GetValue(ItemsSourceProperty);
+            get => (Candles?)this.GetValue(ItemsSourceProperty);
             set => this.SetValue(ItemsSourceProperty, value);
         }
 
