@@ -47,7 +47,7 @@
             nameof(CandleInterval),
             typeof(CandleInterval),
             typeof(CandleSticks),
-            new PropertyMetadata(Sideways.CandleInterval.None));
+            new PropertyMetadata(CandleInterval.None));
 
         private readonly DrawingVisual drawing;
 

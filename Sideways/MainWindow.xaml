@@ -49,6 +49,7 @@
                        Text="h" />
             <sideways:Chart x:Name="HourlyChart">
                 <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Minutes}"
+                                       CandleInterval="Hour"
                                        Time="{Binding EndTime}" />
             </sideways:Chart>
         </Grid>

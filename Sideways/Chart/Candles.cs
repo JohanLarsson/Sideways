@@ -99,6 +99,7 @@
             {
                 CandleInterval.None => this.Get(start),
                 CandleInterval.Week => this.Weeks(start),
+                CandleInterval.Hour => this.Hours(start),
                 _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, "Unhandled grouping."),
             };
         }
