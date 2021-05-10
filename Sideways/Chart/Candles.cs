@@ -17,6 +17,32 @@
             this.candles = candles;
         }
 
+        public static Candles Adjusted(ImmutableArray<Candle> candles, ImmutableArray<Split> splits)
+        {
+            if (splits.IsEmpty ||
+                candles.IsEmpty)
+            {
+                return new(candles);
+            }
+
+            var i = 0;
+            var c = 1.0;
+            var builder = ImmutableArray.CreateBuilder<Candle>(candles.Length);
+            foreach (var candle in candles)
+            {
+                if (i < splits.Length &&
+                    candle.Time < splits[i].Date)
+                {
+                    c /= splits[i].Coefficient;
+                    i++;
+                }
+
+                builder.Add(candle.Adjust(c));
+            }
+
+            return new(builder.MoveToImmutable());
+        }
+
         public IEnumerable<Candle> Get(DateTimeOffset start)
         {
             for (var i = Start(); i < this.candles.Length; i++)
@@ -127,21 +153,6 @@
                 CandleInterval.Hour => this.Hours(start),
                 _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, "Unhandled grouping."),
             };
-        }
-
-        public IEnumerable<Candle> GetSplitAdjusted(DateTimeOffset start)
-        {
-            throw new NotImplementedException();
-            //var splitCoefficient = 1f;
-            //foreach (var day in candles)
-            //{
-            //    if (day.SplitCoefficient != 0)
-            //    {
-            //        splitCoefficient *= day.SplitCoefficient;
-            //    }
-
-            //    yield return day.AsCandle(splitCoefficient);
-            //}
         }
 
         public Candle? Previous(DateTimeOffset time, CandleInterval interval)

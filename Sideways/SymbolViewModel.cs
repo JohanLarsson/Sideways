@@ -71,12 +71,12 @@
             try
             {
                 var days = dataSource.Days(this.Symbol);
-                this.Days = new Candles(days.Candles);
-                this.Minutes = new Candles(Database.ReadMinutes(this.Symbol));
+                this.Days = Candles.Adjusted(days.Candles, days.Splits);
+                this.Minutes = Candles.Adjusted(Database.ReadMinutes(this.Symbol), days.Splits);
                 if (days.Download is { } daysDownload)
                 {
                     days = await daysDownload.ConfigureAwait(false);
-                    this.Days = new Candles(days.Candles);
+                    this.Days = Candles.Adjusted(days.Candles, days.Splits);
                 }
             }
 #pragma warning disable CA1031 // Do not catch general exception types
