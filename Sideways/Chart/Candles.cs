@@ -70,7 +70,7 @@
             foreach (var minute in this.Get(start))
             {
                 if (builder.Time is null ||
-                    Hour(builder.Time.Value) == Hour(minute.Time))
+                    builder.Time.Value.IsSameHour(minute.Time))
                 {
                     builder.Add(minute);
                 }
@@ -83,8 +83,33 @@
 
                     builder.Add(minute);
                 }
+            }
 
-                static int Hour(DateTimeOffset time) => time.DayOfYear + time.Hour;
+            if (builder.Time is { })
+            {
+                yield return builder.Build();
+            }
+        }
+
+        public IEnumerable<Candle> Days(DateTimeOffset start)
+        {
+            var builder = new CandleBuilder();
+            foreach (var minute in this.Get(start))
+            {
+                if (builder.Time is null ||
+                    builder.Time.Value.IsSameDay(minute.Time))
+                {
+                    builder.Add(minute);
+                }
+                else
+                {
+                    if (builder.Time is { })
+                    {
+                        yield return builder.Build();
+                    }
+
+                    builder.Add(minute);
+                }
             }
 
             if (builder.Time is { })
