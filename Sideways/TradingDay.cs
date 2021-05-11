@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Globalization;
 
     public readonly struct TradingDay : IEquatable<TradingDay>
     {
@@ -50,16 +51,19 @@
             return candidate switch
             {
                 { Month: 1, Day: 1 } => false,
+                //// Martin Luther King, Jr. Day third Monday in January
+                { Month: 1, DayOfWeek: DayOfWeek.Monday, Day: > 14 and < 22 } => false,
                 //// Presidents day third Monday in February
-                { Month: 2, DayOfWeek: DayOfWeek.Monday } => candidate.Day / 7 == 3,
-                { Month: 7, Day: 5 } => false,
-                //// Memorial Day 4th Monday in May
-                { Month: 5, DayOfWeek: DayOfWeek.Monday } => candidate.Day / 7 == 4,
+                { Month: 2, DayOfWeek: DayOfWeek.Monday, Day: > 14 and < 22 } => false,
+                //// Memorial Day Last Monday in May
+                { Month: 5, DayOfWeek: DayOfWeek.Monday, Day: > 24 } => false,
+                //// Independence day
+                { Month: 7, Day: 4 } => false,
                 //// Labor Day 1st Monday in September
-                { Month: 9, DayOfWeek: DayOfWeek.Monday } => candidate.Day < 7,
+                { Month: 9, DayOfWeek: DayOfWeek.Monday, Day: < 8 } => false,
                 //// Thanksgiving Day 4th Thursday in November
-                { Month: 11, DayOfWeek: DayOfWeek.Thursday } => candidate.Day / 7 == 4,
-                { Month: 12, Day: 24 } => false,
+                { Month: 11, DayOfWeek: DayOfWeek.Thursday, Day: > 21 and < 29 } => false,
+                { Month: 12, Day: 25 } => false,
                 { DayOfWeek: DayOfWeek.Saturday } => false,
                 { DayOfWeek: DayOfWeek.Sunday } => false,
                 _ => true,
