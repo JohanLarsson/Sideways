@@ -1,7 +1,6 @@
 ﻿namespace Sideways
 {
     using System;
-    using System.Globalization;
 
     public readonly struct TradingDay : IEquatable<TradingDay>
     {
@@ -16,15 +15,9 @@
             this.Day = day;
         }
 
-        public static bool operator ==(TradingDay left, TradingDay right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(TradingDay left, TradingDay right) => left.Equals(right);
 
-        public static bool operator !=(TradingDay left, TradingDay right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(TradingDay left, TradingDay right) => !left.Equals(right);
 
         public static TradingDay LastComplete()
         {
@@ -70,19 +63,10 @@
             };
         }
 
-        public bool Equals(TradingDay other)
-        {
-            return this.Year == other.Year && this.Month == other.Month && this.Day == other.Day;
-        }
+        public bool Equals(TradingDay other) => this.Year == other.Year && this.Month == other.Month && this.Day == other.Day;
 
-        public override bool Equals(object? obj)
-        {
-            return obj is TradingDay other && this.Equals(other);
-        }
+        public override bool Equals(object? obj) => obj is TradingDay other && this.Equals(other);
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Year, this.Month, this.Day);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.Year, this.Month, this.Day);
     }
 }

@@ -3,7 +3,7 @@
     using System;
     using System.Diagnostics;
 
-    [System.Diagnostics.DebuggerDisplay("{" + nameof(ToString) + "(),nq}")]
+    [DebuggerDisplay("{" + nameof(ToString) + "(),nq}")]
     public readonly struct Candle : IEquatable<Candle>
     {
         public Candle(DateTimeOffset time, float open, float high, float low, float close, int volume)
