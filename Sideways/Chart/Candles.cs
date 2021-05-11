@@ -24,15 +24,14 @@
 
         public IEnumerable<Candle> Days(DateTimeOffset end)
         {
-            if (IsOpen(end) &&
+            if (TradingDay.IsOrdinaryHours(end) &&
                 MergeBy(DayMinutes(), (_, _) => true).FirstOrNull(_ => true) is { } merged)
             {
                 yield return merged;
                 end = end.AddDays(-1);
             }
 
-            if (end.Hour < 9 ||
-                end is { Hour: 9, Minute: < 30 })
+            if (TradingDay.IsPreMarket(end))
             {
                 end = end.AddDays(-1);
             }
@@ -50,18 +49,12 @@
                 foreach (var minute in this.minutes)
                 {
                     if (minute.Time.IsSameDay(end) &&
-                        IsOpen(minute.Time) &&
+                        TradingDay.IsOrdinaryHours(minute.Time) &&
                         minute.Time <= end)
                     {
                         yield return minute;
                     }
                 }
-            }
-
-            bool IsOpen(DateTimeOffset t)
-            {
-                return t.Hour is >= 10 and <= 16 ||
-                       t is { Hour: 9, Minute: >= 30 };
             }
         }
 

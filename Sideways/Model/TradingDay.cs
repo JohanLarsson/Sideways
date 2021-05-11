@@ -21,6 +21,23 @@
 
         public static DateTimeOffset EndOfDay(DateTimeOffset t) => new(t.Year, t.Month, t.Day, 20, 00, 00, t.Offset);
 
+        public static bool IsPreMarket(DateTimeOffset t)
+        {
+            return t.Hour < 9 ||
+                   t is { Hour: 9, Minute: < 30 };
+        }
+
+        public static bool IsPpstMarket(DateTimeOffset t)
+        {
+            return t.Hour > 16;
+        }
+
+        public static bool IsOrdinaryHours(DateTimeOffset t)
+        {
+            return !IsPreMarket(t) &&
+                   !IsPpstMarket(t);
+        }
+
         public static TradingDay LastComplete()
         {
             var date = DateTimeOffset.UtcNow;
