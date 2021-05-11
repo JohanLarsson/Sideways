@@ -1,7 +1,6 @@
 ﻿namespace Sideways.Tests
 {
     using System;
-    using System.Collections.Immutable;
 
     using NUnit.Framework;
 
@@ -33,8 +32,9 @@
                 default,
                 default,
                 default);
-            var candles = new Candles(ImmutableArray.Create(c1, c2, c3));
-            CollectionAssert.AreEqual(new[] { c1, c2, c3 }, candles);
+            Assert.Fail();
+            //var candles = new Candles(DescendingDays.Create(c1, c2, c3), default);
+            //CollectionAssert.AreEqual(new[] { c1, c2, c3 }, candles);
         }
 
         [Test]
@@ -63,10 +63,11 @@
                 default,
                 default,
                 default);
-            var candles = new Candles(ImmutableArray.Create(c1, c2, c3));
-            Assert.AreEqual(c3, candles.Previous(c2.Time, CandleInterval.None));
-            Assert.AreEqual(c2, candles.Previous(c1.Time, CandleInterval.None));
-            Assert.AreEqual(null, candles.Previous(c3.Time, CandleInterval.None));
+            Assert.Fail();
+            //var candles = new Candles(DescendingDays.Create(c1, c2, c3), default);
+            //Assert.AreEqual(c3, candles.Previous(c2.Time, CandleInterval.None));
+            //Assert.AreEqual(c2, candles.Previous(c1.Time, CandleInterval.None));
+            //Assert.AreEqual(null, candles.Previous(c3.Time, CandleInterval.None));
         }
 
         [Test]
@@ -95,10 +96,11 @@
                 default,
                 default,
                 default);
-            var candles = new Candles(ImmutableArray.Create(c1, c2, c3));
-            Assert.AreEqual(c2, candles.Next(c3.Time, CandleInterval.None));
-            Assert.AreEqual(c1, candles.Next(c2.Time, CandleInterval.None));
-            Assert.AreEqual(null, candles.Next(c1.Time, CandleInterval.None));
+            Assert.Fail();
+            //var candles = new Candles(ImmutableArray.Create(c1, c2, c3));
+            //Assert.AreEqual(c2, candles.Next(c3.Time, CandleInterval.None));
+            //Assert.AreEqual(c1, candles.Next(c2.Time, CandleInterval.None));
+            //Assert.AreEqual(null, candles.Next(c1.Time, CandleInterval.None));
         }
 
         [TestCase(3, 2, 1)]
@@ -129,10 +131,11 @@
                 default,
                 default,
                 default);
-            var candles = new Candles(ImmutableArray.Create(c1, c2, c3));
-            Assert.AreEqual(0, candles.IndexOf(c1.Time));
-            Assert.AreEqual(1, candles.IndexOf(c2.Time));
-            Assert.AreEqual(2, candles.IndexOf(c3.Time));
+            Assert.Fail();
+            //var candles = new Candles(DescendingDays.Create(c1, c2, c3), default);
+            //Assert.AreEqual(0, candles.IndexOf(c1.Time));
+            //Assert.AreEqual(1, candles.IndexOf(c2.Time));
+            //Assert.AreEqual(2, candles.IndexOf(c3.Time));
         }
     }
 }

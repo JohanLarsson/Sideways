@@ -1,16 +1,15 @@
 ﻿namespace Sideways.AlphaVantage
 {
     using System;
-    using System.Collections.Immutable;
     using System.Threading.Tasks;
 
     public readonly struct Days : IEquatable<Days>
     {
-        public readonly ImmutableArray<Candle> Candles;
-        public readonly ImmutableArray<Split> Splits;
+        public readonly DescendingDays Candles;
+        public readonly DescendingSplits Splits;
         public readonly Task<Days>? Download;
 
-        public Days(ImmutableArray<Candle> candles, ImmutableArray<Split> splits, Task<Days>? download)
+        public Days(DescendingDays candles, DescendingSplits splits, Task<Days>? download)
         {
             this.Candles = candles;
             this.Splits = splits;

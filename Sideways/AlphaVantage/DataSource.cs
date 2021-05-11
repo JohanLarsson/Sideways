@@ -1,7 +1,5 @@
 ﻿namespace Sideways.AlphaVantage
 {
-    using System.Linq;
-
     public sealed class DataSource
     {
         private readonly Downloader downloader;
@@ -13,15 +11,15 @@
 
         public Days Days(string symbol)
         {
-            var candles = Database.ReadDays(symbol);
+            var descendingDays = Database.ReadDays(symbol);
             var splits = Database.ReadSplits(symbol);
-            var last = candles.IsDefaultOrEmpty ? (TradingDay?)null : TradingDay.Create(candles.Max(x => x.Time));
+            var last = descendingDays.Count == 0 ? (TradingDay?)null : TradingDay.Create(descendingDays[0].Time);
             if (last == TradingDay.LastComplete())
             {
-                return new Days(candles, splits, null);
+                return new Days(descendingDays, splits, null);
             }
 
-            return new Days(candles, splits, this.downloader.DaysAsync(symbol, last));
+            return new Days(descendingDays, splits, this.downloader.DaysAsync(symbol, last));
         }
 
         //public Minutes Minutes(string symbol)

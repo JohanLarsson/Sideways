@@ -3,9 +3,7 @@ namespace Sideways.Tests
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.Linq;
-    using System.Threading.Tasks;
     using NUnit.Framework;
 
     public static class BackTest
@@ -18,7 +16,7 @@ namespace Sideways.Tests
             const double gap = 0.10;
             Console.WriteLine($"{symbol} {100 * gap}% gap ups. Buy at open sell at close three days later.");
             var candles = Database.ReadDays(symbol);
-            for (var i = 1; i < candles.Length - 5; i++)
+            for (var i = 1; i < candles.Count - 5; i++)
             {
                 var candle = candles[i];
                 if (Gap() > gap)
@@ -41,7 +39,7 @@ namespace Sideways.Tests
             foreach (var symbol in Symbols)
             {
                 var candles = Database.ReadDays(symbol);
-                for (var i = 10; i < candles.Length - 5; i++)
+                for (var i = 10; i < candles.Count - 5; i++)
                 {
                     var candle = candles[i];
                     var gap = Percent(candles[i - 1].High, candle.Open);
@@ -65,7 +63,7 @@ namespace Sideways.Tests
                         return (candle.Close - candle.Low) / (candle.High - candle.Low);
                     }
 
-                    static IEnumerable<Candle> Slice(ImmutableArray<Candle> source, int from, int to)
+                    static IEnumerable<Candle> Slice(DescendingDays source, int from, int to)
                     {
                         for (var i = from; i <= to; i++)
                         {

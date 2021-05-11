@@ -25,7 +25,7 @@
                        Foreground="Gray"
                        Text="W" />
             <sideways:Chart x:Name="WeeklyChart">
-                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Days}"
+                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Candles}"
                                        CandleInterval="Week"
                                        Time="{Binding EndTime}" />
             </sideways:Chart>
@@ -37,7 +37,8 @@
                        Foreground="Gray"
                        Text="{Binding CurrentSymbol.Symbol}" />
             <sideways:Chart x:Name="DailyChart">
-                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Days}"
+                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Candles}"
+                                       CandleInterval="Day"
                                        Time="{Binding EndTime}" />
             </sideways:Chart>
         </Grid>
@@ -48,7 +49,7 @@
                        Foreground="Gray"
                        Text="h" />
             <sideways:Chart x:Name="HourlyChart">
-                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Minutes}"
+                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Candles}"
                                        CandleInterval="Hour"
                                        Time="{Binding EndTime}" />
             </sideways:Chart>
@@ -60,7 +61,8 @@
                        Foreground="Gray"
                        Text="m" />
             <sideways:Chart x:Name="MinuteChart">
-                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Minutes}"
+                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Candles}"
+                                       CandleInterval="Minute"
                                        Time="{Binding EndTime}" />
             </sideways:Chart>
         </Grid>

@@ -8,8 +8,7 @@
 
     public sealed class SymbolViewModel : INotifyPropertyChanged
     {
-        private Candles? days;
-        private Candles? minutes;
+        private Candles? candles;
         private Exception? exception;
 
         public SymbolViewModel(string symbol)
@@ -21,32 +20,17 @@
 
         public string Symbol { get; }
 
-        public Candles? Days
+        public Candles? Candles
         {
-            get => this.days;
+            get => this.candles;
             set
             {
-                if (ReferenceEquals(value, this.days))
+                if (ReferenceEquals(value, this.candles))
                 {
                     return;
                 }
 
-                this.days = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public Candles? Minutes
-        {
-            get => this.minutes;
-            set
-            {
-                if (ReferenceEquals(value, this.minutes))
-                {
-                    return;
-                }
-
-                this.minutes = value;
+                this.candles = value;
                 this.OnPropertyChanged();
             }
         }
@@ -71,12 +55,12 @@
             try
             {
                 var days = dataSource.Days(this.Symbol);
-                this.Days = Candles.Adjusted(days.Candles, days.Splits);
-                this.Minutes = Candles.Adjusted(Database.ReadMinutes(this.Symbol), days.Splits);
+                var minutes = Database.ReadMinutes(this.Symbol);
+                this.Candles = new Candles(days.Candles, minutes);
                 if (days.Download is { } daysDownload)
                 {
                     days = await daysDownload.ConfigureAwait(false);
-                    this.Days = Candles.Adjusted(days.Candles, days.Splits);
+                    this.Candles = new Candles(days.Candles, minutes);
                 }
             }
 #pragma warning disable CA1031 // Do not catch general exception types

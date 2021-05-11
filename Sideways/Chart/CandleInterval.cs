@@ -4,6 +4,8 @@
     {
         None,
         Week,
+        Day,
         Hour,
+        Minute,
     }
 }

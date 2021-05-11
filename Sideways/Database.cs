@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.IO;
 
     using Microsoft.Data.Sqlite;
@@ -10,7 +9,7 @@
 
     public static class Database
     {
-        public static ImmutableArray<Candle> ReadDays(string symbol)
+        public static DescendingDays ReadDays(string symbol)
         {
             using var connection = new SqliteConnection($"Data Source={Source()}");
             connection.Open();
@@ -21,10 +20,10 @@
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
             using var reader = command.ExecuteReader();
-            return ReadCandles(reader);
+            return ReadDays(reader);
         }
 
-        public static ImmutableArray<Candle> ReadDays(string symbol, DateTimeOffset from, DateTimeOffset to)
+        public static DescendingDays ReadDays(string symbol, DateTimeOffset from, DateTimeOffset to)
         {
             using var connection = new SqliteConnection($"Data Source={Source()}");
             connection.Open();
@@ -37,10 +36,10 @@
             command.Parameters.AddWithValue("@from", from.ToUnixTimeSeconds());
             command.Parameters.AddWithValue("@to", to.ToUnixTimeSeconds());
             using var reader = command.ExecuteReader();
-            return ReadCandles(reader);
+            return ReadDays(reader);
         }
 
-        public static ImmutableArray<Candle> ReadMinutes(string symbol)
+        public static DescendingMinutes ReadMinutes(string symbol)
         {
             using var connection = new SqliteConnection($"Data Source={Source()}");
             connection.Open();
@@ -51,10 +50,10 @@
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
             using var reader = command.ExecuteReader();
-            return ReadCandles(reader);
+            return ReadMinutes(reader);
         }
 
-        public static ImmutableArray<Candle> ReadMinutes(string symbol, DateTimeOffset from, DateTimeOffset to)
+        public static DescendingMinutes ReadMinutes(string symbol, DateTimeOffset from, DateTimeOffset to)
         {
             using var connection = new SqliteConnection($"Data Source={Source()}");
             connection.Open();
@@ -67,10 +66,10 @@
             command.Parameters.AddWithValue("@from", from.ToUnixTimeSeconds());
             command.Parameters.AddWithValue("@to", to.ToUnixTimeSeconds());
             using var reader = command.ExecuteReader();
-            return ReadCandles(reader);
+            return ReadMinutes(reader);
         }
 
-        public static ImmutableArray<Split> ReadSplits(string symbol)
+        public static DescendingSplits ReadSplits(string symbol)
         {
             using var connection = new SqliteConnection($"Data Source={Source()}");
             connection.Open();
@@ -81,7 +80,7 @@
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
             using var reader = command.ExecuteReader();
-            var builder = ImmutableArray.CreateBuilder<Split>();
+            var builder = DescendingSplits.CreateBuilder();
             while (reader.Read())
             {
                 builder.Add(
@@ -90,7 +89,7 @@
                         coefficient: reader.GetDouble(1)));
             }
 
-            return builder.ToImmutable();
+            return builder.Create();
         }
 
         public static void WriteDays(string symbol, IEnumerable<AdjustedCandle> candles)
@@ -188,9 +187,9 @@
             transaction.Commit();
         }
 
-        private static ImmutableArray<Candle> ReadCandles(SqliteDataReader reader)
+        private static DescendingDays ReadDays(SqliteDataReader reader)
         {
-            var builder = ImmutableArray.CreateBuilder<Candle>();
+            var builder = DescendingDays.CreateBuilder();
             while (reader.Read())
             {
                 builder.Add(
@@ -205,7 +204,27 @@
                 static float Float(int i) => (float)Math.Round(0.01 * i, 2);
             }
 
-            return builder.ToImmutable();
+            return builder.Create();
+        }
+
+        private static DescendingMinutes ReadMinutes(SqliteDataReader reader)
+        {
+            var builder = DescendingMinutes.CreateBuilder();
+            while (reader.Read())
+            {
+                builder.Add(
+                    new Candle(
+                        time: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(0)),
+                        open: Float(reader.GetInt32(1)),
+                        high: Float(reader.GetInt32(2)),
+                        low: Float(reader.GetInt32(3)),
+                        close: Float(reader.GetInt32(4)),
+                        volume: reader.GetInt32(5)));
+
+                static float Float(int i) => (float)Math.Round(0.01 * i, 2);
+            }
+
+            return builder.Create();
         }
 
         private static int AsInt(this float f) => (int)Math.Round(f * 100);

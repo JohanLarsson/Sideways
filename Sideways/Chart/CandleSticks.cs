@@ -100,21 +100,18 @@
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            if (this.ItemsSource is { } candles)
-            {
-                switch (e.Delta)
-                {
-                    case < 0
-                        when candles.Previous(this.Time, this.CandleInterval) is { } candle:
-                        this.SetCurrentValue(TimeProperty, candle.Time);
-                        break;
+            //switch (e.Delta)
+            //{
+            //    case < 0
+            //        when candles.Previous(this.Time, this.CandleInterval) is { } candle:
+            //        this.SetCurrentValue(TimeProperty, candle.Time);
+            //        break;
 
-                    case > 0
-                        when candles.Next(this.Time, this.CandleInterval) is { } candle:
-                        this.SetCurrentValue(TimeProperty, candle.Time);
-                        break;
-                }
-            }
+            //    case > 0
+            //        when candles.Next(this.Time, this.CandleInterval) is { } candle:
+            //        this.SetCurrentValue(TimeProperty, candle.Time);
+            //        break;
+            //}
         }
 
         protected override void OnRender(DrawingContext drawingContext)
