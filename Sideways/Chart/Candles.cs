@@ -24,7 +24,39 @@
 
         public IEnumerable<Candle> Days(DateTimeOffset end)
         {
-            return this.days.Where(x => x.Time < end);
+            if (IsOpen(end) &&
+                MergeBy(DayMinutes(), (_, _) => true).FirstOrNull(_ => true) is { } merged)
+            {
+                yield return merged;
+                end = end.AddDays(-1);
+            }
+
+            foreach (var candle in this.days)
+            {
+                if (candle.Time <= end)
+                {
+                    yield return candle.WithTime(TradingDay.EndOfDay(candle.Time));
+                }
+            }
+
+            IEnumerable<Candle> DayMinutes()
+            {
+                foreach (var minute in this.minutes)
+                {
+                    if (minute.Time.IsSameDay(end) &&
+                        IsOpen(minute.Time) &&
+                        minute.Time <= end)
+                    {
+                        yield return minute;
+                    }
+                }
+            }
+
+            bool IsOpen(DateTimeOffset t)
+            {
+                return t.Hour is >= 10 and <= 16 ||
+                       t is { Hour: 9, Minute: >= 30 };
+            }
         }
 
         public IEnumerable<Candle> Hours(DateTimeOffset end)
