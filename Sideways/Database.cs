@@ -9,7 +9,7 @@
 
     public static class Database
     {
-        public static DescendingDays ReadDays(string symbol)
+        public static DescendingCandles ReadDays(string symbol)
         {
             using var connection = new SqliteConnection($"Data Source={Source()}");
             connection.Open();
@@ -20,10 +20,10 @@
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
             using var reader = command.ExecuteReader();
-            return ReadDays(reader);
+            return ReadCandles(reader);
         }
 
-        public static DescendingDays ReadDays(string symbol, DateTimeOffset from, DateTimeOffset to)
+        public static DescendingCandles ReadDays(string symbol, DateTimeOffset from, DateTimeOffset to)
         {
             using var connection = new SqliteConnection($"Data Source={Source()}");
             connection.Open();
@@ -36,10 +36,10 @@
             command.Parameters.AddWithValue("@from", from.ToUnixTimeSeconds());
             command.Parameters.AddWithValue("@to", to.ToUnixTimeSeconds());
             using var reader = command.ExecuteReader();
-            return ReadDays(reader);
+            return ReadCandles(reader);
         }
 
-        public static DescendingMinutes ReadMinutes(string symbol)
+        public static DescendingCandles ReadMinutes(string symbol)
         {
             using var connection = new SqliteConnection($"Data Source={Source()}");
             connection.Open();
@@ -50,10 +50,10 @@
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
             using var reader = command.ExecuteReader();
-            return ReadMinutes(reader);
+            return ReadCandles(reader);
         }
 
-        public static DescendingMinutes ReadMinutes(string symbol, DateTimeOffset from, DateTimeOffset to)
+        public static DescendingCandles ReadMinutes(string symbol, DateTimeOffset from, DateTimeOffset to)
         {
             using var connection = new SqliteConnection($"Data Source={Source()}");
             connection.Open();
@@ -66,7 +66,7 @@
             command.Parameters.AddWithValue("@from", from.ToUnixTimeSeconds());
             command.Parameters.AddWithValue("@to", to.ToUnixTimeSeconds());
             using var reader = command.ExecuteReader();
-            return ReadMinutes(reader);
+            return ReadCandles(reader);
         }
 
         public static DescendingSplits ReadSplits(string symbol)
@@ -187,29 +187,9 @@
             transaction.Commit();
         }
 
-        private static DescendingDays ReadDays(SqliteDataReader reader)
+        private static DescendingCandles ReadCandles(SqliteDataReader reader)
         {
-            var builder = DescendingDays.CreateBuilder();
-            while (reader.Read())
-            {
-                builder.Add(
-                    new Candle(
-                        time: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(0)),
-                        open: Float(reader.GetInt32(1)),
-                        high: Float(reader.GetInt32(2)),
-                        low: Float(reader.GetInt32(3)),
-                        close: Float(reader.GetInt32(4)),
-                        volume: reader.GetInt32(5)));
-
-                static float Float(int i) => (float)Math.Round(0.01 * i, 2);
-            }
-
-            return builder.Create();
-        }
-
-        private static DescendingMinutes ReadMinutes(SqliteDataReader reader)
-        {
-            var builder = DescendingMinutes.CreateBuilder();
+            var builder = DescendingCandles.CreateBuilder();
             while (reader.Read())
             {
                 builder.Add(

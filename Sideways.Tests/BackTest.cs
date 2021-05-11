@@ -63,7 +63,7 @@ namespace Sideways.Tests
                         return (candle.Close - candle.Low) / (candle.High - candle.Low);
                     }
 
-                    static IEnumerable<Candle> Slice(DescendingDays source, int from, int to)
+                    static IEnumerable<Candle> Slice(DescendingCandles source, int from, int to)
                     {
                         for (var i = from; i <= to; i++)
                         {

@@ -19,6 +19,8 @@
 
         public static bool operator !=(TradingDay left, TradingDay right) => !left.Equals(right);
 
+        public static DateTimeOffset EndOfDay(DateTimeOffset t) => new(t.Year, t.Month, t.Day, 20, 00, 00, t.Offset);
+
         public static TradingDay LastComplete()
         {
             var date = DateTimeOffset.UtcNow;

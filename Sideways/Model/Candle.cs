@@ -38,6 +38,14 @@
             return !left.Equals(right);
         }
 
+        public Candle WithTime(DateTimeOffset time) => new(
+            time: time,
+            open: this.Open,
+            high: this.High,
+            low: this.Low,
+            close: this.Close,
+            volume: this.Volume);
+
         public Candle Adjust(double coefficient) => new(
             time: this.Time,
             open: (float)coefficient * this.Open,

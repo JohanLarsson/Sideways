@@ -6,16 +6,16 @@
 
     public class Candles
     {
-        private readonly DescendingDays days;
-        private readonly DescendingMinutes minutes;
+        private readonly DescendingCandles days;
+        private readonly DescendingCandles minutes;
 
-        public Candles(DescendingDays days, DescendingMinutes minutes)
+        public Candles(DescendingCandles days, DescendingCandles minutes)
         {
             this.days = days;
             this.minutes = minutes;
         }
 
-        public static Candles Adjusted(DescendingSplits splits, DescendingDays days, DescendingMinutes minutes) => new(splits.Adjust(days), splits.Adjust(minutes));
+        public static Candles Adjusted(DescendingSplits splits, DescendingCandles days, DescendingCandles minutes) => new(splits.Adjust(days), splits.Adjust(minutes));
 
         public IEnumerable<Candle> Weeks(DateTimeOffset end)
         {
@@ -37,14 +37,14 @@
             return this.minutes.Where(x => x.Time < end);
         }
 
-        public IEnumerable<Candle> Get(DateTimeOffset start, CandleInterval interval)
+        public IEnumerable<Candle> Get(DateTimeOffset end, CandleInterval interval)
         {
             return interval switch
             {
-                CandleInterval.Week => this.Weeks(start),
-                CandleInterval.Day => this.Days(start),
-                CandleInterval.Hour => this.Hours(start),
-                CandleInterval.Minute => this.Minutes(start),
+                CandleInterval.Week => this.Weeks(end),
+                CandleInterval.Day => this.Days(end),
+                CandleInterval.Hour => this.Hours(end),
+                CandleInterval.Minute => this.Minutes(end),
                 _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, "Unhandled grouping."),
             };
         }

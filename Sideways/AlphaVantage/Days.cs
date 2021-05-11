@@ -5,11 +5,11 @@
 
     public readonly struct Days : IEquatable<Days>
     {
-        public readonly DescendingDays Candles;
+        public readonly DescendingCandles Candles;
         public readonly DescendingSplits Splits;
         public readonly Task<Days>? Download;
 
-        public Days(DescendingDays candles, DescendingSplits splits, Task<Days>? download)
+        public Days(DescendingCandles candles, DescendingSplits splits, Task<Days>? download)
         {
             this.Candles = candles;
             this.Splits = splits;
