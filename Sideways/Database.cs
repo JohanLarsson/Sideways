@@ -6,6 +6,7 @@
     using System.IO;
 
     using Microsoft.Data.Sqlite;
+    using Sideways.AlphaVantage;
 
     public static class Database
     {

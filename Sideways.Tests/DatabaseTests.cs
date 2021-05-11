@@ -5,6 +5,7 @@
     using System.Linq;
 
     using NUnit.Framework;
+    using Sideways.AlphaVantage;
 
     public static class DatabaseTests
     {

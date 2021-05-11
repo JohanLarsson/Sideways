@@ -1,4 +1,4 @@
-﻿namespace Sideways
+﻿namespace Sideways.AlphaVantage
 {
     using System;
 

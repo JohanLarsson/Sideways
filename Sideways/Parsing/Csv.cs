@@ -6,6 +6,7 @@
     using System.IO;
     using System.Text;
     using System.Threading.Tasks;
+    using Sideways.AlphaVantage;
 
     public static class Csv
     {
