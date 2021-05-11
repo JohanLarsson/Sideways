@@ -89,7 +89,6 @@
             }
         }
 
-
         public IEnumerable<Candle> Weeks(DateTimeOffset start)
         {
             return this.MergeBy(start, (x, y) => x.Time.IsSameWeek(y.Time));
