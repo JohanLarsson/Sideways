@@ -15,6 +15,8 @@
             this.minutes = minutes;
         }
 
+        public static Candles Adjusted(DescendingSplits splits, DescendingDays days, DescendingMinutes minutes) => new(splits.Adjust(days), splits.Adjust(minutes));
+
         public IEnumerable<Candle> Weeks(DateTimeOffset end)
         {
             return MergeBy(this.Days(end), (x, y) => x.Time.IsSameWeek(y.Time));

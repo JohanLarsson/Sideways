@@ -11,7 +11,7 @@
     {
         private readonly ImmutableArray<Candle> candles;
 
-        private DescendingDays(ImmutableArray<Candle> candles)
+        public DescendingDays(ImmutableArray<Candle> candles)
         {
             this.candles = candles;
         }

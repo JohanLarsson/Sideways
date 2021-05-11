@@ -4,6 +4,7 @@
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
+
     using Sideways.AlphaVantage;
 
     public sealed class SymbolViewModel : INotifyPropertyChanged
@@ -56,11 +57,11 @@
             {
                 var days = dataSource.Days(this.Symbol);
                 var minutes = Database.ReadMinutes(this.Symbol);
-                this.Candles = new Candles(days.Candles, minutes);
+                this.Candles = Candles.Adjusted(days.Splits, days.Candles, minutes);
                 if (days.Download is { } daysDownload)
                 {
                     days = await daysDownload.ConfigureAwait(false);
-                    this.Candles = new Candles(days.Candles, minutes);
+                    this.Candles = Candles.Adjusted(days.Splits, days.Candles, minutes);
                 }
             }
 #pragma warning disable CA1031 // Do not catch general exception types
