@@ -31,6 +31,12 @@
                 end = end.AddDays(-1);
             }
 
+            if (end.Hour < 9 ||
+                end is { Hour: 9, Minute: < 30 })
+            {
+                end = end.AddDays(-1);
+            }
+
             foreach (var candle in this.days)
             {
                 if (candle.Time <= end)
