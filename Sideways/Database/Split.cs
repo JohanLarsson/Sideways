@@ -1,7 +1,9 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Diagnostics;
 
+    [DebuggerDisplay("{" + nameof(ToString) + "(),nq}")]
     public readonly struct Split : IEquatable<Split>
     {
         public Split(DateTimeOffset date, double coefficient)
@@ -23,6 +25,8 @@
         {
             return !left.Equals(right);
         }
+
+        public override string ToString() => $"{this.Date:yyyy’-‘MM’-‘dd} Coefficient: {this.Coefficient}";
 
         public bool Equals(Split other)
         {

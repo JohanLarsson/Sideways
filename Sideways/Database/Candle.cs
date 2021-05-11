@@ -66,7 +66,7 @@
             return HashCode.Combine(this.Time, this.Open, this.High, this.Low, this.Close, this.Volume);
         }
 
-        public override string ToString() => $"{this.Time} o: {this.Open} h: {this.High} l: {this.Low} c: {this.Close} volume: {this.Volume}";
+        public override string ToString() => $"{this.Time:s} o: {this.Open} h: {this.High} l: {this.Low} c: {this.Close} volume: {this.Volume}";
 
         internal Candle Merge(Candle other)
         {
