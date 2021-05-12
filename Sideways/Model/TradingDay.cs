@@ -23,11 +23,11 @@
 
         public static bool IsPreMarket(DateTimeOffset t)
         {
-            return t.Hour < 9 ||
+            return t.Hour is >= 4 and < 9 ||
                    t is { Hour: 9, Minute: < 30 };
         }
 
-        public static bool IsPpstMarket(DateTimeOffset t)
+        public static bool IsPostMarket(DateTimeOffset t)
         {
             return t.Hour > 16;
         }
@@ -35,7 +35,7 @@
         public static bool IsOrdinaryHours(DateTimeOffset t)
         {
             return !IsPreMarket(t) &&
-                   !IsPpstMarket(t);
+                   !IsPostMarket(t);
         }
 
         public static TradingDay LastComplete()

@@ -134,6 +134,10 @@
                 var candles = await client.IntervalExtendedAsync(symbol, Interval.Minute, slice, adjusted: false);
                 Database.WriteMinutes(symbol, candles);
             }
+            else
+            {
+                Assert.Pass("Already downloaded.");
+            }
         }
     }
 }
