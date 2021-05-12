@@ -32,7 +32,7 @@
         </Grid>
 
         <Grid Grid.Column="1">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel>
                 <TextBlock HorizontalAlignment="Left"
                            VerticalAlignment="Top"
                            Foreground="Gray"
@@ -40,7 +40,7 @@
                 <TextBlock HorizontalAlignment="Left"
                            VerticalAlignment="Top"
                            Foreground="Gray"
-                           Text="{Binding EndTime}" />
+                           Text="{Binding EndTime, StringFormat='f'}" />
             </StackPanel>
 
             <sideways:Chart x:Name="DailyChart">
