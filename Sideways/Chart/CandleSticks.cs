@@ -100,19 +100,9 @@
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            switch (e.Delta)
+            if (this.ItemsSource is { } candles)
             {
-                case < 0
-                    when this.VisibleCandles is { Length: > 1 } visible:
-                    this.SetCurrentValue(TimeProperty, visible[1].Time);
-                    break;
-
-                //case > 0
-                //    when this.VisibleCandles is { Length: > 0 } visible &&
-                //         this.ItemsSource is { } candles &&
-                //         candles.Next(visible[0], this.CandleInterval) is { Time: var time }:
-                //    this.SetCurrentValue(TimeProperty, time);
-                //    break;
+                this.SetCurrentValue(TimeProperty, candles.Skip(this.Time, this.CandleInterval, -1 * Math.Sign(e.Delta)));
             }
         }
 

@@ -2,12 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     public class Candles
     {
         private readonly DescendingCandles days;
         private readonly DescendingCandles minutes;
+
+        private int dayIndex;
+        private int minuteIndex;
 
         public Candles(DescendingCandles days, DescendingCandles minutes)
         {
@@ -36,21 +38,20 @@
                 end = end.AddDays(-1);
             }
 
-            foreach (var candle in this.days)
+            var index = this.days.IndexOf(end, this.dayIndex);
+            this.dayIndex = index;
+            for (var i = index; i < this.days.Count; i++)
             {
-                if (candle.Time <= end)
-                {
-                    yield return candle.WithTime(TradingDay.EndOfDay(candle.Time));
-                }
+                var day = this.days[i];
+                yield return day.WithTime(TradingDay.EndOfDay(day.Time));
             }
 
             IEnumerable<Candle> DayMinutes()
             {
-                foreach (var minute in this.minutes)
+                foreach (var minute in this.Minutes(end))
                 {
                     if (minute.Time.IsSameDay(end) &&
-                        TradingDay.IsOrdinaryHours(minute.Time) &&
-                        minute.Time <= end)
+                        TradingDay.IsOrdinaryHours(minute.Time))
                     {
                         yield return minute;
                     }
@@ -65,7 +66,12 @@
 
         public IEnumerable<Candle> Minutes(DateTimeOffset end)
         {
-            return this.minutes.Where(x => x.Time < end);
+            var index = this.minutes.IndexOf(end, this.minuteIndex);
+            this.minuteIndex = index;
+            for (var i = index; i < this.minutes.Count; i++)
+            {
+                yield return this.minutes[i];
+            }
         }
 
         public IEnumerable<Candle> Get(DateTimeOffset end, CandleInterval interval)
@@ -78,6 +84,22 @@
                 CandleInterval.Minute => this.Minutes(end),
                 _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, "Unhandled grouping."),
             };
+        }
+
+        public DateTimeOffset Skip(DateTimeOffset end, CandleInterval interval, int offset)
+        {
+            return interval switch
+            {
+                CandleInterval.Day => TradingDay.EndOfDay(Find(this.days, end, this.dayIndex, offset)),
+                CandleInterval.Minute => Find(this.minutes, end, this.minuteIndex, offset),
+                _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, null),
+            };
+
+            static DateTimeOffset Find(DescendingCandles candles, DateTimeOffset end, int statAt, int offset)
+            {
+                var index = Math.Max(0, Math.Min(candles.IndexOf(end, statAt) + offset, candles.Count - 1));
+                return candles[index].Time;
+            }
         }
 
         private static IEnumerable<Candle> MergeBy(IEnumerable<Candle> candles, Func<Candle, Candle, bool> criteria)
