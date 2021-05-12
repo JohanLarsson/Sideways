@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
 
     public class Candles
     {
@@ -90,10 +91,32 @@
         {
             return interval switch
             {
+                CandleInterval.Week => FindWeek(this.days, end, this.dayIndex, offset),
                 CandleInterval.Day => TradingDay.EndOfDay(Find(this.days, end, this.dayIndex, offset)),
                 CandleInterval.Minute => Find(this.minutes, end, this.minuteIndex, offset),
                 _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, null),
             };
+
+            static DateTimeOffset FindWeek(DescendingCandles days, DateTimeOffset end, int statAt, int offset)
+            {
+                var index = Math.Max(0, Math.Min(days.IndexOf(Sunday().AddDays(-7 * offset), statAt), days.Count - 1));
+                return TradingDay.EndOfDay(days[index].Time);
+
+                DateTimeOffset Sunday()
+                {
+                    return end.DayOfWeek switch
+                    {
+                        DayOfWeek.Sunday => end,
+                        DayOfWeek.Monday => end.AddDays(6),
+                        DayOfWeek.Tuesday => end.AddDays(5),
+                        DayOfWeek.Wednesday => end.AddDays(4),
+                        DayOfWeek.Thursday => end.AddDays(3),
+                        DayOfWeek.Friday => end.AddDays(2),
+                        DayOfWeek.Saturday => end.AddDays(1),
+                        _ => throw new InvalidEnumArgumentException(),
+                    };
+                }
+            }
 
             static DateTimeOffset Find(DescendingCandles candles, DateTimeOffset end, int statAt, int offset)
             {

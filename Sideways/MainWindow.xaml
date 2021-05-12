@@ -32,10 +32,17 @@
         </Grid>
 
         <Grid Grid.Column="1">
-            <TextBlock HorizontalAlignment="Left"
-                       VerticalAlignment="Top"
-                       Foreground="Gray"
-                       Text="{Binding CurrentSymbol.Symbol}" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           Foreground="Gray"
+                           Text="{Binding CurrentSymbol.Symbol}" />
+                <TextBlock HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           Foreground="Gray"
+                           Text="{Binding EndTime}" />
+            </StackPanel>
+
             <sideways:Chart x:Name="DailyChart">
                 <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Candles}"
                                        CandleInterval="Day"
