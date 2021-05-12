@@ -2,20 +2,17 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using NUnit.Framework;
 
     public static class DescendingCandlesTests
     {
-        private static readonly TestCaseData[] IndexOfCases = CreateIndexOfCases().ToArray();
-
         [TestCaseSource(nameof(IndexOfCases))]
         public static void IndexOf(DescendingCandles candles, DateTimeOffset time, int startAt, int index)
         {
             Assert.AreEqual(index, candles.IndexOf(time, startAt));
         }
 
-        private static IEnumerable<TestCaseData> CreateIndexOfCases()
+        private static IEnumerable<TestCaseData> IndexOfCases()
         {
             var c1 = new Candle(
                 new DateTimeOffset(2021, 04, 4, 00, 00, 00, 0, TimeSpan.Zero),
