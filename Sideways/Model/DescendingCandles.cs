@@ -46,6 +46,32 @@
             return new(builder.MoveToImmutable());
         }
 
+        public int IndexOf(DateTimeOffset end, int startAt)
+        {
+            if (this.candles[startAt].Time > end)
+            {
+                for (var i = startAt; i < this.candles.Length; i++)
+                {
+                    if (this.candles[i].Time <= end)
+                    {
+                        return i;
+                    }
+                }
+
+                return this.candles.Length - 1;
+            }
+
+            for (var i = startAt; i >= 0; i--)
+            {
+                if (this.candles[i].Time > end)
+                {
+                    return i + 1;
+                }
+            }
+
+            return 0;
+        }
+
         public bool Equals(DescendingCandles other) => this.candles.Equals(other.candles);
 
         public IEnumerator<Candle> GetEnumerator() => ((IEnumerable<Candle>)this.candles).GetEnumerator();
