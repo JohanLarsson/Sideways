@@ -39,14 +39,16 @@
             "F",
             "FB",
             "FOUR",
-            "FSR",
-            "FUBO",
-            "FUTU",
+            //// "FSR", // Missing minutes for many slices.
+            //// "FUBO", // Missing minutes for many slices.
+            //// "FUTU", // Missing minutes for many slices.
             "FCEL",
-            "GBTC",
+            //// "GBTC", // Missing minutes for many slices.
+            "GLD",
             "GOGO",
-            "HGEN",
+            //// "HGEN", // Missing minutes for many slices.
             "INO",
+            "IWM",
             "JMIA",
             "JPM",
             "KLAC",
@@ -60,17 +62,19 @@
             "NVAX",
             "NVDA",
             "NIO",
-            "OCGN",
+            //// "OCGN", // Missing minutes for many slices.
             "PLTR",
             "PTON",
             "PXLW",
             "PULM",
+            "QQQ",
             "RBLX",
             "RIOT",
             "SAVE",
             "SHOP",
             "SNAP",
-            "SPCE",
+            //// "SPCE", // Missing minutes for many slices.
+            "SPY",
             "SQ",
             "SLQT",
             "TSLA",
@@ -110,6 +114,8 @@
             if (dataSource.Days(symbol).Download is { } task)
             {
                 await task;
+                //// Adding an extra delay as AlphaVantage is not always happy with our throttling.
+                await Task.Delay(TimeSpan.FromSeconds(1));
             }
             else
             {
@@ -124,7 +130,12 @@
             var days = Database.ReadDays(symbol, range.Min, range.Max).Select(x => TradingDay.Create(x.Time)).Distinct().ToArray();
             if (days.Length == 0)
             {
-                Assert.Inconclusive("Download days first");
+                if (Database.ReadDays(symbol).Count == 0)
+                {
+                    Assert.Inconclusive("Download days first");
+                }
+
+                Assert.Pass("No slice this far back.");
             }
 
             var minutes = Database.ReadMinutes(symbol, range.Min, range.Max).Select(x => TradingDay.Create(x.Time)).Distinct().ToArray();
@@ -132,7 +143,13 @@
             {
                 using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
                 var candles = await client.IntervalExtendedAsync(symbol, Interval.Minute, slice, adjusted: false);
+                if (candles.IsEmpty)
+                {
+                    Assert.Inconclusive("Empty slice, maybe missing data on AlphaVantage. Exclude this symbol from script as it uses up daily calls.");
+                }
                 Database.WriteMinutes(symbol, candles);
+                //// Adding an extra delay as AlphaVantage is not always happy with our throttling.
+                await Task.Delay(TimeSpan.FromSeconds(1));
             }
             else
             {
