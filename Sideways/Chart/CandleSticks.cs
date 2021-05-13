@@ -153,18 +153,20 @@
                 this.PriceRange = priceRange;
                 this.VisibleCandles = builder.ToImmutable();
                 using var context = this.drawing.RenderOpen();
-                var halfWidth = candleWidth / 2;
-                x = size.Width - halfWidth;
+                var right = size.Width - 1;
+                var left = right - candleWidth + 2;
+                var halfWidth = (right - left) / 2;
 
                 foreach (var candle in builder)
                 {
                     var brush = Brushes.Get(candle);
+
                     context.DrawRectangle(
                         brush,
                         null,
                         Rect(
-                            new Point(x - halfWidth - 1, Y(candle.Low)),
-                            new Point(x - halfWidth, Y(candle.High))));
+                            new Point(right - halfWidth, Y(candle.Low)),
+                            new Point(right - halfWidth + 1, Y(candle.High))));
                     var yOpen = (int)Y(candle.Open);
                     var yClose = (int)Y(candle.Close);
                     if (yOpen == yClose)
@@ -176,11 +178,12 @@
                         brush,
                         null,
                         Rect(
-                            new Point(x - 4, yOpen),
-                            new Point(x - 1, yClose)));
+                            new Point(left, yOpen),
+                            new Point(right, yClose)));
 
-                    x -= candleWidth;
-                    if (x < 0)
+                    right -= candleWidth;
+                    left -= candleWidth;
+                    if (right < 0)
                     {
                         break;
                     }
