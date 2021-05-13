@@ -153,9 +153,7 @@
                 this.PriceRange = priceRange;
                 this.VisibleCandles = builder.ToImmutable();
                 using var context = this.drawing.RenderOpen();
-                var right = size.Width - 1;
-                var left = right - candleWidth + 2;
-                var halfWidth = (right - left) / 2;
+                var position = CandlePosition.Create(size.Width, candleWidth);
 
                 foreach (var candle in builder)
                 {
@@ -165,8 +163,8 @@
                         brush,
                         null,
                         Rect(
-                            new Point(right - halfWidth, Y(candle.Low)),
-                            new Point(right - halfWidth + 1, Y(candle.High))));
+                            new Point(position.CenterLeft, Y(candle.Low)),
+                            new Point(position.CenterRight, Y(candle.High))));
                     var yOpen = (int)Y(candle.Open);
                     var yClose = (int)Y(candle.Close);
                     if (yOpen == yClose)
@@ -178,12 +176,11 @@
                         brush,
                         null,
                         Rect(
-                            new Point(left, yOpen),
-                            new Point(right, yClose)));
+                            new Point(position.Left, yOpen),
+                            new Point(position.Right, yClose)));
 
-                    right -= candleWidth;
-                    left -= candleWidth;
-                    if (right < 0)
+                    position = position.Shift();
+                    if (position.Right < 0)
                     {
                         break;
                     }
@@ -206,6 +203,45 @@
                 // clear
                 using var context = this.drawing.RenderOpen();
             }
+        }
+
+        private readonly struct CandlePosition
+        {
+            internal readonly double Left;
+            internal readonly double Right;
+            internal readonly double CenterLeft;
+            internal readonly double CenterRight;
+            private readonly double width;
+
+            private CandlePosition(double left, double right, double centerLeft, double centerRight, double width)
+            {
+                this.Left = left;
+                this.Right = right;
+                this.CenterLeft = centerLeft;
+                this.CenterRight = centerRight;
+                this.width = width;
+            }
+
+            internal static CandlePosition Create(double width, double candleWidth)
+            {
+                var right = width - 1;
+                var left = right - candleWidth + 2;
+                var halfWidth = (right - left) / 2;
+
+                return new(
+                    left: left,
+                    right: right,
+                    centerLeft: right - halfWidth,
+                    centerRight: right - halfWidth + 1,
+                    width: candleWidth);
+            }
+
+            internal CandlePosition Shift() => new(
+                left: this.Left - this.width,
+                right: this.Right - this.width,
+                centerLeft: this.CenterLeft - this.width,
+                centerRight: this.CenterRight - this.width,
+                width: this.width);
         }
     }
 }
