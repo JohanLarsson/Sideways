@@ -48,7 +48,12 @@
         {
             if (this.ItemsSource is { } candles)
             {
-                this.SetCurrentValue(TimeProperty, candles.Skip(this.Time, this.CandleInterval, Math.Sign(e.Delta)));
+                this.SetCurrentValue(
+                    TimeProperty,
+                    candles.Skip(
+                        this.Time,
+                        this.CandleInterval,
+                        Math.Sign(e.Delta) * Math.Max(1, Math.Abs(e.Delta) / this.CandleWidth)));
             }
         }
 
