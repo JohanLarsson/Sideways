@@ -55,6 +55,11 @@
                     {
                         yield return minute;
                     }
+
+                    if (minute.Time.Date < end.Date)
+                    {
+                        yield break;
+                    }
                 }
             }
         }
