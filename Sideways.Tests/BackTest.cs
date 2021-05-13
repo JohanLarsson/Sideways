@@ -4,6 +4,7 @@ namespace Sideways.Tests
     using System;
     using System.Collections.Generic;
     using System.Linq;
+
     using NUnit.Framework;
 
     public static class BackTest

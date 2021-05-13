@@ -9,13 +9,33 @@
 
     public class CandleSticks : CandleSeries
     {
+        private static readonly DependencyPropertyKey PriceRangePropertyKey = DependencyProperty.RegisterReadOnly(
+            nameof(PriceRange),
+            typeof(FloatRange?),
+            typeof(CandleSticks),
+            new PropertyMetadata(default(FloatRange?)));
+
+        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
+        public static readonly DependencyProperty PriceRangeProperty = PriceRangePropertyKey.DependencyProperty;
+
         private readonly DrawingVisual drawing;
         private readonly List<Candle> visibleCandles = new();
+
+        static CandleSticks()
+        {
+            RenderOptions.EdgeModeProperty.OverrideMetadata(typeof(CandleSticks), new UIPropertyMetadata(EdgeMode.Aliased));
+        }
 
         public CandleSticks()
         {
             this.drawing = new DrawingVisual();
             this.AddVisualChild(this.drawing);
+        }
+
+        public FloatRange? PriceRange
+        {
+            get => (FloatRange?)this.GetValue(PriceRangeProperty);
+            protected set => this.SetValue(PriceRangePropertyKey, value);
         }
 
         protected override int VisualChildrenCount => 1;
@@ -46,7 +66,8 @@
             {
                 var min = float.MaxValue;
                 var max = float.MinValue;
-                foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval).Take((int)Math.Ceiling(size.Width / candleWidth)))
+                foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval)
+                                                  .Take((int)Math.Ceiling(size.Width / candleWidth)))
                 {
                     min = Math.Min(min, candle.Low);
                     max = Math.Max(max, candle.High);

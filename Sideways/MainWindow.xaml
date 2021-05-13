@@ -25,8 +25,8 @@
                        Foreground="Gray"
                        Text="W" />
             <sideways:Chart x:Name="WeeklyChart">
-                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Candles}"
-                                       CandleInterval="Week"
+                <sideways:CandleSticks CandleInterval="Week"
+                                       ItemsSource="{Binding CurrentSymbol.Candles}"
                                        Time="{Binding EndTime}" />
             </sideways:Chart>
         </Grid>
@@ -44,8 +44,37 @@
             </StackPanel>
 
             <sideways:Chart x:Name="DailyChart">
-                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Candles}"
-                                       CandleInterval="Day"
+                <sideways:MovingAverage Brush="Purple"
+                                        CandleInterval="Day"
+                                        PriceRange="{Binding ElementName=DayCandles, Path=PriceRange}"
+                                        ItemsSource="{Binding CurrentSymbol.Candles}"
+                                        Time="{Binding EndTime}"
+                                        Period="10" />
+                
+                <sideways:MovingAverage Brush="Yellow"
+                                        CandleInterval="Day"
+                                        PriceRange="{Binding ElementName=DayCandles, Path=PriceRange}"
+                                        ItemsSource="{Binding CurrentSymbol.Candles}"
+                                        Time="{Binding EndTime}"
+                                        Period="20" />
+                
+                <sideways:MovingAverage Brush="Red"
+                                        CandleInterval="Day"
+                                        PriceRange="{Binding ElementName=DayCandles, Path=PriceRange}"
+                                        ItemsSource="{Binding CurrentSymbol.Candles}"
+                                        Time="{Binding EndTime}"
+                                        Period="100" />
+
+                <sideways:MovingAverage Brush="Green"
+                                        CandleInterval="Day"
+                                        PriceRange="{Binding ElementName=DayCandles, Path=PriceRange}"
+                                        ItemsSource="{Binding CurrentSymbol.Candles}"
+                                        Time="{Binding EndTime}"
+                                        Period="200" />
+
+                <sideways:CandleSticks CandleInterval="Day"
+                                       x:Name="DayCandles"
+                                       ItemsSource="{Binding CurrentSymbol.Candles}"
                                        Time="{Binding EndTime}" />
             </sideways:Chart>
         </Grid>
@@ -56,8 +85,8 @@
                        Foreground="Gray"
                        Text="h" />
             <sideways:Chart x:Name="HourlyChart">
-                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Candles}"
-                                       CandleInterval="Hour"
+                <sideways:CandleSticks CandleInterval="Hour"
+                                       ItemsSource="{Binding CurrentSymbol.Candles}"
                                        Time="{Binding EndTime}" />
             </sideways:Chart>
         </Grid>
@@ -68,8 +97,8 @@
                        Foreground="Gray"
                        Text="m" />
             <sideways:Chart x:Name="MinuteChart">
-                <sideways:CandleSticks ItemsSource="{Binding CurrentSymbol.Candles}"
-                                       CandleInterval="Minute"
+                <sideways:CandleSticks CandleInterval="Minute"
+                                       ItemsSource="{Binding CurrentSymbol.Candles}"
                                        Time="{Binding EndTime}" />
             </sideways:Chart>
         </Grid>

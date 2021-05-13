@@ -15,15 +15,6 @@
                 default(Candles),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        private static readonly DependencyPropertyKey PriceRangePropertyKey = DependencyProperty.RegisterReadOnly(
-            nameof(PriceRange),
-            typeof(FloatRange?),
-            typeof(CandleSeries),
-            new PropertyMetadata(default(FloatRange?)));
-
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
-        public static readonly DependencyProperty PriceRangeProperty = PriceRangePropertyKey.DependencyProperty;
-
         /// <summary>Identifies the <see cref="Time"/> dependency property.</summary>
         public static readonly DependencyProperty TimeProperty = Chart.TimeProperty.AddOwner(
             typeof(CandleSeries),
@@ -47,21 +38,10 @@
                 5,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        static CandleSeries()
-        {
-            RenderOptions.EdgeModeProperty.OverrideMetadata(typeof(CandleSeries), new UIPropertyMetadata(EdgeMode.Aliased));
-        }
-
         public Candles? ItemsSource
         {
             get => (Candles?)this.GetValue(ItemsSourceProperty);
             set => this.SetValue(ItemsSourceProperty, value);
-        }
-
-        public FloatRange? PriceRange
-        {
-            get => (FloatRange?)this.GetValue(PriceRangeProperty);
-            protected set => this.SetValue(PriceRangePropertyKey, value);
         }
 
         public DateTimeOffset Time
