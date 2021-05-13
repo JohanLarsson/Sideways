@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
 
     public class Candles
     {
@@ -87,40 +86,81 @@
             };
         }
 
-        public DateTimeOffset Skip(DateTimeOffset end, CandleInterval interval, int offset)
+        public DateTimeOffset Skip(DateTimeOffset time, CandleInterval interval, int count)
         {
             return interval switch
             {
-                CandleInterval.Week => FindWeek(this.days, end, this.dayIndex, offset),
-                CandleInterval.Day => TradingDay.EndOfDay(Find(this.days, end, this.dayIndex, offset)),
-                CandleInterval.Minute => Find(this.minutes, end, this.minuteIndex, offset),
+                CandleInterval.Week => TradingDay.EndOfDay(FindInterval(this.days, time, (x, y) => x.Time.IsSameWeek(y.Time), this.dayIndex, count)),
+                CandleInterval.Day => TradingDay.EndOfDay(Find(this.days, time, this.dayIndex, count)),
+                CandleInterval.Hour => FindInterval(this.minutes, time, (x, y) => x.Time.IsSameHour(y.Time), this.minuteIndex, count),
+                CandleInterval.Minute => Find(this.minutes, time, this.minuteIndex, count),
                 _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, null),
             };
 
-            static DateTimeOffset FindWeek(DescendingCandles days, DateTimeOffset end, int statAt, int offset)
+            static DateTimeOffset FindInterval(DescendingCandles candles, DateTimeOffset time, Func<Candle, Candle, bool> isSameInterval, int statAt, int count)
             {
-                var index = Math.Max(0, Math.Min(days.IndexOf(Sunday().AddDays(-7 * offset), statAt), days.Count - 1));
-                return TradingDay.EndOfDay(days[index].Time);
-
-                DateTimeOffset Sunday()
+                var index = Math.Max(0, Math.Min(candles.IndexOf(time, statAt), candles.Count - 1));
+                var current = candles[index];
+                var n = 0;
+                if (count > 0)
                 {
-                    return end.DayOfWeek switch
+                    if (index > 1 &&
+                        isSameInterval(candles[index], candles[index - 1]))
                     {
-                        DayOfWeek.Sunday => end,
-                        DayOfWeek.Monday => end.AddDays(6),
-                        DayOfWeek.Tuesday => end.AddDays(5),
-                        DayOfWeek.Wednesday => end.AddDays(4),
-                        DayOfWeek.Thursday => end.AddDays(3),
-                        DayOfWeek.Friday => end.AddDays(2),
-                        DayOfWeek.Saturday => end.AddDays(1),
-                        _ => throw new InvalidEnumArgumentException(),
-                    };
+                        n++;
+                        if (n == count)
+                        {
+                            return LastInInterval(index - 1);
+                        }
+                    }
+
+                    for (var i = index - 1; i >= 0; i--)
+                    {
+                        if (!isSameInterval(current, candles[i]))
+                        {
+                            current = candles[i];
+                            n++;
+                            if (n == count)
+                            {
+                                return LastInInterval(i);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (var i = index + 1; i < candles.Count; i++)
+                    {
+                        if (!isSameInterval(current, candles[i]))
+                        {
+                            n--;
+                            current = candles[i];
+                            if (n == count)
+                            {
+                                return current.Time;
+                            }
+                        }
+                    }
+                }
+
+                return LastInInterval(index);
+
+                DateTimeOffset LastInInterval(int i)
+                {
+                    while (i >= 0 &&
+                           isSameInterval(current, candles[i]))
+                    {
+                        current = candles[i];
+                        i--;
+                    }
+
+                    return current.Time;
                 }
             }
 
-            static DateTimeOffset Find(DescendingCandles candles, DateTimeOffset end, int statAt, int offset)
+            static DateTimeOffset Find(DescendingCandles candles, DateTimeOffset time, int statAt, int count)
             {
-                var index = Math.Max(0, Math.Min(candles.IndexOf(end, statAt) + offset, candles.Count - 1));
+                var index = Math.Max(0, Math.Min(candles.IndexOf(time, statAt) - count, candles.Count - 1));
                 return candles[index].Time;
             }
         }

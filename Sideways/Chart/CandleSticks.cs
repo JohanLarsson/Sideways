@@ -102,7 +102,7 @@
         {
             if (this.ItemsSource is { } candles)
             {
-                this.SetCurrentValue(TimeProperty, candles.Skip(this.Time, this.CandleInterval, -1 * Math.Sign(e.Delta)));
+                this.SetCurrentValue(TimeProperty, candles.Skip(this.Time, this.CandleInterval, Math.Sign(e.Delta)));
             }
         }
 
