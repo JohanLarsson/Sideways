@@ -39,6 +39,8 @@
             return HashCode.Combine(this.Min, this.Max);
         }
 
+        public double Y(float price, double height) => height * (1 - this.Interpolate(price));
+
         public bool Contains(float value) => value >= this.Min && value <= this.Max;
 
         public double Interpolate(float value)

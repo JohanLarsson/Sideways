@@ -185,7 +185,7 @@
                         break;
                     }
 
-                    double Y(float price) => size.Height * (1 - priceRange.Interpolate(price));
+                    double Y(float price) => priceRange.Y(price, size.Height);
 
                     static Rect Rect(Point p1, Point p2)
                     {
