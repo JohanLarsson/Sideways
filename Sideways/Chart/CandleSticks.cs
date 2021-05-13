@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media;
@@ -45,18 +46,11 @@
             {
                 var min = float.MaxValue;
                 var max = float.MinValue;
-                var x = 0.0;
-                foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval))
+                foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval).Take((int)Math.Ceiling(size.Width / candleWidth)))
                 {
-                    if (x > size.Width)
-                    {
-                        break;
-                    }
-
                     min = Math.Min(min, candle.Low);
                     max = Math.Max(max, candle.High);
                     this.visibleCandles.Add(candle);
-                    x += candleWidth;
                 }
 
                 var priceRange = new FloatRange(min, max);
