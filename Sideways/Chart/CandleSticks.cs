@@ -49,6 +49,15 @@
             typeof(CandleSticks),
             new PropertyMetadata(CandleInterval.None));
 
+        /// <summary>Identifies the <see cref="CandleWidth"/> dependency property.</summary>
+        public static readonly DependencyProperty CandleWidthProperty = DependencyProperty.Register(
+            nameof(CandleWidth),
+            typeof(int),
+            typeof(CandleSticks),
+            new FrameworkPropertyMetadata(
+                5,
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         private readonly DrawingVisual drawing;
 
         static CandleSticks()
@@ -92,6 +101,12 @@
             set => this.SetValue(CandleIntervalProperty, value);
         }
 
+        public int CandleWidth
+        {
+            get => (int)this.GetValue(CandleWidthProperty);
+            set => this.SetValue(CandleWidthProperty, value);
+        }
+
         protected override int VisualChildrenCount => 1;
 
         protected override Visual GetVisualChild(int index) => index == 0
@@ -114,7 +129,7 @@
                 null,
                 new Rect(this.RenderSize));
 
-            var candleWidth = 5;
+            var candleWidth = this.CandleWidth;
             if (this.ItemsSource is { } itemsSource)
             {
                 var builder = ImmutableArray.CreateBuilder<Candle>((int)Math.Ceiling(size.Width / candleWidth));
@@ -150,24 +165,19 @@
                         Rect(
                             new Point(x - halfWidth - 1, Y(candle.Low)),
                             new Point(x - halfWidth, Y(candle.High))));
-                    if (Math.Abs(candle.Open - candle.Close) < 0.001)
+                    var yOpen = (int)Y(candle.Open);
+                    var yClose = (int)Y(candle.Close);
+                    if (yOpen == yClose)
                     {
-                        context.DrawRectangle(
-                            brush,
-                            null,
-                            Rect(
-                                new Point(x - 4, Y(candle.Open) - 0.5),
-                                new Point(x - 1, Y(candle.Close) + 0.5)));
+                        yClose += 1;
                     }
-                    else
-                    {
-                        context.DrawRectangle(
-                            brush,
-                            null,
-                            Rect(
-                                new Point(x - 4, Y(candle.Open)),
-                                new Point(x - 1, Y(candle.Close))));
-                    }
+
+                    context.DrawRectangle(
+                        brush,
+                        null,
+                        Rect(
+                            new Point(x - 4, yOpen),
+                            new Point(x - 1, yClose)));
 
                     x -= candleWidth;
                     if (x < 0)
