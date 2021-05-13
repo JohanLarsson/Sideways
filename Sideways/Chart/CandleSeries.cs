@@ -1,7 +1,6 @@
 ﻿namespace Sideways
 {
     using System;
-    using System.Collections.Immutable;
     using System.Windows;
     using System.Windows.Media;
 
@@ -15,15 +14,6 @@
             new FrameworkPropertyMetadata(
                 default(Candles),
                 FrameworkPropertyMetadataOptions.AffectsRender));
-
-        private static readonly DependencyPropertyKey VisibleCandlesPropertyKey = DependencyProperty.RegisterReadOnly(
-            nameof(VisibleCandles),
-            typeof(ImmutableArray<Candle>?),
-            typeof(CandleSeries),
-            new PropertyMetadata(default(ImmutableArray<Candle>?)));
-
-        /// <summary>Identifies the <see cref="VisibleCandles"/> dependency property.</summary>
-        public static readonly DependencyProperty VisibleCandlesProperty = VisibleCandlesPropertyKey.DependencyProperty;
 
         private static readonly DependencyPropertyKey PriceRangePropertyKey = DependencyProperty.RegisterReadOnly(
             nameof(PriceRange),
@@ -66,12 +56,6 @@
         {
             get => (Candles?)this.GetValue(ItemsSourceProperty);
             set => this.SetValue(ItemsSourceProperty, value);
-        }
-
-        public ImmutableArray<Candle>? VisibleCandles
-        {
-            get => (ImmutableArray<Candle>?)this.GetValue(VisibleCandlesProperty);
-            protected set => this.SetValue(VisibleCandlesPropertyKey, value);
         }
 
         public FloatRange? PriceRange
