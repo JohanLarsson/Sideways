@@ -170,6 +170,8 @@
                                  "    low = excluded.low," +
                                  "    close = excluded.close," +
                                  "    volume = excluded.volume";
+            insert.Prepare();
+
             foreach (var candle in candles)
             {
                 insert.Parameters.Clear();
@@ -180,7 +182,6 @@
                 insert.Parameters.AddWithValue("@low", candle.Low.AsInt());
                 insert.Parameters.AddWithValue("@close", candle.Close.AsInt());
                 insert.Parameters.AddWithValue("@volume", candle.Volume);
-                insert.Prepare();
                 insert.ExecuteNonQuery();
             }
 
