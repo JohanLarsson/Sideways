@@ -135,13 +135,13 @@
             {
                 var right = width - 1;
                 var left = right - candleWidth + 2;
-                var halfWidth = (right - left) / 2;
+                var centerRight = Math.Ceiling((right + left) / 2);
 
                 return new(
                     left: left,
                     right: right,
-                    centerLeft: right - halfWidth,
-                    centerRight: right - halfWidth + 1,
+                    centerLeft: centerRight - 1,
+                    centerRight: centerRight,
                     width: candleWidth);
             }
 
