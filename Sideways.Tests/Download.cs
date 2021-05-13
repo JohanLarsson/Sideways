@@ -147,6 +147,7 @@
                 {
                     Assert.Inconclusive("Empty slice, maybe missing data on AlphaVantage. Exclude this symbol from script as it uses up daily calls.");
                 }
+
                 Database.WriteMinutes(symbol, candles);
                 //// Adding an extra delay as AlphaVantage is not always happy with our throttling.
                 await Task.Delay(TimeSpan.FromSeconds(1));
