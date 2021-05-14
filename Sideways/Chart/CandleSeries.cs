@@ -44,6 +44,11 @@
         /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
         public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(typeof(CandleSeries));
 
+        static CandleSeries()
+        {
+            ClipToBoundsProperty.OverrideMetadata(typeof(CandleSeries), new PropertyMetadata(true));
+        }
+
         public Candles? ItemsSource
         {
             get => (Candles?)this.GetValue(ItemsSourceProperty);
