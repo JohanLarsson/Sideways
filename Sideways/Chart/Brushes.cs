@@ -6,6 +6,8 @@
     {
         public static readonly SolidColorBrush Increasing = Create(Color.FromArgb(byte.MaxValue, 50, 170, 50));
         public static readonly SolidColorBrush Decreasing = Create(Color.FromArgb(byte.MaxValue, 170, 50, 50));
+        public static readonly SolidColorBrush PreMarket = Create(Color.FromArgb(20, 255, 255, 20));
+        public static readonly SolidColorBrush PostMarket = Create(Color.FromArgb(20, 20, 20, 255));
 
         public static SolidColorBrush Get(Candle candle) => candle.Open < candle.Close ? Increasing : Decreasing;
 

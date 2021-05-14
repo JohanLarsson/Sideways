@@ -32,8 +32,40 @@
             using var context = this.drawing.RenderOpen();
             if (this.PriceRange is { } priceRange)
             {
-                var position = CandlePosition.Create(size.Width, candleWidth);
+                if (this.CandleInterval is CandleInterval.Hour or CandleInterval.Minute)
+                {
+                    var x = size.Width;
+                    foreach (var candle in this.Candles)
+                    {
+                        if (TradingDay.IsPreMarket(candle.Time))
+                        {
+                            context.DrawRectangle(
+                                Brushes.PreMarket,
+                                null,
+                                Rect(
+                                    new Point(x, 0),
+                                    new Point(x - candleWidth, size.Height)));
+                        }
 
+                        if (TradingDay.IsPostMarket(candle.Time))
+                        {
+                            context.DrawRectangle(
+                                Brushes.PostMarket,
+                                null,
+                                Rect(
+                                    new Point(x, 0),
+                                    new Point(x - candleWidth, size.Height)));
+                        }
+
+                        x -= candleWidth;
+                        if (x < 0)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                var position = CandlePosition.Create(size.Width, candleWidth);
                 foreach (var candle in this.Candles)
                 {
                     var brush = Brushes.Get(candle);
@@ -65,13 +97,13 @@
                     }
 
                     double Y(float price) => priceRange.Y(price, size.Height);
+                }
 
-                    static Rect Rect(Point p1, Point p2)
-                    {
-                        return new Rect(Round(p1), Round(p2));
+                static Rect Rect(Point p1, Point p2)
+                {
+                    return new Rect(Round(p1), Round(p2));
 
-                        static Point Round(Point p) => new(Math.Round(p.X), Math.Round(p.Y));
-                    }
+                    static Point Round(Point p) => new(Math.Round(p.X), Math.Round(p.Y));
                 }
             }
         }
