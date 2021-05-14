@@ -221,12 +221,12 @@
 
                 int Delta()
                 {
-                    if (e.StylusDevice is { })
+                    if (Math.Abs(e.Delta) == Mouse.MouseWheelDeltaForOneLine)
                     {
-                        return Math.Sign(e.Delta) * Math.Max(1, Math.Abs(e.Delta) / this.CandleWidth);
+                        return Math.Sign(e.Delta);
                     }
 
-                    return Math.Sign(e.Delta);
+                    return Math.Sign(e.Delta) * Math.Max(1, Math.Abs(e.Delta) / this.CandleWidth);
                 }
             }
         }
