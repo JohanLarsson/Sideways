@@ -25,7 +25,7 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 default(DateTimeOffset),
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         /// <summary>Identifies the <see cref="ItemsSource"/> dependency property.</summary>
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.RegisterAttached(
@@ -34,7 +34,7 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 default(Candles),
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         /// <summary>Identifies the <see cref="CandleInterval"/> dependency property.</summary>
         public static readonly DependencyProperty CandleIntervalProperty = DependencyProperty.RegisterAttached(
@@ -43,7 +43,7 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 CandleInterval.None,
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         /// <summary>Identifies the <see cref="CandleWidth"/> dependency property.</summary>
         public static readonly DependencyProperty CandleWidthProperty = DependencyProperty.RegisterAttached(
@@ -52,7 +52,7 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 5,
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public Chart()
         {
@@ -94,23 +94,6 @@
         protected override int VisualChildrenCount => this.Children.Count;
 
         protected override IEnumerator LogicalChildren => this.Children.GetEnumerator();
-
-        /// <summary>Helper for getting <see cref="TimeProperty"/> from <paramref name="element"/>.</summary>
-        /// <param name="element"><see cref="DependencyObject"/> to read <see cref="TimeProperty"/> from.</param>
-        /// <returns>Time property value.</returns>
-        [AttachedPropertyBrowsableForType(typeof(DependencyObject))]
-        public static DateTimeOffset GetTime(DependencyObject element)
-        {
-            return (DateTimeOffset)element.GetValue(TimeProperty);
-        }
-
-        /// <summary>Helper for setting <see cref="TimeProperty"/> on <paramref name="element"/>.</summary>
-        /// <param name="element"><see cref="DependencyObject"/> to set <see cref="TimeProperty"/> on.</param>
-        /// <param name="value">Time property value.</param>
-        public static void SetTime(DependencyObject element, DateTimeOffset value)
-        {
-            element.SetValue(TimeProperty, value);
-        }
 
         protected override Visual GetVisualChild(int index) => this.Children[index];
 
