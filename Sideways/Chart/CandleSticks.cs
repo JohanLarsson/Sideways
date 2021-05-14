@@ -53,7 +53,17 @@
                     candles.Skip(
                         this.Time,
                         this.CandleInterval,
-                        Math.Sign(e.Delta) * Math.Max(1, Math.Abs(e.Delta) / this.CandleWidth)));
+                        Delta()));
+
+                int Delta()
+                {
+                    if (e.StylusDevice is { })
+                    {
+                        return Math.Sign(e.Delta) * Math.Max(1, Math.Abs(e.Delta) / this.CandleWidth);
+                    }
+
+                    return Math.Sign(e.Delta);
+                }
             }
         }
 
