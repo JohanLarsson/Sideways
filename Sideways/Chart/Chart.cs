@@ -256,31 +256,37 @@
 
                         break;
                     case CandleInterval.Day:
-                        for (var i = 0; i < Math.Min(candles.Count, Math.Ceiling(size.Width / candleWidth)); i++)
+                        DrawEven(x => x.Time.Month);
+                        break;
+                    case CandleInterval.Week:
+                        DrawEven(x => x.Time.Year);
+                        break;
+                }
+
+                void DrawEven(Func<Candle, int> func)
+                {
+                    for (var i = 0; i < Math.Min(candles.Count, Math.Ceiling(size.Width / candleWidth)); i++)
+                    {
+                        if (func(candles[i]) % 2 == 0)
                         {
-                            if (candles[i].Time.Month % 2 == 0)
+                            var p1 = new Point(X(i), 0);
+                            i++;
+                            while (i < candles.Count - 1 &&
+                                   func(candles[i]) % 2 == 0)
                             {
-                                var p1 = new Point(X(i), 0);
                                 i++;
-                                while (i < candles.Count - 1 &&
-                                       candles[i + 1].Time.Month % 2 == 0)
-                                {
-                                    i++;
-                                }
-
-                                drawingContext.DrawRectangle(
-                                    Brushes.Even,
-                                    null,
-                                    new Rect(
-                                        p1,
-                                        new Point(X(i + 1), size.Height)));
-
                             }
 
-                            double X(int index) => Math.Max(0, size.Width - (index * candleWidth));
+                            drawingContext.DrawRectangle(
+                                Brushes.Even,
+                                null,
+                                new Rect(
+                                    p1,
+                                    new Point(X(i + 1), size.Height)));
                         }
 
-                        break;
+                        double X(int index) => Math.Max(0, size.Width - (index * candleWidth));
+                    }
                 }
             }
         }
