@@ -159,11 +159,6 @@
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            foreach (UIElement child in this.Children)
-            {
-                child.Arrange(new Rect(finalSize));
-            }
-
             this.candles.Clear();
             if (finalSize.Width > 0 &&
                 finalSize.Height > 0 &&
@@ -189,6 +184,11 @@
             else
             {
                 this.SetCurrentValue(PriceRangeProperty, null);
+            }
+
+            foreach (UIElement child in this.Children)
+            {
+                child.Arrange(new Rect(finalSize));
             }
 
             return base.ArrangeOverride(finalSize);
