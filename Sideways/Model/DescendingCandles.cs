@@ -48,7 +48,7 @@
 
         public int IndexOf(DateTimeOffset end, int startAt)
         {
-            startAt = Math.Min(this.candles.Length, startAt);
+            startAt = Math.Clamp(startAt, 0, this.candles.Length);
             if (this.candles[startAt].Time > end)
             {
                 for (var i = startAt; i < this.candles.Length; i++)
