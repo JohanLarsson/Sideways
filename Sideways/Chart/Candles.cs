@@ -56,7 +56,8 @@
                         yield return minute;
                     }
 
-                    if (minute.Time.Date < end.Date)
+                    if (TradingDay.IsPostMarket(minute.Time) ||
+                        minute.Time.Date < end.Date)
                     {
                         yield break;
                     }
