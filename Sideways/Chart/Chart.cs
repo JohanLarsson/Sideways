@@ -24,7 +24,34 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 default(DateTimeOffset),
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                FrameworkPropertyMetadataOptions.Inherits));
+
+        /// <summary>Identifies the <see cref="ItemsSource"/> dependency property.</summary>
+        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.RegisterAttached(
+            nameof(ItemsSource),
+            typeof(Candles),
+            typeof(Chart),
+            new FrameworkPropertyMetadata(
+                default(Candles),
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
+
+        /// <summary>Identifies the <see cref="CandleInterval"/> dependency property.</summary>
+        public static readonly DependencyProperty CandleIntervalProperty = DependencyProperty.RegisterAttached(
+            nameof(CandleInterval),
+            typeof(CandleInterval),
+            typeof(Chart),
+            new FrameworkPropertyMetadata(
+                CandleInterval.None,
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
+
+        /// <summary>Identifies the <see cref="CandleWidth"/> dependency property.</summary>
+        public static readonly DependencyProperty CandleWidthProperty = DependencyProperty.RegisterAttached(
+            nameof(CandleWidth),
+            typeof(int),
+            typeof(Chart),
+            new FrameworkPropertyMetadata(
+                5,
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
 
         public Chart()
         {
@@ -41,6 +68,24 @@
         {
             get => (DateTimeOffset)this.GetValue(TimeProperty);
             set => this.SetValue(TimeProperty, value);
+        }
+
+        public Candles? ItemsSource
+        {
+            get => (Candles?)this.GetValue(ItemsSourceProperty);
+            set => this.SetValue(ItemsSourceProperty, value);
+        }
+
+        public CandleInterval CandleInterval
+        {
+            get => (CandleInterval)this.GetValue(CandleIntervalProperty);
+            set => this.SetValue(CandleIntervalProperty, value);
+        }
+
+        public int CandleWidth
+        {
+            get => (int)this.GetValue(CandleWidthProperty);
+            set => this.SetValue(CandleWidthProperty, value);
         }
 
         public UIElementCollection Children { get; }

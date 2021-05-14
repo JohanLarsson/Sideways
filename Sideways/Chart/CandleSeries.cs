@@ -2,14 +2,11 @@
 {
     using System;
     using System.Windows;
-    using System.Windows.Media;
 
     public abstract class CandleSeries : FrameworkElement
     {
         /// <summary>Identifies the <see cref="ItemsSource"/> dependency property.</summary>
-        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
-            nameof(ItemsSource),
-            typeof(Candles),
+        public static readonly DependencyProperty ItemsSourceProperty = Chart.ItemsSourceProperty.AddOwner(
             typeof(CandleSeries),
             new FrameworkPropertyMetadata(
                 default(Candles),
@@ -23,16 +20,14 @@
                 FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         /// <summary>Identifies the <see cref="CandleInterval"/> dependency property.</summary>
-        public static readonly DependencyProperty CandleIntervalProperty = DependencyProperty.Register(
-            nameof(CandleInterval),
-            typeof(CandleInterval),
+        public static readonly DependencyProperty CandleIntervalProperty = Chart.CandleIntervalProperty.AddOwner(
             typeof(CandleSeries),
-            new PropertyMetadata(CandleInterval.None));
+            new FrameworkPropertyMetadata(
+                CandleInterval.None,
+                FrameworkPropertyMetadataOptions.AffectsRender));
 
         /// <summary>Identifies the <see cref="CandleWidth"/> dependency property.</summary>
-        public static readonly DependencyProperty CandleWidthProperty = DependencyProperty.Register(
-            nameof(CandleWidth),
-            typeof(int),
+        public static readonly DependencyProperty CandleWidthProperty = Chart.CandleWidthProperty.AddOwner(
             typeof(CandleSeries),
             new FrameworkPropertyMetadata(
                 5,
