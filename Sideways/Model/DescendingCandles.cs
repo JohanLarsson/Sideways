@@ -48,6 +48,11 @@
 
         public int IndexOf(DateTimeOffset end, int startAt)
         {
+            if (this.candles.IsDefaultOrEmpty)
+            {
+                return -1;
+            }
+
             startAt = Math.Clamp(startAt, 0, this.candles.Length);
             if (this.candles[startAt].Time > end)
             {

@@ -39,6 +39,11 @@
             }
 
             var index = this.days.IndexOf(end, this.dayIndex);
+            if (index < 0)
+            {
+                yield break;
+            }
+
             this.dayIndex = index;
             for (var i = index; i < this.days.Count; i++)
             {
@@ -73,6 +78,11 @@
         public IEnumerable<Candle> Minutes(DateTimeOffset end)
         {
             var index = this.minutes.IndexOf(end, this.minuteIndex);
+            if (index < 0)
+            {
+                yield break;
+            }
+
             this.minuteIndex = index;
             for (var i = index; i < this.minutes.Count; i++)
             {
@@ -105,7 +115,12 @@
 
             static DateTimeOffset FindInterval(DescendingCandles candles, DateTimeOffset time, Func<Candle, Candle, bool> isSameInterval, int statAt, int count)
             {
-                var index = Math.Max(0, Math.Min(candles.IndexOf(time, statAt), candles.Count - 1));
+                if (candles.Count == 0)
+                {
+                    return DateTimeOffset.Now;
+                }
+
+                var index = Math.Clamp(candles.IndexOf(time, statAt), 0, candles.Count - 1);
                 var current = candles[index];
                 var n = 0;
                 if (count > 0)
@@ -166,7 +181,12 @@
 
             static DateTimeOffset Find(DescendingCandles candles, DateTimeOffset time, int statAt, int count)
             {
-                var index = Math.Max(0, Math.Min(candles.IndexOf(time, statAt) - count, candles.Count - 1));
+                if (candles.Count == 0)
+                {
+                    return DateTimeOffset.Now;
+                }
+
+                var index = Math.Clamp(candles.IndexOf(time, statAt) - count, 0, candles.Count - 1);
                 return candles[index].Time;
             }
         }
