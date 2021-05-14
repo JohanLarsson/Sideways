@@ -221,12 +221,23 @@
 
                 int Delta()
                 {
-                    if (Math.Abs(e.Delta) == Mouse.MouseWheelDeltaForOneLine)
+                    return e.Delta switch
                     {
-                        return Math.Sign(e.Delta);
-                    }
+                        Mouse.MouseWheelDeltaForOneLine => 1,
+                        -Mouse.MouseWheelDeltaForOneLine => -1,
+                        < 0 => Math.Min(-1, TouchDelta()),
+                        > 0 => Math.Max(1, TouchDelta()),
+                    };
 
-                    return Math.Sign(e.Delta) * Math.Max(1, Math.Abs(e.Delta) / this.CandleWidth);
+                    int TouchDelta()
+                    {
+                        return e.Delta switch
+                        {
+                            < 0 and > -4 => -1,
+                            > 0 and < 4 => 1,
+                            _ => e.Delta / this.CandleWidth,
+                        };
+                    }
                 }
             }
         }
