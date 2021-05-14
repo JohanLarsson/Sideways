@@ -29,10 +29,21 @@
                             ExtraCandles="20"
                             ItemsSource="{Binding CurrentSymbol.Candles}"
                             Time="{Binding Time}">
-                <sideways:MovingAverage Brush="Purple" Period="10" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <sideways:MovingAverage Brush="Purple" Period="10" />
 
-                <sideways:MovingAverage Brush="Yellow" Period="20" />
-                <sideways:CandleSticks />
+                        <sideways:MovingAverage Brush="Yellow" Period="20" />
+
+                        <sideways:CandleSticks />
+                    </Grid>
+
+                    <sideways:TimeTickBar Grid.Row="1" />
+                </Grid>
             </sideways:Chart>
         </Grid>
 
@@ -104,10 +115,21 @@
                             ExtraCandles="20"
                             ItemsSource="{Binding CurrentSymbol.Candles}"
                             Time="{Binding Time}">
-                <sideways:MovingAverage Brush="Purple" Period="10" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <sideways:MovingAverage Brush="Purple" Period="10" />
 
-                <sideways:MovingAverage Brush="Yellow" Period="20" />
-                <sideways:CandleSticks />
+                        <sideways:MovingAverage Brush="Yellow" Period="20" />
+
+                        <sideways:CandleSticks />
+                    </Grid>
+
+                    <sideways:TimeTickBar Grid.Row="1" />
+                </Grid>
             </sideways:Chart>
         </Grid>
     </Grid>

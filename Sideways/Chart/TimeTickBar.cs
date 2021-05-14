@@ -34,8 +34,7 @@
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            var candles = this.Candles;
-            if (candles is { Count: > 10 })
+            if (this.Candles is { Count: > 10 } candles)
             {
                 var candleWidth = this.CandleWidth;
                 var actualWidth = this.ActualWidth;
@@ -46,14 +45,22 @@
                     TextElement.GetFontStretch(this));
                 var fontSize = TextElement.GetFontSize(this);
                 var fill = this.Fill;
+                var max = Math.Min(candles.Count, actualWidth / candleWidth) - 1;
 
                 switch (this.CandleInterval)
                 {
                     case CandleInterval.Week:
+                        for (var i = 0; i < max; i++)
+                        {
+                            if (candles[i].Time.Year != candles[i + 1].Time.Year)
+                            {
+                                DrawText(candles[i].Time.Year.ToString(CultureInfo.InvariantCulture), actualWidth - (i * candleWidth));
+                            }
+                        }
+
                         break;
                     case CandleInterval.Day:
-                        var max = Math.Min(candles.Count, actualWidth / candleWidth) - 1;
-                        for (var i = 5; i < max; i++)
+                        for (var i = 0; i < max; i++)
                         {
                             if (candles[i].Time.Month != candles[i + 1].Time.Month)
                             {
@@ -72,8 +79,32 @@
 
                         break;
                     case CandleInterval.Hour:
+                        for (var i = 0; i < max; i++)
+                        {
+                            if (candles[i].Time.Hour == 9)
+                            {
+                                DrawText(candles[i].Time.Day.ToString(CultureInfo.InvariantCulture), actualWidth - (i * candleWidth));
+                            }
+                        }
+
                         break;
                     case CandleInterval.Minute:
+                        for (var i = 0; i < max; i++)
+                        {
+                            switch (candles[i].Time)
+                            {
+                                case { Hour: 9 }:
+                                    DrawText("09:00", actualWidth - (i * candleWidth));
+                                    break;
+                                case { Hour: 12 }:
+                                    DrawText("12:00", actualWidth - (i * candleWidth));
+                                    break;
+                                case { Hour: 15 }:
+                                    DrawText("15:00", actualWidth - (i * candleWidth));
+                                    break;
+                            }
+                        }
+
                         break;
                     default:
                         throw new InvalidEnumArgumentException();
