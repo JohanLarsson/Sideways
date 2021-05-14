@@ -22,7 +22,7 @@
         <Grid Grid.Column="0">
             <TextBlock HorizontalAlignment="Left"
                        VerticalAlignment="Top"
-                       Foreground="Gray"
+                       Foreground="{x:Static sideways:Brushes.Gray}"
                        Text="W" />
             <sideways:Chart x:Name="WeeklyChart"
                             CandleInterval="Week"
@@ -37,12 +37,12 @@
         </Grid>
 
         <Grid Grid.Column="1">
-            <StackPanel>
+            <StackPanel Margin="10,10">
                 <TextBlock FontSize="24"
-                           Foreground="Gray"
+                           Foreground="{x:Static sideways:Brushes.Gray}"
                            Text="{Binding CurrentSymbol.Symbol}" />
 
-                <TextBlock Foreground="Gray">
+                <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
                     <TextBlock.Text>
                         <MultiBinding Converter="{x:Static converters:AdrConverter.Default}" StringFormat="ADR(20) {0:F1}%">
                             <Binding ElementName="DailyChart" Path="Candles" />
@@ -51,7 +51,7 @@
                     </TextBlock.Text>
                 </TextBlock>
 
-                <TextBlock Foreground="Gray">
+                <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
                     <TextBlock.Text>
                         <MultiBinding Converter="{x:Static converters:AverageDollarVolumeConverter.Default}" StringFormat="A$(20) {0:##,#0} M">
                             <Binding ElementName="DailyChart" Path="Candles" />
@@ -87,7 +87,7 @@
         <Grid Grid.Column="2">
             <TextBlock HorizontalAlignment="Left"
                        VerticalAlignment="Top"
-                       Foreground="Gray"
+                       Foreground="{x:Static sideways:Brushes.Gray}"
                        Text="h" />
             <sideways:Chart x:Name="HourlyChart"
                             CandleInterval="Hour"

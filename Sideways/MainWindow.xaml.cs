@@ -41,7 +41,7 @@
                     {
                         Interval = TimeSpan.FromMilliseconds(20),
                     };
-                    this.timer.Tick += (_, _) => Skip(CandleInterval.Hour, 1);
+                    this.timer.Tick += (_, _) => Skip(CandleInterval.Minute, 1);
                     this.timer.Start();
                     break;
                 case Key.Space:
