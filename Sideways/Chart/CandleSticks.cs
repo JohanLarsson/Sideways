@@ -72,7 +72,7 @@
                             }
                         }
 
-                        double X(int index) => size.Width - (index * candleWidth);
+                        double X(int index) => Math.Max(0, size.Width - (index * candleWidth));
                     }
                 }
 
