@@ -17,7 +17,6 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <TextBlock HorizontalAlignment="Left"
@@ -26,8 +25,14 @@
                        Text="W" />
             <sideways:Chart x:Name="WeeklyChart"
                             CandleInterval="Week"
+                            ExtraCandles="20"
                             ItemsSource="{Binding CurrentSymbol.Candles}"
                             Time="{Binding EndTime}">
+                <sideways:MovingAverage Brush="Purple"
+                                        Period="10"/>
+
+                <sideways:MovingAverage Brush="Yellow"
+                                        Period="20" />
                 <sideways:CandleSticks />
             </sideways:Chart>
         </Grid>
@@ -46,33 +51,28 @@
 
             <sideways:Chart x:Name="DailyChart"
                             CandleInterval="Day"
+                            ExtraCandles="200"
                             ItemsSource="{Binding CurrentSymbol.Candles}"
                             Time="{Binding EndTime}">
                 <sideways:MovingAverage Brush="Purple"
-                                        Period="10"
-                                        PriceRange="{Binding ElementName=DayCandles, Path=PriceRange}" />
+                                        Period="10"/>
 
                 <sideways:MovingAverage Brush="Yellow"
-                                        Period="20"
-                                        PriceRange="{Binding ElementName=DayCandles, Path=PriceRange}" />
+                                        Period="20" />
 
                 <sideways:MovingAverage Brush="Red"
-                                        Period="50"
-                                        PriceRange="{Binding ElementName=DayCandles, Path=PriceRange}" />
+                                        Period="50" />
 
                 <sideways:MovingAverage Brush="Orange"
-                                        Period="100"
-                                        PriceRange="{Binding ElementName=DayCandles, Path=PriceRange}" />
+                                        Period="100" />
 
                 <sideways:MovingAverage Brush="CadetBlue"
-                                        Period="150"
-                                        PriceRange="{Binding ElementName=DayCandles, Path=PriceRange}" />
+                                        Period="150" />
 
                 <sideways:MovingAverage Brush="Green"
-                                        Period="200"
-                                        PriceRange="{Binding ElementName=DayCandles, Path=PriceRange}" />
+                                        Period="200" />
 
-                <sideways:CandleSticks x:Name="DayCandles" />
+                <sideways:CandleSticks />
             </sideways:Chart>
         </Grid>
 
@@ -83,21 +83,14 @@
                        Text="h" />
             <sideways:Chart x:Name="HourlyChart"
                             CandleInterval="Hour"
+                            ExtraCandles="20"
                             ItemsSource="{Binding CurrentSymbol.Candles}"
                             Time="{Binding EndTime}">
-                <sideways:CandleSticks />
-            </sideways:Chart>
-        </Grid>
+                <sideways:MovingAverage Brush="Purple"
+                                        Period="10"/>
 
-        <Grid Grid.Column="3">
-            <TextBlock HorizontalAlignment="Left"
-                       VerticalAlignment="Top"
-                       Foreground="Gray"
-                       Text="m" />
-            <sideways:Chart x:Name="MinuteChart"
-                            CandleInterval="Minute"
-                            ItemsSource="{Binding CurrentSymbol.Candles}"
-                            Time="{Binding EndTime}">
+                <sideways:MovingAverage Brush="Yellow"
+                                        Period="20" />
                 <sideways:CandleSticks />
             </sideways:Chart>
         </Grid>
