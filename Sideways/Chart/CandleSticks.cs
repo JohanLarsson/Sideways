@@ -35,7 +35,7 @@
                 var candles = this.Candles;
                 if (this.CandleInterval is CandleInterval.Hour or CandleInterval.Minute)
                 {
-                    for (var i = 0; i < Math.Ceiling(size.Width / candleWidth); i++)
+                    for (var i = 0; i < Math.Min(candles.Count, Math.Ceiling(size.Width / candleWidth)); i++)
                     {
                         var candle = candles[i];
                         if (TradingDay.IsPreMarket(candle.Time))
