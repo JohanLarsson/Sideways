@@ -24,10 +24,11 @@
                        VerticalAlignment="Top"
                        Foreground="Gray"
                        Text="W" />
-            <sideways:Chart x:Name="WeeklyChart">
-                <sideways:CandleSticks CandleInterval="Week"
-                                       ItemsSource="{Binding CurrentSymbol.Candles}"
-                                       Time="{Binding EndTime}" />
+            <sideways:Chart x:Name="WeeklyChart"
+                            CandleInterval="Week"
+                            ItemsSource="{Binding CurrentSymbol.Candles}"
+                            Time="{Binding EndTime}">
+                <sideways:CandleSticks />
             </sideways:Chart>
         </Grid>
 
@@ -71,7 +72,7 @@
                                         Period="200"
                                         PriceRange="{Binding ElementName=DayCandles, Path=PriceRange}" />
 
-                <sideways:CandleSticks x:Name="DayCandles" Time="{Binding EndTime, Mode=TwoWay}" />
+                <sideways:CandleSticks x:Name="DayCandles" />
             </sideways:Chart>
         </Grid>
 
@@ -84,7 +85,7 @@
                             CandleInterval="Hour"
                             ItemsSource="{Binding CurrentSymbol.Candles}"
                             Time="{Binding EndTime}">
-                <sideways:CandleSticks Time="{Binding EndTime, Mode=TwoWay}" />
+                <sideways:CandleSticks />
             </sideways:Chart>
         </Grid>
 
@@ -93,10 +94,11 @@
                        VerticalAlignment="Top"
                        Foreground="Gray"
                        Text="m" />
-            <sideways:Chart x:Name="MinuteChart">
-                <sideways:CandleSticks CandleInterval="Minute"
-                                       ItemsSource="{Binding CurrentSymbol.Candles}"
-                                       Time="{Binding EndTime}" />
+            <sideways:Chart x:Name="MinuteChart"
+                            CandleInterval="Minute"
+                            ItemsSource="{Binding CurrentSymbol.Candles}"
+                            Time="{Binding EndTime}">
+                <sideways:CandleSticks />
             </sideways:Chart>
         </Grid>
     </Grid>

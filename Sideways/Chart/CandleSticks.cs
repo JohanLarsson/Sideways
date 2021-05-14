@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
-    using System.Windows.Input;
     using System.Windows.Media;
 
     public class CandleSticks : CandleSeries
@@ -43,29 +42,6 @@
         protected override Visual GetVisualChild(int index) => index == 0
             ? this.drawing
             : throw new ArgumentOutOfRangeException(nameof(index));
-
-        protected override void OnMouseWheel(MouseWheelEventArgs e)
-        {
-            if (this.ItemsSource is { } candles)
-            {
-                this.SetCurrentValue(
-                    TimeProperty,
-                    candles.Skip(
-                        this.Time,
-                        this.CandleInterval,
-                        Delta()));
-
-                int Delta()
-                {
-                    if (e.StylusDevice is { })
-                    {
-                        return Math.Sign(e.Delta) * Math.Max(1, Math.Abs(e.Delta) / this.CandleWidth);
-                    }
-
-                    return Math.Sign(e.Delta);
-                }
-            }
-        }
 
         protected override void OnRender(DrawingContext drawingContext)
         {

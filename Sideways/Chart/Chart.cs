@@ -4,6 +4,7 @@
     using System.Collections;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
     using System.Windows.Markup;
     using System.Windows.Media;
 
@@ -24,7 +25,7 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 default(DateTimeOffset),
-                FrameworkPropertyMetadataOptions.Inherits));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         /// <summary>Identifies the <see cref="ItemsSource"/> dependency property.</summary>
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.RegisterAttached(
@@ -144,6 +145,29 @@
                     background,
                     null,
                     new Rect(this.RenderSize));
+            }
+        }
+
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            if (this.ItemsSource is { } candles)
+            {
+                this.SetCurrentValue(
+                    TimeProperty,
+                    candles.Skip(
+                        this.Time,
+                        this.CandleInterval,
+                        Delta()));
+
+                int Delta()
+                {
+                    if (e.StylusDevice is { })
+                    {
+                        return Math.Sign(e.Delta) * Math.Max(1, Math.Abs(e.Delta) / this.CandleWidth);
+                    }
+
+                    return Math.Sign(e.Delta);
+                }
             }
         }
     }
