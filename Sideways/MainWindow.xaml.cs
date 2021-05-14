@@ -39,7 +39,7 @@
             {
                 if (this.DataContext is MainViewModel { CurrentSymbol: { Candles: { } candles } } vm)
                 {
-                    vm.EndTime = candles.Skip(vm.EndTime, CandleInterval.Day, count);
+                    vm.Time = candles.Skip(vm.Time, CandleInterval.Day, count);
                 }
             }
         }

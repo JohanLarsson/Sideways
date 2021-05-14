@@ -1,6 +1,7 @@
 ﻿<Window x:Class="Sideways.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:Sideways.Converters"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sideways="clr-namespace:Sideways"
@@ -27,50 +28,48 @@
                             CandleInterval="Week"
                             ExtraCandles="20"
                             ItemsSource="{Binding CurrentSymbol.Candles}"
-                            Time="{Binding EndTime}">
-                <sideways:MovingAverage Brush="Purple"
-                                        Period="10"/>
+                            Time="{Binding Time}">
+                <sideways:MovingAverage Brush="Purple" Period="10" />
 
-                <sideways:MovingAverage Brush="Yellow"
-                                        Period="20" />
+                <sideways:MovingAverage Brush="Yellow" Period="20" />
                 <sideways:CandleSticks />
             </sideways:Chart>
         </Grid>
 
         <Grid Grid.Column="1">
             <StackPanel>
-                <TextBlock HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
+                <TextBlock FontSize="24"
                            Foreground="Gray"
                            Text="{Binding CurrentSymbol.Symbol}" />
-                <TextBlock HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
-                           Foreground="Gray"
-                           Text="{Binding EndTime, StringFormat='f'}" />
+
+                <TextBlock Foreground="Gray">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{x:Static converters:AdrConverter.Default}" StringFormat="ADR {0:F1}%">
+                            <Binding ElementName="DailyChart" Path="Candles" />
+                            <Binding Path="Time" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+
+                <TextBlock Foreground="Gray" Text="{Binding Time, StringFormat='f'}" />
             </StackPanel>
 
             <sideways:Chart x:Name="DailyChart"
                             CandleInterval="Day"
                             ExtraCandles="200"
                             ItemsSource="{Binding CurrentSymbol.Candles}"
-                            Time="{Binding EndTime}">
-                <sideways:MovingAverage Brush="Purple"
-                                        Period="10"/>
+                            Time="{Binding Time}">
+                <sideways:MovingAverage Brush="Purple" Period="10" />
 
-                <sideways:MovingAverage Brush="Yellow"
-                                        Period="20" />
+                <sideways:MovingAverage Brush="Yellow" Period="20" />
 
-                <sideways:MovingAverage Brush="Red"
-                                        Period="50" />
+                <sideways:MovingAverage Brush="Red" Period="50" />
 
-                <sideways:MovingAverage Brush="Orange"
-                                        Period="100" />
+                <sideways:MovingAverage Brush="Orange" Period="100" />
 
-                <sideways:MovingAverage Brush="CadetBlue"
-                                        Period="150" />
+                <sideways:MovingAverage Brush="CadetBlue" Period="150" />
 
-                <sideways:MovingAverage Brush="Green"
-                                        Period="200" />
+                <sideways:MovingAverage Brush="Green" Period="200" />
 
                 <sideways:CandleSticks />
             </sideways:Chart>
@@ -85,12 +84,10 @@
                             CandleInterval="Hour"
                             ExtraCandles="20"
                             ItemsSource="{Binding CurrentSymbol.Candles}"
-                            Time="{Binding EndTime}">
-                <sideways:MovingAverage Brush="Purple"
-                                        Period="10"/>
+                            Time="{Binding Time}">
+                <sideways:MovingAverage Brush="Purple" Period="10" />
 
-                <sideways:MovingAverage Brush="Yellow"
-                                        Period="20" />
+                <sideways:MovingAverage Brush="Yellow" Period="20" />
                 <sideways:CandleSticks />
             </sideways:Chart>
         </Grid>

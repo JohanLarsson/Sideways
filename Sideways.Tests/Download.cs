@@ -36,17 +36,18 @@
             "DOCU",
             "EA",
             "EXPR",
+            "ETHE",
             "F",
             "FB",
             "FOUR",
-            //// "FSR", // Missing minutes for many slices.
-            //// "FUBO", // Missing minutes for many slices.
-            //// "FUTU", // Missing minutes for many slices.
+            "FSR",
+            "FUBO",
+            "FUTU",
             "FCEL",
-            //// "GBTC", // Missing minutes for many slices.
+            "GBTC",
             "GLD",
             "GOGO",
-            //// "HGEN", // Missing minutes for many slices.
+            "HGEN",
             "INO",
             "IWM",
             "JMIA",
@@ -62,7 +63,7 @@
             "NVAX",
             "NVDA",
             "NIO",
-            //// "OCGN", // Missing minutes for many slices.
+            "OCGN",
             "PLTR",
             "PTON",
             "PXLW",
@@ -73,7 +74,7 @@
             "SAVE",
             "SHOP",
             "SNAP",
-            //// "SPCE", // Missing minutes for many slices.
+            "SPCE",
             "SPY",
             "SQ",
             "SLQT",

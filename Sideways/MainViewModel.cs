@@ -12,7 +12,7 @@
         private static readonly string ApiKeyFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways/AlphaVantage.key");
         private readonly Downloader downloader = new(new HttpClientHandler(), ApiKey());
         private readonly DataSource dataSource;
-        private DateTimeOffset endTime = DateTimeOffset.Now;
+        private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
         private bool disposed;
 
@@ -23,17 +23,17 @@
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public DateTimeOffset EndTime
+        public DateTimeOffset Time
         {
-            get => this.endTime;
+            get => this.time;
             set
             {
-                if (value == this.endTime)
+                if (value == this.time)
                 {
                     return;
                 }
 
-                this.endTime = value;
+                this.time = value;
                 this.OnPropertyChanged();
             }
         }
