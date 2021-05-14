@@ -8,17 +8,7 @@
 
     public class CandleSticks : CandleSeries
     {
-        private static readonly DependencyPropertyKey PriceRangePropertyKey = DependencyProperty.RegisterReadOnly(
-            nameof(PriceRange),
-            typeof(FloatRange?),
-            typeof(CandleSticks),
-            new PropertyMetadata(default(FloatRange?)));
-
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
-        public static readonly DependencyProperty PriceRangeProperty = PriceRangePropertyKey.DependencyProperty;
-
         private readonly DrawingVisual drawing;
-        private readonly List<Candle> visibleCandles = new();
 
         static CandleSticks()
         {
@@ -29,12 +19,6 @@
         {
             this.drawing = new DrawingVisual();
             this.AddVisualChild(this.drawing);
-        }
-
-        public FloatRange? PriceRange
-        {
-            get => (FloatRange?)this.GetValue(PriceRangeProperty);
-            protected set => this.SetValue(PriceRangePropertyKey, value);
         }
 
         protected override int VisualChildrenCount => 1;
@@ -52,25 +36,12 @@
                 new Rect(this.RenderSize));
 
             var candleWidth = this.CandleWidth;
-            this.visibleCandles.Clear();
-            if (this.ItemsSource is { } itemsSource)
+            using var context = this.drawing.RenderOpen();
+            if (this.PriceRange is { } priceRange)
             {
-                var min = float.MaxValue;
-                var max = float.MinValue;
-                foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval)
-                                                  .Take((int)Math.Ceiling(size.Width / candleWidth)))
-                {
-                    min = Math.Min(min, candle.Low);
-                    max = Math.Max(max, candle.High);
-                    this.visibleCandles.Add(candle);
-                }
-
-                var priceRange = new FloatRange(min, max);
-                this.PriceRange = priceRange;
-                using var context = this.drawing.RenderOpen();
                 var position = CandlePosition.Create(size.Width, candleWidth);
 
-                foreach (var candle in this.visibleCandles)
+                foreach (var candle in this.Candles)
                 {
                     var brush = Brushes.Get(candle);
 
@@ -109,13 +80,6 @@
                         static Point Round(Point p) => new(Math.Round(p.X), Math.Round(p.Y));
                     }
                 }
-            }
-            else
-            {
-                this.PriceRange = null;
-
-                // clear
-                using var context = this.drawing.RenderOpen();
             }
         }
 

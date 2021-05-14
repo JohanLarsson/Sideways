@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
@@ -36,6 +38,15 @@
                 default(Candles),
                 FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
 
+        /// <summary>Identifies the <see cref="Candles"/> dependency property.</summary>
+        public static readonly DependencyProperty CandlesProperty = DependencyProperty.RegisterAttached(
+            nameof(Candles),
+            typeof(IReadOnlyList<Candle>),
+            typeof(Chart),
+            new FrameworkPropertyMetadata(
+                default(IReadOnlyList<Candle>),
+                FrameworkPropertyMetadataOptions.Inherits));
+
         /// <summary>Identifies the <see cref="CandleInterval"/> dependency property.</summary>
         public static readonly DependencyProperty CandleIntervalProperty = DependencyProperty.RegisterAttached(
             nameof(CandleInterval),
@@ -54,9 +65,21 @@
                 5,
                 FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
 
+        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
+        public static readonly DependencyProperty PriceRangeProperty = DependencyProperty.RegisterAttached(
+            nameof(PriceRange),
+            typeof(FloatRange?),
+            typeof(Chart),
+            new FrameworkPropertyMetadata(
+                null,
+                FrameworkPropertyMetadataOptions.Inherits));
+
+        private readonly List<Candle> candles = new();
+
         public Chart()
         {
             this.Children = new UIElementCollection(this, this);
+            this.Candles = this.candles;
         }
 
         public Brush Background
@@ -77,6 +100,14 @@
             set => this.SetValue(ItemsSourceProperty, value);
         }
 
+#pragma warning disable WPF0012 // CLR property type should match registered type.
+        public IReadOnlyList<Candle> Candles
+#pragma warning restore WPF0012 // CLR property type should match registered type.
+        {
+            get => (IReadOnlyList<Candle>)this.GetValue(CandlesProperty);
+            set => this.SetValue(CandlesProperty, value);
+        }
+
         public CandleInterval CandleInterval
         {
             get => (CandleInterval)this.GetValue(CandleIntervalProperty);
@@ -87,6 +118,12 @@
         {
             get => (int)this.GetValue(CandleWidthProperty);
             set => this.SetValue(CandleWidthProperty, value);
+        }
+
+        public FloatRange? PriceRange
+        {
+            get => (FloatRange?)this.GetValue(PriceRangeProperty);
+            protected set => this.SetValue(PriceRangeProperty, value);
         }
 
         public UIElementCollection Children { get; }
@@ -112,6 +149,33 @@
             foreach (UIElement child in this.Children)
             {
                 child.Arrange(new Rect(finalSize));
+            }
+
+            this.candles.Clear();
+            if (finalSize.Width > 0 &&
+                finalSize.Height > 0 &&
+                this.ItemsSource is { } itemsSource)
+            {
+                var min = float.MaxValue;
+                var max = float.MinValue;
+                var visible = (int)Math.Ceiling(finalSize.Width / this.CandleWidth);
+                foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval)
+                                                  .Take(visible + 200))
+                {
+                    if (this.candles.Count <= visible)
+                    {
+                        min = Math.Min(min, candle.Low);
+                        max = Math.Max(max, candle.High);
+                    }
+
+                    this.candles.Add(candle);
+                }
+
+                this.SetCurrentValue(PriceRangeProperty, new FloatRange(min, max));
+            }
+            else
+            {
+                this.SetCurrentValue(PriceRangeProperty, null);
             }
 
             return base.ArrangeOverride(finalSize);

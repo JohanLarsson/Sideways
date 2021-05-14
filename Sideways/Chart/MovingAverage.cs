@@ -23,15 +23,6 @@
             typeof(MovingAverage),
             new PropertyMetadata(default(int)));
 
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
-        public static readonly DependencyProperty PriceRangeProperty = DependencyProperty.Register(
-            nameof(PriceRange),
-            typeof(FloatRange?),
-            typeof(MovingAverage),
-            new FrameworkPropertyMetadata(
-                default(FloatRange?),
-                FrameworkPropertyMetadataOptions.AffectsRender));
-
         private readonly DrawingVisual drawing;
 
         private Pen? pen;
@@ -54,12 +45,6 @@
             set => this.SetValue(PeriodProperty, value);
         }
 
-        public FloatRange? PriceRange
-        {
-            get => (FloatRange?)this.GetValue(PriceRangeProperty);
-            set => this.SetValue(PriceRangeProperty, value);
-        }
-
         protected override int VisualChildrenCount => 1;
 
         protected override Visual GetVisualChild(int index) => index == 0
@@ -70,16 +55,14 @@
         {
             var size = this.RenderSize;
             var candleWidth = this.CandleWidth;
-            if (this.ItemsSource is { } itemsSource &&
-                this.pen is { } &&
+            if (this.pen is { } &&
                 this.PriceRange is { } priceRange)
             {
                 using var context = this.drawing.RenderOpen();
                 Point? previous = null;
                 var x = size.Width - (candleWidth / 2);
-                foreach (var a in itemsSource.Get(this.Time, this.CandleInterval)
-                                                  .MovingAverage(this.Period, x => x.Close)
-                                                  .Take((int)Math.Ceiling(size.Width / candleWidth)))
+                foreach (var a in this.Candles.MovingAverage(this.Period, c => c.Close)
+                                                   .Take((int)Math.Ceiling(size.Width / candleWidth)))
                 {
                     var p2 = new Point(x, Y(a));
                     if (previous is { } p1)

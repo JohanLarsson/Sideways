@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.Generic;
     using System.Windows;
 
     public abstract class CandleSeries : FrameworkElement
@@ -33,10 +34,28 @@
                 5,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
+        public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
+            typeof(CandleSeries),
+            new FrameworkPropertyMetadata(
+                null,
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
+        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
+        public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(typeof(CandleSeries));
+
         public Candles? ItemsSource
         {
             get => (Candles?)this.GetValue(ItemsSourceProperty);
             set => this.SetValue(ItemsSourceProperty, value);
+        }
+
+#pragma warning disable WPF0012 // CLR property type should match registered type.
+        public IReadOnlyList<Candle> Candles
+#pragma warning restore WPF0012 // CLR property type should match registered type.
+        {
+            get => (IReadOnlyList<Candle>)this.GetValue(CandlesProperty);
+            set => this.SetValue(CandlesProperty, value);
         }
 
         public DateTimeOffset Time
@@ -55,6 +74,12 @@
         {
             get => (int)this.GetValue(CandleWidthProperty);
             set => this.SetValue(CandleWidthProperty, value);
+        }
+
+        public FloatRange? PriceRange
+        {
+            get => (FloatRange?)this.GetValue(PriceRangeProperty);
+            set => this.SetValue(PriceRangeProperty, value);
         }
     }
 }
