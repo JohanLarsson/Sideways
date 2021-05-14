@@ -32,41 +32,52 @@
             using var context = this.drawing.RenderOpen();
             if (this.PriceRange is { } priceRange)
             {
+                var candles = this.Candles;
                 if (this.CandleInterval is CandleInterval.Hour or CandleInterval.Minute)
                 {
-                    var x = size.Width;
-                    foreach (var candle in this.Candles)
+                    for (var i = 0; i < Math.Ceiling(size.Width / candleWidth); i++)
                     {
+                        var candle = candles[i];
                         if (TradingDay.IsPreMarket(candle.Time))
                         {
+                            var p1 = new Point(X(i), 0);
+                            Skip(c => TradingDay.IsPreMarket(c.Time));
                             context.DrawRectangle(
                                 Brushes.PreMarket,
                                 null,
                                 Rect(
-                                    new Point(x, 0),
-                                    new Point(x - candleWidth, size.Height)));
+                                    p1,
+                                    new Point(X(i + 1), size.Height)));
                         }
-
-                        if (TradingDay.IsPostMarket(candle.Time))
+                        else if (TradingDay.IsPostMarket(candle.Time))
                         {
+                            var p1 = new Point(X(i), 0);
+                            Skip(c => TradingDay.IsPostMarket(c.Time));
+
                             context.DrawRectangle(
                                 Brushes.PostMarket,
                                 null,
                                 Rect(
-                                    new Point(x, 0),
-                                    new Point(x - candleWidth, size.Height)));
+                                    p1,
+                                    new Point(X(i + 1), size.Height)));
                         }
 
-                        x -= candleWidth;
-                        if (x < 0)
+                        void Skip(Func<Candle, bool> selector)
                         {
-                            break;
+                            i++;
+                            while (i < candles.Count - 1 &&
+                                   selector(candles[i + 1]))
+                            {
+                                i++;
+                            }
                         }
+
+                        double X(int index) => size.Width - (index * candleWidth);
                     }
                 }
 
                 var position = CandlePosition.Create(size.Width, candleWidth);
-                foreach (var candle in this.Candles)
+                foreach (var candle in candles)
                 {
                     var brush = Brushes.Get(candle);
 
