@@ -33,49 +33,6 @@
             if (this.PriceRange is { } priceRange)
             {
                 var candles = this.Candles;
-                if (this.CandleInterval is CandleInterval.Hour or CandleInterval.Minute)
-                {
-                    for (var i = 0; i < Math.Min(candles.Count, Math.Ceiling(size.Width / candleWidth)); i++)
-                    {
-                        var candle = candles[i];
-                        if (TradingDay.IsPreMarket(candle.Time))
-                        {
-                            var p1 = new Point(X(i), 0);
-                            Skip(c => TradingDay.IsPreMarket(c.Time));
-                            context.DrawRectangle(
-                                Brushes.PreMarket,
-                                null,
-                                Rect(
-                                    p1,
-                                    new Point(X(i + 1), size.Height)));
-                        }
-                        else if (TradingDay.IsPostMarket(candle.Time))
-                        {
-                            var p1 = new Point(X(i), 0);
-                            Skip(c => TradingDay.IsPostMarket(c.Time));
-
-                            context.DrawRectangle(
-                                Brushes.PostMarket,
-                                null,
-                                Rect(
-                                    p1,
-                                    new Point(X(i + 1), size.Height)));
-                        }
-
-                        void Skip(Func<Candle, bool> selector)
-                        {
-                            i++;
-                            while (i < candles.Count - 1 &&
-                                   selector(candles[i + 1]))
-                            {
-                                i++;
-                            }
-                        }
-
-                        double X(int index) => Math.Max(0, size.Width - (index * candleWidth));
-                    }
-                }
-
                 var position = CandlePosition.Create(size.Width, candleWidth);
                 foreach (var candle in candles)
                 {

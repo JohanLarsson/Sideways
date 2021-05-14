@@ -18,7 +18,9 @@
             nameof(Background),
             typeof(Brush),
             typeof(Chart),
-            new PropertyMetadata(System.Windows.Media.Brushes.Transparent));
+            new FrameworkPropertyMetadata(
+                System.Windows.Media.Brushes.Transparent,
+                FrameworkPropertyMetadataOptions.AffectsRender));
 
         /// <summary>Identifies the <see cref="Time"/> dependency property.</summary>
         public static readonly DependencyProperty TimeProperty = DependencyProperty.RegisterAttached(
@@ -27,7 +29,7 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 default(DateTimeOffset),
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsArrange));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender));
 
         /// <summary>Identifies the <see cref="ItemsSource"/> dependency property.</summary>
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.RegisterAttached(
@@ -61,7 +63,7 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 CandleInterval.None,
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender));
 
         /// <summary>Identifies the <see cref="CandleWidth"/> dependency property.</summary>
         public static readonly DependencyProperty CandleWidthProperty = DependencyProperty.RegisterAttached(
@@ -70,7 +72,7 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 5,
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender));
 
         /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
         public static readonly DependencyProperty PriceRangeProperty = DependencyProperty.RegisterAttached(
@@ -205,6 +207,81 @@
                     background,
                     null,
                     new Rect(this.RenderSize));
+
+                var size = this.RenderSize;
+                var candleWidth = this.CandleWidth;
+                var candles = this.Candles;
+                switch (this.CandleInterval)
+                {
+                    case CandleInterval.Hour or CandleInterval.Minute:
+                        for (var i = 0; i < Math.Min(candles.Count, Math.Ceiling(size.Width / candleWidth)); i++)
+                        {
+                            var candle = candles[i];
+                            if (TradingDay.IsPreMarket(candle.Time))
+                            {
+                                var p1 = new Point(X(i), 0);
+                                Skip(c => TradingDay.IsPreMarket(c.Time));
+                                drawingContext.DrawRectangle(
+                                    Brushes.PreMarket,
+                                    null,
+                                    new Rect(
+                                        p1,
+                                        new Point(X(i + 1), size.Height)));
+                            }
+                            else if (TradingDay.IsPostMarket(candle.Time))
+                            {
+                                var p1 = new Point(X(i), 0);
+                                Skip(c => TradingDay.IsPostMarket(c.Time));
+
+                                drawingContext.DrawRectangle(
+                                    Brushes.PostMarket,
+                                    null,
+                                    new Rect(
+                                        p1,
+                                        new Point(X(i + 1), size.Height)));
+                            }
+
+                            void Skip(Func<Candle, bool> selector)
+                            {
+                                i++;
+                                while (i < candles.Count - 1 &&
+                                       selector(candles[i + 1]))
+                                {
+                                    i++;
+                                }
+                            }
+
+                            double X(int index) => Math.Max(0, size.Width - (index * candleWidth));
+                        }
+
+                        break;
+                    case CandleInterval.Day:
+                        for (var i = 0; i < Math.Min(candles.Count, Math.Ceiling(size.Width / candleWidth)); i++)
+                        {
+                            if (candles[i].Time.Month % 2 == 0)
+                            {
+                                var p1 = new Point(X(i), 0);
+                                i++;
+                                while (i < candles.Count - 1 &&
+                                       candles[i + 1].Time.Month % 2 == 0)
+                                {
+                                    i++;
+                                }
+
+                                drawingContext.DrawRectangle(
+                                    Brushes.Even,
+                                    null,
+                                    new Rect(
+                                        p1,
+                                        new Point(X(i + 1), size.Height)));
+
+                            }
+
+                            double X(int index) => Math.Max(0, size.Width - (index * candleWidth));
+                        }
+
+                        break;
+                }
             }
         }
 
