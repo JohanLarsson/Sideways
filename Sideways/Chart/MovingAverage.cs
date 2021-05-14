@@ -55,10 +55,10 @@
         {
             var size = this.RenderSize;
             var candleWidth = this.CandleWidth;
+            using var context = this.drawing.RenderOpen();
             if (this.pen is { } &&
                 this.PriceRange is { } priceRange)
             {
-                using var context = this.drawing.RenderOpen();
                 Point? previous = null;
                 var x = size.Width - (candleWidth / 2);
                 foreach (var a in this.Candles.MovingAverage(this.Period, c => c.Close)
@@ -77,11 +77,6 @@
                     x -= this.CandleWidth;
                     double Y(float price) => priceRange.Y(price, size.Height);
                 }
-            }
-            else
-            {
-                // clear
-                using var context = this.drawing.RenderOpen();
             }
         }
 

@@ -1,8 +1,6 @@
 ﻿namespace Sideways
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Windows;
     using System.Windows.Media;
 
@@ -30,11 +28,6 @@
         protected override void OnRender(DrawingContext drawingContext)
         {
             var size = this.RenderSize;
-            drawingContext.DrawRectangle(
-                System.Windows.Media.Brushes.Transparent,
-                null,
-                new Rect(this.RenderSize));
-
             var candleWidth = this.CandleWidth;
             using var context = this.drawing.RenderOpen();
             if (this.PriceRange is { } priceRange)
