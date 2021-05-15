@@ -21,7 +21,7 @@
             typeof(TextTickBar),
             new FrameworkPropertyMetadata(
                 null,
-                FrameworkPropertyMetadataOptions.AffectsRender));
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsParentMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
 
         /// <summary>
         /// Fill property
@@ -40,7 +40,25 @@
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            return new(30, TextElement.GetFontSize(this) * TextElement.GetFontFamily(this).LineSpacing);
+            if (this.Range is { Max: var max } range &&
+                availableSize.Height is > 0 and < double.PositiveInfinity)
+            {
+                var text = new FormattedText(
+                    max.ToString(StringFormat(Step(range, availableSize.Height)), DateTimeFormatInfo.InvariantInfo),
+                    CultureInfo.InvariantCulture,
+                    FlowDirection.LeftToRight,
+                    new Typeface(
+                        TextElement.GetFontFamily(this),
+                        TextElement.GetFontStyle(this),
+                        TextElement.GetFontWeight(this),
+                        TextElement.GetFontStretch(this)),
+                    TextElement.GetFontSize(this),
+                    this.Fill,
+                    96);
+                return new Size(text.Width, text.Height);
+            }
+
+            return Size.Empty;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
@@ -56,18 +74,14 @@
                 var fontSize = TextElement.GetFontSize(this);
                 var fill = this.Fill;
 
-                var step = (range.Max - range.Min) switch
-                {
-                    < 10 => 1,
-                    < 100 => 10,
-                    < 1000 => 100,
-                    < 10000 => 1000,
-                };
-
+                var step = Step(range, actualHeight);
+                var format = StringFormat(step);
                 var value = range.Min + step - (range.Min % step);
                 while (value < range.Max)
                 {
-                    DrawText(value.ToString(CultureInfo.CurrentUICulture), range.Y(value, actualHeight));
+#pragma warning disable CA1305 // Specify IFormatProvider
+                    DrawText(value.ToString(format, CultureInfo.CurrentUICulture), range.Y(value, actualHeight));
+#pragma warning restore CA1305 // Specify IFormatProvider
                     value += step;
                 }
 
@@ -85,6 +99,37 @@
                         new Point(0, y));
                 }
             }
+        }
+
+        private static float Step(FloatRange range, double height)
+        {
+            var step = 1.0f;
+            while (true)
+            {
+                switch (range.Y(range.Max - step, height))
+                {
+                    case < 50:
+                        step *= 10;
+                        break;
+                    case > 500:
+                        step /= 10;
+                        break;
+                    default:
+                        return step;
+                }
+            }
+        }
+
+        private static string StringFormat(float step)
+        {
+            return step switch
+            {
+                < 0.001f => "F4",
+                < 0.01f => "F3",
+                < 0.1f => "F2",
+                < 1 => "F1",
+                _ => "F0",
+            };
         }
     }
 }

@@ -82,6 +82,7 @@
             "TIGR",
             "TNA",
             "TWLO",
+            "URG",
             "WIX",
             "X",
             "XM",

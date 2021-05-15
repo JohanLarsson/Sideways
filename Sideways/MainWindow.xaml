@@ -56,7 +56,8 @@
             </sideways:Chart>
         </Grid>
 
-        <GridSplitter Grid.Column="1" Style="{StaticResource VerticalAxisGridSplitter}" />
+        <GridSplitter Grid.Column="1"
+                      Style="{StaticResource VerticalAxisGridSplitter}" />
 
         <Grid Grid.Column="2">
             <StackPanel Margin="10,10">
@@ -123,7 +124,8 @@
             </sideways:Chart>
         </Grid>
 
-        <GridSplitter Grid.Column="3" Style="{StaticResource VerticalAxisGridSplitter}" />
+        <GridSplitter Grid.Column="3"
+                      Style="{StaticResource VerticalAxisGridSplitter}" />
 
         <Grid Grid.Column="4">
             <TextBlock HorizontalAlignment="Left"
