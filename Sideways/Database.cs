@@ -10,9 +10,11 @@
 
     public static class Database
     {
-        public static ImmutableArray<string> ReadSymbols()
+        private static readonly FileInfo DbFile = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Database.sqlite3"));
+
+        public static ImmutableArray<string> ReadSymbols(FileInfo? file = null)
         {
-            using var connection = new SqliteConnection($"Data Source={Source()}");
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
             using var command = new SqliteCommand(
                 "SELECT DISTINCT symbol FROM days",
@@ -27,9 +29,9 @@
             return builder.ToImmutable();
         }
 
-        public static DescendingCandles ReadDays(string symbol)
+        public static DescendingCandles ReadDays(string symbol, FileInfo? file = null)
         {
-            using var connection = new SqliteConnection($"Data Source={Source()}");
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
             using var command = new SqliteCommand(
                 "SELECT date, open, high, low, close, volume FROM days" +
@@ -41,9 +43,9 @@
             return ReadCandles(reader);
         }
 
-        public static DescendingCandles ReadDays(string symbol, DateTimeOffset from, DateTimeOffset to)
+        public static DescendingCandles ReadDays(string symbol, DateTimeOffset from, DateTimeOffset to, FileInfo? file = null)
         {
-            using var connection = new SqliteConnection($"Data Source={Source()}");
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
             using var command = new SqliteCommand(
                 "SELECT date, open, high, low, close, volume FROM days" +
@@ -57,9 +59,9 @@
             return ReadCandles(reader);
         }
 
-        public static DescendingCandles ReadMinutes(string symbol)
+        public static DescendingCandles ReadMinutes(string symbol, FileInfo? file = null)
         {
-            using var connection = new SqliteConnection($"Data Source={Source()}");
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
             using var command = new SqliteCommand(
                 "SELECT time, open, high, low, close, volume FROM minutes" +
@@ -71,9 +73,9 @@
             return ReadCandles(reader);
         }
 
-        public static DescendingCandles ReadMinutes(string symbol, DateTimeOffset from, DateTimeOffset to)
+        public static DescendingCandles ReadMinutes(string symbol, DateTimeOffset from, DateTimeOffset to, FileInfo? file = null)
         {
-            using var connection = new SqliteConnection($"Data Source={Source()}");
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
             using var command = new SqliteCommand(
                 "SELECT time, open, high, low, close, volume FROM minutes" +
@@ -87,9 +89,9 @@
             return ReadCandles(reader);
         }
 
-        public static DescendingSplits ReadSplits(string symbol)
+        public static DescendingSplits ReadSplits(string symbol, FileInfo? file = null)
         {
-            using var connection = new SqliteConnection($"Data Source={Source()}");
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
             using var command = new SqliteCommand(
                 "SELECT date, coefficient FROM splits" +
@@ -110,9 +112,9 @@
             return builder.Create();
         }
 
-        public static void WriteDays(string symbol, IEnumerable<AdjustedCandle> candles)
+        public static void WriteDays(string symbol, IEnumerable<AdjustedCandle> candles, FileInfo? file = null)
         {
-            using var connection = new SqliteConnection($"Data Source={Source()}");
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
 
             using var transaction = connection.BeginTransaction();
@@ -173,9 +175,9 @@
             transaction.Commit();
         }
 
-        public static void WriteMinutes(string symbol, IEnumerable<Candle> candles)
+        public static void WriteMinutes(string symbol, IEnumerable<Candle> candles, FileInfo? file = null)
         {
-            using var connection = new SqliteConnection($"Data Source={Source()}");
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
 
             using var transaction = connection.BeginTransaction();
@@ -228,16 +230,14 @@
 
         private static int AsInt(this float f) => (int)Math.Round(f * 100);
 
-        private static string Source()
+        private static string Source(FileInfo file)
         {
-            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways");
-            if (!Directory.Exists(dir))
+            if (!Directory.Exists(file.Directory!.FullName))
             {
-                Directory.CreateDirectory(dir);
+                Directory.CreateDirectory(file.Directory.FullName);
             }
 
-            var file = Path.Combine(dir, "Database.sqlite3");
-            if (!File.Exists(file))
+            if (!File.Exists(file.FullName))
             {
                 using var connection = new SqliteConnection($"Data Source={file}");
                 connection.Open();
@@ -286,7 +286,7 @@
                 transaction.Commit();
             }
 
-            return file;
+            return file.FullName;
         }
     }
 }
