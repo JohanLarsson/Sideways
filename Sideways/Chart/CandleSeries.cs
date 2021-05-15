@@ -34,14 +34,14 @@
                 5,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
-        public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
+        /// <summary>Identifies the <see cref="Range"/> dependency property.</summary>
+        public static readonly DependencyProperty RangeProperty = Chart.RangeProperty.AddOwner(
             typeof(CandleSeries),
             new FrameworkPropertyMetadata(
                 null,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
+        /// <summary>Identifies the <see cref="Range"/> dependency property.</summary>
         public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(typeof(CandleSeries));
 
         static CandleSeries()
@@ -81,10 +81,10 @@
             set => this.SetValue(CandleWidthProperty, value);
         }
 
-        public FloatRange? PriceRange
+        public FloatRange? Range
         {
-            get => (FloatRange?)this.GetValue(PriceRangeProperty);
-            set => this.SetValue(PriceRangeProperty, value);
+            get => (FloatRange?)this.GetValue(RangeProperty);
+            set => this.SetValue(RangeProperty, value);
         }
     }
 }

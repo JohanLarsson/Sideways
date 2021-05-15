@@ -16,7 +16,9 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
@@ -34,6 +36,11 @@
                         <RowDefinition />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
                     <Grid>
                         <sideways:MovingAverage Brush="Purple" Period="10" />
 
@@ -42,12 +49,16 @@
                         <sideways:CandleSticks />
                     </Grid>
 
-                    <sideways:TimeTickBar Grid.Row="1" />
+                    <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+
+                    <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
                 </Grid>
             </sideways:Chart>
         </Grid>
 
-        <Grid Grid.Column="1">
+        <GridSplitter Grid.Column="1" Style="{StaticResource VerticalAxisGridSplitter}" />
+
+        <Grid Grid.Column="2">
             <StackPanel Margin="10,10">
                 <TextBlock FontSize="24"
                            Foreground="{x:Static sideways:Brushes.Gray}"
@@ -71,7 +82,7 @@
                     </TextBlock.Text>
                 </TextBlock>
 
-                <TextBlock Foreground="Gray" Text="{Binding Time, StringFormat='f'}" />
+                <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Time, StringFormat='f'}" />
             </StackPanel>
 
             <sideways:Chart x:Name="DailyChart"
@@ -84,6 +95,11 @@
                         <RowDefinition />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
                     <Grid>
                         <sideways:MovingAverage Brush="Purple" Period="10" />
 
@@ -100,12 +116,16 @@
                         <sideways:CandleSticks />
                     </Grid>
 
-                    <sideways:TimeTickBar Grid.Row="1" />
+                    <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+
+                    <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
                 </Grid>
             </sideways:Chart>
         </Grid>
 
-        <Grid Grid.Column="2">
+        <GridSplitter Grid.Column="3" Style="{StaticResource VerticalAxisGridSplitter}" />
+
+        <Grid Grid.Column="4">
             <TextBlock HorizontalAlignment="Left"
                        VerticalAlignment="Top"
                        Foreground="{x:Static sideways:Brushes.Gray}"
@@ -120,6 +140,11 @@
                         <RowDefinition />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
                     <Grid>
                         <sideways:MovingAverage Brush="Purple" Period="10" />
 
@@ -128,7 +153,9 @@
                         <sideways:CandleSticks />
                     </Grid>
 
-                    <sideways:TimeTickBar Grid.Row="1" />
+                    <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+
+                    <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
                 </Grid>
             </sideways:Chart>
         </Grid>

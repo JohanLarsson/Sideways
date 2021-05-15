@@ -9,7 +9,8 @@
         public static readonly SolidColorBrush PreMarket = Create(Color.FromArgb(10, 255, 255, 20));
         public static readonly SolidColorBrush PostMarket = Create(Color.FromArgb(10, 50, 50, 255));
         public static readonly SolidColorBrush Even = Create(Color.FromArgb(10, 80, 80, 80));
-        public static readonly SolidColorBrush Gray = System.Windows.Media.Brushes.Gray;
+        public static readonly SolidColorBrush Gray = Create(Color.FromArgb(byte.MaxValue, 128, 128, 128));
+        public static readonly SolidColorBrush DarkGray = Create(Color.FromArgb(byte.MaxValue, 40, 40, 40));
 
         public static SolidColorBrush Get(Candle candle) => candle.Open < candle.Close ? Increasing : Decreasing;
 

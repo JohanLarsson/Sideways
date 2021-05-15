@@ -30,7 +30,7 @@
             var size = this.RenderSize;
             var candleWidth = this.CandleWidth;
             using var context = this.drawing.RenderOpen();
-            if (this.PriceRange is { } priceRange)
+            if (this.Range is { } priceRange)
             {
                 var candles = this.Candles;
                 var position = CandlePosition.Create(size.Width, candleWidth);

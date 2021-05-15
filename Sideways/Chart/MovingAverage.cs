@@ -57,7 +57,7 @@
             var candleWidth = this.CandleWidth;
             using var context = this.drawing.RenderOpen();
             if (this.pen is { } &&
-                this.PriceRange is { } priceRange)
+                this.Range is { } priceRange)
             {
                 Point? previous = null;
                 var x = size.Width - (candleWidth / 2);

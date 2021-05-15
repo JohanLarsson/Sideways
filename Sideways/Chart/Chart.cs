@@ -74,9 +74,9 @@
                 5,
                 FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
-        public static readonly DependencyProperty PriceRangeProperty = DependencyProperty.RegisterAttached(
-            nameof(PriceRange),
+        /// <summary>Identifies the <see cref="Range"/> dependency property.</summary>
+        public static readonly DependencyProperty RangeProperty = DependencyProperty.RegisterAttached(
+            nameof(Range),
             typeof(FloatRange?),
             typeof(Chart),
             new FrameworkPropertyMetadata(
@@ -136,10 +136,10 @@
             set => this.SetValue(CandleWidthProperty, value);
         }
 
-        public FloatRange? PriceRange
+        public FloatRange? Range
         {
-            get => (FloatRange?)this.GetValue(PriceRangeProperty);
-            protected set => this.SetValue(PriceRangeProperty, value);
+            get => (FloatRange?)this.GetValue(RangeProperty);
+            protected set => this.SetValue(RangeProperty, value);
         }
 
         public UIElementCollection Children { get; }
@@ -182,11 +182,11 @@
                     this.candles.Add(candle);
                 }
 
-                this.SetCurrentValue(PriceRangeProperty, new FloatRange(min, max));
+                this.SetCurrentValue(RangeProperty, new FloatRange(min, max));
             }
             else
             {
-                this.SetCurrentValue(PriceRangeProperty, null);
+                this.SetCurrentValue(RangeProperty, null);
             }
 
             foreach (UIElement child in this.Children)
