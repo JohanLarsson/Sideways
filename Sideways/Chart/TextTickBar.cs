@@ -1,5 +1,6 @@
 ﻿namespace Sideways
 {
+    using System;
     using System.Globalization;
     using System.Windows;
     using System.Windows.Documents;
@@ -103,21 +104,23 @@
 
         private static float Step(FloatRange range, double height)
         {
-            var step = 1.0f;
-            while (true)
+            if (Math.Abs(range.Min - range.Max) < 0.0001)
             {
-                switch (range.Y(range.Max - step, height))
-                {
-                    case < 50:
-                        step *= 10;
-                        break;
-                    case > 500:
-                        step /= 10;
-                        break;
-                    default:
-                        return step;
-                }
+                return float.MaxValue;
             }
+
+            var step = 1.0f;
+            while (range.Y(range.Max - step, height) < 50)
+            {
+                step *= 10;
+            }
+
+            while (range.Y(range.Max - step, height) > 500)
+            {
+                step /= 10;
+            }
+
+            return step;
         }
 
         private static string StringFormat(float step)
