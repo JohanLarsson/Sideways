@@ -20,7 +20,9 @@
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
+
         <Grid Grid.Column="0">
             <TextBlock HorizontalAlignment="Left"
                        VerticalAlignment="Top"
@@ -56,8 +58,7 @@
             </sideways:Chart>
         </Grid>
 
-        <GridSplitter Grid.Column="1"
-                      Style="{StaticResource VerticalAxisGridSplitter}" />
+        <GridSplitter Grid.Column="1" Style="{StaticResource VerticalAxisGridSplitter}" />
 
         <Grid Grid.Column="2">
             <StackPanel Margin="10,10">
@@ -124,8 +125,7 @@
             </sideways:Chart>
         </Grid>
 
-        <GridSplitter Grid.Column="3"
-                      Style="{StaticResource VerticalAxisGridSplitter}" />
+        <GridSplitter Grid.Column="3" Style="{StaticResource VerticalAxisGridSplitter}" />
 
         <Grid Grid.Column="4">
             <TextBlock HorizontalAlignment="Left"
@@ -161,5 +161,12 @@
                 </Grid>
             </sideways:Chart>
         </Grid>
+
+        <ListBox Grid.Column="5"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 Foreground="{x:Static sideways:Brushes.Gray}"
+                 ItemsSource="{Binding Symbols}"
+                 SelectedItem="{Binding SelectedSymbol}" />
     </Grid>
 </Window>

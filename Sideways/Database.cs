@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
 
     using Microsoft.Data.Sqlite;
@@ -9,6 +10,23 @@
 
     public static class Database
     {
+        public static ImmutableArray<string> ReadSymbols()
+        {
+            using var connection = new SqliteConnection($"Data Source={Source()}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT DISTINCT symbol FROM days",
+                connection);
+            using var reader = command.ExecuteReader();
+            var builder = ImmutableArray.CreateBuilder<string>();
+            while (reader.Read())
+            {
+                builder.Add(reader.GetString(0));
+            }
+
+            return builder.ToImmutable();
+        }
+
         public static DescendingCandles ReadDays(string symbol)
         {
             using var connection = new SqliteConnection($"Data Source={Source()}");

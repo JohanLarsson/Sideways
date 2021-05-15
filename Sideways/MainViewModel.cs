@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.IO;
     using System.Net.Http;
@@ -14,11 +15,13 @@
         private readonly DataSource dataSource;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
+        private string selectedSymbol;
         private bool disposed;
 
         public MainViewModel()
         {
             this.dataSource = new DataSource(this.downloader);
+            this.Symbols = new ReadOnlyObservableCollection<string>(new ObservableCollection<string>(Database.ReadSymbols()));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -50,6 +53,31 @@
 
                 this.currentSymbol = value;
                 this.OnPropertyChanged();
+            }
+        }
+
+        public ReadOnlyObservableCollection<string> Symbols { get; }
+
+        public string SelectedSymbol
+        {
+            get => this.selectedSymbol;
+            set
+            {
+                if (value == this.selectedSymbol)
+                {
+                    return;
+                }
+
+                this.selectedSymbol = value;
+                this.OnPropertyChanged();
+                if (value is { })
+                {
+                    this.Load(value);
+                }
+                else
+                {
+                    this.CurrentSymbol = null;
+                }
             }
         }
 

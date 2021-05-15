@@ -15,11 +15,11 @@
             this.InitializeComponent();
             if (DesignerProperties.GetIsInDesignMode(this))
             {
-                ((MainViewModel)this.DataContext).Load("TSLA");
+                ((MainViewModel)this.DataContext).SelectedSymbol = "TSLA";
             }
             else
             {
-                ((MainViewModel)this.DataContext).Load("TSLA");
+                ((MainViewModel)this.DataContext).SelectedSymbol = "TSLA";
             }
         }
 
