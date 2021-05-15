@@ -84,6 +84,7 @@
                 FrameworkPropertyMetadataOptions.Inherits));
 
         private readonly List<Candle> candles = new();
+        private int lastTimeStamp;
 
         public Chart()
         {
@@ -293,7 +294,12 @@
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            if (this.ItemsSource is { } candles)
+            var dt = e.Timestamp - this.lastTimeStamp;
+            //// Debug.WriteLine($"Timestamp: {e.Timestamp} DeltaTime: {dt} Delta:{e.Delta} Delta() {Delta()}");
+            this.lastTimeStamp = e.Timestamp;
+            if (this.ItemsSource is { } candles &&
+               Delta() is var delta &&
+               delta != 0)
             {
                 this.SetCurrentValue(
                     TimeProperty,
@@ -301,27 +307,46 @@
                         this.Time,
                         this.CandleInterval,
                         Delta()));
+            }
 
-                int Delta()
+            int Delta()
+            {
+                if (IsFromTouch(e))
                 {
+                    if (Math.Abs(e.Delta) < 4)
+                    {
+                        return Math.Sign(e.Delta);
+                    }
+
                     return e.Delta switch
                     {
-                        Mouse.MouseWheelDeltaForOneLine => 1,
-                        -Mouse.MouseWheelDeltaForOneLine => -1,
                         < 0 => Math.Min(-1, TouchDelta()),
                         > 0 => Math.Max(1, TouchDelta()),
                     };
 
-                    int TouchDelta()
-                    {
-                        return e.Delta switch
-                        {
-                            < 0 and > -4 => -1,
-                            > 0 and < 4 => 1,
-                            _ => e.Delta / this.CandleWidth,
-                        };
-                    }
+                    // Pan about the same length horizontally as the swipe
+                    int TouchDelta() => e.Delta / this.CandleWidth;
                 }
+
+                if (dt <= 0)
+                {
+                    return 0;
+                }
+
+                return dt switch
+                {
+                    <= 0 => 0,
+                    > 50 => Math.Sign(e.Delta),
+                    _ => e.Delta switch
+                    {
+                        < 0 => Math.Min(-1, -120 / dt),
+                        > 0 => Math.Max(1, 240 / dt),
+                        _ => 0,
+                    },
+                };
+
+                // Must be better ways for this but may require pinvoke. Good enough for now.
+                static bool IsFromTouch(MouseWheelEventArgs e) => e.Delta % Mouse.MouseWheelDeltaForOneLine != 0;
             }
         }
     }
