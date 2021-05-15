@@ -15,6 +15,7 @@
     {
         public static readonly string[] Symbols =
         {
+            "AA",
             "AAPL",
             "AAT",
             "AEP",
