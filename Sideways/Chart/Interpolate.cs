@@ -13,5 +13,11 @@
             var m = (float)source.Interpolate(value);
             return target.Min + (m * (target.Max - target.Min));
         }
+
+        internal static double Map(FloatRange source, float value, DoubleRange target)
+        {
+            var m = source.Interpolate(value);
+            return target.Min + (m * (target.Max - target.Min));
+        }
     }
 }

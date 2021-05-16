@@ -45,13 +45,13 @@
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
         /// <summary>Identifies the <see cref="Position"/> dependency property.</summary>
-        public static readonly DependencyProperty PositionProperty = DependencyProperty.Register(
+        public static readonly DependencyProperty PositionProperty = DependencyProperty.RegisterAttached(
             nameof(Position),
             typeof(CrossHairPosition?),
             typeof(CrossHair),
             new FrameworkPropertyMetadata(
                 default(CrossHairPosition?),
-                FrameworkPropertyMetadataOptions.AffectsRender));
+                FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         private readonly DrawingVisual drawing;
 
@@ -109,6 +109,10 @@
             set => this.SetValue(PositionProperty, value);
         }
 
+        public static CrossHairPosition? GetPosition(UIElement e) => (CrossHairPosition?)e.GetValue(PositionProperty);
+
+        public static void SetPosition(UIElement e, CrossHairPosition? position) => e.SetValue(PositionProperty, position);
+
         protected override int VisualChildrenCount => 1;
 
         protected override Visual GetVisualChild(int index) => index == 0
@@ -125,13 +129,20 @@
                 new Rect(this.RenderSize));
             if (this.pen is { } &&
                 this.Range is { } priceRange &&
-                this.Position is {})
+                this.Position is { Time: var time, Price: var price })
             {
-                var p = Mouse.GetPosition(this);
-                context.DrawLine(this.pen, new Point(0, p.Y), new Point(size.Width, p.Y));
-                context.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, size.Height));
-
-                double Y(float price) => priceRange.Y(price, size.Height);
+                if (this.IsMouseOver)
+                {
+                    var p = Mouse.GetPosition(this);
+                    context.DrawLine(this.pen, new Point(0, p.Y), new Point(size.Width, p.Y));
+                    context.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, size.Height));
+                }
+                else
+                {
+                    var y = priceRange.Y(price, size.Height);
+                    context.DrawLine(this.pen, new Point(0, y), new Point(size.Width, y));
+                    //context.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, size.Height));
+                }
             }
         }
 
