@@ -16,6 +16,8 @@
             this.candles = candles;
         }
 
+        public static DescendingCandles Empty = new(ImmutableArray<Candle>.Empty);
+
         public int Count => this.candles.Length;
 
         public Candle this[int index] => this.candles[index];
@@ -28,6 +30,12 @@
 
         public DescendingCandles AdjustBy(DescendingSplits splits)
         {
+            if (this.candles.IsDefaultOrEmpty ||
+                splits.Count == 0)
+            {
+                return this;
+            }
+
             var splitIndex = 0;
             var c = 1.0;
             var builder = ImmutableArray.CreateBuilder<Candle>(this.candles.Length);

@@ -56,7 +56,9 @@
             try
             {
                 var days = dataSource.Days(this.Symbol);
-                var minutes = Database.ReadMinutes(this.Symbol);
+                this.Candles = Candles.Adjusted(days.Splits, days.Candles, DescendingCandles.Empty);
+
+                var minutes = await Task.Run(() => Database.ReadMinutes(this.Symbol)).ConfigureAwait(false);
                 this.Candles = Candles.Adjusted(days.Splits, days.Candles, minutes);
                 if (days.Download is { } daysDownload)
                 {
