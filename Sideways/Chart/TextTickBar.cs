@@ -67,8 +67,9 @@
             if (this.Range is { } range)
             {
                 var actualHeight = this.ActualHeight;
+                var fontFamily = TextElement.GetFontFamily(this);
                 var typeface = new Typeface(
-                    TextElement.GetFontFamily(this),
+                    fontFamily,
                     TextElement.GetFontStyle(this),
                     TextElement.GetFontWeight(this),
                     TextElement.GetFontStretch(this));
@@ -78,10 +79,11 @@
                 var step = Step(range, actualHeight);
                 var format = StringFormat(step);
                 var value = range.Min + step - (range.Min % step);
+                var halfTextHeight = fontSize * fontFamily.LineSpacing / 2;
                 while (value < range.Max)
                 {
 #pragma warning disable CA1305 // Specify IFormatProvider
-                    DrawText(value.ToString(format, CultureInfo.CurrentUICulture), range.Y(value, actualHeight));
+                    DrawText(value.ToString(format, CultureInfo.CurrentUICulture), range.Y(value, actualHeight) - halfTextHeight);
 #pragma warning restore CA1305 // Specify IFormatProvider
                     value += step;
                 }
