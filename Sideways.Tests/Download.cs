@@ -29,6 +29,7 @@
             "BIDU",
             "CCL",
             "CDW",
+            "CDNA",
             "CDNS",
             "COST",
             "CSCO",
@@ -50,7 +51,9 @@
             "GOGO",
             "HGEN",
             "INO",
+            "IONS",
             "IWM",
+            "JD",
             "JMIA",
             "JPM",
             "KLAC",
@@ -68,21 +71,27 @@
             "PLTR",
             "PTON",
             "PXLW",
+            "PYPL",
             "PULM",
             "QQQ",
             "RBLX",
+            "REGN",
             "RIOT",
+            "ROKU",
             "SAVE",
+            "SE",
             "SHOP",
             "SNAP",
             "SPCE",
             "SPY",
             "SQ",
             "SLQT",
+            "TDOC",
             "TSLA",
             "TIGR",
             "TNA",
             "TWLO",
+            "U",
             "URG",
             "WIX",
             "X",
@@ -142,6 +151,12 @@
             }
 
             var minutes = Database.ReadMinutes(symbol, range.Min, range.Max).Select(x => TradingDay.Create(x.Time)).Distinct().ToArray();
+            if (minutes.Length == 0 &&
+                Database.ReadMinutes(symbol, range.Min.AddDays(1), range.Max.AddDays(10)).Count == 0)
+            {
+                Assert.Pass("No slice this far back.");
+            }
+
             if (!days.SequenceEqual(minutes))
             {
                 using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
