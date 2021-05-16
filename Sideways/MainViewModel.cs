@@ -8,6 +8,7 @@
     using System.Net.Http;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
+    using System.Windows.Input;
 
     using Sideways.AlphaVantage;
 
@@ -18,6 +19,7 @@
         private readonly DataSource dataSource;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
+        private Simulation simulation = new();
         private bool disposed;
 
         public MainViewModel()
@@ -25,9 +27,44 @@
             this.dataSource = new DataSource(this.downloader);
             this.Symbols = new ReadOnlyObservableCollection<SymbolViewModel>(new ObservableCollection<SymbolViewModel>(Database.ReadSymbols().Select(x => new SymbolViewModel(x))));
             _ = Task.WhenAll(this.Symbols.Select(x => x.LoadAsync(this.dataSource)));
+            this.BuyCommand = new RelayCommand(
+                _ => Buy(),
+                _ => this.simulation is { Balance: > 10_000 } &&
+                             this.currentSymbol is { Candles: { } });
+
+            this.SellCommand = new RelayCommand(
+                _ => Sell(),
+                _ => this.simulation is { } simulation &&
+                             this.currentSymbol is { Candles: { } } symbol &&
+                             simulation.Positions.Any(x => x.Symbol == symbol.Symbol));
+            void Buy()
+            {
+                var price = this.currentSymbol.Candles!.Get(this.time, CandleInterval.Day).First().Close;
+                this.simulation.Buy(
+                    this.currentSymbol.Symbol,
+                    price,
+                    (int)(10_000 / price),
+                    this.time);
+            }
+
+            void Sell()
+            {
+                var price = this.currentSymbol.Candles!.Get(this.time, CandleInterval.Day).First().Close;
+                this.simulation.Sell(
+                    this.currentSymbol.Symbol,
+                    price,
+                    this.simulation.Positions.Single(x => x.Symbol == this.currentSymbol.Symbol).Buys.Sum(x => x.Shares),
+                    this.time);
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public ReadOnlyObservableCollection<SymbolViewModel> Symbols { get; }
+
+        public ICommand BuyCommand { get; }
+
+        public ICommand SellCommand { get; }
 
         public DateTimeOffset Time
         {
@@ -59,7 +96,20 @@
             }
         }
 
-        public ReadOnlyObservableCollection<SymbolViewModel> Symbols { get; }
+        public Simulation Simulation
+        {
+            get => this.simulation;
+            set
+            {
+                if (ReferenceEquals(value, this.simulation))
+                {
+                    return;
+                }
+
+                this.simulation = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public void Dispose()
         {
