@@ -1,6 +1,5 @@
 ﻿namespace Sideways
 {
-    using System;
     using System.Globalization;
     using System.Windows;
     using System.Windows.Documents;
@@ -106,7 +105,7 @@
 
         private static float Step(FloatRange range, double height)
         {
-            if (Math.Abs(range.Min - range.Max) < 0.0001)
+            if (range.Max - range.Min < 0.0001)
             {
                 return float.MaxValue;
             }
