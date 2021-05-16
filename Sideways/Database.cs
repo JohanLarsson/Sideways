@@ -4,13 +4,12 @@
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
-
     using Microsoft.Data.Sqlite;
     using Sideways.AlphaVantage;
 
     public static class Database
     {
-        private static readonly FileInfo DbFile = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Database.sqlite3"));
+        public static readonly FileInfo DbFile = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Database.sqlite3"));
 
         public static ImmutableArray<string> ReadSymbols(FileInfo? file = null)
         {
@@ -206,6 +205,11 @@
             }
 
             transaction.Commit();
+        }
+
+        public static void Copy(string symbol, FileInfo source, FileInfo target)
+        {
+            WriteMinutes(symbol, ReadMinutes(symbol, source), target);
         }
 
         private static DescendingCandles ReadCandles(SqliteDataReader reader)

@@ -160,5 +160,11 @@
                 Assert.Pass("Already downloaded.");
             }
         }
+
+        [TestCaseSource(nameof(Symbols))]
+        public static void Copy(string symbol)
+        {
+            Database.Copy(symbol, Database.DbFile, new("D:\\Database.sqlite3"));
+        }
     }
 }
