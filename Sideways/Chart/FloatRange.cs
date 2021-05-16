@@ -41,6 +41,8 @@
 
         public double Y(float price, double height) => height * (1 - this.Interpolate(price));
 
+        public float ValueFromY(double y, double height) => (float)this.Interpolate((float)((height - y) / height));
+
         public bool Contains(float value) => value >= this.Min && value <= this.Max;
 
         public double Interpolate(float value)

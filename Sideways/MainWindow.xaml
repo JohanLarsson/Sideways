@@ -116,6 +116,7 @@
                         <sideways:MovingAverage Brush="Green" Period="200" />
 
                         <sideways:CandleSticks />
+                        <sideways:CrossHair />
                     </Grid>
 
                     <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
@@ -170,7 +171,7 @@
                  SelectedItem="{Binding CurrentSymbol}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type sideways:SymbolViewModel}">
-                    <TextBlock Text="{Binding Symbol, Mode=OneTime}"></TextBlock>
+                    <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

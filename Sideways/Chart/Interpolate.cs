@@ -2,9 +2,15 @@
 {
     internal static class Interpolate
     {
-        internal static double Value(DoubleRange source, double value, DoubleRange target)
+        internal static double Map(DoubleRange source, double value, DoubleRange target)
         {
             var m = source.Interpolate(value);
+            return target.Min + (m * (target.Max - target.Min));
+        }
+
+        internal static float Map(DoubleRange source, double value, FloatRange target)
+        {
+            var m = (float)source.Interpolate(value);
             return target.Min + (m * (target.Max - target.Min));
         }
     }
