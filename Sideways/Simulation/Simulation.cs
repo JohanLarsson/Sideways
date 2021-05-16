@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.ComponentModel;
     using System.Linq;
@@ -109,13 +110,58 @@
 
             if (position.Buys.Sum(x => x.Shares) == shares)
             {
-                this.Trades = this.trades.Add(new Trade(symbol, position.Buys, new Sell(shares, time, (decimal)price)));
                 this.Positions = this.positions.Remove(position);
+                this.Trades = this.trades.Add(new Trade(symbol, position.Buys, new Sell(shares, time, (decimal)price)));
             }
             else
             {
-                throw new NotImplementedException();
+                this.Positions = this.positions.Replace(position, new Position(symbol, Remaining()));
+                this.Trades = this.trades.Add(new Trade(symbol, Sold().ToImmutableList(), new Sell(shares, time, (decimal)price)));
+
+                ImmutableList<Buy> Remaining()
+                {
+                    var buys = position.Buys;
+                    var toSell = shares;
+                    while (toSell != 0)
+                    {
+                        var last = buys[^1];
+                        if (last.Shares <= toSell)
+                        {
+                            toSell -= last.Shares;
+                            buys = buys.RemoveAt(buys.Count - 1);
+                        }
+                        else
+                        {
+                            buys = buys.Replace(last, new Buy(last.Shares - toSell, last.Time, last.Price));
+                            toSell = 0;
+                        }
+                    }
+
+                    return buys;
+                }
+
+                IEnumerable<Buy> Sold()
+                {
+                    var buys = position.Buys;
+                    var toSell = shares;
+                    while (toSell != 0)
+                    {
+                        var last = buys[^1];
+                        if (last.Shares <= toSell)
+                        {
+                            toSell -= last.Shares;
+                            yield return last;
+                        }
+                        else
+                        {
+                            yield return new Buy(toSell, last.Time, last.Price);
+                            toSell = 0;
+                        }
+                    }
+                }
             }
+
+            this.Balance += (decimal)(price * shares);
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
