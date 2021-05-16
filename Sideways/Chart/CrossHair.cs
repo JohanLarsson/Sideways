@@ -30,6 +30,13 @@
         /// <summary>Identifies the <see cref="Range"/> dependency property.</summary>
         public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(typeof(CrossHair));
 
+        /// <summary>Identifies the <see cref="CandleInterval"/> dependency property.</summary>
+        public static readonly DependencyProperty CandleIntervalProperty = Chart.CandleIntervalProperty.AddOwner(
+            typeof(CrossHair),
+            new FrameworkPropertyMetadata(
+                CandleInterval.None,
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         /// <summary>Identifies the <see cref="CandleWidth"/> dependency property.</summary>
         public static readonly DependencyProperty CandleWidthProperty = Chart.CandleWidthProperty.AddOwner(
             typeof(CrossHair),
@@ -37,13 +44,13 @@
                 5,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="TimeAndValue"/> dependency property.</summary>
-        public static readonly DependencyProperty TimeAndValueProperty = DependencyProperty.Register(
-            nameof(TimeAndValue),
-            typeof(TimeAndValue?),
+        /// <summary>Identifies the <see cref="Position"/> dependency property.</summary>
+        public static readonly DependencyProperty PositionProperty = DependencyProperty.Register(
+            nameof(Position),
+            typeof(CrossHairPosition?),
             typeof(CrossHair),
             new FrameworkPropertyMetadata(
-                default(TimeAndValue?),
+                default(CrossHairPosition?),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
         private readonly DrawingVisual drawing;
@@ -84,16 +91,22 @@
             set => this.SetValue(CandleWidthProperty, value);
         }
 
+        public CandleInterval CandleInterval
+        {
+            get => (CandleInterval)this.GetValue(CandleIntervalProperty);
+            set => this.SetValue(CandleIntervalProperty, value);
+        }
+
         public FloatRange? Range
         {
             get => (FloatRange?)this.GetValue(RangeProperty);
             set => this.SetValue(RangeProperty, value);
         }
 
-        public TimeAndValue? TimeAndValue
+        public CrossHairPosition? Position
         {
-            get => (TimeAndValue?)this.GetValue(TimeAndValueProperty);
-            set => this.SetValue(TimeAndValueProperty, value);
+            get => (CrossHairPosition?)this.GetValue(PositionProperty);
+            set => this.SetValue(PositionProperty, value);
         }
 
         protected override int VisualChildrenCount => 1;
@@ -111,7 +124,8 @@
                 null,
                 new Rect(this.RenderSize));
             if (this.pen is { } &&
-                this.Range is { } priceRange)
+                this.Range is { } priceRange &&
+                this.Position is {})
             {
                 var p = Mouse.GetPosition(this);
                 context.DrawLine(this.pen, new Point(0, p.Y), new Point(size.Width, p.Y));
@@ -130,14 +144,20 @@
                 i >= 0 &&
                 this.Range is { } range)
             {
-                this.SetCurrentValue(TimeAndValueProperty, new TimeAndValue(this.Candles[i].Time, range.ValueFromY(pos.Y, size.Height)));
+                this.SetCurrentValue(PositionProperty, new CrossHairPosition(this.Candles[i].Time, range.ValueFromY(pos.Y, size.Height), this.CandleInterval));
             }
             else
             {
-                this.SetCurrentValue(TimeAndValueProperty, null);
+                this.SetCurrentValue(PositionProperty, null);
             }
 
             base.OnPreviewMouseMove(e);
+        }
+
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            this.SetCurrentValue(PositionProperty, null);
+            base.OnMouseLeave(e);
         }
 
         private static Pen? CreatePen(SolidColorBrush? brush)

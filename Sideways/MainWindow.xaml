@@ -116,6 +116,7 @@
                         <sideways:MovingAverage Brush="Green" Period="200" />
 
                         <sideways:CandleSticks />
+
                         <sideways:CrossHair />
                     </Grid>
 
