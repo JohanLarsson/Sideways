@@ -4,6 +4,7 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.IO;
+    using System.Linq;
     using System.Net.Http;
     using System.Runtime.CompilerServices;
     using Sideways.AlphaVantage;
@@ -15,13 +16,19 @@
         private readonly DataSource dataSource;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
-        private string selectedSymbol;
         private bool disposed;
 
         public MainViewModel()
         {
             this.dataSource = new DataSource(this.downloader);
-            this.Symbols = new ReadOnlyObservableCollection<string>(new ObservableCollection<string>(Database.ReadSymbols()));
+            this.Symbols = new ReadOnlyObservableCollection<SymbolViewModel>(new ObservableCollection<SymbolViewModel>(Database.ReadSymbols().Select(x => Create(x))));
+
+            SymbolViewModel Create(string symbol)
+            {
+                var vm = new SymbolViewModel(symbol);
+                _ = vm.LoadAsync(this.dataSource);
+                return vm;
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -44,7 +51,7 @@
         public SymbolViewModel? CurrentSymbol
         {
             get => this.currentSymbol;
-            private set
+            set
             {
                 if (ReferenceEquals(value, this.currentSymbol))
                 {
@@ -56,30 +63,7 @@
             }
         }
 
-        public ReadOnlyObservableCollection<string> Symbols { get; }
-
-        public string SelectedSymbol
-        {
-            get => this.selectedSymbol;
-            set
-            {
-                if (value == this.selectedSymbol)
-                {
-                    return;
-                }
-
-                this.selectedSymbol = value;
-                this.OnPropertyChanged();
-                if (value is { })
-                {
-                    this.Load(value);
-                }
-                else
-                {
-                    this.CurrentSymbol = null;
-                }
-            }
-        }
+        public ReadOnlyObservableCollection<SymbolViewModel> Symbols { get; }
 
         public void Dispose()
         {

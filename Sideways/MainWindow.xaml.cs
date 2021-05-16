@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Threading;
@@ -13,13 +14,14 @@
         public MainWindow()
         {
             this.InitializeComponent();
+            var mainViewModel = (MainViewModel)this.DataContext;
             if (DesignerProperties.GetIsInDesignMode(this))
             {
-                ((MainViewModel)this.DataContext).SelectedSymbol = "TSLA";
+                mainViewModel.CurrentSymbol = mainViewModel.Symbols.FirstOrDefault(x => x.Symbol == "TSLA");
             }
             else
             {
-                ((MainViewModel)this.DataContext).SelectedSymbol = "TSLA";
+                mainViewModel.CurrentSymbol = mainViewModel.Symbols.FirstOrDefault();
             }
         }
 

@@ -167,6 +167,12 @@
                  BorderThickness="0"
                  Foreground="{x:Static sideways:Brushes.Gray}"
                  ItemsSource="{Binding Symbols}"
-                 SelectedItem="{Binding SelectedSymbol}" />
+                 SelectedItem="{Binding CurrentSymbol}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type sideways:SymbolViewModel}">
+                    <TextBlock Text="{Binding Symbol, Mode=OneTime}"></TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>
