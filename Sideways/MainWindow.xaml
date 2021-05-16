@@ -49,8 +49,7 @@
                         <sideways:MovingAverage Brush="Yellow" Period="20" />
 
                         <sideways:CandleSticks />
-
-                        <sideways:CrossHair Position="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=(sideways:CrossHair.Position)}"/>
+                        <sideways:CrossHair />
                     </Grid>
 
                     <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
@@ -118,8 +117,7 @@
                         <sideways:MovingAverage Brush="Green" Period="200" />
 
                         <sideways:CandleSticks />
-
-                        <sideways:CrossHair Position="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=(sideways:CrossHair.Position)}"/>
+                        <sideways:CrossHair />
                     </Grid>
 
                     <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
@@ -158,7 +156,7 @@
 
                         <sideways:CandleSticks />
 
-                        <sideways:CrossHair Position="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=(sideways:CrossHair.Position)}"/>
+                        <sideways:CrossHair />
                     </Grid>
 
                     <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />

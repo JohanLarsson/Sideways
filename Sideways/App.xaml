@@ -27,7 +27,9 @@
         </Style>
 
         <Style TargetType="{x:Type sideways:CrossHair}">
-            <Setter Property="Brush" Value="{x:Static sideways:Brushes.Gray}" />
+            <Setter Property="Brush" Value="White" />
+            <Setter Property="Opacity" Value="0.5" />
+            <Setter Property="Position" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=(sideways:CrossHair.Position)}" />
         </Style>
     </Application.Resources>
 </Application>

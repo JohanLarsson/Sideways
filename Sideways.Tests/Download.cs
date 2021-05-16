@@ -37,6 +37,7 @@
             "CRWD",
             "DOCU",
             "EA",
+            "EXAS",
             "EXPR",
             "ETHE",
             "F",
@@ -152,6 +153,7 @@
 
             var minutes = Database.ReadMinutes(symbol, range.Min, range.Max).Select(x => TradingDay.Create(x.Time)).Distinct().ToArray();
             if (minutes.Length == 0 &&
+                slice != Slice.Year1Month1 &&
                 Database.ReadMinutes(symbol, range.Min.AddDays(1), range.Max.AddDays(10)).Count == 0)
             {
                 Assert.Pass("No slice this far back.");
@@ -179,7 +181,11 @@
         [TestCaseSource(nameof(Symbols))]
         public static void Copy(string symbol)
         {
-            Database.Copy(symbol, Database.DbFile, new("D:\\Database.sqlite3"));
+            var target = "D:\\Database.sqlite3";
+            if (File.Exists(target))
+            {
+                Database.Copy(symbol, Database.DbFile, new(target));
+            }
         }
     }
 }

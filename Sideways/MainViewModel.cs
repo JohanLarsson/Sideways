@@ -76,14 +76,6 @@
             this.downloader.Dispose();
         }
 
-        public void Load(string symbol)
-        {
-            this.ThrowIfDisposed();
-            var symbolViewModel = new SymbolViewModel(symbol);
-            this.CurrentSymbol = symbolViewModel;
-            _ = symbolViewModel.LoadAsync(this.dataSource);
-        }
-
         private static string ApiKey()
         {
             if (File.Exists(ApiKeyFile))
