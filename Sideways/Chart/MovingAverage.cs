@@ -12,8 +12,9 @@
             nameof(Brush),
             typeof(SolidColorBrush),
             typeof(MovingAverage),
-            new PropertyMetadata(
+            new FrameworkPropertyMetadata(
                 default(SolidColorBrush),
+                FrameworkPropertyMetadataOptions.AffectsRender,
                 (d, e) => ((MovingAverage)d).pen = CreatePen((SolidColorBrush?)e.NewValue)));
 
         /// <summary>Identifies the <see cref="Period"/> dependency property.</summary>
