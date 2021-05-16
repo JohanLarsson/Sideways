@@ -7,6 +7,8 @@
     using System.Linq;
     using System.Net.Http;
     using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
+
     using Sideways.AlphaVantage;
 
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
@@ -21,14 +23,8 @@
         public MainViewModel()
         {
             this.dataSource = new DataSource(this.downloader);
-            this.Symbols = new ReadOnlyObservableCollection<SymbolViewModel>(new ObservableCollection<SymbolViewModel>(Database.ReadSymbols().Select(x => Create(x))));
-
-            SymbolViewModel Create(string symbol)
-            {
-                var vm = new SymbolViewModel(symbol);
-                _ = vm.LoadAsync(this.dataSource);
-                return vm;
-            }
+            this.Symbols = new ReadOnlyObservableCollection<SymbolViewModel>(new ObservableCollection<SymbolViewModel>(Database.ReadSymbols().Select(x => new SymbolViewModel(x))));
+            _ = Task.WhenAll(this.Symbols.Select(x => x.LoadAsync(this.dataSource)));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
