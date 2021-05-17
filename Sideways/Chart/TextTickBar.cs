@@ -111,17 +111,24 @@
             }
 
             var step = 1.0f;
-            while (range.Y(range.Max - step, height) < 50)
+            while (Pixels() < 50)
             {
                 step *= 10;
             }
 
-            while (range.Y(range.Max - step, height) > 500)
+            while (Pixels() > 500)
             {
                 step /= 10;
             }
 
+            if (Pixels() > 100)
+            {
+                step *= 0.5f;
+            }
+
             return step;
+
+            double Pixels() => range.Y(range.Max - step, height);
         }
 
         private static string StringFormat(float step)
