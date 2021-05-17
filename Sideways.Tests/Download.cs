@@ -1,6 +1,7 @@
 ﻿namespace Sideways.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
@@ -15,65 +16,88 @@
     {
         public static readonly string[] Symbols =
         {
+
             "AA",
             "AAPL",
             "AAT",
-            "AEP",
+            "ABBV",
             "ADSK",
+            "AEP",
             "AMAT",
             "AMD",
             "ANSS",
-            "ASML",
             "APPS",
+            "ASML",
             "BA",
             "BIDU",
+            "BTX",
             "CCL",
-            "CDW",
             "CDNA",
             "CDNS",
+            "CDW",
+            "CGEN",
+            "CLLS",
             "COST",
-            "CSCO",
-            "DIS",
             "CRWD",
+            "CSCO",
+            "CSTL",
+            "DDS",
+            "DIS",
+            "DISCB",
             "DOCU",
+            "DSSI",
             "EA",
+            "ETHE",
+            "EWLU",
             "EXAS",
             "EXPR",
-            "ETHE",
             "F",
             "FB",
+            "FCEL",
             "FOUR",
             "FSR",
             "FUBO",
             "FUTU",
-            "FCEL",
+            "GALT",
             "GBTC",
             "GLD",
+            "GME",
             "GOGO",
+            "GOOG",
             "HGEN",
+            "IMO",
             "INO",
             "IONS",
+            "ISNS",
             "IWM",
             "JD",
             "JMIA",
             "JPM",
+            "JYNT",
+            "KEX",
             "KLAC",
             "MARA",
-            "MVIS",
+            "MEG",
+            "MFIN",
+            "MG",
             "MSFT",
             "MU",
+            "MVIS",
             "NAKD",
             "NET",
             "NFLX",
+            "NIO",
+            "NM",
+            "NUE",
             "NVAX",
             "NVDA",
-            "NIO",
+            "NVS",
             "OCGN",
             "PLTR",
             "PTON",
+            "PULM",
             "PXLW",
             "PYPL",
-            "PULM",
             "QQQ",
             "RBLX",
             "REGN",
@@ -81,25 +105,33 @@
             "ROKU",
             "SAVE",
             "SE",
+            "SHIP",
             "SHOP",
+            "SJR",
+            "SLQT",
             "SNAP",
             "SPCE",
             "SPY",
             "SQ",
-            "SLQT",
+            "TBI",
             "TDOC",
-            "TSLA",
             "TIGR",
+            "TKAT",
             "TNA",
+            "TPL",
+            "TSLA",
             "TWLO",
             "U",
             "URG",
+            "UROY",
+            "WAL",
             "WIX",
             "X",
             "XM",
             "XPEV",
             "YALA",
             "Z",
+            "ZEUS",
             "ZM",
         };
 
@@ -117,6 +149,19 @@
                 }
 
                 throw new InvalidOperationException($"Expected the API key in {fileName}");
+            }
+        }
+
+        [Test]
+        public static void Sort()
+        {
+            var set = new HashSet<string>(Symbols)
+            {
+                "GME",
+            };
+            foreach (var symbol in set.OrderBy(x => x))
+            {
+                Console.WriteLine($"            \"{symbol}\",");
             }
         }
 
@@ -148,7 +193,7 @@
                     Assert.Inconclusive("Download days first");
                 }
 
-                Assert.Pass("No slice this far back.");
+                Assert.Pass("No days slice this far back.");
             }
 
             var minutes = Database.ReadMinutes(symbol, range.Min, range.Max).Select(x => TradingDay.Create(x.Time)).Distinct().ToArray();
