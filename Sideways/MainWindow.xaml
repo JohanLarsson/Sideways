@@ -191,6 +191,7 @@
                         Command="{Binding BuyCommand}"
                         Content="Buy"
                         Focusable="False" />
+
                 <Button Grid.Row="2"
                         Command="{Binding SellAllCommand}"
                         Content="Sell all"
