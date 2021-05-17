@@ -182,7 +182,6 @@
             connection.Open();
 
             using var transaction = connection.BeginTransaction();
-
             using var insert = connection.CreateCommand();
             insert.CommandText = "INSERT INTO minutes (symbol, time, open, high, low, close, volume) VALUES (@symbol, @time, @open, @high, @low, @close, @volume)" +
                                  "  ON CONFLICT(symbol, time) DO UPDATE SET" +

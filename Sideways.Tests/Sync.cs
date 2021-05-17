@@ -14,7 +14,12 @@
             {
                 if (Sideways.Sync.CountMinutes(symbol, Database.DbFile) > Sideways.Sync.CountMinutes(symbol, target))
                 {
-                    Sideways.Sync.Copy(symbol, Database.DbFile, target);
+                    Sideways.Sync.CopyMinutes(symbol, Database.DbFile, target);
+                }
+
+                if (Sideways.Sync.CountDays(symbol, Database.DbFile) > Sideways.Sync.CountDays(symbol, target))
+                {
+                    Sideways.Sync.CopyDays(symbol, Database.DbFile, target);
                 }
             }
         }
