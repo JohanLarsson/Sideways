@@ -29,7 +29,7 @@
             _ = Task.WhenAll(this.Symbols.Select(x => x.LoadAsync(this.dataSource)));
             this.BuyCommand = new RelayCommand(
                 _ => Buy(),
-                _ => this.simulation is { Balance: > 10_000 } &&
+                _ => this.simulation is { Balance: > 1_000 } &&
                              this.currentSymbol is { Candles: { } });
 
             this.SellHalfCommand = new RelayCommand(
