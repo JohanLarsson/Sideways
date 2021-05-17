@@ -16,7 +16,6 @@
     {
         public static readonly string[] Symbols =
         {
-
             "AA",
             "AAPL",
             "AAT",
@@ -25,12 +24,14 @@
             "AEP",
             "AMAT",
             "AMD",
+            "AMRK",
             "ANSS",
             "APPS",
             "ASML",
             "BA",
             "BIDU",
             "BTX",
+            "CAR",
             "CCL",
             "CDNA",
             "CDNS",
@@ -41,6 +42,7 @@
             "CRWD",
             "CSCO",
             "CSTL",
+            "DAR",
             "DDS",
             "DIS",
             "DISCB",
@@ -64,7 +66,9 @@
             "GME",
             "GOGO",
             "GOOG",
+            "GSAT",
             "HGEN",
+            "IGT",
             "IMO",
             "INO",
             "IONS",
@@ -76,10 +80,13 @@
             "JYNT",
             "KEX",
             "KLAC",
+            "LYFT",
             "MARA",
+            "MCFT",
             "MEG",
             "MFIN",
             "MG",
+            "MRO",
             "MSFT",
             "MU",
             "MVIS",
@@ -101,6 +108,7 @@
             "QQQ",
             "RBLX",
             "REGN",
+            "RIDE",
             "RIOT",
             "ROKU",
             "SAVE",
@@ -158,6 +166,16 @@
             var set = new HashSet<string>(Symbols)
             {
                 "GME",
+                "MRO",
+                "GSAT",
+                "MCFT",
+                "IGT",
+                "DAR",
+                "AMRK",
+                "GOGO",
+                "CAR",
+                "RIDE",
+                "LYFT",
             };
             foreach (var symbol in set.OrderBy(x => x))
             {
@@ -199,7 +217,7 @@
             var minutes = Database.ReadMinutes(symbol, range.Min, range.Max).Select(x => TradingDay.Create(x.Time)).Distinct().ToArray();
             if (minutes.Length == 0 &&
                 slice != Slice.Year1Month1 &&
-                Database.ReadMinutes(symbol, range.Min.AddDays(1), range.Max.AddDays(10)).Count == 0)
+                Database.ReadMinutes(symbol, range.Min.AddDays(1), range.Max.AddDays(5)).Count == 0)
             {
                 Assert.Pass("No slice this far back.");
             }

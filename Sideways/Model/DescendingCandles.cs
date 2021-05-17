@@ -9,14 +9,14 @@
 
     public readonly struct DescendingCandles : IEquatable<DescendingCandles>, IReadOnlyList<Candle>
     {
+        public static readonly DescendingCandles Empty = new(ImmutableArray<Candle>.Empty);
+
         private readonly ImmutableArray<Candle> candles;
 
         private DescendingCandles(ImmutableArray<Candle> candles)
         {
             this.candles = candles;
         }
-
-        public static DescendingCandles Empty = new(ImmutableArray<Candle>.Empty);
 
         public int Count => this.candles.Length;
 

@@ -16,9 +16,7 @@
             new FrameworkPropertyMetadata(
                 default(SolidColorBrush),
                 FrameworkPropertyMetadataOptions.AffectsRender,
-#pragma warning disable WPF0022 // Cast value to correct type.
                 (d, e) => ((CrossHair)d).pen = CreatePen((SolidColorBrush?)e.NewValue)));
-#pragma warning restore WPF0022 // Cast value to correct type.
 
         /// <summary>Identifies the <see cref="Range"/> dependency property.</summary>
         public static readonly DependencyProperty RangeProperty = Chart.RangeProperty.AddOwner(
@@ -27,7 +25,7 @@
                 null,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="Range"/> dependency property.</summary>
+        /// <summary>Identifies the <see cref="Candles"/> dependency property.</summary>
         public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(typeof(CrossHair));
 
         /// <summary>Identifies the <see cref="CandleInterval"/> dependency property.</summary>
@@ -69,9 +67,7 @@
             this.AddVisualChild(this.drawing);
         }
 
-#pragma warning disable WPF0012 // CLR property type should match registered type.
         public SolidColorBrush? Brush
-#pragma warning restore WPF0012 // CLR property type should match registered type.
         {
             get => (SolidColorBrush?)this.GetValue(BrushProperty);
             set => this.SetValue(BrushProperty, value);
@@ -109,11 +105,18 @@
             set => this.SetValue(PositionProperty, value);
         }
 
+        protected override int VisualChildrenCount => 1;
+
+        /// <summary>Helper for getting <see cref="PositionProperty"/> from <paramref name="e"/>.</summary>
+        /// <param name="e"><see cref="UIElement"/> to read <see cref="PositionProperty"/> from.</param>
+        /// <returns>Position property value.</returns>
+        [AttachedPropertyBrowsableForType(typeof(UIElement))]
         public static CrossHairPosition? GetPosition(UIElement e) => (CrossHairPosition?)e.GetValue(PositionProperty);
 
+        /// <summary>Helper for setting <see cref="PositionProperty"/> on <paramref name="e"/>.</summary>
+        /// <param name="e"><see cref="UIElement"/> to set <see cref="PositionProperty"/> on.</param>
+        /// <param name="position">Position property value.</param>
         public static void SetPosition(UIElement e, CrossHairPosition? position) => e.SetValue(PositionProperty, position);
-
-        protected override int VisualChildrenCount => 1;
 
         protected override Visual GetVisualChild(int index) => index == 0
             ? this.drawing
@@ -141,7 +144,7 @@
                 {
                     var y = priceRange.Y(price, size.Height);
                     context.DrawLine(this.pen, new Point(0, y), new Point(size.Width, y));
-                    //context.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, size.Height));
+                    //// context.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, size.Height));
                 }
             }
         }

@@ -45,7 +45,7 @@
                              simulation.Positions.Any(x => x.Symbol == symbol.Symbol));
             void Buy()
             {
-                var price = this.currentSymbol.Candles!.Get(this.time, CandleInterval.Day).First().Close;
+                var price = this.currentSymbol!.Candles!.Get(this.time, CandleInterval.Day).First().Close;
                 var amount = Math.Min(this.simulation.Balance, this.simulation.Equity() / 10);
                 this.simulation.Buy(
                     this.currentSymbol.Symbol,
@@ -56,7 +56,7 @@
 
             void Sell(double fraction)
             {
-                var price = this.currentSymbol.Candles!.Get(this.time, CandleInterval.Day).First().Close;
+                var price = this.currentSymbol!.Candles!.Get(this.time, CandleInterval.Day).First().Close;
                 this.simulation.Sell(
                     this.currentSymbol.Symbol,
                     price,

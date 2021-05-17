@@ -14,12 +14,12 @@
         private ImmutableList<Position> positions = ImmutableList<Position>.Empty;
         private ImmutableList<Trade> trades = ImmutableList<Trade>.Empty;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         public Simulation()
         {
             this.balance = 100_000;
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public string Name
         {

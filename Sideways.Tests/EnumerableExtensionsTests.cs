@@ -20,7 +20,7 @@
         }
 
         [TestCase(new[] { 1.0 }, 2, new double[0])]
-        [TestCase(new[] { 1.0, 2.0 }, 2, new[] { 1.5})]
+        [TestCase(new[] { 1.0, 2.0 }, 2, new[] { 1.5 })]
         [TestCase(new[] { 1.0, 2.0, 3.0 }, 2, new[] { 1.5, 2.5 })]
         [TestCase(new[] { 1.0, 2.0, 3.0, 4.0 }, 2, new[] { 1.5, 2.5, 3.5 })]
         [TestCase(new[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, 2, new[] { 1.5, 2.5, 3.5, 4.5 })]

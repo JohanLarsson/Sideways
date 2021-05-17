@@ -22,17 +22,17 @@
             return new Days(descendingDays, splits, this.downloader.DaysAsync(symbol, last));
         }
 
-        //public Minutes Minutes(string symbol)
-        //{
-        //    var candles = Database.ReadMinutes(symbol);
-        //    if (candles.Length > 0)
-        //    {
-        //        return candles;
-        //    }
+        ////public Minutes Minutes(string symbol)
+        ////{
+        ////    var candles = Database.ReadMinutes(symbol);
+        ////    if (candles.Length > 0)
+        ////    {
+        ////        return candles;
+        ////    }
 
-        //    var adjusted = await this.client.IntervalExtendedAsync(symbol, Interval.Minute, Slice.Year1Month1, adjusted: false).ConfigureAwait(false);
-        //    Database.WriteMinutes(symbol, adjusted);
-        //    return await Database.ReadMinutesAsync(symbol).ConfigureAwait(false);
-        //}
+        ////    var adjusted = await this.client.IntervalExtendedAsync(symbol, Interval.Minute, Slice.Year1Month1, adjusted: false).ConfigureAwait(false);
+        ////    Database.WriteMinutes(symbol, adjusted);
+        ////    return await Database.ReadMinutesAsync(symbol).ConfigureAwait(false);
+        ////}
     }
 }

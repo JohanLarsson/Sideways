@@ -322,6 +322,7 @@
                     {
                         < 0 => Math.Min(-1, TouchDelta()),
                         > 0 => Math.Max(1, TouchDelta()),
+                        _ => 0,
                     };
 
                     // Pan about the same length horizontally as the swipe
