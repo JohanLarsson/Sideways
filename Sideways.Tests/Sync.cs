@@ -21,6 +21,9 @@
                 {
                     Sideways.Sync.CopyDays(symbol, Database.DbFile, target);
                 }
+
+                Sideways.Sync.CopySplits(symbol, Database.DbFile, target);
+                Sideways.Sync.CopyDividends(symbol, Database.DbFile, target);
             }
         }
     }

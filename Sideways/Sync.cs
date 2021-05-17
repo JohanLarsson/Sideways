@@ -71,6 +71,74 @@
             targetTransaction.Commit();
         }
 
+        public static void CopySplits(string symbol, FileInfo source, FileInfo target)
+        {
+            using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
+            sourceConnection.Open();
+            using var select = new SqliteCommand(
+                "SELECT date, coefficient FROM splits" +
+                " WHERE symbol = @symbol" +
+                " ORDER BY date DESC",
+                sourceConnection);
+            select.Parameters.AddWithValue("@symbol", symbol);
+            using var reader = select.ExecuteReader();
+
+            using var targetConnection = new SqliteConnection($"Data Source={target.FullName}");
+            targetConnection.Open();
+
+            using var targetTransaction = targetConnection.BeginTransaction();
+            using var insert = targetConnection.CreateCommand();
+            insert.CommandText = "INSERT INTO splits (symbol, date, coefficient) VALUES (@symbol, @date, @coefficient)" +
+                                 "  ON CONFLICT(symbol, date) DO UPDATE SET" +
+                                 "    coefficient = excluded.coefficient";
+            insert.Prepare();
+
+            while (reader.Read())
+            {
+                insert.Parameters.Clear();
+                insert.Parameters.AddWithValue("@symbol", symbol);
+                insert.Parameters.AddWithValue("@date", reader.GetValue(0));
+                insert.Parameters.AddWithValue("@coefficient", reader.GetValue(1));
+                insert.ExecuteNonQuery();
+            }
+
+            targetTransaction.Commit();
+        }
+
+        public static void CopyDividends(string symbol, FileInfo source, FileInfo target)
+        {
+            using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
+            sourceConnection.Open();
+            using var select = new SqliteCommand(
+                "SELECT date, dividend FROM dividends" +
+                " WHERE symbol = @symbol" +
+                " ORDER BY date DESC",
+                sourceConnection);
+            select.Parameters.AddWithValue("@symbol", symbol);
+            using var reader = select.ExecuteReader();
+
+            using var targetConnection = new SqliteConnection($"Data Source={target.FullName}");
+            targetConnection.Open();
+
+            using var targetTransaction = targetConnection.BeginTransaction();
+            using var insert = targetConnection.CreateCommand();
+            insert.CommandText = "INSERT INTO dividends (symbol, date, dividend) VALUES (@symbol, @date, @dividend)" +
+                                 "  ON CONFLICT(symbol, date) DO UPDATE SET" +
+                                 "    dividend = excluded.dividend";
+            insert.Prepare();
+
+            while (reader.Read())
+            {
+                insert.Parameters.Clear();
+                insert.Parameters.AddWithValue("@symbol", symbol);
+                insert.Parameters.AddWithValue("@date", reader.GetValue(0));
+                insert.Parameters.AddWithValue("@dividend", reader.GetValue(1));
+                insert.ExecuteNonQuery();
+            }
+
+            targetTransaction.Commit();
+        }
+
         public static void CopyMinutes(string symbol, FileInfo source, FileInfo target)
         {
             using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
