@@ -20,6 +20,7 @@
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
         private Simulation simulation = new();
+        private Position? selectedPosition;
         private bool disposed;
 
         public MainViewModel()
@@ -108,6 +109,25 @@
 
                 this.simulation = value;
                 this.OnPropertyChanged();
+            }
+        }
+
+        public Position? SelectedPosition
+        {
+            get => this.selectedPosition;
+            set
+            {
+                if (ReferenceEquals(value, this.selectedPosition))
+                {
+                    return;
+                }
+
+                this.selectedPosition = value;
+                this.OnPropertyChanged();
+                if (value is { })
+                {
+                    this.CurrentSymbol = this.Symbols.Single(x => x.Symbol == value.Symbol);
+                }
             }
         }
 

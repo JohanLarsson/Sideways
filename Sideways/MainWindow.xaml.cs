@@ -14,14 +14,11 @@
         public MainWindow()
         {
             this.InitializeComponent();
-            var mainViewModel = (MainViewModel)this.DataContext;
-            if (DesignerProperties.GetIsInDesignMode(this))
+            if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                mainViewModel.CurrentSymbol = mainViewModel.Symbols.FirstOrDefault(x => x.Symbol == "TSLA");
-            }
-            else
-            {
+                var mainViewModel = new MainViewModel();
                 mainViewModel.CurrentSymbol = mainViewModel.Symbols.FirstOrDefault();
+                this.DataContext = mainViewModel;
             }
         }
 
