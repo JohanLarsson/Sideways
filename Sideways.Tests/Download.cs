@@ -222,15 +222,5 @@
                 Assert.Pass("Already downloaded.");
             }
         }
-
-        [TestCaseSource(nameof(Symbols))]
-        public static void Copy(string symbol)
-        {
-            var target = "D:\\Database.sqlite3";
-            if (File.Exists(target))
-            {
-                Database.Copy(symbol, Database.DbFile, new(target));
-            }
-        }
     }
 }
