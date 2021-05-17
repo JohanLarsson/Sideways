@@ -56,7 +56,8 @@
 
         public int IndexOf(DateTimeOffset end, int startAt)
         {
-            if (this.candles.IsDefaultOrEmpty)
+            if (this.candles.IsDefaultOrEmpty ||
+                end < this.candles[^1].Time)
             {
                 return -1;
             }

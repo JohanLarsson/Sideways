@@ -61,8 +61,8 @@
                         yield return minute;
                     }
 
-                    if (TradingDay.IsPreMarket(minute.Time) ||
-                        minute.Time.Date < end.Date)
+                    if (TradingDay.IsPostMarket(minute.Time) ||
+                        !minute.Time.IsSameDay(end.Date))
                     {
                         yield break;
                     }
