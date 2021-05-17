@@ -20,7 +20,6 @@
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
         private Simulation simulation = new();
-        private Position? selectedPosition;
         private bool disposed;
 
         public MainViewModel()
@@ -94,6 +93,7 @@
 
                 this.currentSymbol = value;
                 this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.SelectedPosition));
             }
         }
 
@@ -109,25 +109,17 @@
 
                 this.simulation = value;
                 this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.SelectedPosition));
             }
         }
 
         public Position? SelectedPosition
         {
-            get => this.selectedPosition;
+            get => this.simulation.Positions.SingleOrDefault(x => x.Symbol == this.currentSymbol?.Symbol);
             set
             {
-                if (ReferenceEquals(value, this.selectedPosition))
-                {
-                    return;
-                }
-
-                this.selectedPosition = value;
+                this.CurrentSymbol = this.Symbols.SingleOrDefault(x => x.Symbol == value?.Symbol);
                 this.OnPropertyChanged();
-                if (value is { })
-                {
-                    this.CurrentSymbol = this.Symbols.Single(x => x.Symbol == value.Symbol);
-                }
             }
         }
 
