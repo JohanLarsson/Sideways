@@ -4,7 +4,7 @@
 
     public class Sell
     {
-        public Sell(int shares, DateTimeOffset time, decimal price)
+        public Sell(int shares, DateTimeOffset time, float price)
         {
             this.Shares = shares;
             this.Time = time;
@@ -15,6 +15,6 @@
 
         public DateTimeOffset Time { get; }
 
-        public decimal Price { get; }
+        public float Price { get; }
     }
 }

@@ -32,28 +32,35 @@
                 _ => this.simulation is { Balance: > 10_000 } &&
                              this.currentSymbol is { Candles: { } });
 
-            this.SellCommand = new RelayCommand(
-                _ => Sell(),
+            this.SellHalfCommand = new RelayCommand(
+                _ => Sell(0.5),
+                _ => this.simulation is { } simulation &&
+                     this.currentSymbol is { Candles: { } } symbol &&
+                     simulation.Positions.Any(x => x.Symbol == symbol.Symbol));
+
+            this.SellAllCommand = new RelayCommand(
+                _ => Sell(1),
                 _ => this.simulation is { } simulation &&
                              this.currentSymbol is { Candles: { } } symbol &&
                              simulation.Positions.Any(x => x.Symbol == symbol.Symbol));
             void Buy()
             {
                 var price = this.currentSymbol.Candles!.Get(this.time, CandleInterval.Day).First().Close;
+                var amount = Math.Min(this.simulation.Balance, this.simulation.Equity() / 10);
                 this.simulation.Buy(
                     this.currentSymbol.Symbol,
                     price,
-                    (int)(10_000 / price),
+                    (int)(amount / price),
                     this.time);
             }
 
-            void Sell()
+            void Sell(double fraction)
             {
                 var price = this.currentSymbol.Candles!.Get(this.time, CandleInterval.Day).First().Close;
                 this.simulation.Sell(
                     this.currentSymbol.Symbol,
                     price,
-                    this.simulation.Positions.Single(x => x.Symbol == this.currentSymbol.Symbol).Buys.Sum(x => x.Shares),
+                    (int)fraction * this.simulation.Positions.Single(x => x.Symbol == this.currentSymbol.Symbol).Buys.Sum(x => x.Shares),
                     this.time);
             }
         }
@@ -64,7 +71,9 @@
 
         public ICommand BuyCommand { get; }
 
-        public ICommand SellCommand { get; }
+        public ICommand SellHalfCommand { get; }
+
+        public ICommand SellAllCommand { get; }
 
         public DateTimeOffset Time
         {
@@ -118,8 +127,11 @@
             get => this.simulation.Positions.SingleOrDefault(x => x.Symbol == this.currentSymbol?.Symbol);
             set
             {
-                this.CurrentSymbol = this.Symbols.SingleOrDefault(x => x.Symbol == value?.Symbol);
-                this.OnPropertyChanged();
+                if (value is { })
+                {
+                    this.CurrentSymbol = this.Symbols.SingleOrDefault(x => x.Symbol == value.Symbol);
+                    this.OnPropertyChanged();
+                }
             }
         }
 

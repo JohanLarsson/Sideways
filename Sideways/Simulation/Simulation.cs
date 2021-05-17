@@ -10,7 +10,7 @@
     public class Simulation : INotifyPropertyChanged
     {
         private string name = $"Simulation_{DateTime.Now.ToLongDateString()}";
-        private decimal balance;
+        private float balance;
         private ImmutableList<Position> positions = ImmutableList<Position>.Empty;
         private ImmutableList<Trade> trades = ImmutableList<Trade>.Empty;
 
@@ -36,7 +36,7 @@
             }
         }
 
-        public decimal Balance
+        public float Balance
         {
             get => this.balance;
             private set
@@ -81,15 +81,17 @@
             }
         }
 
+        public float Equity() => this.Balance + this.positions.SelectMany(x => x.Buys).Sum(x => x.Price * x.Shares);
+
         public void Buy(string symbol, float price, int shares, DateTimeOffset time)
         {
-            if (this.Balance < (decimal)(price * shares))
+            if (this.Balance < price * shares)
             {
                 throw new InvalidOperationException("Not enough money.");
             }
 
-            this.Balance -= (decimal)price * shares;
-            var buy = new Buy(shares, time, (decimal)price);
+            this.Balance -= price * shares;
+            var buy = new Buy(shares, time, price);
             if (this.positions.SingleOrDefault(x => x.Symbol == symbol) is { } existing)
             {
                 this.Positions = this.positions.Replace(existing, new Position(symbol, existing.Buys.Add(buy)));
@@ -111,12 +113,12 @@
             if (position.Buys.Sum(x => x.Shares) == shares)
             {
                 this.Positions = this.positions.Remove(position);
-                this.Trades = this.trades.Add(new Trade(symbol, position.Buys, new Sell(shares, time, (decimal)price)));
+                this.Trades = this.trades.Add(new Trade(symbol, position.Buys, new Sell(shares, time, price)));
             }
             else
             {
                 this.Positions = this.positions.Replace(position, new Position(symbol, Remaining()));
-                this.Trades = this.trades.Add(new Trade(symbol, Sold().ToImmutableList(), new Sell(shares, time, (decimal)price)));
+                this.Trades = this.trades.Add(new Trade(symbol, Sold().ToImmutableList(), new Sell(shares, time, price)));
 
                 ImmutableList<Buy> Remaining()
                 {
@@ -161,7 +163,7 @@
                 }
             }
 
-            this.Balance += (decimal)(price * shares);
+            this.Balance += price * shares;
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
