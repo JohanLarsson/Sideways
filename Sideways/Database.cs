@@ -4,7 +4,9 @@
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
+
     using Microsoft.Data.Sqlite;
+
     using Sideways.AlphaVantage;
 
     public static class Database
@@ -205,11 +207,6 @@
             }
 
             transaction.Commit();
-        }
-
-        public static void Copy(string symbol, FileInfo source, FileInfo target)
-        {
-            WriteMinutes(symbol, ReadMinutes(symbol, source), target);
         }
 
         private static DescendingCandles ReadCandles(SqliteDataReader reader)
