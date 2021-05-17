@@ -7,6 +7,13 @@
 
     public class MovingAverage : CandleSeries
     {
+        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
+        public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
+            typeof(MovingAverage),
+            new FrameworkPropertyMetadata(
+                null,
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         /// <summary>Identifies the <see cref="Brush"/> dependency property.</summary>
         public static readonly DependencyProperty BrushProperty = DependencyProperty.Register(
             nameof(Brush),
@@ -34,6 +41,12 @@
             this.AddVisualChild(this.drawing);
         }
 
+        public FloatRange? PriceRange
+        {
+            get => (FloatRange?)this.GetValue(PriceRangeProperty);
+            set => this.SetValue(PriceRangeProperty, value);
+        }
+
         public SolidColorBrush? Brush
         {
             get => (SolidColorBrush?)this.GetValue(BrushProperty);
@@ -58,7 +71,7 @@
             var candleWidth = this.CandleWidth;
             using var context = this.drawing.RenderOpen();
             if (this.pen is { } &&
-                this.Range is { } priceRange)
+                this.PriceRange is { } priceRange)
             {
                 Point? previous = null;
                 var x = size.Width - (candleWidth / 2);

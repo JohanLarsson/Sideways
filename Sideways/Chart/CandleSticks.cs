@@ -8,6 +8,13 @@
     {
         private readonly DrawingVisual drawing;
 
+        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
+        public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
+            typeof(CandleSticks),
+            new FrameworkPropertyMetadata(
+                null,
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         static CandleSticks()
         {
             RenderOptions.EdgeModeProperty.OverrideMetadata(typeof(CandleSticks), new UIPropertyMetadata(EdgeMode.Aliased));
@@ -17,6 +24,12 @@
         {
             this.drawing = new DrawingVisual();
             this.AddVisualChild(this.drawing);
+        }
+
+        public FloatRange? PriceRange
+        {
+            get => (FloatRange?)this.GetValue(PriceRangeProperty);
+            set => this.SetValue(PriceRangeProperty, value);
         }
 
         protected override int VisualChildrenCount => 1;
@@ -30,7 +43,7 @@
             var size = this.RenderSize;
             var candleWidth = this.CandleWidth;
             using var context = this.drawing.RenderOpen();
-            if (this.Range is { } priceRange)
+            if (this.PriceRange is { } range)
             {
                 var candles = this.Candles;
                 var position = CandlePosition.Create(size.Width, candleWidth);
@@ -64,7 +77,7 @@
                         break;
                     }
 
-                    double Y(float price) => priceRange.Y(price, size.Height);
+                    double Y(float price) => range.Y(price, size.Height);
                 }
 
                 static Rect Rect(Point p1, Point p2)

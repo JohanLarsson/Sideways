@@ -18,8 +18,8 @@
                 FrameworkPropertyMetadataOptions.AffectsRender,
                 (d, e) => ((CrossHair)d).pen = CreatePen((SolidColorBrush?)e.NewValue)));
 
-        /// <summary>Identifies the <see cref="Range"/> dependency property.</summary>
-        public static readonly DependencyProperty RangeProperty = Chart.RangeProperty.AddOwner(
+        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
+        public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
             typeof(CrossHair),
             new FrameworkPropertyMetadata(
                 null,
@@ -93,10 +93,10 @@
             set => this.SetValue(CandleIntervalProperty, value);
         }
 
-        public FloatRange? Range
+        public FloatRange? PriceRange
         {
-            get => (FloatRange?)this.GetValue(RangeProperty);
-            set => this.SetValue(RangeProperty, value);
+            get => (FloatRange?)this.GetValue(PriceRangeProperty);
+            set => this.SetValue(PriceRangeProperty, value);
         }
 
         public CrossHairPosition? Position
@@ -131,7 +131,7 @@
                 null,
                 new Rect(this.RenderSize));
             if (this.pen is { } &&
-                this.Range is { } priceRange &&
+                this.PriceRange is { } priceRange &&
                 this.Position is { Time: var time, Price: var price })
             {
                 if (this.IsMouseOver)
@@ -156,7 +156,7 @@
             var i = (int)Math.Round((size.Width - pos.X) / this.CandleWidth);
             if (this.Candles.Count > i &&
                 i >= 0 &&
-                this.Range is { } range)
+                this.PriceRange is { } range)
             {
                 this.SetCurrentValue(PositionProperty, new CrossHairPosition(this.Candles[i].Time, range.ValueFromY(pos.Y, size.Height), this.CandleInterval));
             }

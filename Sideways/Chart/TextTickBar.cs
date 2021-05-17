@@ -16,8 +16,8 @@
                 Brushes.Gray,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="Range"/> dependency property.</summary>
-        public static readonly DependencyProperty RangeProperty = Chart.RangeProperty.AddOwner(
+        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
+        public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
             typeof(TextTickBar),
             new FrameworkPropertyMetadata(
                 null,
@@ -32,15 +32,15 @@
             set => this.SetValue(FillProperty, value);
         }
 
-        public FloatRange? Range
+        public FloatRange? PriceRange
         {
-            get => (FloatRange?)this.GetValue(RangeProperty);
-            set => this.SetValue(RangeProperty, value);
+            get => (FloatRange?)this.GetValue(PriceRangeProperty);
+            set => this.SetValue(PriceRangeProperty, value);
         }
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (this.Range is { Max: var max } range &&
+            if (this.PriceRange is { Max: var max } range &&
                 availableSize.Height is > 0 and < double.PositiveInfinity)
             {
                 var text = new FormattedText(
@@ -63,7 +63,7 @@
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (this.Range is { } range)
+            if (this.PriceRange is { } range)
             {
                 var actualHeight = this.ActualHeight;
                 var fontFamily = TextElement.GetFontFamily(this);

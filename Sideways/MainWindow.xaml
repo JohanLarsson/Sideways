@@ -71,7 +71,7 @@
                         <MultiBinding Converter="{x:Static converters:AdrConverter.Default}" StringFormat="ADR(20) {0:F1}%">
                             <Binding ElementName="DailyChart" Path="Candles" />
                             <Binding ElementName="DailyChart" Path="Time" />
-                            <Binding ElementName="DailyChart" Path="Range" />
+                            <Binding ElementName="DailyChart" Path="PriceRange" />
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
@@ -81,7 +81,7 @@
                         <MultiBinding Converter="{x:Static converters:AverageDollarVolumeConverter.Default}" StringFormat="A$(20) {0:##,#0} M">
                             <Binding ElementName="DailyChart" Path="Candles" />
                             <Binding ElementName="DailyChart" Path="Time" />
-                            <Binding ElementName="DailyChart" Path="Range" />
+                            <Binding ElementName="DailyChart" Path="PriceRange" />
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>

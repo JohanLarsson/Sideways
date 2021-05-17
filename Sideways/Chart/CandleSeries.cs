@@ -34,13 +34,6 @@
                 5,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="Range"/> dependency property.</summary>
-        public static readonly DependencyProperty RangeProperty = Chart.RangeProperty.AddOwner(
-            typeof(CandleSeries),
-            new FrameworkPropertyMetadata(
-                null,
-                FrameworkPropertyMetadataOptions.AffectsRender));
-
         /// <summary>Identifies the <see cref="Candles"/> dependency property.</summary>
         public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(typeof(CandleSeries));
 
@@ -79,12 +72,6 @@
         {
             get => (int)this.GetValue(CandleWidthProperty);
             set => this.SetValue(CandleWidthProperty, value);
-        }
-
-        public FloatRange? Range
-        {
-            get => (FloatRange?)this.GetValue(RangeProperty);
-            set => this.SetValue(RangeProperty, value);
         }
     }
 }
