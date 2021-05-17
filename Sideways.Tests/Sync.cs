@@ -9,21 +9,22 @@
         [TestCaseSource(typeof(Download), nameof(Download.Symbols))]
         public static void Copy(string symbol)
         {
-            var target = new FileInfo("D:\\Database.sqlite3");
+            var source = new FileInfo("D:\\Database.sqlite3");
+            var target = Database.DbFile;
             if (File.Exists(target.FullName))
             {
-                if (Sideways.Sync.CountMinutes(symbol, Database.DbFile) > Sideways.Sync.CountMinutes(symbol, target))
+                if (Sideways.Sync.CountMinutes(symbol, source) > Sideways.Sync.CountMinutes(symbol, target))
                 {
-                    Sideways.Sync.CopyMinutes(symbol, Database.DbFile, target);
+                    Sideways.Sync.CopyMinutes(symbol, source, target);
                 }
 
-                if (Sideways.Sync.CountDays(symbol, Database.DbFile) > Sideways.Sync.CountDays(symbol, target))
+                if (Sideways.Sync.CountDays(symbol, source) > Sideways.Sync.CountDays(symbol, target))
                 {
-                    Sideways.Sync.CopyDays(symbol, Database.DbFile, target);
+                    Sideways.Sync.CopyDays(symbol, source, target);
                 }
 
-                Sideways.Sync.CopySplits(symbol, Database.DbFile, target);
-                Sideways.Sync.CopyDividends(symbol, Database.DbFile, target);
+                Sideways.Sync.CopySplits(symbol, source, target);
+                Sideways.Sync.CopyDividends(symbol, source, target);
             }
         }
     }
