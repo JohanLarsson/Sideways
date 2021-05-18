@@ -143,7 +143,8 @@
             {
                 _ = Task.Delay(TimeSpan.FromSeconds(60))
                         .ContinueWith(_ => Semaphore.Release(), TaskScheduler.Default);
-                return Semaphore.WaitAsync();
+                //// Adding an extra delay as AlphaVantage is not always happy with our throttling.
+                return Task.WhenAll(Task.Delay(TimeSpan.FromSeconds(1)), Semaphore.WaitAsync());;
             }
         }
     }

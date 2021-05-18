@@ -226,8 +226,6 @@
             if (dataSource.Days(symbol).Download is { } task)
             {
                 await task;
-                //// Adding an extra delay as AlphaVantage is not always happy with our throttling.
-                await Task.Delay(TimeSpan.FromSeconds(1));
             }
             else
             {
@@ -268,8 +266,6 @@
                 }
 
                 Database.WriteMinutes(symbol, candles);
-                //// Adding an extra delay as AlphaVantage is not always happy with our throttling.
-                await Task.Delay(TimeSpan.FromSeconds(1));
             }
             else
             {
