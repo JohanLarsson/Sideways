@@ -83,6 +83,15 @@
                 null,
                 FrameworkPropertyMetadataOptions.Inherits));
 
+        /// <summary>Identifies the <see cref="MaxVolume"/> dependency property.</summary>
+        public static readonly DependencyProperty MaxVolumeProperty = DependencyProperty.RegisterAttached(
+            nameof(MaxVolume),
+            typeof(int?),
+            typeof(Chart),
+            new FrameworkPropertyMetadata(
+                default(int?),
+                FrameworkPropertyMetadataOptions.Inherits));
+
         private readonly List<Candle> candles = new();
         private int lastTimeStamp;
 
@@ -142,6 +151,12 @@
             protected set => this.SetValue(PriceRangeProperty, value);
         }
 
+        public int? MaxVolume
+        {
+            get => (int?)this.GetValue(MaxVolumeProperty);
+            protected set => this.SetValue(MaxVolumeProperty, value);
+        }
+
         public UIElementCollection Children { get; }
 
         protected override int VisualChildrenCount => this.Children.Count;
@@ -169,6 +184,7 @@
             {
                 var min = float.MaxValue;
                 var max = float.MinValue;
+                var maxVolume = 0;
                 var visible = (int)Math.Ceiling(finalSize.Width / this.CandleWidth);
                 foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval)
                                                   .Take(visible + this.ExtraCandles))
@@ -177,12 +193,14 @@
                     {
                         min = Math.Min(min, candle.Low);
                         max = Math.Max(max, candle.High);
+                        maxVolume = Math.Max(maxVolume, candle.Volume);
                     }
 
                     this.candles.Add(candle);
                 }
 
                 this.SetCurrentValue(PriceRangeProperty, new FloatRange(min, max));
+                this.SetCurrentValue(MaxVolumeProperty, maxVolume);
             }
             else
             {

@@ -1,12 +1,18 @@
 ﻿namespace Sideways
 {
     using System;
-    using System.Linq;
     using System.Windows;
     using System.Windows.Media;
 
     public class VolumeBars : CandleSeries
     {
+        /// <summary>Identifies the <see cref="MaxVolume"/> dependency property.</summary>
+        public static readonly DependencyProperty MaxVolumeProperty = Chart.MaxVolumeProperty.AddOwner(
+            typeof(VolumeBars),
+            new FrameworkPropertyMetadata(
+                default(int?),
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         private readonly DrawingVisual drawing;
 
         static VolumeBars()
@@ -20,6 +26,12 @@
             this.AddVisualChild(this.drawing);
         }
 
+        public int? MaxVolume
+        {
+            get => (int?)this.GetValue(MaxVolumeProperty);
+            protected set => this.SetValue(MaxVolumeProperty, value);
+        }
+
         protected override int VisualChildrenCount => 1;
 
         protected override Visual GetVisualChild(int index) => index == 0
@@ -31,9 +43,10 @@
             var size = this.RenderSize;
             var candleWidth = this.CandleWidth;
             using var context = this.drawing.RenderOpen();
-            if (this.Candles is { Count: > 0 } candles)
+            if (this.Candles is { Count: > 0 } candles &&
+                this.MaxVolume is { } maxVolume)
             {
-                var range = new FloatRange(0, candles.Max(x => x.Volume));
+                var range = new FloatRange(0, maxVolume);
                 var x = size.Width;
                 foreach (var candle in candles)
                 {
