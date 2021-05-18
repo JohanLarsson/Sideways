@@ -1,7 +1,6 @@
 ﻿namespace Sideways.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
@@ -230,22 +229,37 @@
 
         private static readonly string[] NewSymbols =
         {
-            "IPHI",
-            "ENDP",
-            "PBR",
-            "TEVA",
-            "INSG",
-            "XNET",
-            "USLV",
-            "WB",
-            "RAD",
-            "YINN",
-            "NUGT",
-            "JNUG",
-            "FIT",
-            "ISEE",
-            "KOSS",
-            "SONO",
+            "AMED",
+            "AXL",
+            "BBD",
+            "BILI",
+            "BLDP",
+            "CCIV",
+            "CHFS",
+            "CRC",
+            "CSTM",
+            "CTRP",
+            "CVNA",
+            "CX",
+            "DCPH",
+            "DXCM",
+            "FRO",
+            "GGB",
+            "GNK",
+            "ITUB",
+            "LIT",
+            "LYG",
+            "MOMO",
+            "MT",
+            "NPTN",
+            "PDD",
+            "PLUG",
+            "RGEN",
+            "STNE",
+            "TAL",
+            "TME",
+            "UCTT",
+            "ZBH",
         };
 
         private static readonly TestCaseData[] NewSymbolsAndSlices = NewSymbols.SelectMany(x => Enum.GetValues(typeof(Slice)).Cast<Slice>().Select(y => new TestCaseData(x, y))).ToArray();
@@ -269,18 +283,11 @@
         [Test]
         public static void Sort()
         {
-            var old = new HashSet<string>(Database.ReadSymbols());
-            foreach (var symbol in old.OrderBy(x => x))
+            var old = Database.ReadSymbols();
+            foreach (var symbol in NewSymbols.Except(old).OrderBy(x => x))
             {
-                    Console.WriteLine($"            \"{symbol}\",");
+                Console.WriteLine($"            \"{symbol}\",");
             }
-            //foreach (var symbol in NewSymbols.OrderBy(x => x))
-            //{
-            //    if (old.Add(symbol))
-            //    {
-            //        Console.WriteLine($"            \"{symbol}\",");
-            //    }
-            //}
         }
 
         [TestCaseSource(nameof(NewSymbols))]
