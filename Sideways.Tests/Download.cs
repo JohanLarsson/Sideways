@@ -24,12 +24,15 @@
             "ADSK",
             "AEP",
             "AGQ",
+            "AHPI",
             "AMAT",
             "AMD",
             "ANSS",
             "APPS",
+            "APT",
             "ASML",
             "BA",
+            "BGFV",
             "BIDU",
             "BMTX",
             "BTX",
@@ -48,15 +51,19 @@
             "DDS",
             "DIS",
             "DOCU",
+            "DOMO",
             "DSSI",
             "EA",
+            "EOG",
             "ETHE",
+            "ETSY",
             "EWLU",
             "EXAS",
             "EXPR",
             "F",
             "FB",
             "FCEL",
+            "FNKO",
             "FOUR",
             "FSR",
             "FUBO",
@@ -68,8 +75,11 @@
             "GOGO",
             "GOOG",
             "GTN",
+            "HAL",
             "HGEN",
             "HQI",
+            "HYRE",
+            "HZNP",
             "IDEX",
             "IMO",
             "INO",
@@ -83,10 +93,12 @@
             "JYNT",
             "KEX",
             "KLAC",
+            "LAKE",
             "MARA",
             "MEG",
             "MFIN",
             "MG",
+            "MRNA",
             "MSFT",
             "MU",
             "MVIS",
@@ -95,12 +107,16 @@
             "NFLX",
             "NIO",
             "NM",
+            "NNVC",
             "NUE",
             "NVAX",
             "NVDA",
             "NVS",
             "OCGN",
+            "ONCY",
+            "PDCO",
             "PLTR",
+            "PSA",
             "PTON",
             "PULM",
             "PXLW",
@@ -108,28 +124,36 @@
             "QQQ",
             "RBLX",
             "REGN",
+            "REZI",
             "RIOT",
             "ROKU",
+            "RVLV",
+            "SAVA",
             "SAVE",
             "SE",
+            "SEAS",
             "SHIP",
             "SHOP",
             "SJR",
+            "SLB",
             "SLQT",
             "SNAP",
             "SPCE",
             "SPY",
             "SQ",
+            "STX",
             "TBI",
             "TDOC",
             "TIGR",
             "TKAT",
             "TNA",
             "TPL",
+            "TRIL",
             "TSLA",
             "TWLO",
             "U",
             "URG",
+            "URI",
             "UROY",
             "UUUU",
             "WAL",
@@ -145,6 +169,37 @@
         };
 
         private static readonly TestCaseData[] SymbolsAndSlices = Symbols.SelectMany(x => Enum.GetValues(typeof(Slice)).Cast<Slice>().Select(y => new TestCaseData(x, y))).ToArray();
+
+        private static readonly string[] NewSymbols =
+        {
+            "AHPI",
+            "APT",
+            "BGFV",
+            "DOMO",
+            "EOG",
+            "ETSY",
+            "FNKO",
+            "HAL",
+            "HYRE",
+            "HZNP",
+            "LAKE",
+            "MRNA",
+            "NNVC",
+            "ONCY",
+            "PDCO",
+            "PSA",
+            "REZI",
+            "RVLV",
+            "SAVA",
+            "SEAS",
+            "SLB",
+            "STX",
+            "TRIL",
+            "URI",
+        };
+
+        private static readonly TestCaseData[] NewSymbolsAndSlices = NewSymbols.SelectMany(x => Enum.GetValues(typeof(Slice)).Cast<Slice>().Select(y => new TestCaseData(x, y))).ToArray();
+
         private static readonly Downloader Downloader = new(new HttpClientHandler(), ApiKey);
 
         private static string ApiKey
@@ -164,30 +219,17 @@
         [Test]
         public static void Sort()
         {
-            var set = new HashSet<string>(Symbols)
+            var old = new HashSet<string>(Symbols);
+            foreach (var symbol in NewSymbols.OrderBy(x => x))
             {
-                "AGQ",
-                "BTX",
-                "ISNS",
-                "ACRX",
-                "BMTX",
-                "DAC",
-                "CCJ",
-                "GTN",
-                "HQI",
-                "IDEX",
-                "IQ",
-                "GME",
-                "XL",
-                "UUUU",
-            };
-            foreach (var symbol in set.OrderBy(x => x))
-            {
-                Console.WriteLine($"            \"{symbol}\",");
+                if (old.Add(symbol))
+                {
+                    Console.WriteLine($"            \"{symbol}\",");
+                }
             }
         }
 
-        [TestCaseSource(nameof(Symbols))]
+        [TestCaseSource(nameof(NewSymbols))]
         public static async Task Days(string symbol)
         {
             var dataSource = new DataSource(Downloader);
@@ -203,7 +245,7 @@
             }
         }
 
-        [TestCaseSource(nameof(SymbolsAndSlices))]
+        [TestCaseSource(nameof(NewSymbolsAndSlices))]
         public static async Task Minutes(string symbol, Slice slice)
         {
             var range = TimeRange.FromSlice(slice);
