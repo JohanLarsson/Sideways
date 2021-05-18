@@ -89,7 +89,7 @@
             }
         }
 
-        private readonly struct CandlePosition
+        internal readonly struct CandlePosition
         {
             internal readonly double Left;
             internal readonly double Right;

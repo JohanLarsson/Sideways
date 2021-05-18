@@ -47,7 +47,7 @@
                 this.MaxVolume is { } maxVolume)
             {
                 var range = new FloatRange(0, maxVolume);
-                var x = size.Width;
+                var position = CandleSticks.CandlePosition.Create(size.Width, candleWidth);
                 foreach (var candle in candles)
                 {
                     var brush = Brushes.Get(candle);
@@ -55,10 +55,11 @@
                         brush,
                         null,
                         Rect(
-                            new Point(x - candleWidth + 1, size.Height),
-                            new Point(x - 1, range.Y(candle.Volume, size.Height))));
-                    x -= candleWidth;
-                    if (x < 0)
+                            new Point(position.Left, size.Height),
+                            new Point(position.Right, range.Y(candle.Volume, size.Height))));
+
+                    position = position.Shift();
+                    if (position.Right < 0)
                     {
                         break;
                     }
