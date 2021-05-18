@@ -5,6 +5,8 @@
     using System.Linq;
     using System.Windows;
     using System.Windows.Input;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
     using System.Windows.Threading;
 
     public partial class MainWindow : Window
@@ -58,6 +60,13 @@
                     vm.Time = candles.Skip(vm.Time, interval, count);
                 }
             }
+        }
+
+        private void OnCopy(object sender, ExecutedRoutedEventArgs e)
+        {
+            var bmp = new RenderTargetBitmap((int)this.ChartArea.ActualWidth, (int)this.ChartArea.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+            bmp.Render(this);
+            Clipboard.SetImage(bmp);
         }
     }
 }

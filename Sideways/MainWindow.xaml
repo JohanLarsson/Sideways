@@ -12,171 +12,180 @@
                                          IsDesignTimeCreatable=False}"
         Background="#FF050515"
         mc:Ignorable="d">
+    <Window.CommandBindings>
+        <CommandBinding Command="Copy" Executed="OnCopy" />
+    </Window.CommandBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="0">
-            <TextBlock HorizontalAlignment="Left"
-                       VerticalAlignment="Top"
-                       Foreground="{x:Static sideways:Brushes.Gray}"
-                       Text="W" />
-            <sideways:Chart x:Name="WeeklyChart"
-                            CandleInterval="Week"
-                            ExtraCandles="20"
-                            ItemsSource="{Binding CurrentSymbol.Candles}"
-                            Time="{Binding Time}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="5*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+        <Grid x:Name="ChartArea">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-                    <Grid>
-                        <sideways:MovingAverage Brush="Purple" Period="10" />
-
-                        <sideways:MovingAverage Brush="Yellow" Period="20" />
-
-                        <sideways:CandleSticks />
-                        <sideways:CrossHair />
-                    </Grid>
-
-                    <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
-
-                    <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
-
-                    <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
-                </Grid>
-            </sideways:Chart>
-        </Grid>
-
-        <GridSplitter Grid.Column="1" Style="{StaticResource VerticalAxisGridSplitter}" />
-
-        <Grid Grid.Column="2">
-            <StackPanel Margin="10,10">
-                <TextBlock FontSize="24"
+            <Grid Grid.Column="0">
+                <TextBlock HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
                            Foreground="{x:Static sideways:Brushes.Gray}"
-                           Text="{Binding CurrentSymbol.Symbol}" />
-
-                <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
-                    <TextBlock.Text>
-                        <MultiBinding Converter="{x:Static converters:AdrConverter.Default}" StringFormat="ADR(20) {0:F1}%">
-                            <Binding ElementName="DailyChart" Path="Candles" />
-                            <Binding ElementName="DailyChart" Path="Time" />
-                            <Binding ElementName="DailyChart" Path="PriceRange" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-
-                <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
-                    <TextBlock.Text>
-                        <MultiBinding Converter="{x:Static converters:AverageDollarVolumeConverter.Default}" StringFormat="A$(20) {0:##,#0} M">
-                            <Binding ElementName="DailyChart" Path="Candles" />
-                            <Binding ElementName="DailyChart" Path="Time" />
-                            <Binding ElementName="DailyChart" Path="PriceRange" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-
-                <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Time, StringFormat='f'}" />
-            </StackPanel>
-
-            <sideways:Chart x:Name="DailyChart"
-                            CandleInterval="Day"
-                            ExtraCandles="200"
-                            ItemsSource="{Binding CurrentSymbol.Candles}"
-                            Time="{Binding Time}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="5*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
+                           Text="W" />
+                <sideways:Chart x:Name="WeeklyChart"
+                                CandleInterval="Week"
+                                ExtraCandles="20"
+                                ItemsSource="{Binding CurrentSymbol.Candles}"
+                                Time="{Binding Time}">
                     <Grid>
-                        <sideways:MovingAverage Brush="Purple" Period="10" />
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="5*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                        <sideways:MovingAverage Brush="Yellow" Period="20" />
+                        <Grid>
+                            <sideways:MovingAverage Brush="Purple" Period="10" />
 
-                        <sideways:MovingAverage Brush="Red" Period="50" />
+                            <sideways:MovingAverage Brush="Yellow" Period="20" />
 
-                        <sideways:MovingAverage Brush="Orange" Period="100" />
+                            <sideways:CandleSticks />
+                            <sideways:CrossHair />
+                        </Grid>
 
-                        <sideways:MovingAverage Brush="CadetBlue" Period="150" />
+                        <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
 
-                        <sideways:MovingAverage Brush="Green" Period="200" />
+                        <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
 
-                        <sideways:CandleSticks />
-                        <sideways:CrossHair />
+                        <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
                     </Grid>
+                </sideways:Chart>
+            </Grid>
 
-                    <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+            <GridSplitter Grid.Column="1" Style="{StaticResource VerticalAxisGridSplitter}" />
 
-                    <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+            <Grid Grid.Column="2">
+                <StackPanel Margin="10,10">
+                    <TextBlock FontSize="24"
+                               Foreground="{x:Static sideways:Brushes.Gray}"
+                               Text="{Binding CurrentSymbol.Symbol}" />
 
-                    <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
-                </Grid>
-            </sideways:Chart>
+                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{x:Static converters:AdrConverter.Default}" StringFormat="ADR(20) {0:F1}%">
+                                <Binding ElementName="DailyChart" Path="Candles" />
+                                <Binding ElementName="DailyChart" Path="Time" />
+                                <Binding ElementName="DailyChart" Path="PriceRange" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+
+                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{x:Static converters:AverageDollarVolumeConverter.Default}" StringFormat="A$(20) {0:##,#0} M">
+                                <Binding ElementName="DailyChart" Path="Candles" />
+                                <Binding ElementName="DailyChart" Path="Time" />
+                                <Binding ElementName="DailyChart" Path="PriceRange" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+
+                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Time, StringFormat='f'}" />
+                </StackPanel>
+
+                <sideways:Chart x:Name="DailyChart"
+                                CandleInterval="Day"
+                                ExtraCandles="200"
+                                ItemsSource="{Binding CurrentSymbol.Candles}"
+                                Time="{Binding Time}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="5*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid>
+                            <sideways:MovingAverage Brush="Purple" Period="10" />
+
+                            <sideways:MovingAverage Brush="Yellow" Period="20" />
+
+                            <sideways:MovingAverage Brush="Red" Period="50" />
+
+                            <sideways:MovingAverage Brush="Orange" Period="100" />
+
+                            <sideways:MovingAverage Brush="CadetBlue" Period="150" />
+
+                            <sideways:MovingAverage Brush="Green" Period="200" />
+
+                            <sideways:CandleSticks />
+                            <sideways:CrossHair />
+                        </Grid>
+
+                        <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+
+                        <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+
+                        <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
+                    </Grid>
+                </sideways:Chart>
+            </Grid>
+
+            <GridSplitter Grid.Column="3" Style="{StaticResource VerticalAxisGridSplitter}" />
+
+            <Grid Grid.Column="4">
+                <TextBlock HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           Foreground="{x:Static sideways:Brushes.Gray}"
+                           Text="h" />
+                <sideways:Chart x:Name="HourlyChart"
+                                CandleInterval="Hour"
+                                ExtraCandles="20"
+                                ItemsSource="{Binding CurrentSymbol.Candles}"
+                                Time="{Binding Time}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="5*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid>
+                            <sideways:MovingAverage Brush="Purple" Period="10" />
+
+                            <sideways:MovingAverage Brush="Yellow" Period="20" />
+
+                            <sideways:CandleSticks />
+
+                            <sideways:CrossHair />
+                        </Grid>
+
+                        <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+
+                        <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+
+                        <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
+                    </Grid>
+                </sideways:Chart>
+            </Grid>
         </Grid>
 
-        <GridSplitter Grid.Column="3" Style="{StaticResource VerticalAxisGridSplitter}" />
-
-        <Grid Grid.Column="4">
-            <TextBlock HorizontalAlignment="Left"
-                       VerticalAlignment="Top"
-                       Foreground="{x:Static sideways:Brushes.Gray}"
-                       Text="h" />
-            <sideways:Chart x:Name="HourlyChart"
-                            CandleInterval="Hour"
-                            ExtraCandles="20"
-                            ItemsSource="{Binding CurrentSymbol.Candles}"
-                            Time="{Binding Time}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="5*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <Grid>
-                        <sideways:MovingAverage Brush="Purple" Period="10" />
-
-                        <sideways:MovingAverage Brush="Yellow" Period="20" />
-
-                        <sideways:CandleSticks />
-
-                        <sideways:CrossHair />
-                    </Grid>
-
-                    <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
-
-                    <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
-
-                    <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
-                </Grid>
-            </sideways:Chart>
-        </Grid>
-
-        <Grid Grid.Column="5">
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
