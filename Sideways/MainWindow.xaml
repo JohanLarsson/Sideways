@@ -34,8 +34,9 @@
                             Time="{Binding Time}">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition />
+                        <RowDefinition Height="5*" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -54,6 +55,8 @@
                     <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
 
                     <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+
+                    <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
                 </Grid>
             </sideways:Chart>
         </Grid>
@@ -96,8 +99,9 @@
                             Time="{Binding Time}">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition />
+                        <RowDefinition Height="5*" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -124,6 +128,8 @@
                     <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
 
                     <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+
+                    <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
                 </Grid>
             </sideways:Chart>
         </Grid>
@@ -142,8 +148,9 @@
                             Time="{Binding Time}">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition />
+                        <RowDefinition Height="5*" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -163,6 +170,8 @@
                     <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
 
                     <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+
+                    <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
                 </Grid>
             </sideways:Chart>
         </Grid>
