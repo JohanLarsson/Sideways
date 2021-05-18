@@ -2,7 +2,9 @@
 {
     using System;
     using System.ComponentModel;
+    using System.IO;
     using System.Linq;
+    using System.Text.Json;
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media;
@@ -67,6 +69,30 @@
             var bmp = new RenderTargetBitmap((int)this.ChartArea.ActualWidth, (int)this.ChartArea.ActualHeight, 96, 96, PixelFormats.Pbgra32);
             bmp.Render(this);
             Clipboard.SetImage(bmp);
+        }
+
+        private void OnCanSave(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { Simulation: { Name: { } } })
+            {
+                e.CanExecute = true;
+                e.Handled = true;
+            }
+        }
+
+        private void OnSave(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { Simulation: { Name: { } name } simulation })
+            {
+                var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Simulations");
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
+                File.WriteAllText(Path.Combine(dir, name + ".json"), JsonSerializer.Serialize(simulation));
+                e.Handled = true;
+            }
         }
     }
 }

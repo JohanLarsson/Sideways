@@ -4,12 +4,13 @@
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.ComponentModel;
+    using System.Globalization;
     using System.Linq;
     using System.Runtime.CompilerServices;
 
     public class Simulation : INotifyPropertyChanged
     {
-        private string name = $"Simulation_{DateTime.Now.ToLongDateString()}";
+        private string name = $"Simulation {DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}";
         private float balance;
         private ImmutableList<Position> positions = ImmutableList<Position>.Empty;
         private ImmutableList<Trade> trades = ImmutableList<Trade>.Empty;

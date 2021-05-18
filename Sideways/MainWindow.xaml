@@ -198,6 +198,15 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <Grid Grid.Row="1">
+                <Grid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Save">
+                            <MenuItem.CommandBindings>
+                                <CommandBinding Command="Save" CanExecute="OnCanSave" Executed="OnSave" />
+                            </MenuItem.CommandBindings>
+                        </MenuItem>
+                    </ContextMenu>
+                </Grid.ContextMenu>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
