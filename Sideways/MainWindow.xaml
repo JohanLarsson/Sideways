@@ -118,11 +118,11 @@
                               Background="Transparent"
                               BorderThickness="0"
                               FontSize="24"
+                              Style="{StaticResource ComboBoxStyle}"
                               Foreground="{x:Static sideways:Brushes.Gray}"
                               IsEditable="True"
                               ItemsSource="{Binding Symbols}"
-                              Text="{Binding CurrentSymbolText}">
-                    </ComboBox>
+                              Text="{Binding CurrentSymbolText}" />
 
                     <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
                         <TextBlock.Text>
