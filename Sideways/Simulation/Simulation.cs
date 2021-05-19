@@ -102,7 +102,7 @@
             }
         }
 
-        public static Simulation Create() => new (
+        public static Simulation Create() => new(
             $"Simulation {DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}",
             100_000,
             ImmutableList<Position>.Empty,

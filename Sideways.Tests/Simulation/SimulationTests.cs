@@ -88,7 +88,7 @@
             var json = JsonSerializer.Serialize(simulation);
             var roundtripped = JsonSerializer.Deserialize<Simulation>(json);
 
-            CollectionAssert.AreEqual(simulation.Positions.SelectMany(x => x.Buys).Select(x => x.Shares), roundtripped.Positions.SelectMany(x => x.Buys).Select(x => x.Shares));
+            CollectionAssert.AreEqual(simulation.Positions.SelectMany(x => x.Buys).Select(x => x.Shares), roundtripped!.Positions.SelectMany(x => x.Buys).Select(x => x.Shares));
             CollectionAssert.AreEqual(simulation.Trades.SelectMany(x => x.Buys).Select(x => x.Shares), roundtripped.Trades.SelectMany(x => x.Buys).Select(x => x.Shares));
         }
     }

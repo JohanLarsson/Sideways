@@ -14,8 +14,8 @@
                 OnUseBackgroundChanged));
 
         /// <summary>Helper for getting <see cref="UseBackgroundProperty"/> from <paramref name="element"/>.</summary>
-        /// <param name="element"><see cref="DependencyObject"/> to read <see cref="UseBackgroundProperty"/> from.</param>
-        /// <returns>Value property value.</returns>
+        /// <param name="element"><see cref="ComboBox"/> to read <see cref="UseBackgroundProperty"/> from.</param>
+        /// <returns>UseBackground property value.</returns>
         [AttachedPropertyBrowsableForType(typeof(ComboBox))]
         public static bool GetUseBackground(ComboBox element)
         {
@@ -23,7 +23,7 @@
         }
 
         /// <summary>Helper for setting <see cref="UseBackgroundProperty"/> on <paramref name="element"/>.</summary>
-        /// <param name="element"><see cref="DependencyObject"/> to set <see cref="UseBackgroundProperty"/> on.</param>
+        /// <param name="element"><see cref="ComboBox"/> to set <see cref="UseBackgroundProperty"/> on.</param>
         /// <param name="value">UseBackground property value.</param>
         public static void SetUseBackground(ComboBox element, bool value)
         {

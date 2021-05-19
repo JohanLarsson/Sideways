@@ -18,7 +18,7 @@
 
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
-        private Simulation simulation = Simulation.Create();
+        private Simulation? simulation = Simulation.Create();
         private bool disposed;
 
         public MainViewModel()
@@ -110,13 +110,14 @@
             get => this.currentSymbol?.Symbol;
             set
             {
-                this.CurrentSymbol = this.symbolViewModelCache.Get(value?.ToUpperInvariant());
+                this.CurrentSymbol = this.symbolViewModelCache.Get(value);
+                this.OnPropertyChanged();
             }
         }
 
         public Position? SelectedPosition
         {
-            get => this.simulation.Positions.SingleOrDefault(x => x.Symbol == this.currentSymbol?.Symbol);
+            get => this.simulation?.Positions.SingleOrDefault(x => x.Symbol == this.currentSymbol?.Symbol);
             set
             {
                 if (value is { })
@@ -126,19 +127,26 @@
             }
         }
 
-        public Simulation Simulation
+        public Simulation? Simulation => this.simulation;
+
+        public void UpdateSimulation(Simulation? simulation)
         {
-            get => this.simulation;
-            set
+            this.simulation = simulation;
+            this.OnPropertyChanged(nameof(this.Simulation));
+            this.OnPropertyChanged(nameof(this.SelectedPosition));
+            if (simulation is { })
             {
-                if (ReferenceEquals(value, this.simulation))
+                foreach (var position in simulation.Positions)
                 {
-                    return;
+                    _ = this.symbolViewModelCache.Get(position.Symbol);
                 }
 
-                this.simulation = value;
-                this.OnPropertyChanged();
-                this.OnPropertyChanged(nameof(this.SelectedPosition));
+                foreach (var position in simulation.Trades)
+                {
+                    _ = this.symbolViewModelCache.Get(position.Symbol);
+                }
+
+                this.Time = simulation.Time ?? throw new InvalidOperationException("Missing time in simulation.");
             }
         }
 
@@ -162,7 +170,7 @@
         {
             private static readonly string ApiKeyFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways/AlphaVantage.key");
 
-            private readonly ConcurrentDictionary<string, SymbolViewModel> symbolViewModels = new();
+            private readonly ConcurrentDictionary<string, SymbolViewModel> symbolViewModels = new(StringComparer.OrdinalIgnoreCase);
             private readonly Downloader downloader = new(new HttpClientHandler(), ApiKey());
             private readonly DataSource dataSource;
             private bool disposed;
@@ -194,7 +202,7 @@
 
                 SymbolViewModel Create(string symbol)
                 {
-                    var vm = new SymbolViewModel(symbol);
+                    var vm = new SymbolViewModel(symbol.ToUpperInvariant());
                     _ = vm.LoadAsync(this.dataSource);
                     return vm;
                 }

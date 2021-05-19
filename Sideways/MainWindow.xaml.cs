@@ -137,8 +137,7 @@
                 if (dialog.ShowDialog() is true)
                 {
                     var sim = JsonSerializer.Deserialize<Simulation>(File.ReadAllText(dialog.FileName));
-                    mainViewModel.Simulation = sim;
-                    mainViewModel.Time = sim.Time ?? throw new InvalidOperationException("Missing time in simulation.");
+                    mainViewModel.UpdateSimulation(sim);
                     e.Handled = true;
                 }
             }
