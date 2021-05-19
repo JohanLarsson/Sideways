@@ -102,7 +102,29 @@
 
                 this.currentSymbol = value;
                 this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.CurrentSymbolText));
                 this.OnPropertyChanged(nameof(this.SelectedPosition));
+            }
+        }
+
+        public string? CurrentSymbolText
+        {
+            get => this.currentSymbol?.Symbol;
+            set
+            {
+                this.CurrentSymbol = this.Symbols.SingleOrDefault(x => x.Symbol == value?.ToUpperInvariant());
+            }
+        }
+
+        public Position? SelectedPosition
+        {
+            get => this.simulation.Positions.SingleOrDefault(x => x.Symbol == this.currentSymbol?.Symbol);
+            set
+            {
+                if (value is { })
+                {
+                    this.CurrentSymbol = this.Symbols.SingleOrDefault(x => x.Symbol == value.Symbol);
+                }
             }
         }
 
@@ -119,19 +141,6 @@
                 this.simulation = value;
                 this.OnPropertyChanged();
                 this.OnPropertyChanged(nameof(this.SelectedPosition));
-            }
-        }
-
-        public Position? SelectedPosition
-        {
-            get => this.simulation.Positions.SingleOrDefault(x => x.Symbol == this.currentSymbol?.Symbol);
-            set
-            {
-                if (value is { })
-                {
-                    this.CurrentSymbol = this.Symbols.SingleOrDefault(x => x.Symbol == value.Symbol);
-                    this.OnPropertyChanged();
-                }
             }
         }
 

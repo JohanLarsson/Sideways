@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Text.Json;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
@@ -92,6 +93,23 @@
 
                 File.WriteAllText(Path.Combine(dir, name + ".json"), JsonSerializer.Serialize(simulation));
                 e.Handled = true;
+            }
+        }
+
+        private void OnGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                _ = this.Dispatcher.BeginInvoke(new Action(() => textBox.SelectAll()));
+            }
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (sender is TextBox textBox &&
+                e.Key == Key.Enter)
+            {
+                textBox.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
             }
         }
     }

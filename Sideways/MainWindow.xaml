@@ -72,34 +72,6 @@
             <GridSplitter Grid.Column="1" Style="{StaticResource VerticalAxisGridSplitter}" />
 
             <Grid Grid.Column="2">
-                <StackPanel Margin="10,10">
-                    <TextBlock FontSize="24"
-                               Foreground="{x:Static sideways:Brushes.Gray}"
-                               Text="{Binding CurrentSymbol.Symbol}" />
-
-                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
-                        <TextBlock.Text>
-                            <MultiBinding Converter="{x:Static converters:AdrConverter.Default}" StringFormat="ADR(20) {0:F1}%">
-                                <Binding ElementName="DailyChart" Path="Candles" />
-                                <Binding ElementName="DailyChart" Path="Time" />
-                                <Binding ElementName="DailyChart" Path="PriceRange" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-
-                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
-                        <TextBlock.Text>
-                            <MultiBinding Converter="{x:Static converters:AverageDollarVolumeConverter.Default}" StringFormat="A$(20) {0:##,#0} M">
-                                <Binding ElementName="DailyChart" Path="Candles" />
-                                <Binding ElementName="DailyChart" Path="Time" />
-                                <Binding ElementName="DailyChart" Path="PriceRange" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-
-                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Time, StringFormat='f'}" />
-                </StackPanel>
-
                 <sideways:Chart x:Name="DailyChart"
                                 CandleInterval="Day"
                                 ExtraCandles="200"
@@ -140,6 +112,38 @@
                         <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
                     </Grid>
                 </sideways:Chart>
+
+                <StackPanel Margin="10,10">
+                    <TextBox Background="Transparent"
+                             BorderThickness="0"
+                             FontSize="24"
+                             GotKeyboardFocus="OnGotKeyboardFocus"
+                             KeyDown="OnKeyDown"
+                             Foreground="{x:Static sideways:Brushes.Gray}"
+                             Text="{Binding CurrentSymbolText}" />
+
+                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{x:Static converters:AdrConverter.Default}" StringFormat="ADR(20) {0:F1}%">
+                                <Binding ElementName="DailyChart" Path="Candles" />
+                                <Binding ElementName="DailyChart" Path="Time" />
+                                <Binding ElementName="DailyChart" Path="PriceRange" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+
+                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{x:Static converters:AverageDollarVolumeConverter.Default}" StringFormat="A$(20) {0:##,#0} M">
+                                <Binding ElementName="DailyChart" Path="Candles" />
+                                <Binding ElementName="DailyChart" Path="Time" />
+                                <Binding ElementName="DailyChart" Path="PriceRange" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+
+                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Time, StringFormat='f'}" />
+                </StackPanel>
             </Grid>
 
             <GridSplitter Grid.Column="3" Style="{StaticResource VerticalAxisGridSplitter}" />
@@ -202,7 +206,9 @@
                     <ContextMenu>
                         <MenuItem Command="Save">
                             <MenuItem.CommandBindings>
-                                <CommandBinding Command="Save" CanExecute="OnCanSave" Executed="OnSave" />
+                                <CommandBinding CanExecute="OnCanSave"
+                                                Command="Save"
+                                                Executed="OnSave" />
                             </MenuItem.CommandBindings>
                         </MenuItem>
                     </ContextMenu>
