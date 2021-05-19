@@ -12,8 +12,12 @@
     using System.Windows.Media.Imaging;
     using System.Windows.Threading;
 
+    using Microsoft.Win32;
+
     public partial class MainWindow : Window
     {
+        private static readonly string SimulationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Simulations");
+
         private DispatcherTimer? timer;
 
         public MainWindow()
@@ -65,6 +69,28 @@
             }
         }
 
+        private static void Save(Simulation simulation, DateTimeOffset time)
+        {
+            if (!Directory.Exists(SimulationDirectory))
+            {
+                Directory.CreateDirectory(SimulationDirectory);
+            }
+
+            var dialog = new SaveFileDialog
+            {
+                InitialDirectory = SimulationDirectory,
+                FileName = simulation.Name,
+                DefaultExt = ".sim",
+                Filter = "Log files|*.sim",
+            };
+
+            if (dialog.ShowDialog() is true)
+            {
+                simulation.Time = time;
+                File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(simulation));
+            }
+        }
+
         private void OnCopy(object sender, ExecutedRoutedEventArgs e)
         {
             var bmp = new RenderTargetBitmap((int)this.ChartArea.ActualWidth, (int)this.ChartArea.ActualHeight, 96, 96, PixelFormats.Pbgra32);
@@ -83,16 +109,41 @@
 
         private void OnSave(object sender, ExecutedRoutedEventArgs e)
         {
-            if (this.DataContext is MainViewModel { Simulation: { Name: { } name } simulation })
+            if (this.DataContext is MainViewModel { Time: var time, Simulation: { } simulation })
             {
-                var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Simulations");
-                if (!Directory.Exists(dir))
+                Save(simulation, time);
+                e.Handled = true;
+            }
+        }
+
+        private void OnOpen(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { } mainViewModel)
+            {
+                if (mainViewModel is { Time: var time, Simulation: { } simulation } &&
+                    MessageBox.Show(this, "Do you want to save current simulation first?", "Simulation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    Directory.CreateDirectory(dir);
+                    Save(simulation, time);
                 }
 
-                File.WriteAllText(Path.Combine(dir, name + ".json"), JsonSerializer.Serialize(simulation));
-                e.Handled = true;
+                if (!Directory.Exists(SimulationDirectory))
+                {
+                    Directory.CreateDirectory(SimulationDirectory);
+                }
+
+                var dialog = new OpenFileDialog
+                {
+                    InitialDirectory = SimulationDirectory,
+                    Filter = "Log files|*.sim",
+                };
+
+                if (dialog.ShowDialog() is true)
+                {
+                    var sim = JsonSerializer.Deserialize<Simulation>(File.ReadAllText(dialog.FileName));
+                    mainViewModel.Simulation = sim;
+                    mainViewModel.Time = sim.Time ?? throw new InvalidOperationException("Missing time in simulation.");
+                    e.Handled = true;
+                }
             }
         }
 

@@ -10,14 +10,19 @@
 
     public class Simulation : INotifyPropertyChanged
     {
-        private string name = $"Simulation {DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}";
+        private string name;
         private float balance;
-        private ImmutableList<Position> positions = ImmutableList<Position>.Empty;
-        private ImmutableList<Trade> trades = ImmutableList<Trade>.Empty;
+        private ImmutableList<Position> positions;
+        private ImmutableList<Trade> trades;
+        private DateTimeOffset? time;
 
-        public Simulation()
+        public Simulation(string name, float balance, ImmutableList<Position> positions, ImmutableList<Trade> trades, DateTimeOffset? time)
         {
-            this.balance = 100_000;
+            this.name = name;
+            this.balance = balance;
+            this.positions = positions;
+            this.trades = trades;
+            this.time = time;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -33,6 +38,21 @@
                 }
 
                 this.name = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public DateTimeOffset? Time
+        {
+            get => this.time;
+            set
+            {
+                if (value == this.time)
+                {
+                    return;
+                }
+
+                this.time = value;
                 this.OnPropertyChanged();
             }
         }
@@ -81,6 +101,13 @@
                 this.OnPropertyChanged();
             }
         }
+
+        public static Simulation Create() => new (
+            $"Simulation {DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}",
+            100_000,
+            ImmutableList<Position>.Empty,
+            ImmutableList<Trade>.Empty,
+            null);
 
         public float Equity() => this.Balance + this.positions.SelectMany(x => x.Buys).Sum(x => x.Price * x.Shares);
 

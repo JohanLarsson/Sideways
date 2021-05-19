@@ -211,6 +211,13 @@
                                                 Executed="OnSave" />
                             </MenuItem.CommandBindings>
                         </MenuItem>
+
+                        <MenuItem Command="Open">
+                            <MenuItem.CommandBindings>
+                                <CommandBinding Command="Open"
+                                                Executed="OnOpen" />
+                            </MenuItem.CommandBindings>
+                        </MenuItem>
                     </ContextMenu>
                 </Grid.ContextMenu>
                 <Grid.RowDefinitions>

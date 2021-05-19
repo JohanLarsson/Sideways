@@ -19,7 +19,7 @@
         private readonly DataSource dataSource;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
-        private Simulation simulation = new();
+        private Simulation simulation = Simulation.Create();
         private bool disposed;
 
         public MainViewModel()
