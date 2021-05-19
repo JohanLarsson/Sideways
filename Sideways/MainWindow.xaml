@@ -114,13 +114,20 @@
                 </sideways:Chart>
 
                 <StackPanel Margin="10,10">
-                    <TextBox Background="Transparent"
-                             BorderThickness="0"
-                             FontSize="24"
-                             GotKeyboardFocus="OnGotKeyboardFocus"
-                             KeyDown="OnKeyDown"
-                             Foreground="{x:Static sideways:Brushes.Gray}"
-                             Text="{Binding CurrentSymbolText}" />
+                    <ComboBox HorizontalAlignment="Left"
+                              Background="Transparent"
+                              BorderThickness="0"
+                              FontSize="24"
+                              Foreground="{x:Static sideways:Brushes.Gray}"
+                              IsEditable="True"
+                              ItemsSource="{Binding Symbols}"
+                              Text="{Binding CurrentSymbolText}">
+                        <ComboBox.Resources>
+                            <Style BasedOn="{StaticResource {x:Type ToggleButton}}" TargetType="{x:Type ToggleButton}">
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </ComboBox.Resources>
+                    </ComboBox>
 
                     <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
                         <TextBlock.Text>
@@ -208,8 +215,7 @@
 
                         <MenuItem Command="Open">
                             <MenuItem.CommandBindings>
-                                <CommandBinding Command="Open"
-                                                Executed="OnOpen" />
+                                <CommandBinding Command="Open" Executed="OnOpen" />
                             </MenuItem.CommandBindings>
                         </MenuItem>
                     </ContextMenu>

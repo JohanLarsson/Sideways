@@ -143,22 +143,5 @@
                 }
             }
         }
-
-        private void OnGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (sender is TextBox textBox)
-            {
-                _ = this.Dispatcher.BeginInvoke(new Action(() => textBox.SelectAll()));
-            }
-        }
-
-        private void OnKeyDown(object sender, KeyEventArgs e)
-        {
-            if (sender is TextBox textBox &&
-                e.Key == Key.Enter)
-            {
-                textBox.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-            }
-        }
     }
 }
