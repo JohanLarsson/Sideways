@@ -36,6 +36,7 @@
             "ATEC",
             "AYX",
             "BA",
+            "BBVA",
             "BGFV",
             "BGNE",
             "BIDU",
@@ -45,6 +46,7 @@
             "BTX",
             "CAR",
             "CARA",
+            "CARR",
             "CCJ",
             "CCL",
             "CDNA",
@@ -65,7 +67,9 @@
             "CSTL",
             "DAC",
             "DAR",
+            "DB",
             "DDS",
+            "DFS",
             "DIS",
             "DISCA",
             "DISCB",
@@ -84,6 +88,7 @@
             "F",
             "FB",
             "FCEL",
+            "FITB",
             "FNKO",
             "FOUR",
             "FSR",
@@ -93,6 +98,7 @@
             "GALT",
             "GBTC",
             "GLD",
+            "GLW",
             "GME",
             "GOGO",
             "GOOG",
@@ -130,6 +136,7 @@
             "KLAC",
             "KRE",
             "LAKE",
+            "LUV",
             "LYFT",
             "M",
             "MARA",
@@ -139,6 +146,7 @@
             "MELI",
             "MFIN",
             "MG",
+            "MGA",
             "MJ",
             "MNK",
             "MRNA",
@@ -200,6 +208,7 @@
             "SOCL",
             "SOXX",
             "SPCE",
+            "SPG",
             "SPY",
             "SQ",
             "STX",
@@ -243,20 +252,7 @@
 
         private static readonly string[] NewSymbols =
         {
-            "ABCL",
-            "ATEC",
-            "CARA",
-            "CELC",
-            "COWN",
-            "CPNG",
-            "CRTO",
-            "ICHR",
-            "IWO",
-            "MBI",
-            "NMRK",
-            "PLL",
-            "REAL",
-            "TRIP",
+            "?",
         };
 
         private static readonly TestCaseData[] NewSymbolsAndSlices = NewSymbols.SelectMany(x => Enum.GetValues(typeof(Slice)).Cast<Slice>().Select(y => new TestCaseData(x, y))).ToArray();
@@ -281,7 +277,7 @@
         public static void Sort()
         {
             var old = Database.ReadSymbols();
-            foreach (var symbol in old.OrderBy(x => x))
+            foreach (var symbol in NewSymbols.Except(old).OrderBy(x => x))
             {
                 Console.WriteLine($"            \"{symbol}\",");
             }
