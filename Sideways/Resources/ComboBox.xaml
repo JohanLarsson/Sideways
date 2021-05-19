@@ -197,9 +197,8 @@
                                               MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                               Color="Transparent">
                     <Border x:Name="dropDownBorder"
-                            Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                            BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"
-                            BorderThickness="1">
+                            Background="Transparent"
+                            BorderThickness="0">
                         <ScrollViewer x:Name="DropDownScrollViewer">
                             <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
                                 <Canvas x:Name="canvas"
