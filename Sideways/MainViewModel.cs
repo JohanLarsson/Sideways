@@ -1,22 +1,21 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
     using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
     using System.Windows.Input;
 
     using Sideways.AlphaVantage;
 
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
-        private static readonly string ApiKeyFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways/AlphaVantage.key");
-        private readonly Downloader downloader = new(new HttpClientHandler(), ApiKey());
-        private readonly DataSource dataSource;
+        private readonly SymbolViewModelCache symbolViewModelCache = new();
+
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
         private Simulation simulation = Simulation.Create();
@@ -24,9 +23,8 @@
 
         public MainViewModel()
         {
-            this.dataSource = new DataSource(this.downloader);
-            this.Symbols = new ReadOnlyObservableCollection<SymbolViewModel>(new ObservableCollection<SymbolViewModel>(Database.ReadSymbols().Select(x => new SymbolViewModel(x))));
-            _ = Task.WhenAll(this.Symbols.Select(x => x.LoadAsync(this.dataSource)));
+            this.Symbols = new ReadOnlyObservableCollection<string>(new ObservableCollection<string>(Database.ReadSymbols()));
+            this.currentSymbol = this.symbolViewModelCache.Get("TSLA");
             this.BuyCommand = new RelayCommand(
                 _ => Buy(),
                 _ => this.simulation is { Balance: > 1_000 } &&
@@ -67,7 +65,7 @@
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public ReadOnlyObservableCollection<SymbolViewModel> Symbols { get; }
+        public ReadOnlyObservableCollection<string> Symbols { get; }
 
         public ICommand BuyCommand { get; }
 
@@ -112,7 +110,7 @@
             get => this.currentSymbol?.Symbol;
             set
             {
-                this.CurrentSymbol = this.Symbols.SingleOrDefault(x => x.Symbol == value?.ToUpperInvariant());
+                this.CurrentSymbol = this.symbolViewModelCache.Get(value?.ToUpperInvariant());
             }
         }
 
@@ -123,7 +121,7 @@
             {
                 if (value is { })
                 {
-                    this.CurrentSymbol = this.Symbols.SingleOrDefault(x => x.Symbol == value.Symbol);
+                    this.CurrentSymbol = this.symbolViewModelCache.Get(value.Symbol);
                 }
             }
         }
@@ -152,17 +150,7 @@
             }
 
             this.disposed = true;
-            this.downloader.Dispose();
-        }
-
-        private static string ApiKey()
-        {
-            if (File.Exists(ApiKeyFile))
-            {
-                return File.ReadAllText(ApiKeyFile).Trim();
-            }
-
-            throw new InvalidOperationException($"Missing file {ApiKeyFile}");
+            this.symbolViewModelCache.Dispose();
         }
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
@@ -170,11 +158,56 @@
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void ThrowIfDisposed()
+        private sealed class SymbolViewModelCache : IDisposable
         {
-            if (this.disposed)
+            private static readonly string ApiKeyFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways/AlphaVantage.key");
+
+            private readonly ConcurrentDictionary<string, SymbolViewModel> symbolViewModels = new();
+            private readonly Downloader downloader = new(new HttpClientHandler(), ApiKey());
+            private readonly DataSource dataSource;
+            private bool disposed;
+
+            internal SymbolViewModelCache()
             {
-                throw new ObjectDisposedException(nameof(MainViewModel));
+                this.dataSource = new DataSource(this.downloader);
+            }
+
+            public void Dispose()
+            {
+                if (this.disposed)
+                {
+                    return;
+                }
+
+                this.disposed = true;
+                this.downloader.Dispose();
+            }
+
+            internal SymbolViewModel? Get(string? symbol)
+            {
+                if (symbol is null)
+                {
+                    return null;
+                }
+
+                return this.symbolViewModels.GetOrAdd(symbol, x => Create(x));
+
+                SymbolViewModel Create(string symbol)
+                {
+                    var vm = new SymbolViewModel(symbol);
+                    _ = vm.LoadAsync(this.dataSource);
+                    return vm;
+                }
+            }
+
+            private static string ApiKey()
+            {
+                if (File.Exists(ApiKeyFile))
+                {
+                    return File.ReadAllText(ApiKeyFile).Trim();
+                }
+
+                throw new InvalidOperationException($"Missing file {ApiKeyFile}");
             }
         }
     }

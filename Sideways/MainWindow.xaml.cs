@@ -3,7 +3,6 @@
     using System;
     using System.ComponentModel;
     using System.IO;
-    using System.Linq;
     using System.Text.Json;
     using System.Windows;
     using System.Windows.Controls;
@@ -25,9 +24,7 @@
             this.InitializeComponent();
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                var mainViewModel = new MainViewModel();
-                mainViewModel.CurrentSymbol = mainViewModel.Symbols.FirstOrDefault();
-                this.DataContext = mainViewModel;
+                this.DataContext = new MainViewModel();
             }
         }
 

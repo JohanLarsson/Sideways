@@ -194,13 +194,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ListBox ItemsSource="{Binding Symbols}" SelectedItem="{Binding CurrentSymbol}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type sideways:SymbolViewModel}">
-                        <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+
             <Grid Grid.Row="1">
                 <Grid.ContextMenu>
                     <ContextMenu>
