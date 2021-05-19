@@ -120,13 +120,9 @@
                               FontSize="24"
                               Foreground="{x:Static sideways:Brushes.Gray}"
                               IsEditable="True"
+                              sideways:ComboboxEx.UseBackground="True"
                               ItemsSource="{Binding Symbols}"
                               Text="{Binding CurrentSymbolText}">
-                        <ComboBox.Resources>
-                            <Style BasedOn="{StaticResource {x:Type ToggleButton}}" TargetType="{x:Type ToggleButton}">
-                                <Setter Property="Background" Value="Transparent" />
-                            </Style>
-                        </ComboBox.Resources>
                     </ComboBox>
 
                     <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
