@@ -10,6 +10,15 @@
 
     internal static class HttpClientExtensions
     {
+        internal static async Task<ImmutableArray<Listing>> GetListingFromCsvAsync(this HttpClient client, Uri requestUri, CancellationToken cancellationToken = default)
+        {
+            using var response = await client.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            var encoding = GetEncoding(response.Content.Headers.ContentType?.CharSet);
+            await using var content = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+            return await Csv.ParseListingsAsync(content, encoding).ConfigureAwait(false);
+        }
+
         internal static async Task<ImmutableArray<Candle>> GetCandlesFromCsvAsync(this HttpClient client, Uri requestUri, CancellationToken cancellationToken = default)
         {
             using var response = await client.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);

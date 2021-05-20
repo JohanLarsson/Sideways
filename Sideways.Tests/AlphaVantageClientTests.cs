@@ -27,6 +27,70 @@
 
         [Explicit("Hits endpoint.")]
         [Test]
+        public static async Task ListingsAsync()
+        {
+            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
+            var candles = await client.ListingsAsync().ConfigureAwait(false);
+            Assert.AreEqual(100, candles.Length);
+        }
+
+        [Test]
+        public static async Task ListingsUsingMock()
+        {
+            const string csv = @"symbol,name,exchange,assetType,ipoDate,delistingDate,status
+A,Agilent Technologies Inc,NYSE,Stock,1999-11-18,null,Active
+AA,Alcoa Corp,NYSE,Stock,2016-11-01,null,Active
+AAA,AAF First Priority CLO Bond ETF,NYSE ARCA,ETF,2020-09-09,null,Active
+AAAU,Goldman Sachs Physical Gold ETF,NYSE ARCA,ETF,2018-08-15,null,Active
+AAC,Ares Acquisition Corporation - Class A,NYSE,Stock,2021-03-25,null,Active
+AAC-U,Ares Acquisition Corporation - Units (1 Ord Share Class A & 1/5 War),NYSE,Stock,2021-02-02,null,Active
+AAC-WS,Ares Acquisition Corporation - Warrants (01/01/9999),NYSE,Stock,2021-03-25,null,Active
+AACG,ATA Creativity Global,NASDAQ,Stock,2008-01-29,null,Active
+AACQ,Artius Acquisition Inc - Class A,NASDAQ,Stock,2020-09-04,null,Active
+AACQU,Artius Acquisition Inc - Units (1 Ord Share Class A & 1/3 War),NASDAQ,Stock,2020-07-14,null,Active
+AACQW,Artius Acquisition Inc - Warrants (13/07/2025),NASDAQ,Stock,2020-09-04,null,Active
+AADR,AdvisorShares Dorsey Wright ADR ETF,NYSE ARCA,ETF,2010-07-21,null,Active
+AAIC,Arlington Asset Investment Corp - Class A,NYSE,Stock,1997-12-23,null,Active
+AAIC-P-B,Arlington Asset Investment Corp,NYSE,Stock,2017-05-16,null,Active
+AAIC-P-C,Arlington Asset Investment Corp,NYSE,Stock,2019-03-06,null,Active
+AAL,American Airlines Group Inc,NASDAQ,Stock,2005-09-27,null,Active
+AAMC,Altisource Asset Management Corp,NYSE MKT,Stock,2012-12-13,null,Active
+AAME,Atlantic American Corp,NASDAQ,Stock,1984-09-07,null,Active
+AAN,Aarons Company Inc (The),NYSE,Stock,2020-11-25,null,Active
+AAN-W,Aarons Holdings Company Inc When Issued,NYSE,Stock,2020-11-25,null,Active
+AAOI,Applied Optoelectronics Inc,NASDAQ,Stock,2013-09-26,null,Active
+AAON,AAON Inc,NASDAQ,Stock,1992-12-16,null,Active
+AAP,Advance Auto Parts Inc,NYSE,Stock,2001-11-29,null,Active
+AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
+            using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty);
+            var candles = await client.ListingsAsync().ConfigureAwait(false);
+            Assert.AreEqual(24, candles.Length);
+
+            // 2021-04-01 20:00:00,242.3000,242.5800,242.2800,242.5500,11638
+            Assert.AreEqual(
+                new Listing(
+                    "A",
+                    "Agilent Technologies Inc",
+                    "NYSE",
+                    "Stock",
+                    new DateTimeOffset(1999, 11, 18, 0, 0, 0, 0, TimeSpan.Zero),
+                    null),
+                candles[0]);
+
+            // 2021-03-24 17:00:00,235.4600,235.8000,234.9900,235.1000,1087423
+            Assert.AreEqual(
+                new Listing(
+                    "AAPL",
+                    "Apple Inc",
+                    "NASDAQ",
+                    "Stock",
+                    new DateTimeOffset(1980, 12, 12, 0, 0, 0, 0, TimeSpan.Zero),
+                    null),
+                candles[23]);
+        }
+
+        [Explicit("Hits endpoint.")]
+        [Test]
         public static async Task IntervalAsync()
         {
             using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);

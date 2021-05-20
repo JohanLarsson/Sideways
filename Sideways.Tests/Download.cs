@@ -46,6 +46,14 @@
             }
         }
 
+        [Test]
+        public static async Task Listings()
+        {
+            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
+            var listings = await client.ListingsAsync().ConfigureAwait(false);
+            Database.WriteListings(listings);
+        }
+
         [TestCaseSource(nameof(Symbols))]
         public static async Task Days(string symbol)
         {

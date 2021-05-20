@@ -23,6 +23,15 @@
 #pragma warning restore IDISP014 // Use a single instance of HttpClient.
         }
 
+        public async Task<ImmutableArray<Listing>> ListingsAsync(CancellationToken cancellationToken = default)
+        {
+            this.ThrowIfDisposed();
+            await Throttle.WaitAsync().ConfigureAwait(false);
+            return await this.client.GetListingFromCsvAsync(
+                new Uri($"/query?function=LISTING_STATUS&apikey={this.apiKey}", UriKind.Relative),
+                cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<ImmutableArray<Candle>> WeeklyAsync(string symbol, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();

@@ -24,6 +24,7 @@
         public MainViewModel()
         {
             this.Symbols = new ReadOnlyObservableCollection<string>(new ObservableCollection<string>(Database.ReadSymbols()));
+            this.Listings = new ReadOnlyObservableCollection<Listing>(new ObservableCollection<Listing>(Database.ReadListings()));
             this.currentSymbol = this.symbolViewModelCache.Get("TSLA");
             this.BuyCommand = new RelayCommand(
                 _ => Buy(),
@@ -66,6 +67,8 @@
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public ReadOnlyObservableCollection<string> Symbols { get; }
+
+        public ReadOnlyObservableCollection<Listing> Listings { get; }
 
         public ICommand BuyCommand { get; }
 

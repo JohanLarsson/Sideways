@@ -6,10 +6,62 @@
     using System.IO;
     using System.Text;
     using System.Threading.Tasks;
+
     using Sideways.AlphaVantage;
 
     public static class Csv
     {
+        public static async Task<ImmutableArray<Listing>> ParseListingsAsync(Stream content, Encoding encoding)
+        {
+            using var reader = new CsvReader(content, encoding);
+            var header = await reader.ReadLineAsync().ConfigureAwait(false);
+            if (header == "{")
+            {
+                throw new InvalidOperationException(await reader.ReadLineAsync().ConfigureAwait(false));
+            }
+
+            if (header != "symbol,name,exchange,assetType,ipoDate,delistingDate,status")
+            {
+                throw new FormatException($"Unknown header {header}");
+            }
+
+            var builder = ImmutableArray.CreateBuilder<Listing>();
+
+            while (!reader.EndOfStream)
+            {
+                var line = await reader.ReadLineAsync().ConfigureAwait(false) ?? throw new FormatException("Null line");
+                var parts = line.Split(',');
+                if (parts.Length != 7)
+                {
+                    throw new FormatException($"Illegal CSV: {line}");
+                }
+
+                builder.Add(
+                    new Listing(
+                        symbol: parts[0].Trim(),
+                        name: NullIfEmpty(parts[1].Trim()),
+                        exchange: parts[2].Trim(),
+                        assetType: parts[3].Trim(),
+                        ipoDate: ReadDate(parts[4]) ?? throw new FormatException("Missing IPO date."),
+                        delistingDate: ReadDate(parts[5])));
+            }
+
+            return builder.ToImmutable();
+
+            static string? NullIfEmpty(string s) => s.Length == 0 ? null : s;
+
+            static DateTimeOffset? ReadDate(string text)
+            {
+                return text switch
+                {
+                    "null" => null,
+                    { Length: 10 } => DateTimeOffset.ParseExact(text, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
+                    { Length: 19 } => DateTimeOffset.ParseExact(text, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
+                    _ => throw new FormatException($"Unknown date format {text}"),
+                };
+            }
+        }
+
         public static async Task<ImmutableArray<Candle>> ParseCandlesAsync(Stream content, Encoding encoding)
         {
             using var reader = new CsvReader(content, encoding);

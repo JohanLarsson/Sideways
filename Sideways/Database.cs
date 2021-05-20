@@ -224,11 +224,11 @@
             {
                 builder.Add(new Listing(
                     symbol: reader.GetString(0),
-                    name: reader.GetString(1),
+                    name: reader.IsDBNull(1) ? null : reader.GetString(1),
                     exchange: reader.GetString(2),
                     assetType: reader.GetString(3),
                     ipoDate: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(4)),
-                    delistingDate: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(5))));
+                    delistingDate: reader.IsDBNull(5) ? null : DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(5))));
             }
 
             return builder.ToImmutable();
@@ -254,10 +254,11 @@
             {
                 insert.Parameters.Clear();
                 insert.Parameters.AddWithValue("@symbol", listing.Symbol);
+                insert.Parameters.AddWithValue("@name", (object)listing.Name ?? DBNull.Value);
                 insert.Parameters.AddWithValue("@exchange", listing.Exchange);
                 insert.Parameters.AddWithValue("@asset_type", listing.AssetType);
                 insert.Parameters.AddWithValue("@ipo_date", listing.IpoDate.ToUnixTimeSeconds());
-                insert.Parameters.AddWithValue("@delisting_date", listing.DelistingDate?.ToUnixTimeSeconds());
+                insert.Parameters.AddWithValue("@delisting_date", (object)listing.DelistingDate?.ToUnixTimeSeconds() ?? DBNull.Value);
                 insert.ExecuteNonQuery();
             }
 
@@ -333,11 +334,11 @@
                 Execute(
                     @"CREATE TABLE IF NOT EXISTS listings(
                         symbol TEXT NOT NULL,
-                        name TEXT NOT NULL,
+                        name TEXT NULL,
                         exchange TEXT NOT NULL,
                         asset_type TEXT NOT NULL,
                         ipo_date INTEGER NOT NULL,
-                        delisting_date INTEGER,
+                        delisting_date INTEGER NULL,
                         PRIMARY KEY(symbol))");
 
                 transaction.Commit();
