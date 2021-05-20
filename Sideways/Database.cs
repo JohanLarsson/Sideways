@@ -60,59 +60,6 @@
             return ReadCandles(reader);
         }
 
-        public static DescendingCandles ReadMinutes(string symbol, FileInfo? file = null)
-        {
-            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
-            connection.Open();
-            using var command = new SqliteCommand(
-                "SELECT time, open, high, low, close, volume FROM minutes" +
-                " WHERE symbol = @symbol" +
-                " ORDER BY time DESC",
-                connection);
-            command.Parameters.AddWithValue("@symbol", symbol);
-            using var reader = command.ExecuteReader();
-            return ReadCandles(reader);
-        }
-
-        public static DescendingCandles ReadMinutes(string symbol, DateTimeOffset from, DateTimeOffset to, FileInfo? file = null)
-        {
-            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
-            connection.Open();
-            using var command = new SqliteCommand(
-                "SELECT time, open, high, low, close, volume FROM minutes" +
-                "  WHERE symbol = @symbol AND time BETWEEN @from AND @to" +
-                "  ORDER BY time DESC",
-                connection);
-            command.Parameters.AddWithValue("@symbol", symbol);
-            command.Parameters.AddWithValue("@from", from.ToUnixTimeSeconds());
-            command.Parameters.AddWithValue("@to", to.ToUnixTimeSeconds());
-            using var reader = command.ExecuteReader();
-            return ReadCandles(reader);
-        }
-
-        public static DescendingSplits ReadSplits(string symbol, FileInfo? file = null)
-        {
-            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
-            connection.Open();
-            using var command = new SqliteCommand(
-                "SELECT date, coefficient FROM splits" +
-                " WHERE symbol = @symbol" +
-                " ORDER BY date DESC",
-                connection);
-            command.Parameters.AddWithValue("@symbol", symbol);
-            using var reader = command.ExecuteReader();
-            var builder = DescendingSplits.CreateBuilder();
-            while (reader.Read())
-            {
-                builder.Add(
-                    new Split(
-                        date: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(0)),
-                        coefficient: reader.GetDouble(1)));
-            }
-
-            return builder.Create();
-        }
-
         public static void WriteDays(string symbol, IEnumerable<AdjustedCandle> candles, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
@@ -174,6 +121,59 @@
             }
 
             transaction.Commit();
+        }
+
+        public static DescendingCandles ReadMinutes(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT time, open, high, low, close, volume FROM minutes" +
+                " WHERE symbol = @symbol" +
+                " ORDER BY time DESC",
+                connection);
+            command.Parameters.AddWithValue("@symbol", symbol);
+            using var reader = command.ExecuteReader();
+            return ReadCandles(reader);
+        }
+
+        public static DescendingCandles ReadMinutes(string symbol, DateTimeOffset from, DateTimeOffset to, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT time, open, high, low, close, volume FROM minutes" +
+                "  WHERE symbol = @symbol AND time BETWEEN @from AND @to" +
+                "  ORDER BY time DESC",
+                connection);
+            command.Parameters.AddWithValue("@symbol", symbol);
+            command.Parameters.AddWithValue("@from", from.ToUnixTimeSeconds());
+            command.Parameters.AddWithValue("@to", to.ToUnixTimeSeconds());
+            using var reader = command.ExecuteReader();
+            return ReadCandles(reader);
+        }
+
+        public static DescendingSplits ReadSplits(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT date, coefficient FROM splits" +
+                " WHERE symbol = @symbol" +
+                " ORDER BY date DESC",
+                connection);
+            command.Parameters.AddWithValue("@symbol", symbol);
+            using var reader = command.ExecuteReader();
+            var builder = DescendingSplits.CreateBuilder();
+            while (reader.Read())
+            {
+                builder.Add(
+                    new Split(
+                        date: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(0)),
+                        coefficient: reader.GetDouble(1)));
+            }
+
+            return builder.Create();
         }
 
         public static void WriteMinutes(string symbol, IEnumerable<Candle> candles, FileInfo? file = null)
