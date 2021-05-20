@@ -5,6 +5,7 @@
     using System.IO;
     using System.Text.Json;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
@@ -25,6 +26,19 @@
             {
                 this.DataContext = new MainViewModel();
             }
+        }
+
+        protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            if (Keyboard.FocusedElement is TextBox focusedElement &&
+                this.SymbolComboBox.IsAncestorOf(focusedElement))
+            {
+                Keyboard.ClearFocus();
+                Keyboard.Focus(this.SymbolComboBox);
+                e.Handled = true;
+            }
+
+            base.OnPreviewMouseLeftButtonDown(e);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
