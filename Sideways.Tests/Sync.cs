@@ -81,7 +81,7 @@
 
         private static IEnumerable<string> AllSymbols()
         {
-            return Read(Database.DbFile).Concat(Read(FlashDrive)).Distinct();
+            return Read(Database.DbFile).Concat(Read(FlashDrive)).Distinct().OrderBy(x => x);
 
             static ImmutableArray<string> Read(FileInfo file)
             {
