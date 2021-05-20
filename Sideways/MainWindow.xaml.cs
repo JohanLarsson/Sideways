@@ -46,6 +46,11 @@
         {
             switch (e.Key)
             {
+                case Key.C
+                    when Keyboard.Modifiers == ModifierKeys.Control:
+                    this.OnCopy(this, new RoutedEventArgs(CommandManager.ExecutedEvent));
+                    e.Handled = true;
+                    break;
                 case Key.Left:
                     Skip(CandleInterval.Day, -1);
                     e.Handled = true;
@@ -109,11 +114,12 @@
             Keyboard.Focus(this.SymbolComboBox);
         }
 
-        private void OnCopy(object sender, ExecutedRoutedEventArgs e)
+        private void OnCopy(object sender, RoutedEventArgs e)
         {
             var bmp = new RenderTargetBitmap((int)this.ChartArea.ActualWidth, (int)this.ChartArea.ActualHeight, 96, 96, PixelFormats.Pbgra32);
             bmp.Render(this);
             Clipboard.SetImage(bmp);
+            e.Handled = true;
         }
 
         private void OnCanSave(object sender, CanExecuteRoutedEventArgs e)
