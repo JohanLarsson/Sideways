@@ -17,6 +17,8 @@
             this.minutes = minutes;
         }
 
+        public bool IsEmpty => this.days.Count == 0 && this.minutes.Count == 0;
+
         public static Candles Adjusted(DescendingSplits splits, DescendingCandles days, DescendingCandles minutes) => new(splits.Adjust(days), splits.Adjust(minutes));
 
         public IEnumerable<Candle> Weeks(DateTimeOffset end)

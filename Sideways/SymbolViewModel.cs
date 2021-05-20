@@ -51,28 +51,6 @@
             }
         }
 
-        public async Task LoadAsync(DataSource dataSource)
-        {
-            try
-            {
-                var days = await Task.Run(() => dataSource.Days(this.Symbol)).ConfigureAwait(false);
-                this.Candles = Candles.Adjusted(days.Splits, days.Candles, default);
-                var minutes = Database.ReadMinutes(this.Symbol);
-                this.Candles = Candles.Adjusted(days.Splits, days.Candles, minutes);
-                if (days.Download is { } daysDownload)
-                {
-                    days = await daysDownload.ConfigureAwait(false);
-                    this.Candles = Candles.Adjusted(days.Splits, days.Candles, minutes);
-                }
-            }
-#pragma warning disable CA1031 // Do not catch general exception types
-            catch (Exception e)
-#pragma warning restore CA1031 // Do not catch general exception types
-            {
-                this.Exception = e;
-            }
-        }
-
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -8,6 +8,7 @@
     using System.Linq;
     using System.Net.Http;
     using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
     using System.Windows.Input;
 
     using Sideways.AlphaVantage;
@@ -203,8 +204,33 @@
                 SymbolViewModel? Create(string symbol)
                 {
                     var vm = new SymbolViewModel(symbol.ToUpperInvariant());
-                    _ = vm.LoadAsync(this.dataSource);
+                    Load(vm);
                     return vm;
+                }
+
+                async void Load(SymbolViewModel vm)
+                {
+                    try
+                    {
+                        // Updating days first
+                        var days = await Task.Run(() => this.dataSource.Days(vm.Symbol)).ConfigureAwait(false);
+                        vm.Candles = Candles.Adjusted(days.Splits, days.Candles, default);
+
+                        // Updating minutes.
+                        var minutes = Database.ReadMinutes(vm.Symbol);
+                        vm.Candles = Candles.Adjusted(days.Splits, days.Candles, minutes);
+                        if (days.Download is { } daysDownload)
+                        {
+                            days = await daysDownload.ConfigureAwait(false);
+                            vm.Candles = Candles.Adjusted(days.Splits, days.Candles, minutes);
+                        }
+                    }
+#pragma warning disable CA1031 // Do not catch general exception types
+                    catch (Exception e)
+#pragma warning restore CA1031 // Do not catch general exception types
+                    {
+                        vm.Exception = e;
+                    }
                 }
             }
 
