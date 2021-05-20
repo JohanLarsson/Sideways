@@ -69,7 +69,9 @@
                 </sideways:Chart>
             </Grid>
 
-            <GridSplitter Grid.Column="1" Style="{StaticResource VerticalAxisGridSplitter}" />
+            <GridSplitter Grid.Column="1"
+                          Focusable="False"
+                          Style="{StaticResource VerticalAxisGridSplitter}" />
 
             <Grid Grid.Column="2">
                 <sideways:Chart x:Name="DailyChart"
@@ -116,10 +118,10 @@
                 <StackPanel Margin="10,10">
                     <ComboBox HorizontalAlignment="Left"
                               FontSize="24"
-                              Style="{StaticResource ComboBoxStyle}"
                               Foreground="{x:Static sideways:Brushes.Gray}"
                               IsEditable="True"
                               ItemsSource="{Binding Symbols}"
+                              Style="{StaticResource ComboBoxStyle}"
                               Text="{Binding CurrentSymbolText}" />
 
                     <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
@@ -146,7 +148,9 @@
                 </StackPanel>
             </Grid>
 
-            <GridSplitter Grid.Column="3" Style="{StaticResource VerticalAxisGridSplitter}" />
+            <GridSplitter Grid.Column="3"
+                          Focusable="False"
+                          Style="{StaticResource VerticalAxisGridSplitter}" />
 
             <Grid Grid.Column="4">
                 <TextBlock HorizontalAlignment="Left"
