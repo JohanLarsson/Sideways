@@ -6,6 +6,7 @@
     using System.Text.Json;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Data;
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
@@ -165,9 +166,10 @@
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key is Key.Enter or Key.Return &&
+            if (e.Key is Key.Enter or Key.Return or Key.Tab &&
                 ReferenceEquals(sender, this.SymbolComboBox))
             {
+                BindingOperations.GetBindingExpression(this.SymbolComboBox, ComboBox.TextProperty)!.UpdateSource();
                 Keyboard.ClearFocus();
                 Keyboard.Focus(this.SymbolComboBox);
                 e.Handled = true;

@@ -123,9 +123,10 @@
                               Foreground="{x:Static sideways:Brushes.Gray}"
                               IsEditable="True"
                               ItemsSource="{Binding Symbols}"
+                              SelectedItem="{Binding CurrentSymbolText}"
                               KeyDown="OnKeyDown"
                               Style="{StaticResource ComboBoxStyle}"
-                              Text="{Binding CurrentSymbolText}" />
+                              Text="{Binding CurrentSymbolText, UpdateSourceTrigger=Explicit}" />
 
                     <TextBlock>
                         <TextBlock.Text>
