@@ -8,6 +8,7 @@
     using System.Linq;
     using System.Net.Http;
     using System.Runtime.CompilerServices;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
@@ -24,7 +25,32 @@
 
         public MainViewModel()
         {
-            this.Symbols = new ReadOnlyObservableCollection<string>(new ObservableCollection<string>(Database.ReadSymbols()));
+            this.Symbols = new ObservableCollection<string>(Database.ReadSymbols());
+            this.symbolViewModelCache.NewSymbol += (_, s) =>
+            {
+                if (InsertAt() is { } insertAt)
+                {
+                    this.Symbols.Insert(insertAt, s);
+                }
+                else
+                {
+                    this.Symbols.Add(s);
+                }
+
+                int? InsertAt()
+                {
+                    for (var i = 0; i < this.Symbols.Count; i++)
+                    {
+                        if (StringComparer.Ordinal.Compare(s, this.Symbols[i]) < 0)
+                        {
+                            return i;
+                        }
+                    }
+
+                    return null;
+                }
+            };
+
             this.currentSymbol = this.symbolViewModelCache.Get("TSLA");
             this.BuyCommand = new RelayCommand(
                 _ => Buy(),
@@ -66,7 +92,7 @@
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public ReadOnlyObservableCollection<string> Symbols { get; }
+        public ObservableCollection<string> Symbols { get; }
 
         public ICommand BuyCommand { get; }
 
@@ -181,6 +207,8 @@
                 this.dataSource = new DataSource(this.downloader);
             }
 
+            internal event EventHandler<string>? NewSymbol;
+
             public void Dispose()
             {
                 if (this.disposed)
@@ -210,6 +238,8 @@
 
                 async void Load(SymbolViewModel vm)
                 {
+                    var synchronizationContext = SynchronizationContext.Current ?? throw new InvalidOperationException("Missing sync context.");
+
                     try
                     {
                         // Updating days first
@@ -222,6 +252,13 @@
                         if (days.Download is { } daysDownload)
                         {
                             days = await daysDownload.ConfigureAwait(false);
+                            if (vm.Candles is null or { IsEmpty: true })
+                            {
+#pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
+                                synchronizationContext.Post(_ => this.NewSymbol?.Invoke(this, vm.Symbol), null);
+#pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs
+                            }
+
                             vm.Candles = Candles.Adjusted(days.Splits, days.Candles, minutes);
                         }
                     }
