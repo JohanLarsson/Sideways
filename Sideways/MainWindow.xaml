@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sideways="clr-namespace:Sideways"
+        xmlns:wpf="clr-namespace:Sideways.Wpf"
         Title="Sideways"
         Width="800"
         Height="450"
@@ -124,7 +125,7 @@
                               Style="{StaticResource ComboBoxStyle}"
                               Text="{Binding CurrentSymbolText}" />
 
-                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
+                    <TextBlock>
                         <TextBlock.Text>
                             <MultiBinding Converter="{x:Static converters:AdrConverter.Default}" StringFormat="ADR(20) {0:F1}%">
                                 <Binding ElementName="DailyChart" Path="Candles" />
@@ -134,7 +135,7 @@
                         </TextBlock.Text>
                     </TextBlock>
 
-                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}">
+                    <TextBlock>
                         <TextBlock.Text>
                             <MultiBinding Converter="{x:Static converters:AverageDollarVolumeConverter.Default}" StringFormat="A$(20) {0:##,#0} M">
                                 <Binding ElementName="DailyChart" Path="Candles" />
@@ -144,7 +145,7 @@
                         </TextBlock.Text>
                     </TextBlock>
 
-                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Time, StringFormat='f'}" />
+                    <TextBlock Text="{Binding Time, StringFormat='f'}" />
                 </StackPanel>
             </Grid>
 
