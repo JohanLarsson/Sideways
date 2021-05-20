@@ -7,7 +7,7 @@
 
     public static class Sync
     {
-        private static readonly FileInfo FlashDrive = new FileInfo("D:\\Database.sqlite3");
+        private static readonly FileInfo FlashDrive = new("D:\\Database.sqlite3");
 
         [Explicit]
         [TestCaseSource(nameof(AllSymbols))]
