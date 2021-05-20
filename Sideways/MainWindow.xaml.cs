@@ -39,18 +39,6 @@
                     Skip(CandleInterval.Day, 1);
                     e.Handled = true;
                     break;
-                case Key.Up:
-                    this.SymbolComboBox.SetCurrentValue(System.Windows.Controls.Primitives.Selector.SelectedIndexProperty, Math.Max(this.SymbolComboBox.SelectedIndex - 1, 0));
-                    Keyboard.ClearFocus();
-                    Keyboard.Focus(this.SymbolComboBox);
-                    e.Handled = true;
-                    break;
-                case Key.Down:
-                    this.SymbolComboBox.SetCurrentValue(System.Windows.Controls.Primitives.Selector.SelectedIndexProperty, Math.Min(this.SymbolComboBox.SelectedIndex + 1, this.SymbolComboBox.Items.Count));
-                    Keyboard.ClearFocus();
-                    Keyboard.Focus(this.SymbolComboBox);
-                    e.Handled = true;
-                    break;
                 case Key.Space
                     when this.timer is null:
                     this.timer = new DispatcherTimer

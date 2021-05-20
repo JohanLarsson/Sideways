@@ -254,11 +254,13 @@
             {
                 insert.Parameters.Clear();
                 insert.Parameters.AddWithValue("@symbol", listing.Symbol);
-                insert.Parameters.AddWithValue("@name", (object)listing.Name ?? DBNull.Value);
+                insert.Parameters.AddWithValue("@name", (object?)listing.Name ?? DBNull.Value);
                 insert.Parameters.AddWithValue("@exchange", listing.Exchange);
                 insert.Parameters.AddWithValue("@asset_type", listing.AssetType);
                 insert.Parameters.AddWithValue("@ipo_date", listing.IpoDate.ToUnixTimeSeconds());
-                insert.Parameters.AddWithValue("@delisting_date", (object)listing.DelistingDate?.ToUnixTimeSeconds() ?? DBNull.Value);
+#pragma warning disable CA1508 // Avoid dead conditional code
+                insert.Parameters.AddWithValue("@delisting_date", (object?)listing.DelistingDate?.ToUnixTimeSeconds() ?? DBNull.Value);
+#pragma warning restore CA1508 // Avoid dead conditional code
                 insert.ExecuteNonQuery();
             }
 
