@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -12,6 +13,7 @@
     public static class Database
     {
         public static readonly FileInfo DbFile = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Database.sqlite3"));
+        private static readonly ConcurrentDictionary<FileInfo, object?> Migrated = new(FullNameComparer.Default);
 
         public static ImmutableArray<string> ReadSymbols(FileInfo? file = null)
         {
@@ -153,29 +155,6 @@
             return ReadCandles(reader);
         }
 
-        public static DescendingSplits ReadSplits(string symbol, FileInfo? file = null)
-        {
-            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
-            connection.Open();
-            using var command = new SqliteCommand(
-                "SELECT date, coefficient FROM splits" +
-                " WHERE symbol = @symbol" +
-                " ORDER BY date DESC",
-                connection);
-            command.Parameters.AddWithValue("@symbol", symbol);
-            using var reader = command.ExecuteReader();
-            var builder = DescendingSplits.CreateBuilder();
-            while (reader.Read())
-            {
-                builder.Add(
-                    new Split(
-                        date: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(0)),
-                        coefficient: reader.GetDouble(1)));
-            }
-
-            return builder.Create();
-        }
-
         public static void WriteMinutes(string symbol, IEnumerable<Candle> candles, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
@@ -202,6 +181,83 @@
                 insert.Parameters.AddWithValue("@low", candle.Low.AsInt());
                 insert.Parameters.AddWithValue("@close", candle.Close.AsInt());
                 insert.Parameters.AddWithValue("@volume", candle.Volume);
+                insert.ExecuteNonQuery();
+            }
+
+            transaction.Commit();
+        }
+
+        public static DescendingSplits ReadSplits(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT date, coefficient FROM splits" +
+                " WHERE symbol = @symbol" +
+                " ORDER BY date DESC",
+                connection);
+            command.Parameters.AddWithValue("@symbol", symbol);
+            using var reader = command.ExecuteReader();
+            var builder = DescendingSplits.CreateBuilder();
+            while (reader.Read())
+            {
+                builder.Add(
+                    new Split(
+                        date: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(0)),
+                        coefficient: reader.GetDouble(1)));
+            }
+
+            return builder.Create();
+        }
+
+        public static ImmutableArray<Listing> ReadListings(FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+
+            using var command = new SqliteCommand(
+                "SELECT symbol, name, exchange, asset_type, ipo_date, delisting_date FROM listings",
+                connection);
+            using var reader = command.ExecuteReader();
+            var builder = ImmutableArray.CreateBuilder<Listing>();
+            while (reader.Read())
+            {
+                builder.Add(new Listing(
+                    symbol: reader.GetString(0),
+                    name: reader.GetString(1),
+                    exchange: reader.GetString(2),
+                    assetType: reader.GetString(3),
+                    ipoDate: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(4)),
+                    delistingDate: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(5))));
+            }
+
+            return builder.ToImmutable();
+        }
+
+        public static void WriteListings(IEnumerable<Listing> listings, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+
+            using var transaction = connection.BeginTransaction();
+            using var insert = connection.CreateCommand();
+            insert.CommandText = "INSERT INTO listings (symbol, name, exchange, asset_type, ipo_date, delisting_date) VALUES (@symbol, @name, @exchange, @asset_type, @ipo_date, @delisting_date)" +
+                                 "  ON CONFLICT(symbol) DO UPDATE SET" +
+                                 "    name = excluded.name," +
+                                 "    exchange = excluded.exchange," +
+                                 "    asset_type = excluded.asset_type," +
+                                 "    ipo_date = excluded.ipo_date," +
+                                 "    delisting_date = excluded.delisting_date";
+            insert.Prepare();
+
+            foreach (var listing in listings)
+            {
+                insert.Parameters.Clear();
+                insert.Parameters.AddWithValue("@symbol", listing.Symbol);
+                insert.Parameters.AddWithValue("@exchange", listing.Exchange);
+                insert.Parameters.AddWithValue("@asset_type", listing.AssetType);
+                insert.Parameters.AddWithValue("@ipo_date", listing.IpoDate.ToUnixTimeSeconds());
+                insert.Parameters.AddWithValue("@delisting_date", listing.DelistingDate?.ToUnixTimeSeconds());
                 insert.ExecuteNonQuery();
             }
 
@@ -237,13 +293,12 @@
                 Directory.CreateDirectory(file.Directory.FullName);
             }
 
-            if (!File.Exists(file.FullName))
+            if (!Migrated.ContainsKey(file))
             {
                 using var connection = new SqliteConnection($"Data Source={file}");
                 connection.Open();
                 using var transaction = connection.BeginTransaction();
-                using var command = connection.CreateCommand();
-                command.CommandText =
+                Execute(
                     @"CREATE TABLE IF NOT EXISTS days(
                         symbol TEXT NOT NULL,
                         date INTEGER NOT NULL,
@@ -252,10 +307,8 @@
                         low INTEGER NOT NULL,
                         close INTEGER NOT NULL,
                         volume INTEGER NOT NULL,
-                        PRIMARY KEY(symbol, date))";
-                command.ExecuteNonQuery();
-
-                command.CommandText =
+                        PRIMARY KEY(symbol, date))");
+                Execute(
                    @"CREATE TABLE IF NOT EXISTS minutes(
                         symbol TEXT NOT NULL,
                         time INTEGER NOT NULL,
@@ -264,29 +317,75 @@
                         low INTEGER NOT NULL,
                         close INTEGER NOT NULL,
                         volume INTEGER NOT NULL,
-                        PRIMARY KEY(symbol, time))";
-                command.ExecuteNonQuery();
-
-                command.CommandText =
+                        PRIMARY KEY(symbol, time))");
+                Execute(
                     @"CREATE TABLE IF NOT EXISTS splits(
                         symbol TEXT NOT NULL,
                         date INTEGER NOT NULL,
                         coefficient REAL NOT NULL,
-                        PRIMARY KEY(symbol, date))";
-                command.ExecuteNonQuery();
-
-                command.CommandText =
+                        PRIMARY KEY(symbol, date))");
+                Execute(
                     @"CREATE TABLE IF NOT EXISTS dividends(
                         symbol TEXT NOT NULL,
                         date INTEGER NOT NULL,
                         dividend REAL NOT NULL,
-                        PRIMARY KEY(symbol, date))";
-                command.ExecuteNonQuery();
+                        PRIMARY KEY(symbol, date))");
+                Execute(
+                    @"CREATE TABLE IF NOT EXISTS listings(
+                        symbol TEXT NOT NULL,
+                        name TEXT NOT NULL,
+                        exchange TEXT NOT NULL,
+                        asset_type TEXT NOT NULL,
+                        ipo_date INTEGER NOT NULL,
+                        delisting_date INTEGER,
+                        PRIMARY KEY(symbol))");
 
                 transaction.Commit();
+
+                Migrated.TryAdd(file, null);
+                void Execute(string sql)
+                {
+                    using var command = connection.CreateCommand();
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
+                    command.CommandText = sql;
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
+                    command.ExecuteNonQuery();
+                }
             }
 
             return file.FullName;
+        }
+
+        private class FullNameComparer : IEqualityComparer<FileInfo>
+        {
+            internal static readonly FullNameComparer Default = new();
+
+            private static readonly StringComparer StringComparer = StringComparer.OrdinalIgnoreCase;
+
+            public bool Equals(FileInfo? x, FileInfo? y)
+            {
+                if (ReferenceEquals(x, y))
+                {
+                    return true;
+                }
+
+                if (ReferenceEquals(x, null))
+                {
+                    return false;
+                }
+
+                if (ReferenceEquals(y, null))
+                {
+                    return false;
+                }
+
+                return StringComparer.Equals(x.FullName, y.FullName);
+            }
+
+            public int GetHashCode(FileInfo obj)
+            {
+                return StringComparer.GetHashCode(obj.FullName);
+            }
         }
     }
 }
