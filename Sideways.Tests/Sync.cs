@@ -2,14 +2,16 @@
 {
     using System.Collections.Generic;
     using System.IO;
-
+    using System.Linq;
     using NUnit.Framework;
 
     public static class Sync
     {
+        private static readonly FileInfo FlashDrive = new FileInfo("D:\\Database.sqlite3");
+
         [Explicit]
         [TestCaseSource(nameof(AllSymbols))]
-        public static void Copy(string symbol)
+        public static void OneWay(string symbol)
         {
             var source = Database.DbFile;
             var target = new FileInfo("D:\\Database.sqlite3");
@@ -32,10 +34,10 @@
 
         [Explicit]
         [TestCaseSource(nameof(AllSymbols))]
-        public static void Databases(string symbol)
+        public static void TwoWay(string symbol)
         {
             var x = Database.DbFile;
-            var y = new FileInfo("D:\\Database.sqlite3");
+            var y = FlashDrive;
             if (File.Exists(x.FullName) &&
                 File.Exists(y.FullName))
             {
@@ -72,6 +74,6 @@
             }
         }
 
-        private static IEnumerable<string> AllSymbols() => Database.ReadSymbols();
+        private static IEnumerable<string> AllSymbols() => Database.ReadSymbols(Database.DbFile).Concat(Database.ReadSymbols(FlashDrive)).Distinct();
     }
 }
