@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Immutable;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.IO;
@@ -14,7 +15,7 @@
 
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
-        private readonly SymbolViewModelCache symbolViewModelCache = new();
+        private readonly SymbolViewModelCache symbolViewModelCache;
 
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
@@ -24,7 +25,9 @@
         public MainViewModel()
         {
             this.Symbols = new ReadOnlyObservableCollection<string>(new ObservableCollection<string>(Database.ReadSymbols()));
-            this.Listings = new ReadOnlyObservableCollection<Listing>(new ObservableCollection<Listing>(Database.ReadListings()));
+            var listings = Database.ReadListings();
+            this.symbolViewModelCache = new SymbolViewModelCache(listings);
+            this.Listings = new ReadOnlyObservableCollection<Listing>(new ObservableCollection<Listing>(listings));
             this.currentSymbol = this.symbolViewModelCache.Get("TSLA");
             this.BuyCommand = new RelayCommand(
                 _ => Buy(),
@@ -173,13 +176,15 @@
         {
             private static readonly string ApiKeyFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways/AlphaVantage.key");
 
-            private readonly ConcurrentDictionary<string, SymbolViewModel> symbolViewModels = new(StringComparer.OrdinalIgnoreCase);
+            private readonly ImmutableArray<Listing> listings;
+            private readonly ConcurrentDictionary<string, SymbolViewModel?> symbolViewModels = new(StringComparer.OrdinalIgnoreCase);
             private readonly Downloader downloader = new(new HttpClientHandler(), ApiKey());
             private readonly DataSource dataSource;
             private bool disposed;
 
-            internal SymbolViewModelCache()
+            internal SymbolViewModelCache(ImmutableArray<Listing> listings)
             {
+                this.listings = listings;
                 this.dataSource = new DataSource(this.downloader);
             }
 
@@ -203,8 +208,13 @@
 
                 return this.symbolViewModels.GetOrAdd(symbol, x => Create(x));
 
-                SymbolViewModel Create(string symbol)
+                SymbolViewModel? Create(string symbol)
                 {
+                    if (this.listings.All(x => x.Symbol != symbol))
+                    {
+                        return null;
+                    }
+
                     var vm = new SymbolViewModel(symbol.ToUpperInvariant());
                     _ = vm.LoadAsync(this.dataSource);
                     return vm;
