@@ -115,8 +115,6 @@
 
                 <StackPanel Margin="10,10">
                     <ComboBox HorizontalAlignment="Left"
-                              Background="Transparent"
-                              BorderThickness="0"
                               FontSize="24"
                               Style="{StaticResource ComboBoxStyle}"
                               Foreground="{x:Static sideways:Brushes.Gray}"

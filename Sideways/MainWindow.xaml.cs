@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.IO;
     using System.Text.Json;
     using System.Windows;
@@ -48,10 +49,12 @@
                     };
                     this.timer.Tick += (_, _) => Skip(CandleInterval.Hour, 1);
                     this.timer.Start();
+                    e.Handled = true;
                     break;
                 case Key.Space:
                     this.timer.Stop();
                     this.timer = null;
+                    e.Handled = true;
                     break;
             }
 
