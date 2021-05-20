@@ -9,7 +9,7 @@
             this.downloader = downloader;
         }
 
-        public Days Days(string symbol)
+        public Days Days(string symbol, AlphaVantageClient client)
         {
             var descendingDays = Database.ReadDays(symbol);
             var splits = Database.ReadSplits(symbol);
@@ -19,7 +19,7 @@
                 return new Days(descendingDays, splits, null);
             }
 
-            return new Days(descendingDays, splits, this.downloader.DaysAsync(symbol, last));
+            return new Days(descendingDays, splits, this.downloader.DaysAsync(symbol, last, client));
         }
 
         ////public Minutes Minutes(string symbol)

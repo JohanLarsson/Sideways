@@ -3,20 +3,12 @@
     using System;
     using System.Collections.Immutable;
     using System.ComponentModel;
-    using System.Net.Http;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
-    public sealed class Downloader : IDisposable, INotifyPropertyChanged
+    public sealed class Downloader : INotifyPropertyChanged
     {
-        private readonly AlphaVantageClient client;
-        private bool disposed;
         private ImmutableList<IDownload> downloads = ImmutableList<IDownload>.Empty;
-
-        public Downloader(HttpMessageHandler messageHandler, string apiKey)
-        {
-            this.client = new AlphaVantageClient(messageHandler, apiKey);
-        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -35,9 +27,8 @@
             }
         }
 
-        public async Task<Days> DaysAsync(string symbol, TradingDay? from)
+        public async Task<Days> DaysAsync(string symbol, TradingDay? from, AlphaVantageClient client)
         {
-            this.ThrowIfDisposed();
             var download = Create(OutputSize());
             this.Downloads = this.downloads.Add(download);
             Database.WriteDays(symbol, await download.Task.ConfigureAwait(false));
@@ -61,26 +52,7 @@
 
             DaysDownload Create(OutputSize size)
             {
-                return new(symbol, size, this.client.DailyAdjustedAsync(symbol, size));
-            }
-        }
-
-        public void Dispose()
-        {
-            if (this.disposed)
-            {
-                return;
-            }
-
-            this.disposed = true;
-            this.client.Dispose();
-        }
-
-        private void ThrowIfDisposed()
-        {
-            if (this.disposed)
-            {
-                throw new ObjectDisposedException(nameof(Downloader));
+                return new(symbol, size, client.DailyAdjustedAsync(symbol, size));
             }
         }
 

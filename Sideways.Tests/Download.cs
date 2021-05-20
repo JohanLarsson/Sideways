@@ -23,7 +23,8 @@
 
         private static readonly TestCaseData[] SymbolsAndSlices = Symbols.SelectMany(x => Enum.GetValues(typeof(Slice)).Cast<Slice>().Select(y => new TestCaseData(x, y))).ToArray();
 
-        private static readonly Downloader Downloader = new(new HttpClientHandler(), ApiKey);
+        private static readonly Downloader Downloader = new();
+        private static readonly AlphaVantageClient Client = new(new HttpClientHandler(), ApiKey);
 
         private static string ApiKey
         {
@@ -61,7 +62,7 @@
         public static async Task Days(string symbol)
         {
             var dataSource = new DataSource(Downloader);
-            if (dataSource.Days(symbol).Download is { } task)
+            if (dataSource.Days(symbol, Client).Download is { } task)
             {
                 await task;
             }

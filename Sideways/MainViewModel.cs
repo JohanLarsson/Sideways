@@ -198,8 +198,10 @@
             private static readonly string ApiKeyFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways/AlphaVantage.key");
 
             private readonly ConcurrentDictionary<string, SymbolViewModel?> symbolViewModels = new(StringComparer.OrdinalIgnoreCase);
-            private readonly Downloader downloader = new(new HttpClientHandler(), ApiKey());
+            private readonly Downloader downloader = new();
             private readonly DataSource dataSource;
+            private readonly AlphaVantageClient client = new(new HttpClientHandler(), ApiKey());
+
             private bool disposed;
 
             internal SymbolViewModelCache()
@@ -217,7 +219,7 @@
                 }
 
                 this.disposed = true;
-                this.downloader.Dispose();
+                this.client.Dispose();
             }
 
             internal SymbolViewModel? Get(string? symbol)
@@ -243,7 +245,7 @@
                     try
                     {
                         // Updating days first
-                        var days = await Task.Run(() => this.dataSource.Days(vm.Symbol)).ConfigureAwait(false);
+                        var days = await Task.Run(() => this.dataSource.Days(vm.Symbol, this.client)).ConfigureAwait(false);
                         vm.Candles = Candles.Adjusted(days.Splits, days.Candles, default);
 
                         // Updating minutes.
