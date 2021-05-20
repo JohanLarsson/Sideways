@@ -117,8 +117,8 @@
                 </sideways:Chart>
 
                 <StackPanel Margin="10,10">
-                    <ComboBox HorizontalAlignment="Left"
-                              x:Name="SymbolComboBox"
+                    <ComboBox x:Name="SymbolComboBox"
+                              HorizontalAlignment="Left"
                               FontSize="24"
                               Foreground="{x:Static sideways:Brushes.Gray}"
                               IsEditable="True"
@@ -148,6 +148,7 @@
                     </TextBlock>
 
                     <TextBlock Text="{Binding Time, StringFormat='f'}" />
+                    <TextBlock Foreground="IndianRed" Text="{Binding CurrentSymbol.Exception.Message, FallbackValue=''}" />
                 </StackPanel>
             </Grid>
 
