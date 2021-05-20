@@ -117,10 +117,12 @@
 
                 <StackPanel Margin="10,10">
                     <ComboBox HorizontalAlignment="Left"
+                              x:Name="SymbolComboBox"
                               FontSize="24"
                               Foreground="{x:Static sideways:Brushes.Gray}"
                               IsEditable="True"
                               ItemsSource="{Binding Symbols}"
+                              KeyDown="OnKeyDown"
                               Style="{StaticResource ComboBoxStyle}"
                               Text="{Binding CurrentSymbolText}" />
 

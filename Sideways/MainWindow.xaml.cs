@@ -2,11 +2,9 @@
 {
     using System;
     using System.ComponentModel;
-    using System.Diagnostics;
     using System.IO;
     using System.Text.Json;
     using System.Windows;
-    using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
@@ -29,7 +27,7 @@
             }
         }
 
-        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        protected override void OnKeyDown(KeyEventArgs e)
         {
             switch (e.Key)
             {
@@ -39,6 +37,18 @@
                     break;
                 case Key.Right:
                     Skip(CandleInterval.Day, 1);
+                    e.Handled = true;
+                    break;
+                case Key.Up:
+                    this.SymbolComboBox.SetCurrentValue(System.Windows.Controls.Primitives.Selector.SelectedIndexProperty, Math.Max(this.SymbolComboBox.SelectedIndex - 1, 0));
+                    Keyboard.ClearFocus();
+                    Keyboard.Focus(this.SymbolComboBox);
+                    e.Handled = true;
+                    break;
+                case Key.Down:
+                    this.SymbolComboBox.SetCurrentValue(System.Windows.Controls.Primitives.Selector.SelectedIndexProperty, Math.Min(this.SymbolComboBox.SelectedIndex + 1, this.SymbolComboBox.Items.Count));
+                    Keyboard.ClearFocus();
+                    Keyboard.Focus(this.SymbolComboBox);
                     e.Handled = true;
                     break;
                 case Key.Space
@@ -58,7 +68,7 @@
                     break;
             }
 
-            base.OnPreviewKeyDown(e);
+            base.OnKeyDown(e);
 
             void Skip(CandleInterval interval, int count)
             {
@@ -143,6 +153,17 @@
                     mainViewModel.UpdateSimulation(sim);
                     e.Handled = true;
                 }
+            }
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key is Key.Enter or Key.Return &&
+                ReferenceEquals(sender, this.SymbolComboBox))
+            {
+                Keyboard.ClearFocus();
+                Keyboard.Focus(this.SymbolComboBox);
+                e.Handled = true;
             }
         }
     }
