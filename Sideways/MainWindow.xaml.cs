@@ -42,7 +42,7 @@
             base.OnPreviewMouseLeftButtonDown(e);
         }
 
-        protected override void OnKeyDown(KeyEventArgs e)
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             switch (e.Key)
             {
@@ -71,7 +71,7 @@
                     break;
             }
 
-            base.OnKeyDown(e);
+            base.OnPreviewKeyDown(e);
 
             void Skip(CandleInterval interval, int count)
             {
