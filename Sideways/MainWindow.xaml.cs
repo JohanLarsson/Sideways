@@ -103,6 +103,11 @@
             }
         }
 
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            Keyboard.Focus(this.SymbolComboBox);
+        }
+
         private void OnCopy(object sender, ExecutedRoutedEventArgs e)
         {
             var bmp = new RenderTargetBitmap((int)this.ChartArea.ActualWidth, (int)this.ChartArea.ActualHeight, 96, 96, PixelFormats.Pbgra32);

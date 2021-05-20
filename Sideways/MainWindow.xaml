@@ -11,6 +11,7 @@
         d:DataContext="{d:DesignInstance sideways:MainViewModel,
                                          IsDesignTimeCreatable=False}"
         Background="#FF050515"
+        Loaded="OnLoaded"
         mc:Ignorable="d">
     <Window.CommandBindings>
         <CommandBinding Command="Copy" Executed="OnCopy" />
