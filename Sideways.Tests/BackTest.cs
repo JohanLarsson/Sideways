@@ -3,13 +3,14 @@ namespace Sideways.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
 
     using NUnit.Framework;
 
     public static class BackTest
     {
-        private static readonly string[] Symbols = Download.Symbols;
+        private static readonly ImmutableArray<string> Symbols = Database.ReadSymbols();
 
         [TestCaseSource(nameof(Symbols))]
         public static void GapUp(string symbol)
