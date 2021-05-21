@@ -29,19 +29,6 @@
             }
         }
 
-        protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            if (Keyboard.FocusedElement is TextBox focusedElement &&
-                this.SymbolComboBox.IsAncestorOf(focusedElement))
-            {
-                Keyboard.ClearFocus();
-                Keyboard.Focus(this.SymbolComboBox);
-                e.Handled = true;
-            }
-
-            base.OnPreviewMouseLeftButtonDown(e);
-        }
-
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             switch (e.Key)
@@ -180,6 +167,13 @@
                 Keyboard.Focus(this.SymbolComboBox);
                 e.Handled = true;
             }
+        }
+
+        private void SymbolComboBox_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Keyboard.ClearFocus();
+            Keyboard.Focus(this.SymbolComboBox);
+            e.Handled = true;
         }
     }
 }
