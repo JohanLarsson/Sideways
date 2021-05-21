@@ -53,7 +53,7 @@
             }
         }
 
-        [TestCaseSource(nameof(MissingMinutes))]
+        [TestCaseSource(nameof(EmptyMinutes))]
         public static async Task Minutes(string symbol, Slice slice)
         {
             using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
@@ -68,7 +68,7 @@
 
         private static IEnumerable<string> All() => Database.ReadSymbols();
 
-        private static IEnumerable<TestCaseData> MissingMinutes()
+        private static IEnumerable<TestCaseData> EmptyMinutes()
         {
             return Core().Take(500);
 
