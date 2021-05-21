@@ -1,6 +1,7 @@
 ﻿namespace Sideways.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
@@ -13,15 +14,9 @@
     [Explicit]
     public static class Download
     {
-        public static readonly string[] Symbols =
-        {
-            "ARPO",
-            "BTU",
-            "JILL",
-            "SBOW",
-        };
+        public static readonly string[] Symbols = MissingMinutes().ToArray();
 
-        private static readonly TestCaseData[] SymbolsAndSlices = Symbols.SelectMany(x => Enum.GetValues(typeof(Slice)).Cast<Slice>().Select(y => new TestCaseData(x, y))).ToArray();
+        private static readonly TestCaseData[] SymbolsAndSlices = Symbols.Take(500 / 24).SelectMany(x => Enum.GetValues(typeof(Slice)).Cast<Slice>().Select(y => new TestCaseData(x, y))).ToArray();
 
         private static readonly Downloader Downloader = new();
         private static readonly AlphaVantageClient Client = new(new HttpClientHandler(), ApiKey);
@@ -111,5 +106,9 @@
                 Assert.Pass("Already downloaded.");
             }
         }
+
+        private static IEnumerable<string> All() => Database.ReadSymbols();
+
+        private static IEnumerable<string> MissingMinutes() => Database.ReadSymbols().Where(x => Sideways.Sync.CountMinutes(x, Database.DbFile) == 0);
     }
 }
