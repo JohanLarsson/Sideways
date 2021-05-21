@@ -30,7 +30,7 @@
         ////        return candles;
         ////    }
 
-        ////    var adjusted = await this.client.IntervalExtendedAsync(symbol, Interval.Minute, Slice.Year1Month1, adjusted: false).ConfigureAwait(false);
+        ////    var adjusted = await this.client.IntradayExtendedAsync(symbol, Interval.Minute, Slice.Year1Month1, adjusted: false).ConfigureAwait(false);
         ////    Database.WriteMinutes(symbol, adjusted);
         ////    return await Database.ReadMinutesAsync(symbol).ConfigureAwait(false);
         ////}

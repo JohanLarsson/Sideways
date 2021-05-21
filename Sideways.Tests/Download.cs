@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
 
@@ -56,8 +55,15 @@
         [TestCaseSource(nameof(EmptyMinutes))]
         public static async Task Minutes(string symbol, Slice slice)
         {
+            if (slice != Slice.Year1Month1 &&
+                TimeRange.FromSlice(slice) is var range &&
+                Database.ReadMinutes(symbol, range.Min.AddDays(1), range.Max.AddDays(5)).Count == 0)
+            {
+                Assert.Pass("No slice this far back.");
+            }
+
             using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
-            var candles = await client.IntervalExtendedAsync(symbol, Interval.Minute, slice, adjusted: false);
+            var candles = await client.IntradayExtendedAsync(symbol, Interval.Minute, slice, adjusted: false);
             if (candles.IsEmpty)
             {
                 Assert.Inconclusive("Empty slice, maybe missing data on AlphaVantage. Exclude this symbol from script as it uses up daily calls.");
@@ -70,23 +76,18 @@
 
         private static IEnumerable<TestCaseData> EmptyMinutes()
         {
-            return Core().Take(500);
-
-            static IEnumerable<TestCaseData> Core()
+            foreach (var symbol in Database.ReadSymbols())
             {
-                foreach (var symbol in Database.ReadSymbols())
+                if (Sideways.Sync.CountMinutes(symbol, Database.DbFile) == 0)
                 {
-                    if (Sideways.Sync.CountMinutes(symbol, Database.DbFile) == 0)
+                    var days = Database.ReadDays(symbol);
+                    if (days.Count > 0)
                     {
-                        var days = Database.ReadDays(symbol);
-                        if (days.Count > 0)
+                        foreach (var slice in Enum.GetValues<Slice>())
                         {
-                            foreach (var slice in Enum.GetValues<Slice>())
+                            if (days.IndexOf(TimeRange.FromSlice(slice).Max, 0) >= 0)
                             {
-                                if (days.IndexOf(TimeRange.FromSlice(slice).Max, 0) >= 0)
-                                {
-                                    yield return new TestCaseData(symbol, slice);
-                                }
+                                yield return new TestCaseData(symbol, slice);
                             }
                         }
                     }

@@ -78,7 +78,7 @@
             }
         }
 
-        public async Task<ImmutableArray<Candle>> IntervalAsync(string symbol, Interval interval, OutputSize outputSize, CancellationToken cancellationToken = default)
+        public async Task<ImmutableArray<Candle>> IntradayAsync(string symbol, Interval interval, OutputSize outputSize = OutputSize.Full, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
             await Throttle.WaitAsync().ConfigureAwait(false);
@@ -104,7 +104,7 @@
             };
         }
 
-        public async Task<ImmutableArray<Candle>> IntervalExtendedAsync(string symbol, Interval interval, Slice slice, bool adjusted, CancellationToken cancellationToken = default)
+        public async Task<ImmutableArray<Candle>> IntradayExtendedAsync(string symbol, Interval interval, Slice slice, bool adjusted, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
             await Throttle.WaitAsync().ConfigureAwait(false);

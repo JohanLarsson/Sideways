@@ -91,15 +91,15 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
 
         [Explicit("Hits endpoint.")]
         [Test]
-        public static async Task IntervalAsync()
+        public static async Task IntradayAsync()
         {
             using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
-            var candles = await client.IntervalAsync("MSFT", Interval.Hour, OutputSize.Compact, CancellationToken.None);
+            var candles = await client.IntradayAsync("MSFT", Interval.Hour, OutputSize.Compact, CancellationToken.None);
             Assert.AreEqual(100, candles.Length);
         }
 
         [Test]
-        public static async Task IntervalAsyncHourUsingMock()
+        public static async Task IntradayAsyncHourUsingMock()
         {
             const string csv = @"timestamp,open,high,low,close,volume
 2021-04-01 20:00:00,242.3000,242.5800,242.2800,242.5500,11638
@@ -203,7 +203,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
 2021-03-24 18:00:00,235.1700,235.2500,235.1700,235.2400,5015
 2021-03-24 17:00:00,235.4600,235.8000,234.9900,235.1000,1087423";
             using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty);
-            var candles = await client.IntervalAsync("MSFT", Interval.Hour, OutputSize.Compact, CancellationToken.None);
+            var candles = await client.IntradayAsync("MSFT", Interval.Hour, OutputSize.Compact, CancellationToken.None);
             Assert.AreEqual(100, candles.Length);
 
             // 2021-04-01 20:00:00,242.3000,242.5800,242.2800,242.5500,11638
@@ -231,22 +231,22 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
 
         [Explicit("Hits endpoint.")]
         [Test]
-        public static async Task IntervalExtendedAsync()
+        public static async Task IntradayExtendedAsync()
         {
             using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
-            var candles = await client.IntervalExtendedAsync("MSFT", Interval.Minute, Slice.Year1Month1, adjusted: false, CancellationToken.None);
+            var candles = await client.IntradayExtendedAsync("MSFT", Interval.Minute, Slice.Year1Month1, adjusted: false, CancellationToken.None);
             Assert.AreEqual(100, candles.Length);
         }
 
         [Test]
-        public static async Task IntervalExtendedAsyncMinuteUsingMock()
+        public static async Task IntradayExtendedAsyncMinuteUsingMock()
         {
             const string csv = "time,open,high,low,close,volume\r\n" +
                                "2021-04-01 20:00:00,242.12,242.13,242.14,242.15,1112\r\n" +
                                "2021-04-01 19:59:00,242.55,242.55,242.55,242.55,209\r\n" +
                                "2021-04-01 19:55:00,243.12,243.13,243.14,243.15,265";
             using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty);
-            var candles = await client.IntervalExtendedAsync("MSFT", Interval.Minute, Slice.Year1Month1, adjusted: false, CancellationToken.None);
+            var candles = await client.IntradayExtendedAsync("MSFT", Interval.Minute, Slice.Year1Month1, adjusted: false, CancellationToken.None);
             Assert.AreEqual(3, candles.Length);
             Assert.AreEqual(
                 new Candle(
