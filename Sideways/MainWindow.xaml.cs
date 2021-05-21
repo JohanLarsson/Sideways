@@ -169,7 +169,18 @@
             }
         }
 
-        private void SymbolComboBox_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key is Key.Up or Key.Down &&
+                ReferenceEquals(sender, this.SymbolComboBox))
+            {
+                Keyboard.ClearFocus();
+                Keyboard.Focus(this.SymbolComboBox);
+                e.Handled = true;
+            }
+        }
+
+        private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Keyboard.ClearFocus();
             Keyboard.Focus(this.SymbolComboBox);

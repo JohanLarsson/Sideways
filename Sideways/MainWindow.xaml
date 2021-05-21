@@ -125,7 +125,8 @@
                               ItemsSource="{Binding Symbols}"
                               SelectedItem="{Binding CurrentSymbolText}"
                               KeyDown="OnKeyDown"
-                              PreviewMouseLeftButtonDown="SymbolComboBox_OnPreviewMouseLeftButtonDown"
+                              KeyUp="OnKeyUp"
+                              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
                               Style="{StaticResource ComboBoxStyle}"
                               Text="{Binding CurrentSymbolText, UpdateSourceTrigger=Explicit}" />
 
