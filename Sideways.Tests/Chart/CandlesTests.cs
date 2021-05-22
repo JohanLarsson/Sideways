@@ -25,6 +25,45 @@
             Assert.AreEqual(expected, candles.Skip(time, CandleInterval.Minute, count));
         }
 
+        [Test]
+        public static void Hours()
+        {
+            var candles = Create(
+                new Candle(
+                    new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
+                    default,
+                    default,
+                    default,
+                    default,
+                    default),
+                new Candle(
+                    new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero),
+                    default,
+                    default,
+                    default,
+                    default,
+                    default),
+                new Candle(
+                    new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero),
+                    default,
+                    default,
+                    default,
+                    default,
+                    default));
+
+            var expected = new[]
+            {
+                new Candle(
+                    new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
+                    default,
+                    default,
+                    default,
+                    default,
+                    default),
+            };
+            CollectionAssert.AreEqual(expected, candles.Hours(new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero)));
+        }
+
         private static IEnumerable<TestCaseData> SkipWeeksSource()
         {
             var friday1 = new Candle(
@@ -242,6 +281,17 @@
 
             yield return new TestCaseData(candles, c4.Time, -1, c4.Time);
             yield return new TestCaseData(candles, c4.Time, 1, c3.Time);
+        }
+
+        private static Candles Create(params Candle[] candles)
+        {
+            var builder = DescendingCandles.CreateBuilder();
+            foreach (var candle in candles)
+            {
+                builder.Add(candle);
+            }
+
+            return new Candles(builder.Create(), default);
         }
     }
 }
