@@ -258,28 +258,30 @@
 
         private static IEnumerable<TestCaseData> HoursSource()
         {
-            var candles = CreateWithMinutes(
-                new Candle(
-                    new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
-                    open: 3.3f,
-                    high: 3.4f,
-                    low: 3.1f,
-                    close: 3.2f,
-                    volume: 3),
-                new Candle(
-                    new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero),
-                    open: 2.3f,
-                    high: 2.4f,
-                    low: 2.1f,
-                    close: 2.2f,
-                    volume: 2),
-                new Candle(
-                    new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero),
-                    open: 1.3f,
-                    high: 1.4f,
-                    low: 1.1f,
-                    close: 1.2f,
-                    volume: 1));
+            var candles = new Candles(
+                default,
+                Create(
+                    new Candle(
+                        new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
+                        open: 3.3f,
+                        high: 3.4f,
+                        low: 3.1f,
+                        close: 3.2f,
+                        volume: 3),
+                    new Candle(
+                        new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero),
+                        open: 2.3f,
+                        high: 2.4f,
+                        low: 2.1f,
+                        close: 2.2f,
+                        volume: 2),
+                    new Candle(
+                        new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero),
+                        open: 1.3f,
+                        high: 1.4f,
+                        low: 1.1f,
+                        close: 1.2f,
+                        volume: 1)));
 
             yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 29, 00, 0, TimeSpan.Zero), Array.Empty<Candle>());
             yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero), new[] { new Candle(new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero), open: 1.3f, high: 1.4f, low: 1.1f, close: 1.2f, volume: 1), });
@@ -289,28 +291,30 @@
 
         private static IEnumerable<TestCaseData> DaysSource()
         {
-            var candles = CreateWithMinutes(
-                new Candle(
-                    new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
-                    open: 3.3f,
-                    high: 3.4f,
-                    low: 3.1f,
-                    close: 3.2f,
-                    volume: 3),
-                new Candle(
-                    new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero),
-                    open: 2.3f,
-                    high: 2.4f,
-                    low: 2.1f,
-                    close: 2.2f,
-                    volume: 2),
-                new Candle(
-                    new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero),
-                    open: 1.3f,
-                    high: 1.4f,
-                    low: 1.1f,
-                    close: 1.2f,
-                    volume: 1));
+            var candles = new Candles(
+                default,
+                Create(
+                    new Candle(
+                        new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
+                        open: 3.3f,
+                        high: 3.4f,
+                        low: 3.1f,
+                        close: 3.2f,
+                        volume: 3),
+                    new Candle(
+                        new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero),
+                        open: 2.3f,
+                        high: 2.4f,
+                        low: 2.1f,
+                        close: 2.2f,
+                        volume: 2),
+                    new Candle(
+                        new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero),
+                        open: 1.3f,
+                        high: 1.4f,
+                        low: 1.1f,
+                        close: 1.2f,
+                        volume: 1)));
 
             yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 29, 00, 0, TimeSpan.Zero), Array.Empty<Candle>());
             yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero), new[] { new Candle(new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero), open: 1.3f, high: 1.4f, low: 1.1f, close: 1.2f, volume: 1), });
@@ -318,7 +322,7 @@
             yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero), new[] { new Candle(new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero), open: 1.3f, high: 3.4f, low: 1.1f, close: 3.2f, volume: 6), });
         }
 
-        private static Candles CreateWithMinutes(params Candle[] candles)
+        private static DescendingCandles Create(params Candle[] candles)
         {
             var builder = DescendingCandles.CreateBuilder();
             foreach (var candle in candles)
@@ -326,7 +330,7 @@
                 builder.Add(candle);
             }
 
-            return new Candles(default, builder.Create());
+            return builder.Create();
         }
     }
 }
