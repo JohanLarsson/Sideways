@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+
     using NUnit.Framework;
 
     public static class CandlesTests
@@ -31,35 +32,35 @@
             var candles = CreateWithMinutes(
                 new Candle(
                     new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
-                    default,
-                    default,
-                    default,
-                    default,
-                    default),
+                    open: 3.3f,
+                    high: 3.4f,
+                    low: 3.1f,
+                    close: 3.2f,
+                    volume: 3),
                 new Candle(
                     new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero),
-                    default,
-                    default,
-                    default,
-                    default,
-                    default),
+                    open: 2.3f,
+                    high: 3.4f,
+                    low: 3.1f,
+                    close: 3.2f,
+                    volume: 2),
                 new Candle(
                     new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero),
-                    default,
-                    default,
-                    default,
-                    default,
-                    default));
+                    open: 1.3f,
+                    high: 1.4f,
+                    low: 1.1f,
+                    close: 1.2f,
+                    volume: 1));
 
             var expected = new[]
             {
                 new Candle(
                     new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
-                    default,
-                    default,
-                    default,
-                    default,
-                    default),
+                    open: 1.3f,
+                    high: 3.4f,
+                    low: 1.1f,
+                    close: 3.2f,
+                    volume: 6),
             };
             var actual = candles.Hours(new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero)).ToArray();
             CollectionAssert.AreEqual(expected, actual);
