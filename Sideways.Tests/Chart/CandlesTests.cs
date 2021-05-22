@@ -31,6 +31,12 @@
             CollectionAssert.AreEqual(expected, candles.Hours(time).ToArray());
         }
 
+        [TestCaseSource(nameof(DaysSource))]
+        public static void Days(Candles candles, DateTimeOffset time, Candle[] expected)
+        {
+            CollectionAssert.AreEqual(expected, candles.Days(time).ToArray());
+        }
+
         private static IEnumerable<TestCaseData> SkipWeeksSource()
         {
             var friday1 = new Candle(
@@ -251,6 +257,37 @@
         }
 
         private static IEnumerable<TestCaseData> HoursSource()
+        {
+            var candles = CreateWithMinutes(
+                new Candle(
+                    new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
+                    open: 3.3f,
+                    high: 3.4f,
+                    low: 3.1f,
+                    close: 3.2f,
+                    volume: 3),
+                new Candle(
+                    new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero),
+                    open: 2.3f,
+                    high: 2.4f,
+                    low: 2.1f,
+                    close: 2.2f,
+                    volume: 2),
+                new Candle(
+                    new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero),
+                    open: 1.3f,
+                    high: 1.4f,
+                    low: 1.1f,
+                    close: 1.2f,
+                    volume: 1));
+
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 29, 00, 0, TimeSpan.Zero), Array.Empty<Candle>());
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero), new[] { new Candle(new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero), open: 1.3f, high: 1.4f, low: 1.1f, close: 1.2f, volume: 1), });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero), new[] { new Candle(new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero), open: 1.3f, high: 2.4f, low: 1.1f, close: 2.2f, volume: 3), });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero), new[] { new Candle(new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero), open: 1.3f, high: 3.4f, low: 1.1f, close: 3.2f, volume: 6), });
+        }
+
+        private static IEnumerable<TestCaseData> DaysSource()
         {
             var candles = CreateWithMinutes(
                 new Candle(
