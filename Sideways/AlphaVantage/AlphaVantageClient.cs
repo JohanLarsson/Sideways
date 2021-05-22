@@ -78,12 +78,12 @@
             }
         }
 
-        public async Task<ImmutableArray<Candle>> IntradayAsync(string symbol, Interval interval, OutputSize outputSize = OutputSize.Full, CancellationToken cancellationToken = default)
+        public async Task<ImmutableArray<Candle>> IntradayAsync(string symbol, Interval interval, bool adjusted = false, OutputSize outputSize = OutputSize.Full, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
             await Throttle.WaitAsync().ConfigureAwait(false);
             return await this.client.GetCandlesFromCsvAsync(
-                new Uri($"query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={Interval()}&outputsize={OutputSize()}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
+                new Uri($"query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={Interval()}&adjusted={(adjusted ? "true" : "false")}&outputsize={OutputSize()}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
                 cancellationToken).ConfigureAwait(false);
 
             string Interval() => interval switch
@@ -104,7 +104,7 @@
             };
         }
 
-        public async Task<ImmutableArray<Candle>> IntradayExtendedAsync(string symbol, Interval interval, Slice slice, bool adjusted, CancellationToken cancellationToken = default)
+        public async Task<ImmutableArray<Candle>> IntradayExtendedAsync(string symbol, Interval interval, Slice slice, bool adjusted = false, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
             await Throttle.WaitAsync().ConfigureAwait(false);

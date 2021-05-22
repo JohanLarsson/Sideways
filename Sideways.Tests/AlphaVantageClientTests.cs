@@ -6,7 +6,9 @@
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+
     using NUnit.Framework;
+
     using Sideways.AlphaVantage;
 
     public static class AlphaVantageClientTests
@@ -94,7 +96,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
         public static async Task IntradayAsync()
         {
             using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
-            var candles = await client.IntradayAsync("MSFT", Interval.Hour, OutputSize.Compact, CancellationToken.None);
+            var candles = await client.IntradayAsync("MSFT", Interval.Hour, adjusted: false, outputSize: OutputSize.Compact);
             Assert.AreEqual(100, candles.Length);
         }
 
@@ -203,7 +205,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
 2021-03-24 18:00:00,235.1700,235.2500,235.1700,235.2400,5015
 2021-03-24 17:00:00,235.4600,235.8000,234.9900,235.1000,1087423";
             using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty);
-            var candles = await client.IntradayAsync("MSFT", Interval.Hour, OutputSize.Compact, CancellationToken.None);
+            var candles = await client.IntradayAsync("MSFT", Interval.Hour, adjusted: false, outputSize: OutputSize.Compact);
             Assert.AreEqual(100, candles.Length);
 
             // 2021-04-01 20:00:00,242.3000,242.5800,242.2800,242.5500,11638
