@@ -25,6 +25,9 @@
 
             candles = Database.ReadDays("UNIT_TEST", DayCandles.Min(x => x.Time), DayCandles.Max(x => x.Time), DbFile);
             CollectionAssert.AreEqual(DayCandles.Select(x => x.AsCandle(1)).OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
+
+            Database.WriteDays("UNIT_TEST", DayCandles.Select(x => x.AsCandle(2)), DbFile);
+            CollectionAssert.AreEqual(DayCandles.Select(x => x.AsCandle(1)).OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
         }
 
         [Test]

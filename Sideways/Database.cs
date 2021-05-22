@@ -125,6 +125,33 @@
             transaction.Commit();
         }
 
+        public static void WriteDays(string symbol, IEnumerable<Candle> candles, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+
+            using var transaction = connection.BeginTransaction();
+            using var insert = connection.CreateCommand();
+            insert.CommandText = "INSERT INTO days (symbol, date, open, high, low, close, volume) VALUES (@symbol, @date, @open, @high, @low, @close, @volume)" +
+                                 "  ON CONFLICT(symbol, date) DO NOTHING";
+            insert.Prepare();
+
+            foreach (var candle in candles)
+            {
+                insert.Parameters.Clear();
+                insert.Parameters.AddWithValue("@symbol", symbol);
+                insert.Parameters.AddWithValue("@date", candle.Time.ToUnixTimeSeconds());
+                insert.Parameters.AddWithValue("@open", candle.Open.AsInt());
+                insert.Parameters.AddWithValue("@high", candle.High.AsInt());
+                insert.Parameters.AddWithValue("@low", candle.Low.AsInt());
+                insert.Parameters.AddWithValue("@close", candle.Close.AsInt());
+                insert.Parameters.AddWithValue("@volume", candle.Volume);
+                insert.ExecuteNonQuery();
+            }
+
+            transaction.Commit();
+        }
+
         public static DescendingCandles ReadMinutes(string symbol, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
