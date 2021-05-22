@@ -74,7 +74,23 @@
 
         public IEnumerable<Candle> Hours(DateTimeOffset end)
         {
-            return MergeBy(this.Minutes(end), (x, y) => x.Time.IsSameHour(y.Time));
+            return this.Minutes(end).MergeBy((x, y) => ShouldMerge(x.Time, y.Time));
+
+            bool ShouldMerge(DateTimeOffset x, DateTimeOffset y)
+            {
+                if (x.IsSameHour(y))
+                {
+                    if (x.Hour == 9)
+                    {
+                        // Start new hour candle at market open.
+                        return x.Minute < 30 && y.Minute < 30;
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
         }
 
         public IEnumerable<Candle> Minutes(DateTimeOffset end)
