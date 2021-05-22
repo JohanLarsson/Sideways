@@ -21,22 +21,17 @@
 
         public static DateTimeOffset EndOfDay(DateTimeOffset t) => new(t.Year, t.Month, t.Day, 20, 00, 00, t.Offset);
 
-        public static bool IsPreMarket(DateTimeOffset t)
-        {
-            return t.Hour is >= 4 and < 9 ||
-                   t is { Hour: 9, Minute: < 30 };
-        }
+        public static bool IsPreMarket(DateTimeOffset t) =>
+            t.Hour is >= 4 and < 9 ||
+            t is { Hour: 9, Minute: < 30 };
 
-        public static bool IsPostMarket(DateTimeOffset t)
-        {
-            return t.Hour > 16;
-        }
+        public static bool IsPostMarket(DateTimeOffset t) => t.Hour > 16;
 
-        public static bool IsOrdinaryHours(DateTimeOffset t)
-        {
-            return !IsPreMarket(t) &&
-                   !IsPostMarket(t);
-        }
+        public static bool IsOrdinaryHours(DateTimeOffset t) =>
+            !IsPreMarket(t) &&
+            !IsPostMarket(t);
+
+        public static bool IsOrdinaryHoursSameDay(DateTimeOffset x, DateTimeOffset y) => x.IsSameDay(y) && IsOrdinaryHours(x) && IsOrdinaryHours(y);
 
         public static TradingDay LastComplete()
         {
