@@ -5,14 +5,14 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: VSBuild@1
+- task: DotNetCoreCLI@2
   displayName: Build
   inputs:
+    command: 'build'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/restore'
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
   displayName: Test
   inputs:
+    command: 'test'
     configuration: '$(buildConfiguration)'
-    otherConsoleOptions: '/Framework:.NETCoreApp,Version=v5.0'
