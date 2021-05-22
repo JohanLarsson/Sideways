@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
 
@@ -76,19 +77,17 @@
 
         private static IEnumerable<TestCaseData> EmptyMinutes()
         {
-            foreach (var symbol in Database.ReadSymbols())
+            foreach (var symbol in Database.ReadSymbols().Skip(400))
             {
-                if (Sideways.Sync.CountMinutes(symbol, Database.DbFile) == 0)
+                if (Sideways.Sync.CountMinutes(symbol, Database.DbFile) == 0 &&
+                    Sideways.Sync.CountDays(symbol, Database.DbFile) > 0)
                 {
                     var days = Database.ReadDays(symbol);
-                    if (days.Count > 0)
+                    foreach (var slice in Enum.GetValues<Slice>())
                     {
-                        foreach (var slice in Enum.GetValues<Slice>())
+                        if (days[^1].Time < TimeRange.FromSlice(slice).Max)
                         {
-                            if (days.IndexOf(TimeRange.FromSlice(slice).Max, 0) >= 0)
-                            {
-                                yield return new TestCaseData(symbol, slice);
-                            }
+                            yield return new TestCaseData(symbol, slice);
                         }
                     }
                 }
