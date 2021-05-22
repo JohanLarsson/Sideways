@@ -46,6 +46,44 @@
             }
         }
 
+        public static IEnumerable<Candle> MergeBy(this IEnumerable<Candle> candles, Func<Candle, Candle, bool> criteria)
+        {
+            var merged = default(Candle);
+            foreach (var candle in candles)
+            {
+                if (merged == default)
+                {
+                    merged = candle;
+                }
+                else if (criteria(merged, candle))
+                {
+                    merged = merged.Merge(candle);
+                }
+                else
+                {
+                    yield return merged;
+                    merged = candle;
+                }
+            }
+
+            if (merged != default)
+            {
+                yield return merged;
+            }
+        }
+
+        public static T? FirstOrNull<T>(this IEnumerable<T> xs)
+            where T : struct
+        {
+            using var e = xs.GetEnumerator();
+            if (e.MoveNext())
+            {
+                return e.Current;
+            }
+
+            return null;
+        }
+
         public static T? FirstOrNull<T>(this IEnumerable<T> xs, Func<T, bool> selector)
             where T : struct
         {
