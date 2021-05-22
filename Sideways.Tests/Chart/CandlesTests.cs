@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-
+    using System.Linq;
     using NUnit.Framework;
 
     public static class CandlesTests
@@ -28,7 +28,7 @@
         [Test]
         public static void Hours()
         {
-            var candles = Create(
+            var candles = CreateWithMinutes(
                 new Candle(
                     new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
                     default,
@@ -61,7 +61,8 @@
                     default,
                     default),
             };
-            CollectionAssert.AreEqual(expected, candles.Hours(new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero)));
+            var actual = candles.Hours(new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero)).ToArray();
+            CollectionAssert.AreEqual(expected, actual);
         }
 
         private static IEnumerable<TestCaseData> SkipWeeksSource()
@@ -283,7 +284,7 @@
             yield return new TestCaseData(candles, c4.Time, 1, c3.Time);
         }
 
-        private static Candles Create(params Candle[] candles)
+        private static Candles CreateWithMinutes(params Candle[] candles)
         {
             var builder = DescendingCandles.CreateBuilder();
             foreach (var candle in candles)
@@ -291,7 +292,7 @@
                 builder.Add(candle);
             }
 
-            return new Candles(builder.Create(), default);
+            return new Candles(default, builder.Create());
         }
     }
 }
