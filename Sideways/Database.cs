@@ -138,6 +138,13 @@
 
             foreach (var candle in candles)
             {
+                if (candle.Time.Hour != 0 ||
+                    candle.Time.Minute != 0 ||
+                    candle.Time.Second != 0)
+                {
+                    throw new InvalidOperationException("Expected time to be midnight");
+                }
+
                 insert.Parameters.Clear();
                 insert.Parameters.AddWithValue("@symbol", symbol);
                 insert.Parameters.AddWithValue("@date", candle.Time.ToUnixTimeSeconds());
