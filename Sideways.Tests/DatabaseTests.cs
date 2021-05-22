@@ -27,6 +27,7 @@
             CollectionAssert.AreEqual(DayCandles.Select(x => x.AsCandle(1)).OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
 
             Database.WriteDays("UNIT_TEST", DayCandles.Select(x => x.AsCandle(2)), DbFile);
+            candles = Database.ReadDays("UNIT_TEST", DbFile);
             CollectionAssert.AreEqual(DayCandles.Select(x => x.AsCandle(1)).OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
         }
 
