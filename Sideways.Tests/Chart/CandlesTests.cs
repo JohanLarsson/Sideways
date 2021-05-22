@@ -61,7 +61,7 @@
                     default,
                     default),
             };
-            CollectionAssert.AreEqual(expected, candles.Hours(new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero)));
+            CollectionAssert.AreEqual(expected, candles.Hours(new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero)));
         }
 
         private static IEnumerable<TestCaseData> SkipWeeksSource()
