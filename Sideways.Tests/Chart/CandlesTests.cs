@@ -1,9 +1,8 @@
-﻿namespace Sideways.Tests
+﻿namespace Sideways.Tests.Chart
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
     using NUnit.Framework;
 
     public static class CandlesTests
@@ -26,44 +25,10 @@
             Assert.AreEqual(expected, candles.Skip(time, CandleInterval.Minute, count));
         }
 
-        [Test]
-        public static void Hours()
+        [TestCaseSource(nameof(HoursSource))]
+        public static void Hours(Candles candles, DateTimeOffset time, Candle[] expected)
         {
-            var candles = CreateWithMinutes(
-                new Candle(
-                    new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
-                    open: 3.3f,
-                    high: 3.4f,
-                    low: 3.1f,
-                    close: 3.2f,
-                    volume: 3),
-                new Candle(
-                    new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero),
-                    open: 2.3f,
-                    high: 3.4f,
-                    low: 3.1f,
-                    close: 3.2f,
-                    volume: 2),
-                new Candle(
-                    new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero),
-                    open: 1.3f,
-                    high: 1.4f,
-                    low: 1.1f,
-                    close: 1.2f,
-                    volume: 1));
-
-            var expected = new[]
-            {
-                new Candle(
-                    new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
-                    open: 1.3f,
-                    high: 3.4f,
-                    low: 1.1f,
-                    close: 3.2f,
-                    volume: 6),
-            };
-            var actual = candles.Hours(new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero)).ToArray();
-            CollectionAssert.AreEqual(expected, actual);
+            CollectionAssert.AreEqual(expected, candles.Hours(time).ToArray());
         }
 
         private static IEnumerable<TestCaseData> SkipWeeksSource()
@@ -283,6 +248,37 @@
 
             yield return new TestCaseData(candles, c4.Time, -1, c4.Time);
             yield return new TestCaseData(candles, c4.Time, 1, c3.Time);
+        }
+
+        private static IEnumerable<TestCaseData> HoursSource()
+        {
+            var candles = CreateWithMinutes(
+                new Candle(
+                    new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero),
+                    open: 3.3f,
+                    high: 3.4f,
+                    low: 3.1f,
+                    close: 3.2f,
+                    volume: 3),
+                new Candle(
+                    new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero),
+                    open: 2.3f,
+                    high: 2.4f,
+                    low: 2.1f,
+                    close: 2.2f,
+                    volume: 2),
+                new Candle(
+                    new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero),
+                    open: 1.3f,
+                    high: 1.4f,
+                    low: 1.1f,
+                    close: 1.2f,
+                    volume: 1));
+
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 29, 00, 0, TimeSpan.Zero), Array.Empty<Candle>());
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero), new[] { new Candle(new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero), open: 1.3f, high: 1.4f, low: 1.1f, close: 1.2f, volume: 1), });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero), new[] { new Candle(new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero), open: 1.3f, high: 2.4f, low: 1.1f, close: 2.2f, volume: 3), });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero), new[] { new Candle(new DateTimeOffset(2021, 05, 22, 09, 32, 00, 0, TimeSpan.Zero), open: 1.3f, high: 3.4f, low: 1.1f, close: 3.2f, volume: 6), });
         }
 
         private static Candles CreateWithMinutes(params Candle[] candles)

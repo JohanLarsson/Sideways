@@ -1,4 +1,4 @@
-﻿namespace Sideways.Tests
+﻿namespace Sideways.Tests.Model
 {
     using System;
     using System.Linq;

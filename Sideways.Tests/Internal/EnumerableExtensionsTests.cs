@@ -1,6 +1,5 @@
-﻿namespace Sideways.Tests
+﻿namespace Sideways.Tests.Internal
 {
-    using System;
     using NUnit.Framework;
 
     public static class EnumerableExtensionsTests
