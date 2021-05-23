@@ -301,6 +301,74 @@
             transaction.Commit();
         }
 
+        public static ImmutableDictionary<string, TimeRange> DayRanges(FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT symbol, MIN(date), MAX(date) FROM days" +
+                " GROUP BY symbol",
+                connection);
+            using var reader = command.ExecuteReader();
+            var builder = ImmutableDictionary.CreateBuilder<string, TimeRange>();
+            while (reader.Read())
+            {
+                builder.Add(
+                    reader.GetString(0),
+                    new TimeRange(
+                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(1)),
+                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2))));
+            }
+
+            return builder.ToImmutable();
+        }
+
+        public static ImmutableDictionary<string, TimeRange> MinuteRanges(FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT symbol, MIN(time), MAX(time) FROM minutes" +
+                " GROUP BY symbol",
+                connection);
+            using var reader = command.ExecuteReader();
+            var builder = ImmutableDictionary.CreateBuilder<string, TimeRange>();
+            while (reader.Read())
+            {
+                builder.Add(
+                    reader.GetString(0),
+                    new TimeRange(
+                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(1)),
+                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2))));
+            }
+
+            return builder.ToImmutable();
+        }
+
+        public static long CountDays(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT COUNT(*) FROM days" +
+                " WHERE symbol = @symbol",
+                connection);
+            command.Parameters.AddWithValue("@symbol", symbol);
+            return (long)command.ExecuteScalar();
+        }
+
+        public static long CountMinutes(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT COUNT(*) FROM minutes" +
+                " WHERE symbol = @symbol",
+                connection);
+            command.Parameters.AddWithValue("@symbol", symbol);
+            return (long)command.ExecuteScalar();
+        }
+
         private static DescendingCandles ReadCandles(SqliteDataReader reader)
         {
             var builder = DescendingCandles.CreateBuilder();

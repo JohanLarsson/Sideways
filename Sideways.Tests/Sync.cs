@@ -78,11 +78,11 @@
         {
             if (File.Exists(FlashDrive.FullName))
             {
-                var dbDays = Sideways.Sync.ReportDays(Database.DbFile);
-                var dbMinutes = Sideways.Sync.ReportMinutes(Database.DbFile);
+                var dbDays = Database.DayRanges(Database.DbFile);
+                var dbMinutes = Database.MinuteRanges(Database.DbFile);
 
-                var flashDays = Sideways.Sync.ReportDays(FlashDrive);
-                var flashMinutes = Sideways.Sync.ReportMinutes(FlashDrive);
+                var flashDays = Database.DayRanges(FlashDrive);
+                var flashMinutes = Database.MinuteRanges(FlashDrive);
 
                 foreach (var symbol in dbDays.Keys.Concat(flashDays.Keys).Distinct().OrderBy(x => x))
                 {

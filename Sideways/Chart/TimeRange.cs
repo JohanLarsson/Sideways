@@ -79,6 +79,8 @@
 
         public bool Contains(TimeRange other) => this.Contains(other.Min) && this.Contains(other.Max);
 
+        public bool Overlaps(TimeRange other) => this.Contains(other.Min) || this.Contains(other.Max);
+
         public double Interpolate(DateTimeOffset time)
         {
             var range = this.Max - this.Min;

@@ -73,23 +73,48 @@
             Database.WriteMinutes(symbol, candles);
         }
 
+        [TestCaseSource(nameof(TopUps))]
+        public static async Task TopUp(string symbol)
+        {
+            Assert.Fail("Check that we merge correctly first.");
+            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
+            var candles = await client.IntradayAsync(symbol, Interval.Minute, adjusted: false);
+            if (candles.IsEmpty)
+            {
+                Assert.Inconclusive("Empty slice, maybe missing data on AlphaVantage. Exclude this symbol from script as it uses up daily calls.");
+            }
+
+            Database.WriteMinutes(symbol, candles);
+            Database.WriteDays(symbol, candles.MergeBy((x, y) => TradingDay.IsOrdinaryHoursSameDay(x.Time, y.Time)));
+        }
+
         private static IEnumerable<string> All() => Database.ReadSymbols();
 
         private static IEnumerable<TestCaseData> EmptyMinutes()
         {
-            foreach (var symbol in Database.ReadSymbols().Skip(400))
+            foreach (var (symbol, range) in Database.DayRanges().OrderBy(x => x.Key))
             {
-                if (Sideways.Sync.CountMinutes(symbol, Database.DbFile) == 0 &&
-                    Sideways.Sync.CountDays(symbol, Database.DbFile) > 0)
+                if (Database.CountMinutes(symbol, Database.DbFile) == 0)
                 {
-                    var days = Database.ReadDays(symbol);
                     foreach (var slice in Enum.GetValues<Slice>())
                     {
-                        if (days[^1].Time < TimeRange.FromSlice(slice).Max)
+                        if (range.Overlaps(TimeRange.FromSlice(slice)))
                         {
                             yield return new TestCaseData(symbol, slice);
                         }
                     }
+                }
+            }
+        }
+
+        private static IEnumerable<string> TopUps()
+        {
+            foreach (var (symbol, range) in Database.DayRanges().OrderBy(x => x.Key))
+            {
+                if (TradingDay.Create(range.Max) != TradingDay.LastComplete() &&
+                    range.Overlaps(TimeRange.FromSlice(Slice.Year1Month1)))
+                {
+                    yield return symbol;
                 }
             }
         }
