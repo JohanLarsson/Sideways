@@ -76,7 +76,7 @@
         {
             return this.Minutes(end).MergeBy((x, y) => ShouldMerge(x.Time, y.Time));
 
-            bool ShouldMerge(DateTimeOffset x, DateTimeOffset y)
+            static bool ShouldMerge(DateTimeOffset x, DateTimeOffset y)
             {
                 if (x.IsSameHour(y))
                 {

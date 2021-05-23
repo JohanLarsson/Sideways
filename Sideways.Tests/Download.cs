@@ -95,9 +95,43 @@
 
         private static IEnumerable<TestCaseData> EmptyMinutes()
         {
+            var ignore = new[]
+            {
+                "ACHN",
+                "AMTD",
+                "APPM",
+                "AVX",
+                "AVXS",
+                "CHFS",
+                "CTRP",
+                "CXO",
+                "DERM",
+                "DGAZ",
+                "DNR",
+                "DO",
+                "DRYS",
+                "DWT",
+                "EIDX",
+                "ERI",
+                "ETCG",
+                "ETHE",
+                "EWLU",
+                "FBM",
+                "FIT",
+                "FTSV",
+                "GBTC",
+                "GSX",
+                "HTZ",
+                "I",
+                "IDGX",
+                "IDXG",
+                "IMMU",
+            };
+
             foreach (var (symbol, range) in Database.DayRanges().OrderBy(x => x.Key))
             {
-                if (Database.CountMinutes(symbol, Database.DbFile) == 0)
+                if (!ignore.Contains(symbol) &&
+                    Database.CountMinutes(symbol, Database.DbFile) == 0)
                 {
                     foreach (var slice in Enum.GetValues<Slice>())
                     {

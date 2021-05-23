@@ -69,7 +69,7 @@
 
         /// <summary>Helper for getting <see cref="IsSymbolSearchProperty"/> from <paramref name="element"/>.</summary>
         /// <param name="element"><see cref="DependencyObject"/> to read <see cref="IsSymbolSearchProperty"/> from.</param>
-        /// <returns>Value property value.</returns>
+        /// <returns>IsSymbolSearch property value.</returns>
         [AttachedPropertyBrowsableForType(typeof(DependencyObject))]
         public static bool GetIsSymbolSearch(DependencyObject element)
         {
