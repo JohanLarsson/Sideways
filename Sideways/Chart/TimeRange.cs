@@ -77,6 +77,8 @@
 
         public bool Contains(DateTimeOffset value) => value >= this.Min && value <= this.Max;
 
+        public bool Contains(TimeRange other) => this.Contains(other.Min) && this.Contains(other.Max);
+
         public double Interpolate(DateTimeOffset time)
         {
             var range = this.Max - this.Min;

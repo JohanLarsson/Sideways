@@ -5,6 +5,7 @@
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
+
     using NUnit.Framework;
 
     public static class Sync
@@ -13,85 +14,117 @@
 
         [Explicit]
         [TestCaseSource(nameof(AllSymbols))]
-        public static void OneWay(string symbol)
+        public static void OneWayToFlash(Diff diff)
         {
-            var source = Database.DbFile;
-            var target = FlashDrive;
-            if (File.Exists(source.FullName) &&
-                File.Exists(target.FullName))
+            if (diff.AppDays != diff.FlashDays)
             {
-                if (Sideways.Sync.CountDays(symbol, source) > Sideways.Sync.CountDays(symbol, target))
-                {
-                    Sideways.Sync.CopyDays(symbol, source, target);
-                    Sideways.Sync.CopySplits(symbol, source, target);
-                    Sideways.Sync.CopyDividends(symbol, source, target);
-                }
+                CopyDays(diff.Symbol, diff.App, diff.Flash);
+            }
 
-                if (Sideways.Sync.CountMinutes(symbol, source) > Sideways.Sync.CountMinutes(symbol, target))
-                {
-                    Sideways.Sync.CopyMinutes(symbol, source, target);
-                }
+            if (diff.AppMinutes != diff.FlashMinutes)
+            {
+                Sideways.Sync.CopyMinutes(diff.Symbol, diff.App, diff.Flash);
             }
         }
 
         [Explicit]
         [TestCaseSource(nameof(AllSymbols))]
-        public static void TwoWay(string symbol)
+        public static void TwoWay(Diff diff)
         {
-            var x = Database.DbFile;
-            var y = FlashDrive;
-            if (File.Exists(x.FullName) &&
-                File.Exists(y.FullName))
+            if (diff.AppDays != diff.FlashDays)
             {
-                switch (Comparer<long>.Default.Compare(Sideways.Sync.CountDays(symbol, x), Sideways.Sync.CountDays(symbol, y)))
+                if (diff.AppDays.Contains(diff.FlashDays))
                 {
-                    case < 0:
-                        CopyDays(symbol, y, x);
-                        break;
-                    case > 0:
-                        CopyDays(symbol, x, y);
-                        break;
-                    case 0:
-                        break;
+                    CopyDays(diff.Symbol, diff.App, diff.Flash);
                 }
-
-                switch (Comparer<long>.Default.Compare(Sideways.Sync.CountMinutes(symbol, x), Sideways.Sync.CountMinutes(symbol, y)))
+                else if (diff.FlashDays.Contains(diff.AppDays))
                 {
-                    case < 0:
-                        Console.WriteLine($"Copy minutes from {y} to {x}.");
-                        Sideways.Sync.CopyMinutes(symbol, y, x);
-                        break;
-                    case > 0:
-                        Console.WriteLine($"Copy minutes from {x} to {y}.");
-                        Sideways.Sync.CopyMinutes(symbol, x, y);
-                        break;
-                    case 0:
-                        break;
+                    CopyDays(diff.Symbol, diff.Flash, diff.App);
                 }
-
-                static void CopyDays(string symbol, FileInfo source, FileInfo target)
+                else
                 {
-                    Console.WriteLine($"Copy days from {source} to {target}.");
-                    Sideways.Sync.CopyDays(symbol, source, target);
-                    Sideways.Sync.CopySplits(symbol, source, target);
-                    Sideways.Sync.CopyDividends(symbol, source, target);
+                    CopyDays(diff.Symbol, diff.App, diff.Flash);
+                    CopyDays(diff.Symbol, diff.Flash, diff.App);
+                }
+            }
+
+            if (diff.AppMinutes != diff.FlashMinutes)
+            {
+                if (diff.AppMinutes.Contains(diff.FlashMinutes))
+                {
+                    Sideways.Sync.CopyMinutes(diff.Symbol, diff.App, diff.Flash);
+                }
+                else if (diff.FlashMinutes.Contains(diff.AppMinutes))
+                {
+                    Sideways.Sync.CopyMinutes(diff.Symbol, diff.Flash, diff.App);
+                }
+                else
+                {
+                    Sideways.Sync.CopyMinutes(diff.Symbol, diff.App, diff.Flash);
+                    Sideways.Sync.CopyMinutes(diff.Symbol, diff.Flash, diff.App);
                 }
             }
         }
 
-        private static IEnumerable<string> AllSymbols()
+        private static void CopyDays(string symbol, FileInfo source, FileInfo target)
         {
-            return Read(Database.DbFile).Concat(Read(FlashDrive)).Distinct().OrderBy(x => x);
+            Console.WriteLine($"Copy days from {source} to {target}.");
+            Sideways.Sync.CopyDays(symbol, source, target);
+            Sideways.Sync.CopySplits(symbol, source, target);
+            Sideways.Sync.CopyDividends(symbol, source, target);
+        }
 
-            static ImmutableArray<string> Read(FileInfo file)
+        private static IEnumerable<Diff> AllSymbols()
+        {
+            if (File.Exists(FlashDrive.FullName))
             {
-                if (File.Exists(file.FullName))
-                {
-                    return Database.ReadSymbols(file);
-                }
+                var dbDays = Sideways.Sync.ReportDays(Database.DbFile);
+                var dbMinutes = Sideways.Sync.ReportMinutes(Database.DbFile);
 
-                return ImmutableArray<string>.Empty;
+                var flashDays = Sideways.Sync.ReportDays(FlashDrive);
+                var flashMinutes = Sideways.Sync.ReportMinutes(FlashDrive);
+
+                foreach (var symbol in dbDays.Keys.Concat(flashDays.Keys).Distinct().OrderBy(x => x))
+                {
+                    yield return new Diff(
+                        Database.DbFile,
+                        FlashDrive,
+                        symbol,
+                        GetRangeOrDefault(dbDays),
+                        GetRangeOrDefault(dbMinutes),
+                        GetRangeOrDefault(flashDays),
+                        GetRangeOrDefault(flashMinutes));
+
+                    TimeRange GetRangeOrDefault(ImmutableDictionary<string, TimeRange> map)
+                    {
+                        return map.TryGetValue(symbol, out var range) ? range : default;
+                    }
+                }
             }
+        }
+
+        public sealed class Diff
+        {
+            public readonly FileInfo App;
+            public readonly FileInfo Flash;
+            public readonly string Symbol;
+            public readonly TimeRange AppDays;
+            public readonly TimeRange AppMinutes;
+            public readonly TimeRange FlashDays;
+            public readonly TimeRange FlashMinutes;
+
+            public Diff(FileInfo app, FileInfo flash, string symbol, TimeRange appDays, TimeRange appMinutes, TimeRange flashDays, TimeRange flashMinutes)
+            {
+                this.App = app;
+                this.Flash = flash;
+                this.Symbol = symbol;
+                this.AppDays = appDays;
+                this.AppMinutes = appMinutes;
+                this.FlashDays = flashDays;
+                this.FlashMinutes = flashMinutes;
+            }
+
+            public override string ToString() => this.Symbol;
         }
     }
 }
