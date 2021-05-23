@@ -23,12 +23,7 @@
             using var targetTransaction = targetConnection.BeginTransaction();
             using var insert = targetConnection.CreateCommand();
             insert.CommandText = "INSERT INTO days (symbol, date, open, high, low, close, volume) VALUES (@symbol, @date, @open, @high, @low, @close, @volume)" +
-                                 "  ON CONFLICT(symbol, date) DO UPDATE SET" +
-                                 "    open = excluded.open," +
-                                 "    high = excluded.high," +
-                                 "    low = excluded.low," +
-                                 "    close = excluded.close," +
-                                 "    volume = excluded.volume";
+                                 "  ON CONFLICT(symbol, date) DO NOTHING";
             insert.Prepare();
 
             while (reader.Read())
@@ -64,8 +59,7 @@
             using var targetTransaction = targetConnection.BeginTransaction();
             using var insert = targetConnection.CreateCommand();
             insert.CommandText = "INSERT INTO splits (symbol, date, coefficient) VALUES (@symbol, @date, @coefficient)" +
-                                 "  ON CONFLICT(symbol, date) DO UPDATE SET" +
-                                 "    coefficient = excluded.coefficient";
+                                 "  ON CONFLICT(symbol, date) DO NOTHING";
             insert.Prepare();
 
             while (reader.Read())
@@ -97,8 +91,7 @@
             using var targetTransaction = targetConnection.BeginTransaction();
             using var insert = targetConnection.CreateCommand();
             insert.CommandText = "INSERT INTO dividends (symbol, date, dividend) VALUES (@symbol, @date, @dividend)" +
-                                 "  ON CONFLICT(symbol, date) DO UPDATE SET" +
-                                 "    dividend = excluded.dividend";
+                                 "  ON CONFLICT(symbol, date) DO NOTHING";
             insert.Prepare();
 
             while (reader.Read())
@@ -130,12 +123,7 @@
             using var targetTransaction = targetConnection.BeginTransaction();
             using var insert = targetConnection.CreateCommand();
             insert.CommandText = "INSERT INTO minutes (symbol, time, open, high, low, close, volume) VALUES (@symbol, @time, @open, @high, @low, @close, @volume)" +
-                                 "  ON CONFLICT(symbol, time) DO UPDATE SET" +
-                                 "    open = excluded.open," +
-                                 "    high = excluded.high," +
-                                 "    low = excluded.low," +
-                                 "    close = excluded.close," +
-                                 "    volume = excluded.volume";
+                                 "  ON CONFLICT(symbol, time) DO NOTHING";
             insert.Prepare();
 
             while (reader.Read())
