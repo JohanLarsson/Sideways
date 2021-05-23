@@ -5,8 +5,6 @@
     using System.IO;
     using System.Text.Json;
     using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Data;
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
@@ -155,36 +153,6 @@
                     e.Handled = true;
                 }
             }
-        }
-
-        private void OnKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key is Key.Enter or Key.Return or Key.Tab &&
-                ReferenceEquals(sender, this.SymbolComboBox))
-            {
-                BindingOperations.GetBindingExpression(this.SymbolComboBox, ComboBox.TextProperty)!.UpdateSource();
-                Keyboard.ClearFocus();
-                Keyboard.Focus(this.SymbolComboBox);
-                e.Handled = true;
-            }
-        }
-
-        private void OnKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key is Key.Up or Key.Down &&
-                ReferenceEquals(sender, this.SymbolComboBox))
-            {
-                Keyboard.ClearFocus();
-                Keyboard.Focus(this.SymbolComboBox);
-                e.Handled = true;
-            }
-        }
-
-        private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            Keyboard.ClearFocus();
-            Keyboard.Focus(this.SymbolComboBox);
-            e.Handled = true;
         }
     }
 }

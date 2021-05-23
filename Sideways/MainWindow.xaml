@@ -124,9 +124,7 @@
                               IsEditable="True"
                               ItemsSource="{Binding Symbols}"
                               SelectedItem="{Binding CurrentSymbolText}"
-                              KeyDown="OnKeyDown"
-                              KeyUp="OnKeyUp"
-                              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
+                              sideways:ComboBoxEx.IsSymbolSearch="True"
                               Style="{StaticResource ComboBoxStyle}"
                               Text="{Binding CurrentSymbolText, UpdateSourceTrigger=Explicit}" />
 
