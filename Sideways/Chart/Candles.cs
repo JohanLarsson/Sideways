@@ -83,7 +83,7 @@
                     if (x.Hour == 9)
                     {
                         // Start new hour candle at market open.
-                        return x.Minute < 30 && y.Minute < 30;
+                        return x.Minute < 30 == y.Minute < 30;
                     }
 
                     return true;
