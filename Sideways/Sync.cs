@@ -1,10 +1,57 @@
 ﻿namespace Sideways
 {
+    using System;
+    using System.Collections.Immutable;
     using System.IO;
+
     using Microsoft.Data.Sqlite;
 
     public static class Sync
     {
+        public static ImmutableDictionary<string, TimeRange> ReportDays(FileInfo file)
+        {
+            using var connection = new SqliteConnection($"Data Source={file.FullName}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT symbol, MIN(date), MAX(date) FROM days" +
+                " GROUP BY symbol",
+                connection);
+            using var reader = command.ExecuteReader();
+            var builder = ImmutableDictionary.CreateBuilder<string, TimeRange>();
+            while (reader.Read())
+            {
+                builder.Add(
+                    reader.GetString(0),
+                    new TimeRange(
+                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(1)),
+                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2))));
+            }
+
+            return builder.ToImmutable();
+        }
+
+        public static ImmutableDictionary<string, TimeRange> ReportMinutes(FileInfo file)
+        {
+            using var connection = new SqliteConnection($"Data Source={file.FullName}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT symbol, MIN(time), MAX(time) FROM minutes" +
+                " GROUP BY symbol",
+                connection);
+            using var reader = command.ExecuteReader();
+            var builder = ImmutableDictionary.CreateBuilder<string, TimeRange>();
+            while (reader.Read())
+            {
+                builder.Add(
+                    reader.GetString(0),
+                    new TimeRange(
+                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(1)),
+                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2))));
+            }
+
+            return builder.ToImmutable();
+        }
+
         public static long CountDays(string symbol, FileInfo file)
         {
             using var connection = new SqliteConnection($"Data Source={file.FullName}");
