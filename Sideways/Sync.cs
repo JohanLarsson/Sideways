@@ -12,8 +12,7 @@
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT date, open, high, low, close, volume FROM days" +
-                " WHERE symbol = @symbol" +
-                " ORDER BY date DESC",
+                " WHERE symbol = @symbol",
                 sourceConnection);
             select.Parameters.AddWithValue("@symbol", symbol);
             using var reader = select.ExecuteReader();
@@ -54,8 +53,7 @@
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT date, coefficient FROM splits" +
-                " WHERE symbol = @symbol" +
-                " ORDER BY date DESC",
+                " WHERE symbol = @symbol",
                 sourceConnection);
             select.Parameters.AddWithValue("@symbol", symbol);
             using var reader = select.ExecuteReader();
@@ -88,8 +86,7 @@
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT date, dividend FROM dividends" +
-                " WHERE symbol = @symbol" +
-                " ORDER BY date DESC",
+                " WHERE symbol = @symbol",
                 sourceConnection);
             select.Parameters.AddWithValue("@symbol", symbol);
             using var reader = select.ExecuteReader();
@@ -122,8 +119,7 @@
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT time, open, high, low, close, volume FROM minutes" +
-                " WHERE symbol = @symbol" +
-                " ORDER BY time DESC",
+                " WHERE symbol = @symbol",
                 sourceConnection);
             select.Parameters.AddWithValue("@symbol", symbol);
             using var reader = select.ExecuteReader();
