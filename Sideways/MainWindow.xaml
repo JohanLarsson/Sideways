@@ -52,8 +52,11 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <Grid>
-                            <sideways:ChartBackground />
+                        <sideways:ChartBackground Grid.Row="0"
+                                                  Grid.RowSpan="3"
+                                                  Grid.Column="0" />
+
+                        <Grid Grid.Row="0" Grid.Column="0">
 
                             <sideways:MovingAverage Brush="Purple" Period="10" />
 
@@ -93,8 +96,11 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <Grid>
-                            <sideways:ChartBackground />
+                        <sideways:ChartBackground Grid.Row="0"
+                                                  Grid.RowSpan="3"
+                                                  Grid.Column="0" />
+
+                        <Grid Grid.Row="0" Grid.Column="0">
 
                             <sideways:MovingAverage Brush="Purple" Period="10" />
 
@@ -182,9 +188,11 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <Grid>
-                            <sideways:ChartBackground />
+                        <sideways:ChartBackground Grid.Row="0"
+                                                  Grid.RowSpan="3"
+                                                  Grid.Column="0" />
 
+                        <Grid Grid.Row="0" Grid.Column="0">
                             <sideways:MovingAverage Brush="Purple" Period="10" />
 
                             <sideways:MovingAverage Brush="Yellow" Period="20" />
