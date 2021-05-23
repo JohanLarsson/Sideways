@@ -5,7 +5,9 @@
     using System.Windows.Data;
     using System.Windows.Input;
 
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
     public static class ComboBoxEx
+#pragma warning restore CA1711 // Identifiers should not have incorrect suffix
     {
         public static readonly DependencyProperty IsSymbolSearchProperty = DependencyProperty.RegisterAttached(
             "IsSymbolSearch",
@@ -15,9 +17,9 @@
 
         static ComboBoxEx()
         {
-            EventManager.RegisterClassHandler(typeof(ComboBox), UIElement.KeyDownEvent, new KeyEventHandler((o, e) => OnKeyDown(e)));
-            EventManager.RegisterClassHandler(typeof(ComboBox), UIElement.KeyUpEvent, new KeyEventHandler((o, e) => OnKeyUp(e)));
-            EventManager.RegisterClassHandler(typeof(ComboBox), UIElement.PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler((o, e) => OnPreviewMouseLeftButtonDown(e)));
+            EventManager.RegisterClassHandler(typeof(ComboBox), UIElement.KeyDownEvent, new KeyEventHandler((_, e) => OnKeyDown(e)));
+            EventManager.RegisterClassHandler(typeof(ComboBox), UIElement.KeyUpEvent, new KeyEventHandler((_, e) => OnKeyUp(e)));
+            EventManager.RegisterClassHandler(typeof(ComboBox), UIElement.PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler((_, e) => OnPreviewMouseLeftButtonDown(e)));
 
             static void OnKeyDown(KeyEventArgs e)
             {

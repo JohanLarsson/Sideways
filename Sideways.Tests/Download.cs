@@ -85,10 +85,10 @@
 
             Database.WriteMinutes(symbol, candles);
             await Days(symbol);
-            //Assert.Fail("Check that we merge correctly first.");
-            //Assert.Fail("Adjust merged day to midnight.");
-            //var days = candles.Where(x => TradingDay.IsOrdinaryHours(x.Time)).MergeBy((x, y) => x.Time.IsSameDay(y.Time)).Select(x => x.WithTime(new DateTimeOffset(x.Time.Year, x.Time.Month, x.Time.Day, 0, 0, 0, x.Time.Offset)));
-            //Database.WriteDays(symbol, days);
+            ////Assert.Fail("Check that we merge correctly first.");
+            ////Assert.Fail("Adjust merged day to midnight.");
+            ////var days = candles.Where(x => TradingDay.IsOrdinaryHours(x.Time)).MergeBy((x, y) => x.Time.IsSameDay(y.Time)).Select(x => x.WithTime(new DateTimeOffset(x.Time.Year, x.Time.Month, x.Time.Day, 0, 0, 0, x.Time.Offset)));
+            ////Database.WriteDays(symbol, days);
         }
 
         private static IEnumerable<string> All() => Database.ReadSymbols();

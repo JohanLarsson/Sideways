@@ -8,3 +8,6 @@ dotnet_diagnostic.SA0001.severity = none
 # VSTHRD200: Use "Async" suffix for async methods
 dotnet_diagnostic.VSTHRD200.severity = none
 
+
+# SA1401: Fields should be private
+dotnet_diagnostic.SA1401.severity = none
