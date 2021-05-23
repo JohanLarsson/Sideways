@@ -53,6 +53,8 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid>
+                            <sideways:ChartBackground />
+
                             <sideways:MovingAverage Brush="Purple" Period="10" />
 
                             <sideways:MovingAverage Brush="Yellow" Period="20" />
@@ -92,6 +94,8 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid>
+                            <sideways:ChartBackground />
+
                             <sideways:MovingAverage Brush="Purple" Period="10" />
 
                             <sideways:MovingAverage Brush="Yellow" Period="20" />
@@ -119,12 +123,12 @@
                 <StackPanel Margin="10,10">
                     <ComboBox x:Name="SymbolComboBox"
                               HorizontalAlignment="Left"
+                              sideways:ComboBoxEx.IsSymbolSearch="True"
                               FontSize="24"
                               Foreground="{x:Static sideways:Brushes.Gray}"
                               IsEditable="True"
                               ItemsSource="{Binding Symbols}"
                               SelectedItem="{Binding CurrentSymbolText}"
-                              sideways:ComboBoxEx.IsSymbolSearch="True"
                               Style="{StaticResource ComboBoxStyle}"
                               Text="{Binding CurrentSymbolText, UpdateSourceTrigger=Explicit}" />
 
@@ -179,6 +183,8 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid>
+                            <sideways:ChartBackground />
+
                             <sideways:MovingAverage Brush="Purple" Period="10" />
 
                             <sideways:MovingAverage Brush="Yellow" Period="20" />
