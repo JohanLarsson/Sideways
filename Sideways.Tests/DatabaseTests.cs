@@ -44,6 +44,7 @@
             CollectionAssert.AreEqual(MinuteCandles.OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
         }
 
+        [Explicit]
         [Test]
         public static void Timings()
         {

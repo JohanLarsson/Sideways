@@ -54,6 +54,20 @@
             close: (float)coefficient * this.Close,
             volume: this.Volume);
 
+        public Candle Merge(Candle other)
+        {
+            Debug.Assert(this.Time != other.Time, "this.Time != other.Time");
+            return other.Time <= this.Time
+                ? new(
+                    time: this.Time,
+                    open: other.Open,
+                    high: Math.Max(this.High, other.High),
+                    low: Math.Min(this.Low, other.Low),
+                    close: this.Close,
+                    volume: this.Volume + other.Volume)
+                : other.Merge(this);
+        }
+
         public bool Equals(Candle other)
         {
             return this.Time.Equals(other.Time) &&
@@ -75,17 +89,5 @@
         }
 
         public override string ToString() => $"{this.Time:s} o: {this.Open} h: {this.High} l: {this.Low} c: {this.Close} volume: {this.Volume}";
-
-        internal Candle Merge(Candle other)
-        {
-            Debug.Assert(other.Time < this.Time, "other.Time < this.Time");
-            return new(
-                time: this.Time,
-                open: other.Open,
-                high: Math.Max(this.High, other.High),
-                low: Math.Min(this.Low, other.Low),
-                close: this.Close,
-                volume: this.Volume + other.Volume);
-        }
     }
 }

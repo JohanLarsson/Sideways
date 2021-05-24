@@ -4,7 +4,7 @@
     using System.Linq;
     using NUnit.Framework;
 
-    public class TradingDayTests
+    public static class TradingDayTests
     {
         private static readonly DateTimeOffset[] RealDates = Database.ReadDays("MSFT").Select(x => x.Time).ToArray();
 
@@ -30,7 +30,7 @@
         }
 
         [TestCaseSource(nameof(RealDates))]
-        public void RealDays(DateTimeOffset date)
+        public static void RealDays(DateTimeOffset date)
         {
             Assert.AreEqual(true, TradingDay.IsMatch(date));
         }
