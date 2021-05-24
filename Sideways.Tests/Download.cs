@@ -45,6 +45,7 @@
             if (days.Count == 0)
             {
                 await Downloader.DaysAsync(symbol, null, Client);
+                Assert.Pass("Downloaded new symbol.");
             }
 
             var last = TradingDay.Create(days[0].Time);
@@ -54,7 +55,8 @@
             }
             else
             {
-                await Downloader.DaysAsync(symbol, TradingDay.Create(days[0].Time), Client);
+                await Downloader.DaysAsync(symbol, last, Client);
+                Assert.Pass("Updated days for symbol.");
             }
         }
 
