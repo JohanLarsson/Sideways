@@ -38,7 +38,7 @@
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT symbol, date, coefficient FROM splits" +
-                "  ORDER BY date ASC",
+                "  ORDER BY symbol, date ASC",
                 sourceConnection);
             using var reader = select.ExecuteReader();
             WriteSplits(reader, target);
@@ -64,7 +64,7 @@
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT symbol, date, dividend FROM dividends" +
-                "  ORDER BY date ASC",
+                "  ORDER BY symbol, date ASC",
                 sourceConnection);
             using var reader = select.ExecuteReader();
             WriteDividends(reader, target);
@@ -90,7 +90,7 @@
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT symbol, time, open, high, low, close, volume FROM minutes" +
-                "  ORDER BY time ASC",
+                "  ORDER BY symbol, time ASC",
                 sourceConnection);
             using var reader = select.ExecuteReader();
             WriteMinutes(reader, target);
