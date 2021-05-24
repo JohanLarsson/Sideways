@@ -102,6 +102,7 @@
                 "APPM",
                 "AVX",
                 "AVXS",
+                "BIGG",
                 "CHFS",
                 "CTRP",
                 "CXO",
@@ -126,6 +127,13 @@
                 "IDGX",
                 "IDXG",
                 "IMMU",
+                "LK",
+                "MNK",
+                "NLNK",
+                "OVAS",
+                "PASO",
+                "PNAT",
+                "PTI",
             };
 
             foreach (var (symbol, range) in Database.DayRanges().OrderBy(x => x.Key))
