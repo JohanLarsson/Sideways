@@ -125,7 +125,7 @@
             while (reader.Read())
             {
                 insert.Parameters.Clear();
-                insert.Parameters.AddWithValue("@symbol", reader.GetValue(0));
+                insert.Parameters.AddWithValue("@symbol", reader.GetString(0).ToUpperInvariant());
                 insert.Parameters.AddWithValue("@date", reader.GetValue(1));
                 insert.Parameters.AddWithValue("@open", reader.GetValue(2));
                 insert.Parameters.AddWithValue("@high", reader.GetValue(3));
@@ -152,7 +152,7 @@
             while (reader.Read())
             {
                 insert.Parameters.Clear();
-                insert.Parameters.AddWithValue("@symbol", reader.GetValue(0));
+                insert.Parameters.AddWithValue("@symbol", reader.GetString(0).ToUpperInvariant());
                 insert.Parameters.AddWithValue("@date", reader.GetValue(1));
                 insert.Parameters.AddWithValue("@coefficient", reader.GetValue(2));
                 insert.ExecuteNonQuery();
@@ -175,7 +175,7 @@
             while (reader.Read())
             {
                 insert.Parameters.Clear();
-                insert.Parameters.AddWithValue("@symbol", reader.GetValue(0));
+                insert.Parameters.AddWithValue("@symbol", reader.GetString(0).ToUpperInvariant());
                 insert.Parameters.AddWithValue("@date", reader.GetValue(1));
                 insert.Parameters.AddWithValue("@dividend", reader.GetValue(2));
                 insert.ExecuteNonQuery();
@@ -199,7 +199,7 @@
             while (reader.Read())
             {
                 insert.Parameters.Clear();
-                insert.Parameters.AddWithValue("@symbol", reader.GetValue(0));
+                insert.Parameters.AddWithValue("@symbol", reader.GetString(0).ToUpperInvariant());
                 insert.Parameters.AddWithValue("@time", reader.GetValue(1));
                 insert.Parameters.AddWithValue("@open", reader.GetValue(2));
                 insert.Parameters.AddWithValue("@high", reader.GetValue(3));
