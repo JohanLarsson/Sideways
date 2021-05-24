@@ -34,22 +34,27 @@
         [Test]
         public static async Task Listings()
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
-            var listings = await client.ListingsAsync().ConfigureAwait(false);
+            var listings = await Client.ListingsAsync().ConfigureAwait(false);
             Database.WriteListings(listings);
         }
 
         [TestCaseSource(nameof(All))]
         public static async Task Days(string symbol)
         {
-            var dataSource = new DataSource(Downloader);
-            if (dataSource.Days(symbol, Client).Download is { } task)
+            var days = Database.ReadDays(symbol);
+            if (days.Count == 0)
             {
-                await task;
+                await Downloader.DaysAsync(symbol, null, Client);
+            }
+
+            var last = TradingDay.Create(days[0].Time);
+            if (last == TradingDay.LastComplete())
+            {
+                Assert.Pass("Already downloaded.");
             }
             else
             {
-                Assert.Pass("Already downloaded.");
+                await Downloader.DaysAsync(symbol, TradingDay.Create(days[0].Time), Client);
             }
         }
 
@@ -63,8 +68,7 @@
                 Assert.Pass("No slice this far back.");
             }
 
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
-            var candles = await client.IntradayExtendedAsync(symbol, Interval.Minute, slice, adjusted: false);
+            var candles = await Client.IntradayExtendedAsync(symbol, Interval.Minute, slice, adjusted: false);
             if (candles.IsEmpty)
             {
                 Assert.Inconclusive("Empty slice, maybe missing data on AlphaVantage. Exclude this symbol from script as it uses up daily calls.");
@@ -76,8 +80,7 @@
         [TestCaseSource(nameof(TopUps))]
         public static async Task TopUp(string symbol)
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
-            var candles = await client.IntradayAsync(symbol, Interval.Minute, adjusted: false);
+            var candles = await Client.IntradayAsync(symbol, Interval.Minute, adjusted: false);
             if (candles.IsEmpty)
             {
                 Assert.Inconclusive("Empty slice, maybe missing data on AlphaVantage. Exclude this symbol from script as it uses up daily calls.");
