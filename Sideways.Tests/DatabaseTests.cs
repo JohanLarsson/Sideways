@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Immutable;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
 
@@ -41,6 +42,25 @@
 
             candles = Database.ReadMinutes("UNIT_TEST", DayCandles.Min(x => x.Time), DayCandles.Max(x => x.Time), DbFile);
             CollectionAssert.AreEqual(MinuteCandles.OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
+        }
+
+        [Test]
+        public static void Timings()
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var days = Database.ReadDays("TSLA");
+            stopwatch.Stop();
+            Console.WriteLine($"Read {days.Count} days took {stopwatch.ElapsedMilliseconds} ms.");
+
+            stopwatch.Start();
+            var minutes = Database.ReadMinutes("TSLA");
+            stopwatch.Stop();
+            Console.WriteLine($"Read {minutes.Count} minutes took {stopwatch.ElapsedMilliseconds} ms.");
+
+            stopwatch.Start();
+            minutes = Database.ReadMinutes("TSLA", new DateTimeOffset(2021, 01, 01, 0, 0, 0, TimeSpan.Zero), new DateTimeOffset(2021, 02, 01, 0, 0, 0, TimeSpan.Zero));
+            stopwatch.Stop();
+            Console.WriteLine($"Read {minutes.Count} minutes took {stopwatch.ElapsedMilliseconds} ms.");
         }
     }
 }
