@@ -31,7 +31,7 @@
         [Test]
         public static async Task ListingsAsync()
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
+            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey, 5);
             var candles = await client.ListingsAsync().ConfigureAwait(false);
             Assert.AreEqual(100, candles.Length);
         }
@@ -64,7 +64,7 @@ AAOI,Applied Optoelectronics Inc,NASDAQ,Stock,2013-09-26,null,Active
 AAON,AAON Inc,NASDAQ,Stock,1992-12-16,null,Active
 AAP,Advance Auto Parts Inc,NYSE,Stock,2001-11-29,null,Active
 AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
-            using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty);
+            using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty, int.MaxValue);
             var candles = await client.ListingsAsync().ConfigureAwait(false);
             Assert.AreEqual(24, candles.Length);
 
@@ -95,7 +95,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
         [Test]
         public static async Task IntradayAsync()
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
+            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey, 5);
             var candles = await client.IntradayAsync("MSFT", Interval.Hour, adjusted: false, outputSize: OutputSize.Compact);
             Assert.AreEqual(100, candles.Length);
         }
@@ -204,7 +204,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
 2021-03-24 19:00:00,235.2500,235.9400,235.2000,235.5900,19985
 2021-03-24 18:00:00,235.1700,235.2500,235.1700,235.2400,5015
 2021-03-24 17:00:00,235.4600,235.8000,234.9900,235.1000,1087423";
-            using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty);
+            using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty, int.MaxValue);
             var candles = await client.IntradayAsync("MSFT", Interval.Hour, adjusted: false, outputSize: OutputSize.Compact);
             Assert.AreEqual(100, candles.Length);
 
@@ -235,7 +235,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
         [Test]
         public static async Task IntradayExtendedAsync()
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
+            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey, 5);
             var candles = await client.IntradayExtendedAsync("MSFT", Interval.Minute, Slice.Year1Month1, adjusted: false, CancellationToken.None);
             Assert.AreEqual(100, candles.Length);
         }
@@ -247,7 +247,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
                                "2021-04-01 20:00:00,242.12,242.13,242.14,242.15,1112\r\n" +
                                "2021-04-01 19:59:00,242.55,242.55,242.55,242.55,209\r\n" +
                                "2021-04-01 19:55:00,243.12,243.13,243.14,243.15,265";
-            using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty);
+            using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty, int.MaxValue);
             var candles = await client.IntradayExtendedAsync("MSFT", Interval.Minute, Slice.Year1Month1, adjusted: false, CancellationToken.None);
             Assert.AreEqual(3, candles.Length);
             Assert.AreEqual(
@@ -275,7 +275,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
         [Test]
         public static async Task DailyAsync()
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
+            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey, 5);
             var candles = await client.DailyAsync("MSFT", OutputSize.Compact, CancellationToken.None);
             Assert.AreEqual(100, candles.Length);
         }
@@ -385,7 +385,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
 2020-11-09,224.4350,228.1200,217.8800,218.3900,44394950
 2020-11-06,222.2600,224.3600,218.0300,223.7200,25231895
 ";
-            using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty);
+            using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty, int.MaxValue);
             var candles = await client.DailyAsync("MSFT", OutputSize.Compact, CancellationToken.None);
             Assert.AreEqual(100, candles.Length);
             Assert.AreEqual(
@@ -413,7 +413,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
         [Test]
         public static async Task DailyAdjustedAsync()
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey);
+            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey, 5);
             var candles = await client.DailyAdjustedAsync("MSFT", OutputSize.Compact, CancellationToken.None);
             Assert.AreEqual(100, candles.Length);
         }
@@ -523,7 +523,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
 2020-11-09,224.435,228.12,217.88,218.39,217.313794989,44394950,0.0000,1.0
 2020-11-06,222.26,224.36,218.03,223.72,222.617529259,25231895,0.0000,1.0";
 
-            using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty);
+            using var client = new AlphaVantageClient(new MockHandler(csv), string.Empty, int.MaxValue);
             var candles = await client.DailyAdjustedAsync("MSFT", OutputSize.Compact, CancellationToken.None);
             Assert.AreEqual(100, candles.Length);
 

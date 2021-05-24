@@ -15,7 +15,7 @@
     public static class Download
     {
         private static readonly Downloader Downloader = new();
-        private static readonly AlphaVantageClient Client = new(new HttpClientHandler(), ApiKey);
+        private static readonly AlphaVantageClient Client = new(new HttpClientHandler(), ApiKey, 5);
 
         private static string ApiKey
         {
@@ -133,12 +133,21 @@
                 "IDXG",
                 "IMMU",
                 "LK",
+                "LM",
+                "LVGO",
                 "MNK",
                 "NLNK",
                 "OVAS",
                 "PASO",
                 "PNAT",
                 "PTI",
+                "SBGL",
+                "TCEHY",
+                "TROV",
+                "TPW",
+                "TPTW",
+                "TVIX",
+                "USLV",
             };
 
             foreach (var (symbol, range) in Database.DayRanges().OrderBy(x => x.Key))

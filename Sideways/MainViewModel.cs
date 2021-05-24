@@ -198,7 +198,7 @@
 
             private readonly ConcurrentDictionary<string, SymbolViewModel?> symbolViewModels = new(StringComparer.OrdinalIgnoreCase);
             private readonly Downloader downloader = new();
-            private readonly AlphaVantageClient client = new(new HttpClientHandler(), ApiKey());
+            private readonly AlphaVantageClient client = new(new HttpClientHandler(), ApiKey(), 5);
 
             private bool disposed;
 

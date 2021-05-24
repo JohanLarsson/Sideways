@@ -10,11 +10,13 @@
     {
         private readonly string apiKey;
         private readonly HttpClient client;
+        private readonly Throttle throttle;
         private bool disposed;
 
-        public AlphaVantageClient(HttpMessageHandler messageHandler, string apiKey)
+        public AlphaVantageClient(HttpMessageHandler messageHandler, string apiKey, int maxCallsPerMinute)
         {
             this.apiKey = apiKey;
+            this.throttle = new Throttle(maxCallsPerMinute);
 #pragma warning disable IDISP014 // Use a single instance of HttpClient.
             this.client = new HttpClient(messageHandler)
             {
@@ -26,7 +28,7 @@
         public async Task<ImmutableArray<Listing>> ListingsAsync(CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
-            await Throttle.WaitAsync().ConfigureAwait(false);
+            await this.throttle.WaitAsync().ConfigureAwait(false);
             return await this.client.GetListingFromCsvAsync(
                 new Uri($"/query?function=LISTING_STATUS&apikey={this.apiKey}", UriKind.Relative),
                 cancellationToken).ConfigureAwait(false);
@@ -35,7 +37,7 @@
         public async Task<ImmutableArray<Candle>> WeeklyAsync(string symbol, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
-            await Throttle.WaitAsync().ConfigureAwait(false);
+            await this.throttle.WaitAsync().ConfigureAwait(false);
             return await this.client.GetCandlesFromCsvAsync(
                 new Uri($"/query?function=TIME_SERIES_WEEKLY&symbol={symbol}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
                 cancellationToken).ConfigureAwait(false);
@@ -44,7 +46,7 @@
         public async Task<ImmutableArray<Candle>> DailyAsync(string symbol, OutputSize outputSize, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
-            await Throttle.WaitAsync().ConfigureAwait(false);
+            await this.throttle.WaitAsync().ConfigureAwait(false);
             return await this.client.GetCandlesFromCsvAsync(
                 new Uri($"/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize={OutputSize()}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
                 cancellationToken).ConfigureAwait(false);
@@ -62,7 +64,7 @@
         public async Task<ImmutableArray<AdjustedCandle>> DailyAdjustedAsync(string symbol, OutputSize outputSize, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
-            await Throttle.WaitAsync().ConfigureAwait(false);
+            await this.throttle.WaitAsync().ConfigureAwait(false);
             return await this.client.GetAdjustedCandleFromCsvAsync(
                 new Uri($"/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={symbol}&outputsize={OutputSize()}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
                 cancellationToken).ConfigureAwait(false);
@@ -81,7 +83,7 @@
         public async Task<ImmutableArray<Candle>> IntradayAsync(string symbol, Interval interval, bool adjusted = false, OutputSize outputSize = OutputSize.Full, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
-            await Throttle.WaitAsync().ConfigureAwait(false);
+            await this.throttle.WaitAsync().ConfigureAwait(false);
             return await this.client.GetCandlesFromCsvAsync(
                 new Uri($"query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={Interval()}&adjusted={(adjusted ? "true" : "false")}&outputsize={OutputSize()}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
                 cancellationToken).ConfigureAwait(false);
@@ -107,7 +109,7 @@
         public async Task<ImmutableArray<Candle>> IntradayExtendedAsync(string symbol, Interval interval, Slice slice, bool adjusted = false, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
-            await Throttle.WaitAsync().ConfigureAwait(false);
+            await this.throttle.WaitAsync().ConfigureAwait(false);
             return await this.client.GetCandlesFromCsvAsync(
 #pragma warning disable CA1308 // Normalize strings to uppercase
                 new Uri($"query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol={symbol}&interval={Interval()}&slice={slice.ToString().ToLowerInvariant()}&adjusted={(adjusted ? "true" : "false")}&apikey={this.apiKey}", UriKind.Relative),
@@ -144,15 +146,20 @@
             }
         }
 
-        private static class Throttle
+        private class Throttle
         {
-            private static readonly SemaphoreSlim Semaphore = new(4);
+            private readonly SemaphoreSlim semaphore;
 
-            internal static Task WaitAsync()
+            internal Throttle(int maxCallsPerMinute)
+            {
+                this.semaphore = new(maxCallsPerMinute - 1);
+            }
+
+            internal Task WaitAsync()
             {
                 _ = Task.Delay(TimeSpan.FromSeconds(60))
-                        .ContinueWith(_ => Semaphore.Release(), TaskScheduler.Default);
-                return Semaphore.WaitAsync();
+                        .ContinueWith(_ => this.semaphore.Release(), TaskScheduler.Default);
+                return this.semaphore.WaitAsync();
             }
         }
     }
