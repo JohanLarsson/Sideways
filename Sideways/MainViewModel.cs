@@ -8,7 +8,6 @@
     using System.Linq;
     using System.Net.Http;
     using System.Runtime.CompilerServices;
-    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
@@ -245,7 +244,7 @@
                         var days = Database.ReadDays(vm.Symbol);
                         if (days.Count == 0)
                         {
-                            var download = await this.downloader.DaysAsync(symbol, null, this.client).ConfigureAwait(true);
+                            var download = await this.downloader.DaysAsync(vm.Symbol, null, this.client).ConfigureAwait(true);
                             splits = download.Splits;
                             days = download.Candles;
                             vm.Candles = Candles.Adjusted(splits, days, default);
