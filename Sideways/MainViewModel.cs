@@ -199,15 +199,9 @@
 
             private readonly ConcurrentDictionary<string, SymbolViewModel?> symbolViewModels = new(StringComparer.OrdinalIgnoreCase);
             private readonly Downloader downloader = new();
-            private readonly DataSource dataSource;
             private readonly AlphaVantageClient client = new(new HttpClientHandler(), ApiKey());
 
             private bool disposed;
-
-            internal SymbolViewModelCache()
-            {
-                this.dataSource = new DataSource(this.downloader);
-            }
 
             internal event EventHandler<string>? NewSymbol;
 
@@ -240,29 +234,31 @@
 
                 async void Load(SymbolViewModel vm)
                 {
-                    var synchronizationContext = SynchronizationContext.Current ?? throw new InvalidOperationException("Missing sync context.");
+                    if (string.IsNullOrWhiteSpace(vm.Symbol))
+                    {
+                        return;
+                    }
 
                     try
                     {
-                        // Updating days first
-                        var days = await Task.Run(() => this.dataSource.Days(vm.Symbol, this.client)).ConfigureAwait(false);
-                        vm.Candles = Candles.Adjusted(days.Splits, days.Candles, default);
+                        var splits = Database.ReadSplits(vm.Symbol);
+                        var days = Database.ReadDays(vm.Symbol);
+                        if (days.Count == 0)
+                        {
+                            var download = await this.downloader.DaysAsync(symbol, null, this.client).ConfigureAwait(true);
+                            splits = download.Splits;
+                            days = download.Candles;
+                            vm.Candles = Candles.Adjusted(splits, days, default);
+                            this.NewSymbol?.Invoke(this, vm.Symbol);
+                        }
+                        else
+                        {
+                            vm.Candles = Candles.Adjusted(splits, days, default);
+                        }
 
                         // Updating minutes.
-                        var minutes = Database.ReadMinutes(vm.Symbol);
-                        vm.Candles = Candles.Adjusted(days.Splits, days.Candles, minutes);
-                        if (days.Download is { } daysDownload)
-                        {
-                            days = await daysDownload.ConfigureAwait(false);
-                            if (vm.Candles is null or { IsEmpty: true })
-                            {
-#pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
-                                synchronizationContext.Post(_ => this.NewSymbol?.Invoke(this, vm.Symbol), null);
-#pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs
-                            }
-
-                            vm.Candles = Candles.Adjusted(days.Splits, days.Candles, minutes);
-                        }
+                        var minutes = await Task.Run(() => Database.ReadMinutes(vm.Symbol)).ConfigureAwait(false);
+                        vm.Candles = Candles.Adjusted(splits, days, minutes);
                     }
 #pragma warning disable CA1031 // Do not catch general exception types
                     catch (Exception e)
