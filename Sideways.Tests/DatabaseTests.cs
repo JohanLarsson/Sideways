@@ -52,15 +52,35 @@
             stopwatch.Stop();
             Console.WriteLine($"Read {days.Count} days took {stopwatch.ElapsedMilliseconds} ms.");
 
-            stopwatch.Start();
+            stopwatch.Restart();
             var minutes = Database.ReadMinutes("TSLA");
             stopwatch.Stop();
             Console.WriteLine($"Read {minutes.Count} minutes took {stopwatch.ElapsedMilliseconds} ms.");
 
-            stopwatch.Start();
+            stopwatch.Restart();
             minutes = Database.ReadMinutes("TSLA", new DateTimeOffset(2021, 01, 01, 0, 0, 0, TimeSpan.Zero), new DateTimeOffset(2021, 02, 01, 0, 0, 0, TimeSpan.Zero));
             stopwatch.Stop();
             Console.WriteLine($"Read {minutes.Count} minutes took {stopwatch.ElapsedMilliseconds} ms.");
+
+            stopwatch.Restart();
+            var n = Database.CountMinutes("TSLA");
+            stopwatch.Stop();
+            Console.WriteLine($"Count {n} minutes took {stopwatch.ElapsedMilliseconds} ms.");
+
+            stopwatch.Restart();
+            var symbols = Database.ReadSymbols();
+            stopwatch.Stop();
+            Console.WriteLine($"Read {symbols.Length} symbols took {stopwatch.ElapsedMilliseconds} ms.");
+
+            stopwatch.Restart();
+            var dayRanges = Database.DayRanges();
+            stopwatch.Stop();
+            Console.WriteLine($"Read {dayRanges.Count} day ranges took {stopwatch.ElapsedMilliseconds} ms.");
+
+            stopwatch.Restart();
+            var minuteRanges = Database.MinuteRanges();
+            stopwatch.Stop();
+            Console.WriteLine($"Read {minuteRanges.Count} minute ranges took {stopwatch.ElapsedMilliseconds} ms.");
         }
     }
 }

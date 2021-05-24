@@ -13,7 +13,7 @@
         private static readonly FileInfo FlashDrive = new("D:\\Database.sqlite3");
 
         [Explicit]
-        [TestCaseSource(nameof(AllSymbols))]
+        [TestCaseSource(nameof(Diffs))]
         public static void OneWayToFlash(Diff diff)
         {
             if (diff.AppDays != diff.FlashDays)
@@ -28,7 +28,7 @@
         }
 
         [Explicit]
-        [TestCaseSource(nameof(AllSymbols))]
+        [TestCaseSource(nameof(Diffs))]
         public static void TwoWay(Diff diff)
         {
             if (diff.AppDays != diff.FlashDays)
@@ -74,7 +74,7 @@
             Sideways.Sync.CopyDividends(symbol, source, target);
         }
 
-        private static IEnumerable<Diff> AllSymbols()
+        private static IEnumerable<Diff> Diffs()
         {
             if (File.Exists(FlashDrive.FullName))
             {
