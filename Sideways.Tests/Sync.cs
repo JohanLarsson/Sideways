@@ -8,11 +8,11 @@
 
     using NUnit.Framework;
 
+    [Explicit]
     public static class Sync
     {
         private static readonly FileInfo FlashDrive = new("D:\\Database.sqlite3");
 
-        [Explicit]
         [TestCaseSource(nameof(Diffs))]
         public static void OneWayToFlash(Diff diff)
         {
@@ -27,7 +27,20 @@
             }
         }
 
-        [Explicit]
+        [TestCaseSource(nameof(Diffs))]
+        public static void OneWayToApp(Diff diff)
+        {
+            if (diff.AppDays != diff.FlashDays)
+            {
+                CopyDays(diff.Symbol, diff.Flash, diff.App);
+            }
+
+            if (diff.AppMinutes != diff.FlashMinutes)
+            {
+                Sideways.Sync.CopyMinutes(diff.Symbol, diff.Flash, diff.App);
+            }
+        }
+
         [TestCaseSource(nameof(Diffs))]
         public static void TwoWay(Diff diff)
         {

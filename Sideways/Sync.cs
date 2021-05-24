@@ -6,13 +6,49 @@
 
     public static class Sync
     {
+        public static void CopyDays(FileInfo source, FileInfo target)
+        {
+            using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
+            sourceConnection.Open();
+            using var select = new SqliteCommand(
+                "SELECT symbol, date, open, high, low, close, volume FROM days" +
+                "  ORDER BY symbol, date ASC",
+                sourceConnection);
+            using var reader = select.ExecuteReader();
+
+            using var targetConnection = new SqliteConnection($"Data Source={target.FullName}");
+            targetConnection.Open();
+
+            using var targetTransaction = targetConnection.BeginTransaction();
+            using var insert = targetConnection.CreateCommand();
+            insert.CommandText = "INSERT INTO days (symbol, date, open, high, low, close, volume) VALUES (@symbol, @date, @open, @high, @low, @close, @volume)" +
+                                 "  ON CONFLICT(symbol, date) DO NOTHING";
+            insert.Prepare();
+
+            while (reader.Read())
+            {
+                insert.Parameters.Clear();
+                insert.Parameters.AddWithValue("@symbol", reader.GetValue(0));
+                insert.Parameters.AddWithValue("@date", reader.GetValue(1));
+                insert.Parameters.AddWithValue("@open", reader.GetValue(2));
+                insert.Parameters.AddWithValue("@high", reader.GetValue(3));
+                insert.Parameters.AddWithValue("@low", reader.GetValue(4));
+                insert.Parameters.AddWithValue("@close", reader.GetValue(5));
+                insert.Parameters.AddWithValue("@volume", reader.GetValue(6));
+                insert.ExecuteNonQuery();
+            }
+
+            targetTransaction.Commit();
+        }
+
         public static void CopyDays(string symbol, FileInfo source, FileInfo target)
         {
             using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT date, open, high, low, close, volume FROM days" +
-                " WHERE symbol = @symbol",
+                " WHERE symbol = @symbol" +
+                "  ORDER BY date ASC",
                 sourceConnection);
             select.Parameters.AddWithValue("@symbol", symbol);
             using var reader = select.ExecuteReader();
@@ -48,7 +84,8 @@
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT date, coefficient FROM splits" +
-                " WHERE symbol = @symbol",
+                " WHERE symbol = @symbol" +
+                "  ORDER BY date ASC",
                 sourceConnection);
             select.Parameters.AddWithValue("@symbol", symbol);
             using var reader = select.ExecuteReader();
@@ -80,7 +117,8 @@
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT date, dividend FROM dividends" +
-                " WHERE symbol = @symbol",
+                " WHERE symbol = @symbol" +
+                "  ORDER BY date ASC",
                 sourceConnection);
             select.Parameters.AddWithValue("@symbol", symbol);
             using var reader = select.ExecuteReader();
@@ -112,7 +150,8 @@
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT time, open, high, low, close, volume FROM minutes" +
-                " WHERE symbol = @symbol",
+                " WHERE symbol = @symbol" +
+                "  ORDER BY time ASC",
                 sourceConnection);
             select.Parameters.AddWithValue("@symbol", symbol);
             using var reader = select.ExecuteReader();
