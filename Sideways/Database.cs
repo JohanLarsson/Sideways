@@ -5,7 +5,7 @@
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
-
+    using System.Linq;
     using Microsoft.Data.Sqlite;
 
     using Sideways.AlphaVantage;
@@ -32,28 +32,28 @@
             return builder.ToImmutable();
         }
 
-        public static DescendingCandles ReadDays(string symbol, FileInfo? file = null)
+        public static SortedCandles ReadDays(string symbol, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
             using var command = new SqliteCommand(
                 "SELECT date, open, high, low, close, volume FROM days" +
                 "  WHERE symbol = @symbol" +
-                "  ORDER BY date DESC",
+                "  ORDER BY date ASC",
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
             using var reader = command.ExecuteReader();
             return ReadCandles(reader);
         }
 
-        public static DescendingCandles ReadDays(string symbol, DateTimeOffset from, DateTimeOffset to, FileInfo? file = null)
+        public static SortedCandles ReadDays(string symbol, DateTimeOffset from, DateTimeOffset to, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
             using var command = new SqliteCommand(
                 "SELECT date, open, high, low, close, volume FROM days" +
                 "  WHERE symbol = @symbol AND date BETWEEN @from AND @to" +
-                "  ORDER BY date DESC",
+                "  ORDER BY date ASC",
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
             command.Parameters.AddWithValue("@from", from.ToUnixTimeSeconds());
@@ -91,7 +91,7 @@
                                           "    dividend = excluded.dividend";
             insertDividends.Prepare();
 
-            foreach (var candle in candles)
+            foreach (var candle in candles.OrderBy(x => x.Time))
             {
                 insertDays.Parameters.Clear();
                 insertDays.Parameters.AddWithValue("@symbol", symbol);
@@ -136,7 +136,7 @@
                                  "  ON CONFLICT(symbol, date) DO NOTHING";
             insert.Prepare();
 
-            foreach (var candle in candles)
+            foreach (var candle in candles.OrderBy(x => x.Time))
             {
                 if (candle.Time.Hour != 0 ||
                     candle.Time.Minute != 0 ||
@@ -175,28 +175,28 @@
                 : null;
         }
 
-        public static DescendingCandles ReadMinutes(string symbol, FileInfo? file = null)
+        public static SortedCandles ReadMinutes(string symbol, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
             using var command = new SqliteCommand(
                 "SELECT time, open, high, low, close, volume FROM minutes" +
                 " WHERE symbol = @symbol" +
-                " ORDER BY time DESC",
+                " ORDER BY time ASC",
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
             using var reader = command.ExecuteReader();
             return ReadCandles(reader);
         }
 
-        public static DescendingCandles ReadMinutes(string symbol, DateTimeOffset from, DateTimeOffset to, FileInfo? file = null)
+        public static SortedCandles ReadMinutes(string symbol, DateTimeOffset from, DateTimeOffset to, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
             using var command = new SqliteCommand(
                 "SELECT time, open, high, low, close, volume FROM minutes" +
                 "  WHERE symbol = @symbol AND time BETWEEN @from AND @to" +
-                "  ORDER BY time DESC",
+                "  ORDER BY time ASC",
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
             command.Parameters.AddWithValue("@from", from.ToUnixTimeSeconds());
@@ -221,7 +221,7 @@
                                  "    volume = excluded.volume";
             insert.Prepare();
 
-            foreach (var candle in candles)
+            foreach (var candle in candles.OrderBy(x => x.Time))
             {
                 insert.Parameters.Clear();
                 insert.Parameters.AddWithValue("@symbol", symbol);
@@ -237,18 +237,18 @@
             transaction.Commit();
         }
 
-        public static DescendingSplits ReadSplits(string symbol, FileInfo? file = null)
+        public static SortedSplits ReadSplits(string symbol, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
             using var command = new SqliteCommand(
                 "SELECT date, coefficient FROM splits" +
                 " WHERE symbol = @symbol" +
-                " ORDER BY date DESC",
+                " ORDER BY date ASC",
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
             using var reader = command.ExecuteReader();
-            var builder = DescendingSplits.CreateBuilder();
+            var builder = SortedSplits.CreateBuilder();
             while (reader.Read())
             {
                 builder.Add(
@@ -385,9 +385,9 @@
             return (long)command.ExecuteScalar();
         }
 
-        private static DescendingCandles ReadCandles(SqliteDataReader reader)
+        private static SortedCandles ReadCandles(SqliteDataReader reader)
         {
-            var builder = DescendingCandles.CreateBuilder();
+            var builder = SortedCandles.CreateBuilder();
             while (reader.Read())
             {
                 builder.Add(

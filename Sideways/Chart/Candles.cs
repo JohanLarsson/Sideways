@@ -6,28 +6,26 @@
 
     public class Candles
     {
-        private readonly DescendingCandles days;
-        private readonly DescendingCandles minutes;
+        private readonly SortedCandles days;
+        private readonly SortedCandles minutes;
 
         private int dayIndex;
         private int minuteIndex;
 
-        public Candles(DescendingCandles days, DescendingCandles minutes)
+        public Candles(SortedCandles days, SortedCandles minutes)
         {
             this.days = days;
             this.minutes = minutes;
         }
 
-        public bool IsEmpty => this.days.Count == 0 && this.minutes.Count == 0;
+        public static Candles Adjusted(SortedSplits splits, SortedCandles days, SortedCandles minutes) => new(splits.Adjust(days), splits.Adjust(minutes));
 
-        public static Candles Adjusted(DescendingSplits splits, DescendingCandles days, DescendingCandles minutes) => new(splits.Adjust(days), splits.Adjust(minutes));
+        public IEnumerable<Candle> DescendingWeeks(DateTimeOffset end) => this.DescendingDays(end).MergeBy((x, y) => x.Time.IsSameWeek(y.Time));
 
-        public IEnumerable<Candle> Weeks(DateTimeOffset end) => this.Days(end).MergeBy((x, y) => x.Time.IsSameWeek(y.Time));
-
-        public IEnumerable<Candle> Days(DateTimeOffset end)
+        public IEnumerable<Candle> DescendingDays(DateTimeOffset end)
         {
             if (TradingDay.IsOrdinaryHours(end) &&
-                this.Minutes(end).TakeWhile(x => IsSameDayOrdinaryHours(x.Time)).MergeBy((_, _) => true).FirstOrNull() is { } merged)
+                this.DescendingMinutes(end).TakeWhile(x => IsSameDayOrdinaryHours(x.Time)).MergeBy((_, _) => true).FirstOrNull() is { } merged)
             {
                 yield return merged;
                 end = end.AddDays(-1);
@@ -45,7 +43,7 @@
             }
 
             this.dayIndex = index;
-            for (var i = index; i < this.days.Count; i++)
+            for (var i = index; i >= 0; i--)
             {
                 var day = this.days[i];
                 yield return day.WithTime(TradingDay.EndOfDay(day.Time));
@@ -58,12 +56,9 @@
             }
         }
 
-        public IEnumerable<Candle> Hours(DateTimeOffset end)
-        {
-            return this.Minutes(end).MergeBy((x, y) => Candle.ShouldMergeHour(x.Time, y.Time));
-        }
+        public IEnumerable<Candle> DescendingHours(DateTimeOffset end) => this.DescendingMinutes(end).MergeBy((x, y) => Candle.ShouldMergeHour(x.Time, y.Time));
 
-        public IEnumerable<Candle> Minutes(DateTimeOffset end)
+        public IEnumerable<Candle> DescendingMinutes(DateTimeOffset end)
         {
             var index = this.minutes.IndexOf(end, this.minuteIndex);
             if (index < 0)
@@ -72,7 +67,7 @@
             }
 
             this.minuteIndex = index;
-            for (var i = index; i < this.minutes.Count; i++)
+            for (var i = index; i >= 0; i--)
             {
                 yield return this.minutes[i];
             }
@@ -82,10 +77,10 @@
         {
             return interval switch
             {
-                CandleInterval.Week => this.Weeks(end),
-                CandleInterval.Day => this.Days(end),
-                CandleInterval.Hour => this.Hours(end),
-                CandleInterval.Minute => this.Minutes(end),
+                CandleInterval.Week => this.DescendingWeeks(end),
+                CandleInterval.Day => this.DescendingDays(end),
+                CandleInterval.Hour => this.DescendingHours(end),
+                CandleInterval.Minute => this.DescendingMinutes(end),
                 _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, "Unhandled grouping."),
             };
         }
@@ -94,88 +89,75 @@
         {
             return interval switch
             {
-                CandleInterval.Week => TradingDay.EndOfDay(FindInterval(this.days, time, (x, y) => x.Time.IsSameWeek(y.Time), this.dayIndex, count)),
-                CandleInterval.Day => TradingDay.EndOfDay(Find(this.days, time, this.dayIndex, count)),
-                CandleInterval.Hour => FindInterval(this.minutes, time, (x, y) => Candle.ShouldMergeHour(x.Time, y.Time), this.minuteIndex, count),
-                CandleInterval.Minute => Find(this.minutes, time, this.minuteIndex, count),
+                CandleInterval.Week => FindInterval(this.days, time, this.dayIndex, (x, y) => x.Time.IsSameWeek(y.Time), count, x => TradingDay.EndOfDay(x.Time)),
+                CandleInterval.Day => Find(this.days, time, this.dayIndex, count, x => TradingDay.EndOfDay(x.Time)),
+                CandleInterval.Hour => FindInterval(this.minutes, time, this.minuteIndex, (x, y) => Candle.ShouldMergeHour(x.Time, y.Time), count, x => x.Time.WithHourAndMinute(HourAndMinute.EndOfHourCandle(x.Time))),
+                CandleInterval.Minute => Find(this.minutes, time, this.minuteIndex, count, x => x.Time),
                 _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, null),
             };
 
-            static DateTimeOffset FindInterval(DescendingCandles candles, DateTimeOffset time, Func<Candle, Candle, bool> isSameInterval, int statAt, int count)
+            static DateTimeOffset FindInterval(SortedCandles candles, DateTimeOffset time, int statAt, Func<Candle, Candle, bool> isSameInterval, int count, Func<Candle, DateTimeOffset> map)
             {
-                if (candles.Count == 0)
+                var index = candles.IndexOf(time, statAt);
+                if (index < 0)
                 {
-                    return DateTimeOffset.Now;
+                    return time;
                 }
 
-                var index = Math.Clamp(candles.IndexOf(time, statAt), 0, candles.Count - 1);
-                var current = candles[index];
-                var n = 0;
                 if (count > 0)
                 {
-                    if (index > 1 &&
-                        isSameInterval(candles[index], candles[index - 1]))
+                    for (var i = index; i < candles.Count - 1; i++)
                     {
-                        n++;
-                        if (n == count)
+                        if (!isSameInterval(candles[i], candles[i + 1]) &&
+                            time < map(candles[i]))
                         {
-                            return LastInInterval(index - 1);
-                        }
-                    }
-
-                    for (var i = index - 1; i >= 0; i--)
-                    {
-                        if (!isSameInterval(current, candles[i]))
-                        {
-                            current = candles[i];
-                            n++;
-                            if (n == count)
+                            count--;
+                            if (count == 0)
                             {
-                                return LastInInterval(i);
+                                return map(candles[i]);
                             }
                         }
                     }
+
+                    return time <= candles[^1].Time
+                        ? map(candles[^1])
+                        : time;
                 }
-                else
+
+                for (var i = index; i >= 1; i--)
                 {
-                    for (var i = index + 1; i < candles.Count; i++)
+                    if (!isSameInterval(candles[i - 1], candles[i]))
                     {
-                        if (!isSameInterval(current, candles[i]))
+                        count++;
+                        if (count == 0)
                         {
-                            n--;
-                            current = candles[i];
-                            if (n == count)
-                            {
-                                return current.Time;
-                            }
+                            return map(candles[i - 1]);
                         }
                     }
                 }
 
-                return LastInInterval(index);
-
-                DateTimeOffset LastInInterval(int i)
-                {
-                    while (i >= 0 &&
-                           isSameInterval(current, candles[i]))
-                    {
-                        current = candles[i];
-                        i--;
-                    }
-
-                    return current.Time;
-                }
+                return time;
             }
 
-            static DateTimeOffset Find(DescendingCandles candles, DateTimeOffset time, int statAt, int count)
+            static DateTimeOffset Find(SortedCandles candles, DateTimeOffset time, int statAt, int count, Func<Candle, DateTimeOffset> map)
             {
-                if (candles.Count == 0)
+                var index = candles.IndexOf(time, statAt) + count;
+                if (index < 0)
                 {
-                    return DateTimeOffset.Now;
+                    return time;
                 }
 
-                var index = Math.Clamp(candles.IndexOf(time, statAt) - count, 0, candles.Count - 1);
-                return candles[index].Time;
+                if (index > candles.Count - 1)
+                {
+                    if (time <= candles[^1].Time)
+                    {
+                        return map(candles[^1]);
+                    }
+
+                    return time;
+                }
+
+                return map(candles[index]);
             }
         }
     }

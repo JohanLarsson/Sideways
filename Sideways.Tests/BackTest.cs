@@ -8,6 +8,7 @@ namespace Sideways.Tests
 
     using NUnit.Framework;
 
+    [Explicit]
     public static class BackTest
     {
         private static readonly ImmutableArray<string> Symbols = Database.ReadSymbols();
@@ -65,7 +66,7 @@ namespace Sideways.Tests
                         return (candle.Close - candle.Low) / (candle.High - candle.Low);
                     }
 
-                    static IEnumerable<Candle> Slice(DescendingCandles source, int from, int to)
+                    static IEnumerable<Candle> Slice(SortedCandles source, int from, int to)
                     {
                         for (var i = from; i <= to; i++)
                         {

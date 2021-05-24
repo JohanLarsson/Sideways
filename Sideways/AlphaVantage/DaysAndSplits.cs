@@ -4,10 +4,10 @@
 
     public readonly struct DaysAndSplits : IEquatable<DaysAndSplits>
     {
-        public readonly DescendingCandles Candles;
-        public readonly DescendingSplits Splits;
+        public readonly SortedCandles Candles;
+        public readonly SortedSplits Splits;
 
-        public DaysAndSplits(DescendingCandles candles, DescendingSplits splits)
+        public DaysAndSplits(SortedCandles candles, SortedSplits splits)
         {
             this.Candles = candles;
             this.Splits = splits;
