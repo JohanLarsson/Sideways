@@ -13,32 +13,28 @@
     {
         private static readonly FileInfo FlashDrive = new("D:\\Database.sqlite3");
 
-        [TestCaseSource(nameof(Diffs))]
-        public static void OneWayToFlash(Diff diff)
+        [Test]
+        public static void OneWayToFlash()
         {
-            if (diff.AppDays != diff.FlashDays)
-            {
-                CopyDays(diff.Symbol, diff.App, diff.Flash);
-            }
-
-            if (diff.AppMinutes != diff.FlashMinutes)
-            {
-                Sideways.Sync.CopyMinutes(diff.Symbol, diff.App, diff.Flash);
-            }
+            Sideways.Sync.CopyDays(Database.DbFile, FlashDrive);
+            Console.WriteLine("Copied days.");
+            Sideways.Sync.CopySplits(Database.DbFile, FlashDrive);
+            Console.WriteLine("Copied splits.");
+            Sideways.Sync.CopyDividends(Database.DbFile, FlashDrive);
+            Console.WriteLine("Copied dividends.");
+            Sideways.Sync.CopyMinutes(Database.DbFile, FlashDrive);
         }
 
-        [TestCaseSource(nameof(Diffs))]
-        public static void OneWayToApp(Diff diff)
+        [Test]
+        public static void OneWayToApp()
         {
-            if (diff.AppDays != diff.FlashDays)
-            {
-                CopyDays(diff.Symbol, diff.Flash, diff.App);
-            }
-
-            if (diff.AppMinutes != diff.FlashMinutes)
-            {
-                Sideways.Sync.CopyMinutes(diff.Symbol, diff.Flash, diff.App);
-            }
+            Sideways.Sync.CopyDays(FlashDrive, Database.DbFile);
+            Console.WriteLine("Copied days.");
+            Sideways.Sync.CopySplits(FlashDrive, Database.DbFile);
+            Console.WriteLine("Copied splits.");
+            Sideways.Sync.CopyDividends(FlashDrive, Database.DbFile);
+            Console.WriteLine("Copied dividends.");
+            Sideways.Sync.CopyMinutes(FlashDrive, Database.DbFile);
         }
 
         [TestCaseSource(nameof(Diffs))]
