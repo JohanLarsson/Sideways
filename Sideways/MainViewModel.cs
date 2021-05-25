@@ -84,7 +84,7 @@
                 this.simulation.Sell(
                     this.currentSymbol.Symbol,
                     price,
-                    (int)fraction * this.simulation.Positions.Single(x => x.Symbol == this.currentSymbol.Symbol).Buys.Sum(x => x.Shares),
+                    (int)(fraction * this.simulation.Positions.Single(x => x.Symbol == this.currentSymbol.Symbol).Buys.Sum(x => x.Shares)),
                     this.time);
             }
         }
