@@ -33,7 +33,7 @@
             {
                 case Key.C
                     when Keyboard.Modifiers == ModifierKeys.Control:
-                    this.OnCopy(this, new RoutedEventArgs(CommandManager.ExecutedEvent));
+                    ApplicationCommands.Copy.Execute(null, this);
                     e.Handled = true;
                     break;
                 case Key.Left:
