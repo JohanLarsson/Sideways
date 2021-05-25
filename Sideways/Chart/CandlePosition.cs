@@ -68,7 +68,7 @@
                    this.CenterLeft.Equals(other.CenterLeft) &&
                    this.CenterRight.Equals(other.CenterRight) &&
                    this.candleWidth.Equals(other.candleWidth) &&
-                   this.renderSize.Equals(other.renderSize) &&
+                   Size.Equals(this.renderSize, other.renderSize) &&
                    this.valueRange.Equals(other.valueRange);
         }
 

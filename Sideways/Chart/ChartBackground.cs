@@ -65,16 +65,22 @@
 
             void DrawEven(Func<Candle, int> func)
             {
-                for (var i = 0; i < Math.Min(candles.Count, Math.Ceiling(size.Width / candleWidth)); i++)
+                var position = CandlePosition.Create(this.RenderSize, this.CandleWidth, default);
+                for (var i = 0; i < candles.Count; i++)
                 {
                     if (func(candles[i]) % 2 == 0)
                     {
-                        var p1 = new Point(X(i), 0);
-                        i++;
+                        var p1 = new Point(position.Right, size.Height);
+
                         while (i < candles.Count - 1 &&
                                func(candles[i]) % 2 == 0)
                         {
                             i++;
+                            position = position.ShiftLeft();
+                            if (position.Right < 0)
+                            {
+                                break;
+                            }
                         }
 
                         drawingContext.DrawRectangle(
@@ -82,7 +88,13 @@
                             null,
                             new Rect(
                                 p1,
-                                new Point(X(i + 1), size.Height)));
+                                new Point(position.Left, 0)));
+                    }
+
+                    position = position.ShiftLeft();
+                    if (position.Right < 0)
+                    {
+                        break;
                     }
 
                     double X(int index) => Math.Max(0, size.Width - (index * candleWidth));
