@@ -13,15 +13,6 @@
     [ContentProperty(nameof(Children))]
     public class Chart : FrameworkElement
     {
-        /// <summary>Identifies the <see cref="Background"/> dependency property.</summary>
-        public static readonly DependencyProperty BackgroundProperty = DependencyProperty.Register(
-            nameof(Background),
-            typeof(Brush),
-            typeof(Chart),
-            new FrameworkPropertyMetadata(
-                System.Windows.Media.Brushes.Transparent,
-                FrameworkPropertyMetadataOptions.AffectsRender));
-
         /// <summary>Identifies the <see cref="Time"/> dependency property.</summary>
         public static readonly DependencyProperty TimeProperty = DependencyProperty.RegisterAttached(
             nameof(Time),
@@ -99,12 +90,6 @@
         {
             this.Children = new UIElementCollection(this, this);
             this.Candles = this.candles;
-        }
-
-        public Brush Background
-        {
-            get => (Brush)this.GetValue(BackgroundProperty);
-            set => this.SetValue(BackgroundProperty, value);
         }
 
         public DateTimeOffset Time
@@ -220,13 +205,10 @@
         /// </summary>
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (this.Background is { } background)
-            {
-                drawingContext.DrawRectangle(
-                    background,
-                    null,
-                    new Rect(this.RenderSize));
-            }
+            drawingContext.DrawRectangle(
+                System.Windows.Media.Brushes.Transparent,
+                null,
+                new Rect(this.RenderSize));
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)

@@ -132,7 +132,7 @@
                 new Rect(this.RenderSize));
             if (this.pen is { } &&
                 this.PriceRange is { } priceRange &&
-                this.Position is { Time: var time, Price: var price })
+                this.Position is { Price: var price })
             {
                 if (this.IsMouseOver)
                 {
