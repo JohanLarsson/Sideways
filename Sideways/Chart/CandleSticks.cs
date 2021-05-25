@@ -45,7 +45,7 @@
             if (this.PriceRange is { } range)
             {
                 var candles = this.Candles;
-                var position = CandlePosition.Create(this.RenderSize, candleWidth, range);
+                var position = CandlePosition.CreatePadded(this.RenderSize, candleWidth, range);
                 foreach (var candle in candles)
                 {
                     var brush = Brushes.Get(candle);

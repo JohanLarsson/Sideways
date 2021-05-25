@@ -9,11 +9,11 @@
         internal readonly double Right;
         internal readonly double CenterLeft;
         internal readonly double CenterRight;
-        private readonly double candleWidth;
+        private readonly int candleWidth;
         private readonly Size renderSize;
         private readonly FloatRange valueRange;
 
-        private CandlePosition(double left, double right, double centerLeft, double centerRight, double candleWidth, Size renderSize, FloatRange valueRange)
+        private CandlePosition(double left, double right, double centerLeft, double centerRight, int candleWidth, Size renderSize, FloatRange valueRange)
         {
             this.Left = left;
             this.Right = right;
@@ -34,10 +34,10 @@
             return !left.Equals(right);
         }
 
-        public static CandlePosition Create(Size renderSize, double candleWidth, FloatRange valueRange)
+        public static CandlePosition Create(Size renderSize, int candleWidth, FloatRange valueRange, int leftPad = 0, int rightPad = 0)
         {
-            var right = renderSize.Width - 1;
-            var left = right - candleWidth + 2;
+            var right = renderSize.Width - rightPad;
+            var left = right - candleWidth + rightPad + leftPad;
             var centerRight = Math.Ceiling((right + left) / 2);
 
             return new(
@@ -48,6 +48,21 @@
                 candleWidth: candleWidth,
                 renderSize: renderSize,
                 valueRange: valueRange);
+        }
+
+        public static CandlePosition CreatePadded(Size renderSize, int candleWidth, FloatRange valueRange)
+        {
+            return candleWidth switch
+            {
+                < 2 => Create(renderSize, candleWidth, valueRange, 0, 0),
+                3 => Create(renderSize, candleWidth, valueRange, 0, 1),
+                4 => Create(renderSize, candleWidth, valueRange, 1, 1),
+                5 => Create(renderSize, candleWidth, valueRange, 1, 1),
+                < 8 => Create(renderSize, candleWidth, valueRange, 1, 1),
+                < 12 => Create(renderSize, candleWidth, valueRange, 2, 2),
+                < 24 => Create(renderSize, candleWidth, valueRange, 3, 3),
+                _ => Create(renderSize, candleWidth, valueRange, 4, 4),
+            };
         }
 
         public double Y(float value) => this.valueRange.Y(value, this.renderSize.Height);
