@@ -1,7 +1,6 @@
 ﻿namespace Sideways
 {
     using System;
-    using System.Linq;
     using System.Windows;
     using System.Windows.Media;
 
@@ -68,17 +67,15 @@
         protected override void OnRender(DrawingContext drawingContext)
         {
             var size = this.RenderSize;
-            var candleWidth = this.CandleWidth;
             using var context = this.drawing.RenderOpen();
             if (this.pen is { } &&
                 this.PriceRange is { } priceRange)
             {
                 Point? previous = null;
-                var x = size.Width - (candleWidth / 2);
-                foreach (var a in this.Candles.MovingAverage(this.Period, c => c.Close)
-                                                   .Take((int)Math.Ceiling(size.Width / candleWidth)))
+                var position = CandlePosition.Create(size.Width, this.CandleWidth);
+                foreach (var a in this.Candles.MovingAverage(this.Period, c => c.Close))
                 {
-                    var p2 = new Point(x, Y(a));
+                    var p2 = new Point(position.CenterLeft, Y(a));
                     if (previous is { } p1)
                     {
                         context.DrawLine(
@@ -88,7 +85,12 @@
                     }
 
                     previous = p2;
-                    x -= this.CandleWidth;
+                    position = position.Shift();
+                    if (position.Right < 0)
+                    {
+                        break;
+                    }
+
                     double Y(float price) => priceRange.Y(price, size.Height);
                 }
             }

@@ -88,44 +88,5 @@
                 }
             }
         }
-
-        internal readonly struct CandlePosition
-        {
-            internal readonly double Left;
-            internal readonly double Right;
-            internal readonly double CenterLeft;
-            internal readonly double CenterRight;
-            private readonly double width;
-
-            private CandlePosition(double left, double right, double centerLeft, double centerRight, double width)
-            {
-                this.Left = left;
-                this.Right = right;
-                this.CenterLeft = centerLeft;
-                this.CenterRight = centerRight;
-                this.width = width;
-            }
-
-            internal static CandlePosition Create(double width, double candleWidth)
-            {
-                var right = width - 1;
-                var left = right - candleWidth + 2;
-                var centerRight = Math.Ceiling((right + left) / 2);
-
-                return new(
-                    left: left,
-                    right: right,
-                    centerLeft: centerRight - 1,
-                    centerRight: centerRight,
-                    width: candleWidth);
-            }
-
-            internal CandlePosition Shift() => new(
-                left: this.Left - this.width,
-                right: this.Right - this.width,
-                centerLeft: this.CenterLeft - this.width,
-                centerRight: this.CenterRight - this.width,
-                width: this.width);
-        }
     }
 }
