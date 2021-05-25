@@ -11,6 +11,7 @@
         public static readonly SolidColorBrush Even = Create(Color.FromArgb(10, 80, 80, 80));
         public static readonly SolidColorBrush Gray = Create(Color.FromArgb(byte.MaxValue, 128, 128, 128));
         public static readonly SolidColorBrush DarkGray = Create(Color.FromArgb(byte.MaxValue, 40, 40, 40));
+        public static readonly SolidColorBrush Transparent = System.Windows.Media.Brushes.Transparent;
 
         public static SolidColorBrush Get(Candle candle) => candle.Open < candle.Close ? Increasing : Decreasing;
 
