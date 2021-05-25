@@ -38,7 +38,7 @@
                         {
                             i++;
                             position = position.ShiftLeft();
-                            if (position.Right < 0)
+                            if (position.Left < 0)
                             {
                                 break;
                             }
@@ -53,7 +53,7 @@
                     }
 
                     position = position.ShiftLeft();
-                    if (position.Right < 0)
+                    if (position.Left < 0)
                     {
                         break;
                     }

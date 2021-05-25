@@ -71,7 +71,7 @@
                             new Point(position.Right, yClose)));
 
                     position = position.ShiftLeft();
-                    if (position.Right < 0)
+                    if (position.Left < 0)
                     {
                         break;
                     }
