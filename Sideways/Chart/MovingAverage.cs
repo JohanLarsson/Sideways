@@ -84,7 +84,7 @@
                     }
 
                     previous = p2;
-                    position = position.Shift();
+                    position = position.ShiftLeft();
                     if (position.Right < 0)
                     {
                         break;

@@ -57,7 +57,7 @@
                             new Point(position.Left, position.Y(0)),
                             new Point(position.Right, position.Y(candle.Volume))));
 
-                    position = position.Shift();
+                    position = position.ShiftLeft();
                     if (position.Right < 0)
                     {
                         break;

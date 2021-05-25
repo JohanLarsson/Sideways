@@ -70,7 +70,7 @@
                             new Point(position.Left, yOpen),
                             new Point(position.Right, yClose)));
 
-                    position = position.Shift();
+                    position = position.ShiftLeft();
                     if (position.Right < 0)
                     {
                         break;
