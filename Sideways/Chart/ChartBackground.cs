@@ -8,8 +8,6 @@
     {
         protected override void OnRender(DrawingContext drawingContext)
         {
-            var size = this.RenderSize;
-            var candles = this.Candles;
             switch (this.CandleInterval)
             {
                 case CandleInterval.Hour or CandleInterval.Minute:
@@ -26,12 +24,14 @@
 
             void DrawBand(Func<Candle, bool> func, SolidColorBrush brush)
             {
-                var position = CandlePosition.Create(this.RenderSize, this.CandleWidth, default);
+                var renderSize = this.RenderSize;
+                var candles = this.Candles;
+                var position = CandlePosition.Create(renderSize, this.CandleWidth, default);
                 for (var i = 0; i < candles.Count; i++)
                 {
                     if (func(candles[i]))
                     {
-                        var p2 = new Point(position.Right, size.Height);
+                        var p2 = new Point(position.Right, renderSize.Height);
 
                         while (i < candles.Count - 1 &&
                                func(candles[i]))
