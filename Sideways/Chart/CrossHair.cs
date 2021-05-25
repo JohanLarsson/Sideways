@@ -127,7 +127,7 @@
             var size = this.RenderSize;
             using var context = this.drawing.RenderOpen();
             context.DrawRectangle(
-                System.Windows.Media.Brushes.Transparent,
+                Brushes.Transparent,
                 null,
                 new Rect(this.RenderSize));
             if (this.pen is { } &&

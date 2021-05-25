@@ -206,7 +206,7 @@
         protected override void OnRender(DrawingContext drawingContext)
         {
             drawingContext.DrawRectangle(
-                System.Windows.Media.Brushes.Transparent,
+                Brushes.Transparent,
                 null,
                 new Rect(this.RenderSize));
         }
