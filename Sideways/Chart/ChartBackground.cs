@@ -31,7 +31,7 @@
                 {
                     if (func(candles[i]))
                     {
-                        var p1 = new Point(position.Right, size.Height);
+                        var p2 = new Point(position.Right, size.Height);
 
                         while (i < candles.Count - 1 &&
                                func(candles[i]))
@@ -48,8 +48,8 @@
                             brush,
                             null,
                             new Rect(
-                                p1,
-                                new Point(position.Left, 0)));
+                                new Point(position.Right, 0),
+                                p2));
                     }
 
                     position = position.ShiftLeft();
