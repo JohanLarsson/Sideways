@@ -60,7 +60,7 @@
             }
         }
 
-        [TestCaseSource(nameof(FillDowns))]
+        [TestCaseSource(nameof(EmptyMinutes))]
         public static async Task Minutes(string symbol, Slice slice)
         {
             if (slice != Slice.Year1Month1 &&
@@ -171,10 +171,16 @@
             var ignore = new[]
             {
                 "ARVL",
+                "BMTX",
                 "BTX",
                 "CARR",
+                "CLOV",
                 "CRNC",
+                "DKNG",
+                "ENVB",
                 "FSR",
+                "FUBO",
+                "FUTU",
             };
 
             var minuteRanges = Database.MinuteRanges();
