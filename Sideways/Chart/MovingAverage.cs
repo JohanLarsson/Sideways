@@ -66,16 +66,15 @@
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            var size = this.RenderSize;
             using var context = this.drawing.RenderOpen();
             if (this.pen is { } &&
                 this.PriceRange is { } priceRange)
             {
                 Point? previous = null;
-                var position = CandlePosition.Create(size.Width, this.CandleWidth);
+                var position = CandlePosition.Create(this.RenderSize, this.CandleWidth, priceRange);
                 foreach (var a in this.Candles.MovingAverage(this.Period, c => c.Close))
                 {
-                    var p2 = new Point(position.CenterLeft, Y(a));
+                    var p2 = new Point(position.CenterLeft, position.Y(a));
                     if (previous is { } p1)
                     {
                         context.DrawLine(
@@ -90,8 +89,6 @@
                     {
                         break;
                     }
-
-                    double Y(float price) => priceRange.Y(price, size.Height);
                 }
             }
         }

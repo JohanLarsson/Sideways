@@ -40,14 +40,13 @@
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            var size = this.RenderSize;
             var candleWidth = this.CandleWidth;
             using var context = this.drawing.RenderOpen();
             if (this.Candles is { Count: > 0 } candles &&
                 this.MaxVolume is { } maxVolume)
             {
                 var range = new FloatRange(0, maxVolume);
-                var position = CandleSticks.CandlePosition.Create(size.Width, candleWidth);
+                var position = CandlePosition.Create(this.RenderSize, candleWidth, new FloatRange(0, maxVolume));
                 foreach (var candle in candles)
                 {
                     var brush = Brushes.Get(candle);
@@ -55,8 +54,8 @@
                         brush,
                         null,
                         Rect(
-                            new Point(position.Left, size.Height),
-                            new Point(position.Right, range.Y(candle.Volume, size.Height))));
+                            new Point(position.Left, position.Y(0)),
+                            new Point(position.Right, position.Y(candle.Volume))));
 
                     position = position.Shift();
                     if (position.Right < 0)

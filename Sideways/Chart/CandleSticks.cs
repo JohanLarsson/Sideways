@@ -40,13 +40,12 @@
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            var size = this.RenderSize;
             var candleWidth = this.CandleWidth;
             using var context = this.drawing.RenderOpen();
             if (this.PriceRange is { } range)
             {
                 var candles = this.Candles;
-                var position = CandlePosition.Create(size.Width, candleWidth);
+                var position = CandlePosition.Create(this.RenderSize, candleWidth, range);
                 foreach (var candle in candles)
                 {
                     var brush = Brushes.Get(candle);
@@ -55,10 +54,10 @@
                         brush,
                         null,
                         Rect(
-                            new Point(position.CenterLeft, Y(candle.Low)),
-                            new Point(position.CenterRight, Y(candle.High))));
-                    var yOpen = (int)Y(candle.Open);
-                    var yClose = (int)Y(candle.Close);
+                            new Point(position.CenterLeft, position.Y(candle.Low)),
+                            new Point(position.CenterRight, position.Y(candle.High))));
+                    var yOpen = (int)position.Y(candle.Open);
+                    var yClose = (int)position.Y(candle.Close);
                     if (yOpen == yClose)
                     {
                         yClose += 1;
@@ -76,8 +75,6 @@
                     {
                         break;
                     }
-
-                    double Y(float price) => range.Y(price, size.Height);
                 }
 
                 static Rect Rect(Point p1, Point p2)
