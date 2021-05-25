@@ -65,7 +65,6 @@
         {
             if (this.PriceRange is { } range)
             {
-                var actualHeight = this.ActualHeight;
                 var fontFamily = TextElement.GetFontFamily(this);
                 var typeface = new Typeface(
                     fontFamily,
@@ -75,14 +74,15 @@
                 var fontSize = TextElement.GetFontSize(this);
                 var fill = this.Fill;
 
-                var step = Step(range, actualHeight);
+                var step = Step(range, this.ActualHeight);
                 var format = StringFormat(step);
                 var value = range.Min + step - (range.Min % step);
                 var halfTextHeight = fontSize * fontFamily.LineSpacing / 2;
+                var position = CandlePosition.Create(this.RenderSize, 0.0, range);
                 while (value < range.Max)
                 {
 #pragma warning disable CA1305 // Specify IFormatProvider
-                    DrawText(value.ToString(format, CultureInfo.CurrentUICulture), range.Y(value, actualHeight) - halfTextHeight);
+                    DrawText(value.ToString(format, CultureInfo.CurrentUICulture), position.Y(value) - halfTextHeight);
 #pragma warning restore CA1305 // Specify IFormatProvider
                     value += step;
                 }
