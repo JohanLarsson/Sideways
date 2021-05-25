@@ -58,9 +58,9 @@
 
                         <Grid Grid.Row="0" Grid.Column="0">
 
-                            <sideways:MovingAverage Brush="Purple" Period="10" />
+                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Purple}" Period="10" />
 
-                            <sideways:MovingAverage Brush="Yellow" Period="20" />
+                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Yellow}" Period="20" />
 
                             <sideways:CandleSticks />
                             <sideways:CrossHair />
@@ -102,17 +102,17 @@
 
                         <Grid Grid.Row="0" Grid.Column="0">
 
-                            <sideways:MovingAverage Brush="Purple" Period="10" />
+                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Purple}" Period="10" />
 
-                            <sideways:MovingAverage Brush="Yellow" Period="20" />
+                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Yellow}" Period="20" />
 
-                            <sideways:MovingAverage Brush="Red" Period="50" />
+                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Red}" Period="50" />
 
-                            <sideways:MovingAverage Brush="Orange" Period="100" />
+                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Orange}" Period="100" />
 
                             <sideways:MovingAverage Brush="CadetBlue" Period="150" />
 
-                            <sideways:MovingAverage Brush="Green" Period="200" />
+                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Green}" Period="200" />
 
                             <sideways:CandleSticks />
                             <sideways:CrossHair />
@@ -193,9 +193,9 @@
                                                   Grid.Column="0" />
 
                         <Grid Grid.Row="0" Grid.Column="0">
-                            <sideways:MovingAverage Brush="Purple" Period="10" />
+                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Purple}" Period="10" />
 
-                            <sideways:MovingAverage Brush="Yellow" Period="20" />
+                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Yellow}" Period="20" />
 
                             <sideways:CandleSticks />
 
