@@ -13,6 +13,18 @@
     {
         private static readonly FileInfo FlashDrive = new("D:\\Database.sqlite3");
 
+        [TestCaseSource(nameof(AppSymbols))]
+        public static void OneWayToFlash(string symbol)
+        {
+            Sideways.Sync.CopyDays(symbol, Database.DbFile, FlashDrive);
+            Console.WriteLine("Copied days.");
+            Sideways.Sync.CopySplits(symbol, Database.DbFile, FlashDrive);
+            Console.WriteLine("Copied splits.");
+            Sideways.Sync.CopyDividends(symbol, Database.DbFile, FlashDrive);
+            Console.WriteLine("Copied dividends.");
+            Sideways.Sync.CopyMinutes(symbol, Database.DbFile, FlashDrive);
+        }
+
         [Test]
         public static void OneWayToFlash()
         {
@@ -23,6 +35,18 @@
             Sideways.Sync.CopyDividends(Database.DbFile, FlashDrive);
             Console.WriteLine("Copied dividends.");
             Sideways.Sync.CopyMinutes(Database.DbFile, FlashDrive);
+        }
+
+        [TestCaseSource(nameof(FlashSymbols))]
+        public static void OneWayToApp(string symbol)
+        {
+            Sideways.Sync.CopyDays(symbol, FlashDrive, Database.DbFile);
+            Console.WriteLine("Copied days.");
+            Sideways.Sync.CopySplits(symbol, FlashDrive, Database.DbFile);
+            Console.WriteLine("Copied splits.");
+            Sideways.Sync.CopyDividends(symbol, FlashDrive, Database.DbFile);
+            Console.WriteLine("Copied dividends.");
+            Sideways.Sync.CopyMinutes(symbol, FlashDrive, Database.DbFile);
         }
 
         [Test]
@@ -82,6 +106,10 @@
             Sideways.Sync.CopySplits(symbol, source, target);
             Sideways.Sync.CopyDividends(symbol, source, target);
         }
+
+        private static IEnumerable<string> AppSymbols() => File.Exists(FlashDrive.FullName) ? Database.ReadSymbols() : Enumerable.Empty<string>();
+
+        private static IEnumerable<string> FlashSymbols() => File.Exists(FlashDrive.FullName) ? Database.ReadSymbols(FlashDrive) : Enumerable.Empty<string>();
 
         private static IEnumerable<Diff> Diffs()
         {
