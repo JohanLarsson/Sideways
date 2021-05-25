@@ -60,7 +60,7 @@
             }
         }
 
-        [TestCaseSource(nameof(EmptyMinutes))]
+        [TestCaseSource(nameof(FillDowns))]
         public static async Task Minutes(string symbol, Slice slice)
         {
             if (slice != Slice.Year1Month1 &&
@@ -158,6 +158,37 @@
                     foreach (var slice in Enum.GetValues<Slice>())
                     {
                         if (range.Overlaps(TimeRange.FromSlice(slice)))
+                        {
+                            yield return new TestCaseData(symbol, slice);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<TestCaseData> FillDowns()
+        {
+            var ignore = new[]
+            {
+                "ARVL",
+                "BTX",
+                "CARR",
+                "CRNC",
+                "FSR",
+            };
+
+            var minuteRanges = Database.MinuteRanges();
+            foreach (var (symbol, dayRange) in Database.DayRanges().OrderBy(x => x.Key))
+            {
+                if (minuteRanges.TryGetValue(symbol, out var minuteRange) &&
+                    dayRange.Min.Date != minuteRange.Min.Date &&
+                    !ignore.Contains(symbol))
+                {
+                    foreach (var slice in Enum.GetValues<Slice>())
+                    {
+                        if (slice != Slice.Year1Month1 &&
+                            dayRange.Overlaps(TimeRange.FromSlice(slice)) &&
+                            !minuteRange.Contains(TimeRange.FromSlice(slice)))
                         {
                             yield return new TestCaseData(symbol, slice);
                         }
