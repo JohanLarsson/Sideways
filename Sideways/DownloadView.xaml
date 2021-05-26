@@ -4,6 +4,7 @@
              xmlns:alphaVantage="clr-namespace:Sideways.AlphaVantage"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sideways="clr-namespace:Sideways"
              d:DataContext="{d:DesignInstance alphaVantage:Downloader,
                                               IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
@@ -14,9 +15,9 @@
             <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Downloads}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Symbol}" Header="Symbol" />
-                    <DataGridTextColumn Binding="{Binding Start}" Header="Start" />
-                    <DataGridTextColumn Binding="{Binding End}" Header="End" />
-                    <DataGridTextColumn Binding="{Binding Exception.Message}" Header="Exception" />
+                    <DataGridTextColumn Binding="{Binding Start, StringFormat='t'}" Header="Start" />
+                    <DataGridTextColumn Binding="{Binding End, StringFormat='t'}" Header="End" />
+                    <DataGridTextColumn Binding="{Binding Exception.Message}" Header="Exception" Foreground="{x:Static sideways:Brushes.Error}" />
                 </DataGrid.Columns>
             </DataGrid>
         </TabItem>

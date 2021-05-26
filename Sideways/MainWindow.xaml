@@ -159,7 +159,7 @@
                     </TextBlock>
 
                     <TextBlock Text="{Binding Time, StringFormat='f'}" />
-                    <TextBlock Foreground="IndianRed" Text="{Binding CurrentSymbol.Exception.Message, FallbackValue=''}" />
+                    <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding CurrentSymbol.Exception.Message, FallbackValue=''}" />
                 </StackPanel>
             </Grid>
 
