@@ -233,11 +233,11 @@
             var minuteRanges = Database.MinuteRanges();
             foreach (var (symbol, dayRange) in Database.DayRanges().OrderBy(x => Last(x)))
             {
-                if (TradingDay.CFromdayRange.Max) != TradingDay.LastComplete() &&
+                if (TradingDay.From(dayRange.Max) != TradingDay.LastComplete() &&
                     minuteRanges.TryGetValue(symbol, out var minuteRange) &&
                     minuteRange.Overlaps(TimeRange.FromSlice(Slice.Year1Month1)))
                 {
-                    yield return new(symbol, TradingDay.CFromdayRange.Max), minuteRange.Max);
+                    yield return new(symbol, TradingDay.From(dayRange.Max), minuteRange.Max);
                 }
             }
 
