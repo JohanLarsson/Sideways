@@ -60,8 +60,19 @@
             }
         }
 
-        [TestCaseSource(nameof(EmptyMinutes))]
-        public static async Task Minutes(string symbol, Slice slice)
+        [TestCaseSource(nameof(EmptyMinutesSource))]
+        public static Task EmptyMinutes(string symbol, Slice slice)
+        {
+            return Minutes(symbol, slice);
+        }
+
+        [TestCaseSource(nameof(FillDownSource))]
+        public static Task FillDowns(string symbol, Slice slice)
+        {
+            return Minutes(symbol, slice);
+        }
+
+        private static async Task Minutes(string symbol, Slice slice)
         {
             if (slice != Slice.Year1Month1 &&
                 TimeRange.FromSlice(slice) is var range &&
@@ -98,66 +109,95 @@
 
         private static IEnumerable<string> All() => Database.ReadSymbols();
 
-        private static IEnumerable<TestCaseData> EmptyMinutes()
+        private static IEnumerable<TestCaseData> EmptyMinutesSource()
         {
             var ignore = new[]
             {
                 "ACHN",
                 "AMTD",
+                "AMTY",
                 "APPM",
                 "AVX",
                 "AVXS",
                 "BIGG",
+                "BDCO",
+                "CANB",
+                "CGOL",
                 "CHFS",
+                "CRSS",
                 "CTRP",
                 "CXO",
                 "DERM",
                 "DGAZ",
+                "DMEHF",
                 "DNR",
                 "DO",
                 "DRYS",
                 "DWT",
+                "DXLG",
                 "EIDX",
+                "EMPR",
                 "ERI",
                 "ETCG",
                 "ETHE",
                 "EWLU",
                 "FBM",
                 "FIT",
+                "FLES",
+                "FMCXF",
+                "FTCO",
                 "FTSV",
                 "GBTC",
                 "GSX",
+                "HEWA",
                 "HTZ",
                 "I",
+                "ICNB",
                 "IDGX",
                 "IDXG",
                 "IMMU",
+                "KAYS",
+                "KTEL",
+                "LIVC",
                 "LK",
                 "LM",
+                "LSMG",
                 "LVGO",
                 "MNK",
+                "NBIO",
                 "NLNK",
                 "OVAS",
                 "PASO",
                 "PNAT",
+                "PUBC",
                 "PTI",
+                "RECAF",
+                "RII",
                 "SBGL",
+                "SEII",
+                "SICNF",
+                "SYSX",
+                "TBPMF",
                 "TCEHY",
+                "TEUM",
+                "TORC",
                 "TROV",
                 "TPW",
                 "TPTW",
                 "TVIX",
                 "USLV",
+                "YAYO",
+                "YY",
             };
 
-            foreach (var (symbol, range) in Database.DayRanges().OrderBy(x => x.Key))
+            foreach (var (symbol, dayRange) in Database.DayRanges().OrderBy(x => x.Key))
             {
                 if (!ignore.Contains(symbol) &&
                     Database.CountMinutes(symbol, Database.DbFile) == 0)
                 {
                     foreach (var slice in Enum.GetValues<Slice>())
                     {
-                        if (range.Overlaps(TimeRange.FromSlice(slice)))
+                        if (dayRange.Overlaps(TimeRange.FromSlice(slice)))
                         {
                             yield return new TestCaseData(symbol, slice);
                         }
@@ -166,7 +206,7 @@
             }
         }
 
-        private static IEnumerable<TestCaseData> FillDowns()
+        private static IEnumerable<TestCaseData> FillDownSource()
         {
             var ignore = new[]
             {
