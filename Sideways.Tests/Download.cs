@@ -33,7 +33,7 @@
                 Assert.Pass("Downloaded new symbol.");
             }
 
-            var last = TradingDay.Create(days[0].Time);
+            var last = TradingDay.From(days[0].Time);
             if (last == TradingDay.LastComplete())
             {
                 Assert.Pass("Already downloaded.");
@@ -233,11 +233,11 @@
             var minuteRanges = Database.MinuteRanges();
             foreach (var (symbol, dayRange) in Database.DayRanges().OrderBy(x => Last(x)))
             {
-                if (TradingDay.Create(dayRange.Max) != TradingDay.LastComplete() &&
+                if (TradingDay.CFromdayRange.Max) != TradingDay.LastComplete() &&
                     minuteRanges.TryGetValue(symbol, out var minuteRange) &&
                     minuteRange.Overlaps(TimeRange.FromSlice(Slice.Year1Month1)))
                 {
-                    yield return new(symbol, TradingDay.Create(dayRange.Max), minuteRange.Max);
+                    yield return new(symbol, TradingDay.CFromdayRange.Max), minuteRange.Max);
                 }
             }
 

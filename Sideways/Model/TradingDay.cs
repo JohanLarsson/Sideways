@@ -2,7 +2,7 @@
 {
     using System;
 
-    public readonly struct TradingDay : IEquatable<TradingDay>
+    public readonly struct TradingDay : IEquatable<TradingDay>, IComparable<TradingDay>, IComparable
     {
         public readonly int Year;
         public readonly int Month;
@@ -18,6 +18,14 @@
         public static bool operator ==(TradingDay left, TradingDay right) => left.Equals(right);
 
         public static bool operator !=(TradingDay left, TradingDay right) => !left.Equals(right);
+
+        public static bool operator <(TradingDay left, TradingDay right) => left.CompareTo(right) < 0;
+
+        public static bool operator >(TradingDay left, TradingDay right) => left.CompareTo(right) > 0;
+
+        public static bool operator <=(TradingDay left, TradingDay right) => left.CompareTo(right) <= 0;
+
+        public static bool operator >=(TradingDay left, TradingDay right) => left.CompareTo(right) >= 0;
 
         public static DateTimeOffset EndOfDay(DateTimeOffset t) => new(t.Year, t.Month, t.Day, 20, 00, 00, t.Offset);
 
@@ -44,12 +52,10 @@
                 date -= TimeSpan.FromDays(1);
             }
 
-            return Create(date);
+            return From(date);
         }
 
-        public static TradingDay Create(DateTime date) => new(date.Year, date.Month, date.Day);
-
-        public static TradingDay Create(DateTimeOffset date) => new(date.Year, date.Month, date.Day);
+        public static TradingDay From(DateTimeOffset date) => new(date.Year, date.Month, date.Day);
 
         public static bool IsMatch(DateTimeOffset candidate)
         {
@@ -82,5 +88,32 @@
         public override int GetHashCode() => HashCode.Combine(this.Year, this.Month, this.Day);
 
         public override string ToString() => $"{this.Year}-{this.Month}-{this.Day}";
+
+        public int CompareTo(TradingDay other)
+        {
+            var yearComparison = this.Year.CompareTo(other.Year);
+            if (yearComparison != 0)
+            {
+                return yearComparison;
+            }
+
+            var monthComparison = this.Month.CompareTo(other.Month);
+            if (monthComparison != 0)
+            {
+                return monthComparison;
+            }
+
+            return this.Day.CompareTo(other.Day);
+        }
+
+        public int CompareTo(object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return 1;
+            }
+
+            return obj is TradingDay other ? this.CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(TradingDay)}");
+        }
     }
 }
