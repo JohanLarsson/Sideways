@@ -30,8 +30,8 @@
             {
                 return this switch
                 {
-                    {DaysDownload: {Start: { }}} => false,
-                    {MinutesDownloads: {Length: > 0} minutesDownloads} => minutesDownloads.All(x => x.Start is null),
+                    { DaysDownload: { Start: { } } } => false,
+                    { MinutesDownloads: { Length: > 0 } minutesDownloads } => minutesDownloads.All(x => x.Start is null),
                     _ => true,
                 };
             }

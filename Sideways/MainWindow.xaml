@@ -8,7 +8,7 @@
         Title="Sideways"
         d:DataContext="{d:DesignInstance sideways:MainViewModel,
                                          IsDesignTimeCreatable=False}"
-        Background="#FF050515"
+        Background="{x:Static sideways:Brushes.Background}"
         Loaded="OnLoaded"
         TextElement.Foreground="{x:Static sideways:Brushes.Gray}"
         WindowState="Maximized"

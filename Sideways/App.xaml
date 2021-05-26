@@ -9,6 +9,7 @@
                 <ResourceDictionary Source="Resources/Button.xaml" />
                 <ResourceDictionary Source="Resources/ComboBox.xaml" />
                 <ResourceDictionary Source="Resources/DataGrid.xaml" />
+                <ResourceDictionary Source="Resources/TabControl.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="VerticalAxisGridSplitter" TargetType="{x:Type GridSplitter}">
@@ -46,14 +47,8 @@
             </Style>
 
             <Style TargetType="{x:Type Window}">
-                <Setter Property="Background" Value="#FF050515" />
+                <Setter Property="Background" Value="{x:Static sideways:Brushes.Background}" />
                 <Setter Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.Gray}" />
-            </Style>
-
-            <Style TargetType="{x:Type TabControl}">
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderBrush" Value="{x:Null}" />
-                <Setter Property="BorderThickness" Value="0" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>
