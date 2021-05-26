@@ -58,9 +58,9 @@
 
                         <Grid Grid.Row="0" Grid.Column="0">
 
-                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Purple}" Period="10" />
+                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
 
-                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Yellow}" Period="20" />
+                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
 
                             <sideways:CandleSticks />
                             <sideways:CrossHair />
@@ -102,17 +102,17 @@
 
                         <Grid Grid.Row="0" Grid.Column="0">
 
-                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Purple}" Period="10" />
+                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
 
-                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Yellow}" Period="20" />
+                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
 
-                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Red}" Period="50" />
+                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Red}" Period="50" />
 
-                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Orange}" Period="100" />
+                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Orange}" Period="100" />
 
                             <sideways:MovingAverage Brush="CadetBlue" Period="150" />
 
-                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Green}" Period="200" />
+                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Green}" Period="200" />
 
                             <sideways:CandleSticks />
                             <sideways:CrossHair />
@@ -193,9 +193,9 @@
                                                   Grid.Column="0" />
 
                         <Grid Grid.Row="0" Grid.Column="0">
-                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Purple}" Period="10" />
+                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
 
-                            <sideways:MovingAverage Brush="{x:Static  sideways:Brushes.Yellow}" Period="20" />
+                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
 
                             <sideways:CandleSticks />
 
@@ -217,6 +217,16 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+
+            <Button Grid.Row="0"
+                    Command="Open"
+                    VerticalAlignment="Top"
+                    Content="Downloader"
+                    Focusable="False">
+                <Button.CommandBindings>
+                    <CommandBinding Command="Open" Executed="OnOpenDownloader" />
+                </Button.CommandBindings>
+            </Button>
 
             <Grid Grid.Row="1">
                 <Grid.ContextMenu>
@@ -244,6 +254,16 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Simulation.Balance, StringFormat='#,#'}" />
+                
+                <ListBox Grid.Row="4"
+                         ItemsSource="{Binding Simulation.Positions}"
+                         SelectedItem="{Binding SelectedPosition}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type sideways:Position}">
+                            <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
                 <Button Grid.Row="1"
                         Command="{Binding BuyCommand}"
@@ -259,16 +279,6 @@
                         Command="{Binding SellHalfCommand}"
                         Content="Sell half"
                         Focusable="False" />
-
-                <ListBox Grid.Row="4"
-                         ItemsSource="{Binding Simulation.Positions}"
-                         SelectedItem="{Binding SelectedPosition}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type sideways:Position}">
-                            <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
             </Grid>
         </Grid>
     </Grid>

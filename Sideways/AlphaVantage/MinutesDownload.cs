@@ -42,15 +42,12 @@
 
         public static ImmutableArray<MinutesDownload> Create(string symbol, TimeRange existingDays, TimeRange existingMinutes, AlphaVantageClient client)
         {
-            if (TradingDay.From(existingDays.Min) == TradingDay.From(existingMinutes.Min))
+            if (TradingDay.From(existingMinutes.Max.AddMonths(1)) >= TradingDay.LastComplete())
             {
-                if (TradingDay.From(existingMinutes.Max.AddMonths(1)) >= TradingDay.LastComplete())
-                {
-                    return ImmutableArray.Create<MinutesDownload>(new MinutesDownload(symbol, null, client));
-                }
+                return ImmutableArray.Create(new MinutesDownload(symbol, null, client));
             }
 
-            throw new NotImplementedException();
+            return ImmutableArray<MinutesDownload>.Empty;
         }
 
 #pragma warning disable VSTHRD200 // Use "Async" suffix for async methods

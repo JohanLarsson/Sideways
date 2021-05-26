@@ -26,6 +26,19 @@
                     <DataGridTextColumn Binding="{Binding LastComplete}" Header="Complete to" />
                     <DataGridTextColumn Binding="{Binding LastDay}" Header="Last day" />
                     <DataGridTextColumn Binding="{Binding LastMinute}" Header="Last minute" />
+                    <DataGridTemplateColumn Header="Download">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Command="Refresh" CommandParameter="{Binding}">
+                                    <Button.CommandBindings>
+                                        <CommandBinding CanExecute="OnCanRefresh"
+                                                        Command="Refresh"
+                                                        Executed="OnRefresh" />
+                                    </Button.CommandBindings>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </TabItem>

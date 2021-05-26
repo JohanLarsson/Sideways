@@ -155,11 +155,13 @@
             }
         }
 
-        private void OnShowDownloaderExecuted()
+        private void OnOpenDownloader(object sender, ExecutedRoutedEventArgs e)
         {
             var window = new Window
             {
                 Title = "Downloader",
+                Width = 300,
+                Height = 500,
                 Content = new DownloadView
                 {
                     DataContext = ((MainViewModel)this.DataContext)?.Downloader,

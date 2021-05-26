@@ -54,7 +54,7 @@
             this.TopUps = ImmutableList<TopUp>.Empty;
             var dayRanges = await Task.Run(() => Database.DayRanges()).ConfigureAwait(false);
             var minuteRanges = await Task.Run(() => Database.MinuteRanges()).ConfigureAwait(false);
-            this.TopUps = TopUps().OrderBy(x => x.LastDay).ToImmutableList();
+            this.TopUps = TopUps().OrderBy(x => x.LastComplete).ToImmutableList();
 
             IEnumerable<TopUp> TopUps()
             {
