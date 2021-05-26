@@ -64,6 +64,11 @@
             Console.WriteLine($"Read {minutes.Count} minutes took {stopwatch.ElapsedMilliseconds} ms.");
 
             stopwatch.Restart();
+            minutes = Database.ReadMinutes("TSLA", new DateTimeOffset(2021, 01, 01, 0, 0, 0, TimeSpan.Zero), new DateTimeOffset(2021, 01, 07, 0, 0, 0, TimeSpan.Zero));
+            stopwatch.Stop();
+            Console.WriteLine($"Read {minutes.Count} minutes took {stopwatch.ElapsedMilliseconds} ms.");
+
+            stopwatch.Restart();
             var n = Database.CountMinutes("TSLA");
             stopwatch.Stop();
             Console.WriteLine($"Count {n} minutes took {stopwatch.ElapsedMilliseconds} ms.");
