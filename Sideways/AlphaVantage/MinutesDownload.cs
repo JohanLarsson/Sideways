@@ -89,6 +89,7 @@
             try
             {
                 var candles = await Task().ConfigureAwait(false);
+                this.End = DateTimeOffset.Now;
                 Database.WriteMinutes(this.Symbol, candles);
                 return candles.Length;
             }

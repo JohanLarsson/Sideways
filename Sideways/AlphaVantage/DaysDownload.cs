@@ -8,13 +8,14 @@
 
     public class DaysDownload : IDownload, INotifyPropertyChanged
     {
-        private readonly AlphaVantageClient client;
-        private Task<ImmutableArray<AdjustedCandle>>? task;
+        private readonly Downloader downloader;
         private DateTimeOffset? start;
+        private DateTimeOffset? end;
+        private Exception? exception;
 
-        public DaysDownload(string symbol, OutputSize outputSize, AlphaVantageClient client)
+        public DaysDownload(string symbol, OutputSize outputSize, Downloader downloader)
         {
-            this.client = client;
+            this.downloader = downloader;
             this.Symbol = symbol;
             this.OutputSize = outputSize;
         }
@@ -40,9 +41,39 @@
             }
         }
 
-        public static DaysDownload Create(string symbol, TradingDay? from, AlphaVantageClient client)
+        public DateTimeOffset? End
         {
-            return new DaysDownload(symbol, OutputSize(), client);
+            get => this.end;
+            private set
+            {
+                if (value == this.end)
+                {
+                    return;
+                }
+
+                this.end = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public Exception? Exception
+        {
+            get => this.exception;
+            private set
+            {
+                if (ReferenceEquals(value, this.exception))
+                {
+                    return;
+                }
+
+                this.exception = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public static DaysDownload Create(string symbol, TradingDay? from, Downloader downloader)
+        {
+            return new DaysDownload(symbol, OutputSize(), downloader);
 
             OutputSize OutputSize()
             {
@@ -57,17 +88,25 @@
             }
         }
 
-#pragma warning disable VSTHRD200 // Use "Async" suffix for async methods
-        public Task<ImmutableArray<AdjustedCandle>> Task()
-#pragma warning restore VSTHRD200 // Use "Async" suffix for async methods
+        public async Task<int> ExecuteAsync()
         {
-            if (this.task is null)
-            {
-                this.Start = DateTimeOffset.Now;
-                this.task = this.client.DailyAdjustedAsync(this.Symbol, this.OutputSize);
-            }
+            this.downloader.Add(this);
+            this.Start = DateTimeOffset.Now;
 
-            return this.task;
+            try
+            {
+                var candles = await this.downloader.Client.DailyAdjustedAsync(this.Symbol, this.OutputSize).ConfigureAwait(false);
+                this.End = DateTimeOffset.Now;
+                Database.WriteDays(this.Symbol, candles);
+                return candles.Length;
+            }
+#pragma warning disable CA1031 // Do not catch general exception types
+            catch (Exception e)
+#pragma warning restore CA1031 // Do not catch general exception types
+            {
+                this.Exception = e;
+                return 0;
+            }
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

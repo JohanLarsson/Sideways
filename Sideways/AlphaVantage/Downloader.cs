@@ -76,20 +76,12 @@
 
         public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol, TradingDay? from)
         {
-            var download = DaysDownload.Create(symbol, from, this.client);
-            await this.ExecuteAsync(download).ConfigureAwait(false);
+            var download = DaysDownload.Create(symbol, from, this);
+            await download.ExecuteAsync().ConfigureAwait(false);
 
             return new DaysAndSplits(
                 Database.ReadDays(symbol),
                 Database.ReadSplits(symbol));
-        }
-
-        public async Task<int> ExecuteAsync(DaysDownload download)
-        {
-            this.Downloads = this.downloads.Add(download);
-            var candles = await download.Task().ConfigureAwait(false);
-            Database.WriteDays(download.Symbol, candles);
-            return candles.Length;
         }
 
         public void Add(IDownload download)
