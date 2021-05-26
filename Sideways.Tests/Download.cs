@@ -67,9 +67,26 @@
         }
 
         [TestCaseSource(nameof(FillDownSource))]
-        public static Task FillDowns(string symbol, Slice slice)
+        public static Task FillDownMinutes(string symbol, Slice slice)
         {
             return Minutes(symbol, slice);
+        }
+
+        [TestCaseSource(nameof(TopUps))]
+        public static async Task TopUp(string symbol)
+        {
+            var candles = await Client.IntradayAsync(symbol, Interval.Minute, adjusted: false);
+            if (candles.IsEmpty)
+            {
+                Assert.Inconclusive("Empty slice, maybe missing data on AlphaVantage. Exclude this symbol from script as it uses up daily calls.");
+            }
+
+            Database.WriteMinutes(symbol, candles);
+            await Days(symbol);
+            ////Assert.Fail("Check that we merge correctly first.");
+            ////Assert.Fail("Adjust merged day to midnight.");
+            ////var days = candles.Where(x => TradingDay.IsOrdinaryHours(x.Time)).MergeBy((x, y) => x.Time.IsSameDay(y.Time)).Select(x => x.WithTime(new DateTimeOffset(x.Time.Year, x.Time.Month, x.Time.Day, 0, 0, 0, x.Time.Offset)));
+            ////Database.WriteDays(symbol, days);
         }
 
         private static async Task Minutes(string symbol, Slice slice)
@@ -88,23 +105,6 @@
             }
 
             Database.WriteMinutes(symbol, candles);
-        }
-
-        [TestCaseSource(nameof(TopUps))]
-        public static async Task TopUp(string symbol)
-        {
-            var candles = await Client.IntradayAsync(symbol, Interval.Minute, adjusted: false);
-            if (candles.IsEmpty)
-            {
-                Assert.Inconclusive("Empty slice, maybe missing data on AlphaVantage. Exclude this symbol from script as it uses up daily calls.");
-            }
-
-            Database.WriteMinutes(symbol, candles);
-            await Days(symbol);
-            ////Assert.Fail("Check that we merge correctly first.");
-            ////Assert.Fail("Adjust merged day to midnight.");
-            ////var days = candles.Where(x => TradingDay.IsOrdinaryHours(x.Time)).MergeBy((x, y) => x.Time.IsSameDay(y.Time)).Select(x => x.WithTime(new DateTimeOffset(x.Time.Year, x.Time.Month, x.Time.Day, 0, 0, 0, x.Time.Offset)));
-            ////Database.WriteDays(symbol, days);
         }
 
         private static IEnumerable<string> All() => Database.ReadSymbols();
@@ -245,13 +245,25 @@
 
         private static IEnumerable<string> TopUps()
         {
-            foreach (var (symbol, range) in Database.DayRanges().OrderBy(x => x.Key))
+            var minuteRanges = Database.MinuteRanges();
+            foreach (var (symbol, range) in Database.DayRanges().OrderByDescending(x => Last(x)))
             {
                 if (TradingDay.Create(range.Max) != TradingDay.LastComplete() &&
-                    range.Overlaps(TimeRange.FromSlice(Slice.Year1Month1)))
+                    minuteRanges.TryGetValue(symbol, out var minuteRange) &&
+                    minuteRange.Overlaps(TimeRange.FromSlice(Slice.Year1Month1)))
                 {
                     yield return symbol;
                 }
+            }
+
+            DateTime Last(KeyValuePair<string, TimeRange> kvp)
+            {
+                if (minuteRanges.TryGetValue(kvp.Key, out var minuteRange))
+                {
+                    return new DateTime(Math.Min(minuteRange.Max.Ticks, kvp.Value.Max.Ticks));
+                }
+
+                return DateTime.MaxValue;
             }
         }
     }
