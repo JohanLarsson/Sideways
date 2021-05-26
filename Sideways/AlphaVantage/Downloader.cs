@@ -11,7 +11,7 @@
 
     public sealed class Downloader : IDisposable, INotifyPropertyChanged
     {
-        private readonly AlphaVantageClient client = new(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
+        private AlphaVantageClient? client;
 
         private ImmutableList<IDownload> downloads = ImmutableList<IDownload>.Empty;
         private ImmutableList<TopUp> topUps = ImmutableList<TopUp>.Empty;
@@ -49,6 +49,8 @@
             }
         }
 
+        public AlphaVantageClient Client => this.client ??= new(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
+
         public async Task RefreshAsync()
         {
             this.TopUps = ImmutableList<TopUp>.Empty;
@@ -65,7 +67,7 @@
                         if (TradingDay.From(dayRange.Max) < TradingDay.LastComplete() ||
                             TradingDay.From(minuteRange.Max) < TradingDay.LastComplete())
                         {
-                            yield return new TopUp(symbol, dayRange, minuteRange, this.client);
+                            yield return new TopUp(symbol, dayRange, minuteRange, this);
                         }
                     }
                 }
@@ -90,12 +92,9 @@
             return candles.Length;
         }
 
-        public async Task<int> ExecuteAsync(MinutesDownload download)
+        public void Add(IDownload download)
         {
-            this.Downloads = this.downloads.Add(download);
-            var candles = await download.Task().ConfigureAwait(false);
-            Database.WriteMinutes(download.Symbol, candles);
-            return candles.Length;
+            this.Downloads = this.Downloads.Add(download);
         }
 
         public void Dispose()
@@ -106,7 +105,7 @@
             }
 
             this.disposed = true;
-            this.client.Dispose();
+            this.client?.Dispose();
         }
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)

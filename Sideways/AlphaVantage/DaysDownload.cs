@@ -10,7 +10,7 @@
     {
         private readonly AlphaVantageClient client;
         private Task<ImmutableArray<AdjustedCandle>>? task;
-        private DateTimeOffset? started;
+        private DateTimeOffset? start;
 
         public DaysDownload(string symbol, OutputSize outputSize, AlphaVantageClient client)
         {
@@ -25,17 +25,17 @@
 
         public OutputSize OutputSize { get; }
 
-        public DateTimeOffset? Started
+        public DateTimeOffset? Start
         {
-            get => this.started;
+            get => this.start;
             private set
             {
-                if (value == this.started)
+                if (value == this.start)
                 {
                     return;
                 }
 
-                this.started = value;
+                this.start = value;
                 this.OnPropertyChanged();
             }
         }
@@ -61,9 +61,9 @@
         public Task<ImmutableArray<AdjustedCandle>> Task()
 #pragma warning restore VSTHRD200 // Use "Async" suffix for async methods
         {
-            if (this.task == null)
+            if (this.task is null)
             {
-                this.Started = DateTimeOffset.Now;
+                this.Start = DateTimeOffset.Now;
                 this.task = this.client.DailyAdjustedAsync(this.Symbol, this.OutputSize);
             }
 

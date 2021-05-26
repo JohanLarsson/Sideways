@@ -8,13 +8,14 @@
 
     public class MinutesDownload : IDownload, INotifyPropertyChanged
     {
-        private readonly AlphaVantageClient client;
-        private Task<ImmutableArray<Candle>>? task;
-        private DateTimeOffset? started;
+        private readonly Downloader downloader;
+        private DateTimeOffset? start;
+        private DateTimeOffset? end;
+        private Exception? exception;
 
-        public MinutesDownload(string symbol, Slice? slice, AlphaVantageClient client)
+        public MinutesDownload(string symbol, Slice? slice, Downloader downloader)
         {
-            this.client = client;
+            this.downloader = downloader;
             this.Symbol = symbol;
             this.Slice = slice;
         }
@@ -25,49 +26,91 @@
 
         public Slice? Slice { get; }
 
-        public DateTimeOffset? Started
+        public DateTimeOffset? Start
         {
-            get => this.started;
+            get => this.start;
             private set
             {
-                if (value == this.started)
+                if (value == this.start)
                 {
                     return;
                 }
 
-                this.started = value;
+                this.start = value;
                 this.OnPropertyChanged();
             }
         }
 
-        public static ImmutableArray<MinutesDownload> Create(string symbol, TimeRange existingDays, TimeRange existingMinutes, AlphaVantageClient client)
+        public DateTimeOffset? End
+        {
+            get => this.end;
+            private set
+            {
+                if (value == this.end)
+                {
+                    return;
+                }
+
+                this.end = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public Exception? Exception
+        {
+            get => this.exception;
+            private set
+            {
+                if (ReferenceEquals(value, this.exception))
+                {
+                    return;
+                }
+
+                this.exception = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public static ImmutableArray<MinutesDownload> Create(string symbol, TimeRange existingDays, TimeRange existingMinutes, Downloader down)
         {
             if (TradingDay.From(existingMinutes.Max.AddMonths(1)) >= TradingDay.LastComplete())
             {
-                return ImmutableArray.Create(new MinutesDownload(symbol, null, client));
+                return ImmutableArray.Create(new MinutesDownload(symbol, null, down));
             }
 
             return ImmutableArray<MinutesDownload>.Empty;
         }
 
-#pragma warning disable VSTHRD200 // Use "Async" suffix for async methods
-        public Task<ImmutableArray<Candle>> Task()
-#pragma warning restore VSTHRD200 // Use "Async" suffix for async methods
+        public async Task<int> ExecuteAsync()
         {
-            if (this.task == null)
+            this.downloader.Add(this);
+            this.Start = DateTimeOffset.Now;
+
+            try
             {
-                this.Started = DateTimeOffset.Now;
+                var candles = await Task().ConfigureAwait(false);
+                Database.WriteMinutes(this.Symbol, candles);
+                return candles.Length;
+            }
+#pragma warning disable CA1031 // Do not catch general exception types
+            catch (Exception e)
+#pragma warning restore CA1031 // Do not catch general exception types
+            {
+                this.Exception = e;
+                return 0;
+            }
+
+            Task<ImmutableArray<Candle>> Task()
+            {
                 if (this.Slice is { } slice)
                 {
-                    this.task = this.client.IntradayExtendedAsync(this.Symbol, Interval.Minute, slice);
+                    return this.downloader.Client.IntradayExtendedAsync(this.Symbol, Interval.Minute, slice);
                 }
                 else
                 {
-                    this.task = this.client.IntradayAsync(this.Symbol, Interval.Minute);
+                    return this.downloader.Client.IntradayAsync(this.Symbol, Interval.Minute);
                 }
             }
-
-            return this.task;
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

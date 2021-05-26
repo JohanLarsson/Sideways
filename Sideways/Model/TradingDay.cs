@@ -112,7 +112,7 @@
 
         public int CompareTo(object? obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return 1;
             }

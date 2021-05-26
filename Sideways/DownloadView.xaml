@@ -14,7 +14,7 @@
             <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Downloads}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Symbol}" Header="Symbol" />
-                    <DataGridTextColumn Binding="{Binding Started}" Header="Started" />
+                    <DataGridTextColumn Binding="{Binding Start}" Header="Start" />
                 </DataGrid.Columns>
             </DataGrid>
         </TabItem>

@@ -20,8 +20,8 @@
             {
                 e.CanExecute = topUp switch
                 {
-                    { DaysDownload: { Started: { } } } => false,
-                    { MinutesDownloads: { Length: > 0 } minutesDownloads } => minutesDownloads.All(x => x.Started is null),
+                    { DaysDownload: { Start: { } } } => false,
+                    { MinutesDownloads: { Length: > 0 } minutesDownloads } => minutesDownloads.All(x => x.Start is null),
                     _ => true,
                 };
 
@@ -34,7 +34,7 @@
             if (this.DataContext is Downloader downloader &&
                 e.Parameter is TopUp topUp)
             {
-                if (topUp.DaysDownload is { Started: null } daysDownload)
+                if (topUp.DaysDownload is { Start: null } daysDownload)
                 {
                     await downloader.ExecuteAsync(daysDownload).ConfigureAwait(false);
                 }
@@ -43,9 +43,9 @@
                 {
                     foreach (var minutesDownload in minutesDownloads)
                     {
-                        if (minutesDownload.Started is null)
+                        if (minutesDownload.Start is null)
                         {
-                            if (await downloader.ExecuteAsync(minutesDownload).ConfigureAwait(false) == 0)
+                            if (await minutesDownload.ExecuteAsync().ConfigureAwait(false) == 0)
                             {
                                 return;
                             }

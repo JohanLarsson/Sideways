@@ -7,19 +7,19 @@
         private readonly TimeRange existingDays;
         private readonly TimeRange existingMinutes;
 
-        public TopUp(string symbol, TimeRange existingDays, TimeRange existingMinutes, AlphaVantageClient client)
+        public TopUp(string symbol, TimeRange existingDays, TimeRange existingMinutes, Downloader downloader)
         {
             this.existingDays = existingDays;
             this.existingMinutes = existingMinutes;
             this.Symbol = symbol;
             if (TradingDay.From(existingDays.Max) < TradingDay.LastComplete())
             {
-                this.DaysDownload = DaysDownload.Create(symbol, TradingDay.From(existingDays.Max), client);
+                this.DaysDownload = DaysDownload.Create(symbol, TradingDay.From(existingDays.Max), downloader.Client);
             }
 
             if (TradingDay.From(existingMinutes.Max) < TradingDay.LastComplete())
             {
-                this.MinutesDownloads = MinutesDownload.Create(symbol, existingDays, existingMinutes, client);
+                this.MinutesDownloads = MinutesDownload.Create(symbol, existingDays, existingMinutes, downloader);
             }
         }
 
