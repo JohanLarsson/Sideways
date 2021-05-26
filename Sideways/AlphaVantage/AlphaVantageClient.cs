@@ -47,28 +47,35 @@
         public async Task<ImmutableArray<Listing>> ListingsAsync(CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
-            await this.throttle.WaitAsync().ConfigureAwait(false);
-            return await this.client.GetListingFromCsvAsync(
-                new Uri($"/query?function=LISTING_STATUS&apikey={this.apiKey}", UriKind.Relative),
-                cancellationToken).ConfigureAwait(false);
+            using (await this.throttle.WaitAsync().ConfigureAwait(false))
+            {
+                return await this.client.GetListingFromCsvAsync(
+                    new Uri($"/query?function=LISTING_STATUS&apikey={this.apiKey}", UriKind.Relative),
+                    cancellationToken).ConfigureAwait(false);
+            }
         }
 
         public async Task<ImmutableArray<Candle>> WeeklyAsync(string symbol, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
-            await this.throttle.WaitAsync().ConfigureAwait(false);
-            return await this.client.GetCandlesFromCsvAsync(
-                new Uri($"/query?function=TIME_SERIES_WEEKLY&symbol={symbol}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
-                cancellationToken).ConfigureAwait(false);
+            using (await this.throttle.WaitAsync().ConfigureAwait(false))
+            {
+                return await this.client.GetCandlesFromCsvAsync(
+                    new Uri($"/query?function=TIME_SERIES_WEEKLY&symbol={symbol}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
+                    cancellationToken).ConfigureAwait(false);
+            }
         }
 
         public async Task<ImmutableArray<Candle>> DailyAsync(string symbol, OutputSize outputSize, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
-            await this.throttle.WaitAsync().ConfigureAwait(false);
-            return await this.client.GetCandlesFromCsvAsync(
-                new Uri($"/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize={OutputSize()}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
-                cancellationToken).ConfigureAwait(false);
+            using (await this.throttle.WaitAsync().ConfigureAwait(false))
+            {
+                return await this.client.GetCandlesFromCsvAsync(
+                    new Uri($"/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize={OutputSize()}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
+                    cancellationToken).ConfigureAwait(false);
+            }
+
             string OutputSize()
             {
                 return outputSize switch
@@ -83,10 +90,12 @@
         public async Task<ImmutableArray<AdjustedCandle>> DailyAdjustedAsync(string symbol, OutputSize outputSize, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
-            await this.throttle.WaitAsync().ConfigureAwait(false);
-            return await this.client.GetAdjustedCandleFromCsvAsync(
-                new Uri($"/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={symbol}&outputsize={OutputSize()}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
-                cancellationToken).ConfigureAwait(false);
+            using (await this.throttle.WaitAsync().ConfigureAwait(false))
+            {
+                return await this.client.GetAdjustedCandleFromCsvAsync(
+                    new Uri($"/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={symbol}&outputsize={OutputSize()}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
+                    cancellationToken).ConfigureAwait(false);
+            }
 
             string OutputSize()
             {
@@ -102,10 +111,12 @@
         public async Task<ImmutableArray<Candle>> IntradayAsync(string symbol, Interval interval, bool adjusted = false, OutputSize outputSize = OutputSize.Full, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
-            await this.throttle.WaitAsync().ConfigureAwait(false);
-            return await this.client.GetCandlesFromCsvAsync(
-                new Uri($"query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={Interval()}&adjusted={(adjusted ? "true" : "false")}&outputsize={OutputSize()}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
-                cancellationToken).ConfigureAwait(false);
+            using (await this.throttle.WaitAsync().ConfigureAwait(false))
+            {
+                return await this.client.GetCandlesFromCsvAsync(
+                    new Uri($"query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={Interval()}&adjusted={(adjusted ? "true" : "false")}&outputsize={OutputSize()}&datatype=csv&apikey={this.apiKey}", UriKind.Relative),
+                    cancellationToken).ConfigureAwait(false);
+            }
 
             string Interval() => interval switch
             {
@@ -128,12 +139,14 @@
         public async Task<ImmutableArray<Candle>> IntradayExtendedAsync(string symbol, Interval interval, Slice slice, bool adjusted = false, CancellationToken cancellationToken = default)
         {
             this.ThrowIfDisposed();
-            await this.throttle.WaitAsync().ConfigureAwait(false);
-            return await this.client.GetCandlesFromCsvAsync(
+            using (await this.throttle.WaitAsync().ConfigureAwait(false))
+            {
+                return await this.client.GetCandlesFromCsvAsync(
 #pragma warning disable CA1308 // Normalize strings to uppercase
-                new Uri($"query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol={symbol}&interval={Interval()}&slice={slice.ToString().ToLowerInvariant()}&adjusted={(adjusted ? "true" : "false")}&apikey={this.apiKey}", UriKind.Relative),
+                    new Uri($"query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol={symbol}&interval={Interval()}&slice={slice.ToString().ToLowerInvariant()}&adjusted={(adjusted ? "true" : "false")}&apikey={this.apiKey}", UriKind.Relative),
 #pragma warning restore CA1308 // Normalize strings to uppercase
-                cancellationToken).ConfigureAwait(false);
+                    cancellationToken).ConfigureAwait(false);
+            }
 
             string Interval() => interval switch
             {
@@ -173,16 +186,38 @@
 
             private Throttle(int maxCallsPerMinute)
             {
-                this.semaphore = new(maxCallsPerMinute - 1);
+                this.semaphore = new(maxCallsPerMinute);
             }
 
             internal static Throttle GetOrCreate(string apiKey, int maxCallsPerMinute) => Singletons.GetOrAdd(apiKey, _ => new Throttle(maxCallsPerMinute));
 
-            internal Task WaitAsync()
+            internal async Task<IDisposable> WaitAsync()
             {
-                _ = Task.Delay(TimeSpan.FromSeconds(60))
+                await this.semaphore.WaitAsync().ConfigureAwait(false);
+                return new Release(this.semaphore);
+            }
+
+            private sealed class Release : IDisposable
+            {
+                private readonly SemaphoreSlim semaphore;
+                private bool disposed;
+
+                internal Release(SemaphoreSlim semaphore)
+                {
+                    this.semaphore = semaphore;
+                }
+
+                public void Dispose()
+                {
+                    if (this.disposed)
+                    {
+                        return;
+                    }
+
+                    this.disposed = true;
+                    _ = Task.Delay(TimeSpan.FromSeconds(60))
                         .ContinueWith(_ => this.semaphore.Release(), TaskScheduler.Default);
-                return this.semaphore.WaitAsync();
+                }
             }
         }
     }
