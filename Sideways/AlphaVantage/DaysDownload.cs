@@ -40,7 +40,26 @@
             }
         }
 
+        public static DaysDownload Create(string symbol, TradingDay? from, AlphaVantageClient client)
+        {
+            return new DaysDownload(symbol, OutputSize(), client);
+
+            OutputSize OutputSize()
+            {
+                // Compact returns only last 100, below can be tweaked further as it includes holidays but good enough for now
+                if (from is { Year: var y, Month: var m, Day: var d } &&
+                    DateTime.Today - new DateTime(y, m, d) < TimeSpan.FromDays(100))
+                {
+                    return AlphaVantage.OutputSize.Compact;
+                }
+
+                return AlphaVantage.OutputSize.Full;
+            }
+        }
+
+#pragma warning disable VSTHRD200 // Use "Async" suffix for async methods
         public Task<ImmutableArray<AdjustedCandle>> Task()
+#pragma warning restore VSTHRD200 // Use "Async" suffix for async methods
         {
             if (this.task == null)
             {

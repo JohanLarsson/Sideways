@@ -33,30 +33,13 @@
 
         public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol, TradingDay? from)
         {
-            var download = Create(OutputSize());
+            var download = DaysDownload.Create(symbol, from, this.client);
             this.Downloads = this.downloads.Add(download);
             Database.WriteDays(symbol, await download.Task().ConfigureAwait(false));
 
             return new DaysAndSplits(
                 Database.ReadDays(symbol),
                 Database.ReadSplits(symbol));
-
-            OutputSize OutputSize()
-            {
-                // Compact returns only last 100, below can be tweaked further as it includes holidays but good enough for now
-                if (from is { Year: var y, Month: var m, Day: var d } &&
-                    DateTime.Today - new DateTime(y, m, d) < TimeSpan.FromDays(100))
-                {
-                    return AlphaVantage.OutputSize.Compact;
-                }
-
-                return AlphaVantage.OutputSize.Full;
-            }
-
-            DaysDownload Create(OutputSize size)
-            {
-                return new(symbol, size, this.client);
-            }
         }
 
         public void Dispose()
