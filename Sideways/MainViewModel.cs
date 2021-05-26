@@ -235,7 +235,7 @@
                         var days = Database.ReadDays(vm.Symbol);
                         if (days.Count == 0)
                         {
-                            var download = await this.downloader.DaysAsync(vm.Symbol, null).ConfigureAwait(true);
+                            var download = await this.downloader.DaysAndSplitsAsync(vm.Symbol, null).ConfigureAwait(true);
                             splits = download.Splits;
                             days = download.Candles;
                             vm.Candles = Candles.Adjusted(splits, days, default);

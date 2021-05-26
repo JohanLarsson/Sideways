@@ -2,23 +2,58 @@
 {
     using System;
     using System.Collections.Immutable;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
-    public class DaysDownload : IDownload
+    public class DaysDownload : IDownload, INotifyPropertyChanged
     {
-        public DaysDownload(string symbol, OutputSize outputSize, Task<ImmutableArray<AdjustedCandle>> task)
+        private readonly AlphaVantageClient client;
+        private Task<ImmutableArray<AdjustedCandle>>? task;
+        private DateTimeOffset? started;
+
+        public DaysDownload(string symbol, OutputSize outputSize, AlphaVantageClient client)
         {
+            this.client = client;
             this.Symbol = symbol;
             this.OutputSize = outputSize;
-            this.Task = task;
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public string Symbol { get; }
 
         public OutputSize OutputSize { get; }
 
-        public Task<ImmutableArray<AdjustedCandle>> Task { get; }
+        public DateTimeOffset? Started
+        {
+            get => this.started;
+            private set
+            {
+                if (value == this.started)
+                {
+                    return;
+                }
 
-        public DateTimeOffset Start { get; } = DateTimeOffset.Now;
+                this.started = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public Task<ImmutableArray<AdjustedCandle>> Task()
+        {
+            if (this.task == null)
+            {
+                this.Started = DateTimeOffset.Now;
+                this.task = this.client.DailyAdjustedAsync(this.Symbol, this.OutputSize);
+            }
+
+            return this.task;
+        }
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

@@ -6,6 +6,6 @@
     {
         public string Symbol { get; }
 
-        public DateTimeOffset Start { get; }
+        public DateTimeOffset? Started { get; }
     }
 }

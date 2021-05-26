@@ -31,16 +31,15 @@
             }
         }
 
-        public async Task<Days> DaysAsync(string symbol, TradingDay? from)
+        public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol, TradingDay? from)
         {
             var download = Create(OutputSize());
             this.Downloads = this.downloads.Add(download);
-            Database.WriteDays(symbol, await download.Task.ConfigureAwait(false));
+            Database.WriteDays(symbol, await download.Task().ConfigureAwait(false));
 
-            return new Days(
+            return new DaysAndSplits(
                 Database.ReadDays(symbol),
-                Database.ReadSplits(symbol),
-                null);
+                Database.ReadSplits(symbol));
 
             OutputSize OutputSize()
             {
@@ -56,7 +55,7 @@
 
             DaysDownload Create(OutputSize size)
             {
-                return new(symbol, size, this.client.DailyAdjustedAsync(symbol, size));
+                return new(symbol, size, this.client);
             }
         }
 
