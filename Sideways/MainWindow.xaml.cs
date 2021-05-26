@@ -1,7 +1,6 @@
 ﻿namespace Sideways
 {
     using System;
-    using System.ComponentModel;
     using System.IO;
     using System.Text.Json;
     using System.Windows;
@@ -21,10 +20,7 @@
         public MainWindow()
         {
             this.InitializeComponent();
-            if (!DesignerProperties.GetIsInDesignMode(this))
-            {
-                this.DataContext = new MainViewModel();
-            }
+            this.DataContext = new MainViewModel();
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
@@ -48,9 +44,9 @@
                     when this.timer is null:
                     this.timer = new DispatcherTimer
                     {
-                        Interval = TimeSpan.FromMilliseconds(20),
+                        Interval = TimeSpan.FromMilliseconds(50),
                     };
-                    this.timer.Tick += (_, _) => Skip(CandleInterval.Hour, 1);
+                    this.timer.Tick += (_, _) => Skip(CandleInterval.Minute, 5);
                     this.timer.Start();
                     e.Handled = true;
                     break;

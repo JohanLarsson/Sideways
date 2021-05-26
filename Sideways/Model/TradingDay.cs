@@ -31,8 +31,6 @@
             !IsPreMarket(t) &&
             !IsPostMarket(t);
 
-        public static bool IsOrdinaryHoursSameDay(DateTimeOffset x, DateTimeOffset y) => x.IsSameDay(y) && IsOrdinaryHours(x) && IsOrdinaryHours(y);
-
         public static TradingDay LastComplete()
         {
             var date = DateTimeOffset.UtcNow;
