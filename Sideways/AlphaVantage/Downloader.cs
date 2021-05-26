@@ -14,7 +14,7 @@
         private readonly AlphaVantageClient client = new(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
 
         private ImmutableList<IDownload> downloads = ImmutableList<IDownload>.Empty;
-        private ImmutableList<TopUp> topUps;
+        private ImmutableList<TopUp> topUps = ImmutableList<TopUp>.Empty;
         private bool disposed;
 
         public event PropertyChangedEventHandler? PropertyChanged;
