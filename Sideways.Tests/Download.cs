@@ -246,7 +246,7 @@
         private static IEnumerable<string> TopUps()
         {
             var minuteRanges = Database.MinuteRanges();
-            foreach (var (symbol, range) in Database.DayRanges().OrderByDescending(x => Last(x)))
+            foreach (var (symbol, range) in Database.DayRanges().OrderBy(x => Last(x)))
             {
                 if (TradingDay.Create(range.Max) != TradingDay.LastComplete() &&
                     minuteRanges.TryGetValue(symbol, out var minuteRange) &&
