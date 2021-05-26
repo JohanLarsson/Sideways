@@ -253,24 +253,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Simulation.Balance, StringFormat='#,#'}" />
-
-                <Button Grid.Row="1"
-                        Command="{Binding BuyCommand}"
-                        Content="Buy"
-                        Focusable="False" />
-
-                <Button Grid.Row="2"
-                        Command="{Binding SellAllCommand}"
-                        Content="Sell all"
-                        Focusable="False" />
-
-                <Button Grid.Row="3"
-                        Command="{Binding SellHalfCommand}"
-                        Content="Sell half"
-                        Focusable="False" />
-
-                <ListBox Grid.Row="4"
+                <ListBox Grid.Row="0"
                          ItemsSource="{Binding Simulation.Positions}"
                          SelectedItem="{Binding SelectedPosition}">
                     <ListBox.ItemTemplate>
@@ -279,6 +262,23 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+
+                <TextBlock Grid.Row="1" Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Simulation.Balance, StringFormat='#,#'}" />
+
+                <Button Grid.Row="2"
+                        Command="{Binding BuyCommand}"
+                        Content="Buy"
+                        Focusable="False" />
+
+                <Button Grid.Row="3"
+                        Command="{Binding SellAllCommand}"
+                        Content="Sell all"
+                        Focusable="False" />
+
+                <Button Grid.Row="4"
+                        Command="{Binding SellHalfCommand}"
+                        Content="Sell half"
+                        Focusable="False" />
             </Grid>
         </Grid>
     </Grid>
