@@ -57,23 +57,6 @@
             return Minutes(symbol, slice);
         }
 
-        [TestCaseSource(nameof(TopUps))]
-        public static async Task TopUp(string symbol, TradingDay lastDay, DateTimeOffset lastMinute)
-        {
-            var candles = await Client.IntradayAsync(symbol, Interval.Minute, adjusted: false);
-            if (candles.IsEmpty)
-            {
-                Assert.Inconclusive("Empty slice, maybe missing data on AlphaVantage. Exclude this symbol from script as it uses up daily calls.");
-            }
-
-            Database.WriteMinutes(symbol, candles);
-            await Days(symbol);
-            ////Assert.Fail("Check that we merge correctly first.");
-            ////Assert.Fail("Adjust merged day to midnight.");
-            ////var days = candles.Where(x => TradingDay.IsOrdinaryHours(x.Time)).MergeBy((x, y) => x.Time.IsSameDay(y.Time)).Select(x => x.WithTime(new DateTimeOffset(x.Time.Year, x.Time.Month, x.Time.Day, 0, 0, 0, x.Time.Offset)));
-            ////Database.WriteDays(symbol, days);
-        }
-
         private static async Task Minutes(string symbol, Slice slice)
         {
             if (slice != Slice.Year1Month1 &&
@@ -225,30 +208,6 @@
                         }
                     }
                 }
-            }
-        }
-
-        private static IEnumerable<TestCaseData> TopUps()
-        {
-            var minuteRanges = Database.MinuteRanges();
-            foreach (var (symbol, dayRange) in Database.DayRanges().OrderBy(x => Last(x)))
-            {
-                if (TradingDay.From(dayRange.Max) < TradingDay.LastComplete() &&
-                    minuteRanges.TryGetValue(symbol, out var minuteRange) &&
-                    minuteRange.Overlaps(TimeRange.FromSlice(Slice.Year1Month1)))
-                {
-                    yield return new(symbol, TradingDay.From(dayRange.Max), minuteRange.Max);
-                }
-            }
-
-            DateTime Last(KeyValuePair<string, TimeRange> kvp)
-            {
-                if (minuteRanges.TryGetValue(kvp.Key, out var minuteRange))
-                {
-                    return new DateTime(Math.Min(minuteRange.Max.Ticks, kvp.Value.Max.Ticks));
-                }
-
-                return DateTime.MaxValue;
             }
         }
     }

@@ -23,6 +23,7 @@
         public MainViewModel()
         {
             this.Downloader = new();
+            _ = this.Downloader.RefreshAsync();
             this.symbolViewModelCache = new(this.Downloader);
             this.Symbols = new ObservableCollection<string>(Database.ReadSymbols());
             this.symbolViewModelCache.NewSymbol += (_, s) =>

@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.ComponentModel;
     using System.IO;
     using System.Text.Json;
     using System.Windows;
@@ -20,7 +21,10 @@
         public MainWindow()
         {
             this.InitializeComponent();
-            this.DataContext = new MainViewModel();
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                this.DataContext = new MainViewModel();
+            }
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
@@ -149,6 +153,20 @@
                     e.Handled = true;
                 }
             }
+        }
+
+        private void OnShowDownloaderExecuted()
+        {
+            var window = new Window
+            {
+                Title = "Downloader",
+                Content = new DownloadView
+                {
+                    DataContext = ((MainViewModel)this.DataContext)?.Downloader,
+                },
+                Owner = this,
+            };
+            window.Show();
         }
     }
 }
