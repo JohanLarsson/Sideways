@@ -4,9 +4,7 @@
     using System.Collections.Concurrent;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using System.IO;
     using System.Linq;
-    using System.Net.Http;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -15,7 +13,7 @@
 
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
-        private readonly SymbolViewModelCache symbolViewModelCache = new();
+        private readonly SymbolViewModelCache symbolViewModelCache;
 
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
@@ -24,6 +22,8 @@
 
         public MainViewModel()
         {
+            this.Downloader = new();
+            this.symbolViewModelCache = new(this.Downloader);
             this.Symbols = new ObservableCollection<string>(Database.ReadSymbols());
             this.symbolViewModelCache.NewSymbol += (_, s) =>
             {
@@ -98,6 +98,8 @@
         public ICommand SellHalfCommand { get; }
 
         public ICommand SellAllCommand { get; }
+
+        public Downloader Downloader { get; }
 
         public DateTimeOffset Time
         {
@@ -184,7 +186,7 @@
             }
 
             this.disposed = true;
-            this.symbolViewModelCache.Dispose();
+            this.Downloader.Dispose();
         }
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
@@ -192,28 +194,17 @@
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private sealed class SymbolViewModelCache : IDisposable
+        private sealed class SymbolViewModelCache
         {
-            private static readonly string ApiKeyFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways/AlphaVantage.key");
-
             private readonly ConcurrentDictionary<string, SymbolViewModel?> symbolViewModels = new(StringComparer.OrdinalIgnoreCase);
-            private readonly Downloader downloader = new();
-            private readonly AlphaVantageClient client = new(new HttpClientHandler(), ApiKey(), 5);
+            private readonly Downloader downloader;
 
-            private bool disposed;
+            internal SymbolViewModelCache(Downloader downloader)
+            {
+                this.downloader = downloader;
+            }
 
             internal event EventHandler<string>? NewSymbol;
-
-            public void Dispose()
-            {
-                if (this.disposed)
-                {
-                    return;
-                }
-
-                this.disposed = true;
-                this.client.Dispose();
-            }
 
             internal SymbolViewModel? Get(string? symbol)
             {
@@ -244,7 +235,7 @@
                         var days = Database.ReadDays(vm.Symbol);
                         if (days.Count == 0)
                         {
-                            var download = await this.downloader.DaysAsync(vm.Symbol, null, this.client).ConfigureAwait(true);
+                            var download = await this.downloader.DaysAsync(vm.Symbol, null).ConfigureAwait(true);
                             splits = download.Splits;
                             days = download.Candles;
                             vm.Candles = Candles.Adjusted(splits, days, default);
@@ -266,16 +257,6 @@
                         vm.Exception = e;
                     }
                 }
-            }
-
-            private static string ApiKey()
-            {
-                if (File.Exists(ApiKeyFile))
-                {
-                    return File.ReadAllText(ApiKeyFile).Trim();
-                }
-
-                throw new InvalidOperationException($"Missing file {ApiKeyFile}");
             }
         }
     }

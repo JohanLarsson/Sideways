@@ -44,7 +44,7 @@
             var days = Database.ReadDays(symbol);
             if (days.Count == 0)
             {
-                await Downloader.DaysAsync(symbol, null, Client);
+                await Downloader.DaysAsync(symbol, null);
                 Assert.Pass("Downloaded new symbol.");
             }
 
@@ -55,7 +55,7 @@
             }
             else
             {
-                await Downloader.DaysAsync(symbol, last, Client);
+                await Downloader.DaysAsync(symbol, last);
                 Assert.Pass("Updated days for symbol.");
             }
         }

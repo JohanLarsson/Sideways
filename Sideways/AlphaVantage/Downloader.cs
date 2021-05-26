@@ -3,12 +3,16 @@
     using System;
     using System.Collections.Immutable;
     using System.ComponentModel;
+    using System.Net.Http;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
-    public sealed class Downloader : INotifyPropertyChanged
+    public sealed class Downloader : IDisposable, INotifyPropertyChanged
     {
+        private readonly AlphaVantageClient client = new(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
+
         private ImmutableList<IDownload> downloads = ImmutableList<IDownload>.Empty;
+        private bool disposed;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -27,7 +31,7 @@
             }
         }
 
-        public async Task<Days> DaysAsync(string symbol, TradingDay? from, AlphaVantageClient client)
+        public async Task<Days> DaysAsync(string symbol, TradingDay? from)
         {
             var download = Create(OutputSize());
             this.Downloads = this.downloads.Add(download);
@@ -52,8 +56,19 @@
 
             DaysDownload Create(OutputSize size)
             {
-                return new(symbol, size, client.DailyAdjustedAsync(symbol, size));
+                return new(symbol, size, this.client.DailyAdjustedAsync(symbol, size));
             }
+        }
+
+        public void Dispose()
+        {
+            if (this.disposed)
+            {
+                return;
+            }
+
+            this.disposed = true;
+            this.client.Dispose();
         }
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
