@@ -57,6 +57,10 @@
 
         public static TradingDay From(DateTimeOffset date) => new(date.Year, date.Month, date.Day);
 
+        public static TradingDay Min(TradingDay x, TradingDay y) => x < y ? x : y;
+
+        public static TradingDay Max(TradingDay x, TradingDay y) => x > y ? x : y;
+
         public static bool IsMatch(DateTimeOffset candidate)
         {
             return candidate switch

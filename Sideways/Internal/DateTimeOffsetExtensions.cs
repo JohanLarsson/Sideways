@@ -12,5 +12,9 @@
         public static bool IsSameHour(this DateTimeOffset x, DateTimeOffset y) => IsSameDay(x, y) && x.Hour == y.Hour;
 
         public static int Week(this DateTimeOffset date) => CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(date.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+
+        public static DateTimeOffset Min(DateTimeOffset x, DateTimeOffset y) => x < y ? x : y;
+
+        public static DateTimeOffset Max(DateTimeOffset x, DateTimeOffset y) => x < y ? y : x;
     }
 }
