@@ -6,12 +6,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sideways="clr-namespace:Sideways"
         Title="Sideways"
-        Width="800"
-        Height="450"
         d:DataContext="{d:DesignInstance sideways:MainViewModel,
                                          IsDesignTimeCreatable=False}"
         Background="#FF050515"
         Loaded="OnLoaded"
+        TextElement.Foreground="{x:Static sideways:Brushes.Gray}"
+        WindowState="Maximized"
         mc:Ignorable="d">
     <Window.CommandBindings>
         <CommandBinding Command="Copy" Executed="OnCopy" />
@@ -219,8 +219,8 @@
             </Grid.RowDefinitions>
 
             <Button Grid.Row="0"
-                    Command="Open"
                     VerticalAlignment="Top"
+                    Command="Open"
                     Content="Downloader"
                     Focusable="False">
                 <Button.CommandBindings>
@@ -254,16 +254,6 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Simulation.Balance, StringFormat='#,#'}" />
-                
-                <ListBox Grid.Row="4"
-                         ItemsSource="{Binding Simulation.Positions}"
-                         SelectedItem="{Binding SelectedPosition}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type sideways:Position}">
-                            <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
 
                 <Button Grid.Row="1"
                         Command="{Binding BuyCommand}"
@@ -279,6 +269,16 @@
                         Command="{Binding SellHalfCommand}"
                         Content="Sell half"
                         Focusable="False" />
+
+                <ListBox Grid.Row="4"
+                         ItemsSource="{Binding Simulation.Positions}"
+                         SelectedItem="{Binding SelectedPosition}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type sideways:Position}">
+                            <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </Grid>
         </Grid>
     </Grid>

@@ -6,7 +6,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/ComboBox.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Resources/ComboBox.xaml" />
+                <ResourceDictionary Source="Resources/Button.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="VerticalAxisGridSplitter" TargetType="{x:Type GridSplitter}">
@@ -41,10 +42,6 @@
                 <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Gray}" />
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="BorderThickness" Value="0" />
-            </Style>
-
-            <Style TargetType="{x:Type TextBlock}">
-                <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Gray}" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>
