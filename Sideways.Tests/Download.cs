@@ -73,7 +73,7 @@
         }
 
         [TestCaseSource(nameof(TopUps))]
-        public static async Task TopUp(string symbol)
+        public static async Task TopUp(string symbol, TradingDay lastDay, DateTimeOffset lastMinute)
         {
             var candles = await Client.IntradayAsync(symbol, Interval.Minute, adjusted: false);
             if (candles.IsEmpty)
@@ -243,16 +243,16 @@
             }
         }
 
-        private static IEnumerable<string> TopUps()
+        private static IEnumerable<TestCaseData> TopUps()
         {
             var minuteRanges = Database.MinuteRanges();
-            foreach (var (symbol, range) in Database.DayRanges().OrderBy(x => Last(x)))
+            foreach (var (symbol, dayRange) in Database.DayRanges().OrderBy(x => Last(x)))
             {
-                if (TradingDay.Create(range.Max) != TradingDay.LastComplete() &&
+                if (TradingDay.Create(dayRange.Max) != TradingDay.LastComplete() &&
                     minuteRanges.TryGetValue(symbol, out var minuteRange) &&
                     minuteRange.Overlaps(TimeRange.FromSlice(Slice.Year1Month1)))
                 {
-                    yield return symbol;
+                    yield return new(symbol, TradingDay.Create(dayRange.Max), minuteRange.Max);
                 }
             }
 

@@ -80,5 +80,7 @@
         public override bool Equals(object? obj) => obj is TradingDay other && this.Equals(other);
 
         public override int GetHashCode() => HashCode.Combine(this.Year, this.Month, this.Day);
+
+        public override string ToString() => $"{this.Year}-{this.Month}-{this.Day}";
     }
 }
