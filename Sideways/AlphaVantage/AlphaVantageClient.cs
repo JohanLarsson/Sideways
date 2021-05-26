@@ -1,6 +1,7 @@
 ﻿namespace Sideways.AlphaVantage
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Immutable;
     using System.IO;
     using System.Net.Http;
@@ -19,7 +20,7 @@
         public AlphaVantageClient(HttpMessageHandler messageHandler, string apiKey, int maxCallsPerMinute)
         {
             this.apiKey = apiKey;
-            this.throttle = new Throttle(maxCallsPerMinute);
+            this.throttle = Throttle.GetOrCreate(apiKey, maxCallsPerMinute);
 #pragma warning disable IDISP014 // Use a single instance of HttpClient.
             this.client = new HttpClient(messageHandler)
             {
@@ -166,12 +167,16 @@
 
         private class Throttle
         {
+            private static readonly ConcurrentDictionary<string, Throttle> Singletons = new();
+
             private readonly SemaphoreSlim semaphore;
 
-            internal Throttle(int maxCallsPerMinute)
+            private Throttle(int maxCallsPerMinute)
             {
                 this.semaphore = new(maxCallsPerMinute - 1);
             }
+
+            internal static Throttle GetOrCreate(string apiKey, int maxCallsPerMinute) => Singletons.GetOrAdd(apiKey, _ => new Throttle(maxCallsPerMinute));
 
             internal Task WaitAsync()
             {

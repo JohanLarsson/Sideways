@@ -1,7 +1,6 @@
 ﻿namespace Sideways.Tests
 {
     using System;
-    using System.IO;
     using System.Net;
     using System.Net.Http;
     using System.Threading;
@@ -13,25 +12,11 @@
 
     public static class AlphaVantageClientTests
     {
-        private static string ApiKey
-        {
-            get
-            {
-                var fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways/AlphaVantage.key");
-                if (File.Exists(fileName))
-                {
-                    return File.ReadAllText(fileName).Trim();
-                }
-
-                throw new InvalidOperationException($"Expected the API key in {fileName}");
-            }
-        }
-
         [Explicit("Hits endpoint.")]
         [Test]
         public static async Task ListingsAsync()
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey, 5);
+            using var client = new AlphaVantageClient(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
             var candles = await client.ListingsAsync().ConfigureAwait(false);
             Assert.AreEqual(100, candles.Length);
         }
@@ -95,7 +80,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
         [Test]
         public static async Task IntradayAsync()
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey, 5);
+            using var client = new AlphaVantageClient(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
             var candles = await client.IntradayAsync("MSFT", Interval.Hour, adjusted: false, outputSize: OutputSize.Compact);
             Assert.AreEqual(100, candles.Length);
         }
@@ -235,7 +220,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
         [Test]
         public static async Task IntradayExtendedAsync()
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey, 5);
+            using var client = new AlphaVantageClient(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
             var candles = await client.IntradayExtendedAsync("MSFT", Interval.Minute, Slice.Year1Month1, adjusted: false, CancellationToken.None);
             Assert.AreEqual(100, candles.Length);
         }
@@ -275,7 +260,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
         [Test]
         public static async Task DailyAsync()
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey, 5);
+            using var client = new AlphaVantageClient(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
             var candles = await client.DailyAsync("MSFT", OutputSize.Compact, CancellationToken.None);
             Assert.AreEqual(100, candles.Length);
         }
@@ -413,7 +398,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
         [Test]
         public static async Task DailyAdjustedAsync()
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ApiKey, 5);
+            using var client = new AlphaVantageClient(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
             var candles = await client.DailyAdjustedAsync("MSFT", OutputSize.Compact, CancellationToken.None);
             Assert.AreEqual(100, candles.Length);
         }

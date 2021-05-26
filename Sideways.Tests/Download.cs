@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -15,21 +14,7 @@
     public static class Download
     {
         private static readonly Downloader Downloader = new();
-        private static readonly AlphaVantageClient Client = new(new HttpClientHandler(), ApiKey, 5);
-
-        private static string ApiKey
-        {
-            get
-            {
-                var fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways/AlphaVantage.key");
-                if (File.Exists(fileName))
-                {
-                    return File.ReadAllText(fileName).Trim();
-                }
-
-                throw new InvalidOperationException($"Expected the API key in {fileName}");
-            }
-        }
+        private static readonly AlphaVantageClient Client = new(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
 
         [Test]
         public static async Task Listings()
