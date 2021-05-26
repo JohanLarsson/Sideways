@@ -84,7 +84,6 @@
                 FrameworkPropertyMetadataOptions.Inherits));
 
         private readonly List<Candle> candles = new();
-        private int lastTimeStamp;
 
         public Chart()
         {
@@ -213,9 +212,6 @@
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            var dt = e.Timestamp - this.lastTimeStamp;
-            //// Debug.WriteLine($"Timestamp: {e.Timestamp} DeltaTime: {dt} Delta:{e.Delta} Delta() {Delta()}");
-            this.lastTimeStamp = e.Timestamp;
             if (this.ItemsSource is { } candles &&
                Delta() is var delta &&
                delta != 0)
@@ -248,16 +244,12 @@
                     int TouchDelta() => e.Delta / this.CandleWidth;
                 }
 
-                if (dt <= 0)
-                {
-                    return 0;
-                }
-
-                return dt switch
+                // We try to calculate a step based on how fast user is spinning the wheel.
+                return Scroll.DeltaTime(e) switch
                 {
                     <= 0 => 0,
                     > 50 => Math.Sign(e.Delta),
-                    _ => e.Delta switch
+                    var dt => e.Delta switch
                     {
                         < 0 => Math.Min(-1, -120 / dt),
                         > 0 => Math.Max(1, 240 / dt),
@@ -267,6 +259,18 @@
 
                 // Must be better ways for this but may require pinvoke. Good enough for now.
                 static bool IsFromTouch(MouseWheelEventArgs e) => e.Delta % Mouse.MouseWheelDeltaForOneLine != 0;
+            }
+        }
+
+        private static class Scroll
+        {
+            private static int lastTimeStamp;
+
+            internal static int DeltaTime(MouseWheelEventArgs e)
+            {
+                var delta = e.Timestamp - lastTimeStamp;
+                lastTimeStamp = e.Timestamp;
+                return delta;
             }
         }
     }
