@@ -19,7 +19,7 @@
 
         public string Symbol { get; }
 
-        public TimeSpan? Duration => this.end - this.start;
+        public TimeSpan? Duration => (this.end ?? DateTimeOffset.Now) - this.start;
 
         public DownloadStatus Status => this switch
         {
