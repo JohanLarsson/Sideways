@@ -23,9 +23,9 @@
         public Downloader()
         {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            this.RefreshTopUpsCommand = new RelayCommand(_ => this.RefreshSymbolDownloadsAsync());
+            this.RefreshSymbolsCommand = new RelayCommand(_ => this.RefreshSymbolDownloadsAsync());
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            this.RunAllTopUpsCommand = new RelayCommand(_ => DownloadAllTopUps(), _ => !this.symbolDownloads.IsEmpty);
+            this.DownloadAllSymbolsCommand = new RelayCommand(_ => DownloadAllTopUps(), _ => !this.symbolDownloads.IsEmpty);
 
             async void DownloadAllTopUps()
             {
@@ -45,9 +45,9 @@
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public ICommand RefreshTopUpsCommand { get; }
+        public ICommand RefreshSymbolsCommand { get; }
 
-        public ICommand RunAllTopUpsCommand { get; }
+        public ICommand DownloadAllSymbolsCommand { get; }
 
         public AlphaVantageClient Client => this.client ??= new(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
 
