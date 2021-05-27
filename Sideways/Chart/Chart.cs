@@ -221,7 +221,7 @@
                     candles.Skip(
                         this.Time,
                         this.CandleInterval,
-                        Delta()));
+                        delta));
             }
 
             int Delta()
