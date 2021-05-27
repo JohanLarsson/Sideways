@@ -8,37 +8,28 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Grid Margin="{TemplateBinding Padding}" Background="Transparent">
-                        <Path x:Name="Collapsed"
-                              Margin="1,1,1,1"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Center"
-                              Data="M 4 0 L 8 4 L 4 8 Z"
-                              Fill="{TemplateBinding Foreground}" />
-                        <Path x:Name="Expanded"
-                              Margin="1,1,1,1"
+                    <Border Margin="{TemplateBinding Padding}" Background="Transparent">
+                        <Path x:Name="Path" Margin="1,1,1,1"
                               HorizontalAlignment="Left"
                               VerticalAlignment="Center"
                               Data="M 0 4 L 8 4 L 4 8 Z"
-                              Fill="{TemplateBinding Foreground}"
-                              Visibility="Hidden" />
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="CheckStates">
-                                <VisualState x:Name="Checked">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Collapsed" Storyboard.TargetProperty="(UIElement.Visibility)">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Hidden}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Expanded" Storyboard.TargetProperty="(UIElement.Visibility)">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Unchecked" />
-                                <VisualState x:Name="Indeterminate" />
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                    </Grid>
+                              RenderTransformOrigin="0.5,0.5"
+                              Fill="{TemplateBinding Foreground}">
+                            <Path.RenderTransform>
+                                <RotateTransform Angle="0" />
+                            </Path.RenderTransform>
+                        </Path>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="Path" Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform Angle="-90" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -117,6 +108,7 @@
                         <Trigger Property="HasItems" Value="false">
                             <Setter TargetName="Expander" Property="Visibility" Value="Collapsed" />
                         </Trigger>
+
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="HasHeader" Value="false" />
@@ -124,6 +116,7 @@
                             </MultiTrigger.Conditions>
                             <Setter TargetName="PART_Header" Property="MinWidth" Value="75" />
                         </MultiTrigger>
+
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="HasHeader" Value="false" />
