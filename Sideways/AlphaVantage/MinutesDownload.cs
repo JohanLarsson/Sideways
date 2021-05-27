@@ -17,11 +17,25 @@
 
         public Slice? Slice { get; }
 
-        public static ImmutableArray<MinutesDownload> Create(string symbol, TimeRange existingDays, TimeRange existingMinutes, Downloader down)
+        public static ImmutableArray<MinutesDownload> Create(string symbol, TimeRange existingDays, TimeRange existingMinutes, Downloader downloader)
         {
+            if (existingMinutes == default)
+            {
+                var builder = ImmutableArray.CreateBuilder<MinutesDownload>();
+                foreach (var slice in Enum.GetValues<Slice>())
+                {
+                    if (existingDays.Overlaps(TimeRange.FromSlice(slice)))
+                    {
+                        builder.Add(new MinutesDownload(symbol, slice, downloader));
+                    }
+                }
+
+                return builder.ToImmutable();
+            }
+
             if (TradingDay.From(existingMinutes.Max.AddMonths(1)) >= TradingDay.LastComplete())
             {
-                return ImmutableArray.Create(new MinutesDownload(symbol, null, down));
+                return ImmutableArray.Create(new MinutesDownload(symbol, null, downloader));
             }
 
             return ImmutableArray<MinutesDownload>.Empty;
@@ -37,6 +51,11 @@
                 var candles = await Task().ConfigureAwait(false);
                 this.State.End = DateTimeOffset.Now;
                 Database.WriteMinutes(this.Symbol, candles);
+                if (candles.IsDefaultOrEmpty)
+                {
+                    throw new InvalidOperationException("Downloaded empty slice, maybe missing data on AlphaVantage. Exclude this symbol?");
+                }
+
                 return candles.Length;
             }
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -54,10 +73,8 @@
                 {
                     return this.downloader.Client.IntradayExtendedAsync(this.Symbol, Interval.Minute, slice);
                 }
-                else
-                {
-                    return this.downloader.Client.IntradayAsync(this.Symbol, Interval.Minute);
-                }
+
+                return this.downloader.Client.IntradayAsync(this.Symbol, Interval.Minute);
             }
         }
     }

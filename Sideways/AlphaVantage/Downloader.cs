@@ -103,22 +103,7 @@
             this.SymbolDownloadState = new DownloadState();
             var dayRanges = await Task.Run(() => Database.DayRanges()).ConfigureAwait(false);
             var minuteRanges = await Task.Run(() => Database.MinuteRanges()).ConfigureAwait(false);
-            this.SymbolDownloads = TopUps().OrderBy(x => x.LastComplete).ToImmutableList();
-
-            IEnumerable<SymbolDownloads> TopUps()
-            {
-                foreach (var (symbol, dayRange) in dayRanges)
-                {
-                    if (minuteRanges.TryGetValue(symbol, out var minuteRange))
-                    {
-                        if (TradingDay.From(dayRange.Max) < TradingDay.LastComplete() ||
-                            TradingDay.From(minuteRange.Max) < TradingDay.LastComplete())
-                        {
-                            yield return new SymbolDownloads(symbol, dayRange, minuteRange, this);
-                        }
-                    }
-                }
-            }
+            this.SymbolDownloads = AlphaVantage.SymbolDownloads.Create(dayRanges, minuteRanges, this).OrderBy(x => x.LastComplete).ToImmutableList();
         }
 
         public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol, TradingDay? from)

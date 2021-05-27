@@ -1,6 +1,7 @@
 ﻿namespace Sideways.AlphaVantage
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using System.Threading.Tasks;
@@ -57,6 +58,29 @@
 
         public TradingDay LastComplete => TradingDay.Min(this.LastDay, this.LastMinute);
 
+        public static IEnumerable<SymbolDownloads> Create(ImmutableDictionary<string, TimeRange> dayRanges, ImmutableDictionary<string, TimeRange> minuteRanges, Downloader downloader)
+        {
+            foreach (var (symbol, dayRange) in dayRanges)
+            {
+                if (!minuteRanges.TryGetValue(symbol, out _))
+                {
+                    yield return new SymbolDownloads(symbol, dayRange, default, downloader);
+                }
+            }
+
+            foreach (var (symbol, dayRange) in dayRanges)
+            {
+                if (minuteRanges.TryGetValue(symbol, out var minuteRange))
+                {
+                    if (TradingDay.From(dayRange.Max) < TradingDay.LastComplete() ||
+                        TradingDay.From(minuteRange.Max) < TradingDay.LastComplete())
+                    {
+                        yield return new SymbolDownloads(symbol, dayRange, minuteRange, downloader);
+                    }
+                }
+            }
+        }
+
         public async Task DownloadAsync()
         {
             this.State.Start = DateTimeOffset.Now;
@@ -73,14 +97,14 @@
                     {
                         if (await minutesDownload.ExecuteAsync().ConfigureAwait(false) == 0)
                         {
-                            return;
+                            break;
                         }
                     }
                 }
             }
 
             this.State.Exception = this.DaysDownload?.State.Exception ??
-                                           this.MinutesDownloads?.FirstOrDefault(x => x.State.Exception is { })?.State.Exception;
+                                   this.MinutesDownloads?.FirstOrDefault(x => x.State.Exception is { })?.State.Exception;
             this.State.End = DateTimeOffset.Now;
         }
 
