@@ -38,6 +38,21 @@
                 return ImmutableArray.Create(new MinutesDownload(symbol, null, downloader));
             }
 
+            if (TradingDay.From(existingMinutes.Min) > TradingDay.Max(TradingDay.From(existingDays.Min), TradingDay.From(TimeRange.FromSlice(AlphaVantage.Slice.Year2Month2).Min)))
+            {
+                var builder = ImmutableArray.CreateBuilder<MinutesDownload>();
+                foreach (var slice in Enum.GetValues<Slice>())
+                {
+                    if (existingDays.Overlaps(TimeRange.FromSlice(slice)) &&
+                        !existingMinutes.Contains(TimeRange.FromSlice(slice)))
+                    {
+                        builder.Add(new MinutesDownload(symbol, slice, downloader));
+                    }
+                }
+
+                return builder.ToImmutable();
+            }
+
             return ImmutableArray<MinutesDownload>.Empty;
         }
 

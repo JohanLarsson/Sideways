@@ -22,10 +22,7 @@
                 this.DaysDownload = DaysDownload.Create(symbol, TradingDay.From(existingDays.Max), downloader);
             }
 
-            if (TradingDay.From(existingMinutes.Max) < TradingDay.LastComplete())
-            {
-                this.MinutesDownloads = MinutesDownload.Create(symbol, existingDays, existingMinutes, downloader);
-            }
+            this.MinutesDownloads = MinutesDownload.Create(symbol, existingDays, existingMinutes, downloader);
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.DownloadCommand = new RelayCommand(_ => this.DownloadAsync(), _ => CanDownload());
