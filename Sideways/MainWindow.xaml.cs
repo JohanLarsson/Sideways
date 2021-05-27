@@ -164,7 +164,9 @@
                 Height = 500,
                 Content = new DownloadView
                 {
+#pragma warning disable IDISP003 // Dispose previous before re-assigning.
                     DataContext = ((MainViewModel)this.DataContext)?.Downloader,
+#pragma warning restore IDISP003 // Dispose previous before re-assigning.
                 },
                 Owner = this,
             };
