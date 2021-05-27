@@ -48,7 +48,7 @@
 
                 <sideways:DownloadStatusTemplateSelector.Error>
                     <DataTemplate>
-                        <Path Data="{StaticResource ErrorGeometry}"
+                        <Path Data="{StaticResource CrossGeometry}"
                               Fill="{x:Static sideways:Brushes.Red}"
                               Style="{StaticResource IconStyle}" />
                     </DataTemplate>
