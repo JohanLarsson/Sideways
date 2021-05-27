@@ -17,21 +17,21 @@
         private AlphaVantageClient? client;
 
         private ImmutableList<Download> downloads = ImmutableList<Download>.Empty;
-        private ImmutableList<TopUp> topUps = ImmutableList<TopUp>.Empty;
-        private DownloadState topUpAllState = new();
+        private ImmutableList<SymbolDownloads> symbolDownloads = ImmutableList<SymbolDownloads>.Empty;
+        private DownloadState symbolDownloadState = new();
         private bool disposed;
 
         public Downloader()
         {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            this.RefreshTopUpsCommand = new RelayCommand(_ => this.RefreshAsync());
+            this.RefreshTopUpsCommand = new RelayCommand(_ => this.RefreshSymbolDownloadsAsync());
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            this.RunAllTopUpsCommand = new RelayCommand(_ => DownloadAllTopUps(), _ => !this.topUps.IsEmpty);
+            this.RunAllTopUpsCommand = new RelayCommand(_ => DownloadAllTopUps(), _ => !this.symbolDownloads.IsEmpty);
 
             async void DownloadAllTopUps()
             {
-                this.TopUpAllState.Start = DateTimeOffset.Now;
-                foreach (var topUp in this.topUps)
+                this.SymbolDownloadState.Start = DateTimeOffset.Now;
+                foreach (var topUp in this.symbolDownloads)
                 {
                     if (topUp.DownloadCommand.CanExecute(null))
                     {
@@ -39,8 +39,8 @@
                     }
                 }
 
-                this.topUpAllState.Exception = this.topUps.FirstOrDefault(x => x.DownloadState.Exception is { })?.DownloadState.Exception;
-                this.TopUpAllState.End = DateTimeOffset.Now;
+                this.symbolDownloadState.Exception = this.symbolDownloads.FirstOrDefault(x => x.State.Exception is { })?.State.Exception;
+                this.SymbolDownloadState.End = DateTimeOffset.Now;
             }
         }
 
@@ -67,45 +67,45 @@
             }
         }
 
-        public ImmutableList<TopUp> TopUps
+        public ImmutableList<SymbolDownloads> SymbolDownloads
         {
-            get => this.topUps;
+            get => this.symbolDownloads;
             private set
             {
-                if (ReferenceEquals(value, this.topUps))
+                if (ReferenceEquals(value, this.symbolDownloads))
                 {
                     return;
                 }
 
-                this.topUps = value;
+                this.symbolDownloads = value;
                 this.OnPropertyChanged();
             }
         }
 
-        public DownloadState TopUpAllState
+        public DownloadState SymbolDownloadState
         {
-            get => this.topUpAllState;
+            get => this.symbolDownloadState;
             private set
             {
-                if (value == this.topUpAllState)
+                if (value == this.symbolDownloadState)
                 {
                     return;
                 }
 
-                this.topUpAllState = value;
+                this.symbolDownloadState = value;
                 this.OnPropertyChanged();
             }
         }
 
-        public async Task RefreshAsync()
+        public async Task RefreshSymbolDownloadsAsync()
         {
-            this.TopUps = ImmutableList<TopUp>.Empty;
-            this.TopUpAllState = new DownloadState();
+            this.SymbolDownloads = ImmutableList<SymbolDownloads>.Empty;
+            this.SymbolDownloadState = new DownloadState();
             var dayRanges = await Task.Run(() => Database.DayRanges()).ConfigureAwait(false);
             var minuteRanges = await Task.Run(() => Database.MinuteRanges()).ConfigureAwait(false);
-            this.TopUps = TopUps().OrderBy(x => x.LastComplete).ToImmutableList();
+            this.SymbolDownloads = TopUps().OrderBy(x => x.LastComplete).ToImmutableList();
 
-            IEnumerable<TopUp> TopUps()
+            IEnumerable<SymbolDownloads> TopUps()
             {
                 foreach (var (symbol, dayRange) in dayRanges)
                 {
@@ -114,7 +114,7 @@
                         if (TradingDay.From(dayRange.Max) < TradingDay.LastComplete() ||
                             TradingDay.From(minuteRange.Max) < TradingDay.LastComplete())
                         {
-                            yield return new TopUp(symbol, dayRange, minuteRange, this);
+                            yield return new SymbolDownloads(symbol, dayRange, minuteRange, this);
                         }
                     }
                 }

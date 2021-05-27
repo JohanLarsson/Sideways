@@ -6,12 +6,12 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
 
-    public class TopUp
+    public class SymbolDownloads
     {
         private readonly TimeRange existingDays;
         private readonly TimeRange existingMinutes;
 
-        public TopUp(string symbol, TimeRange existingDays, TimeRange existingMinutes, Downloader downloader)
+        public SymbolDownloads(string symbol, TimeRange existingDays, TimeRange existingMinutes, Downloader downloader)
         {
             this.existingDays = existingDays;
             this.existingMinutes = existingMinutes;
@@ -34,8 +34,8 @@
             {
                 return this switch
                 {
-                    { DaysDownload: { Start: { } } } => false,
-                    { MinutesDownloads: { Length: > 0 } minutesDownloads } => minutesDownloads.All(x => x.Start is null),
+                    { DaysDownload: { State: { Start: { } } } } => false,
+                    { MinutesDownloads: { Length: > 0 } minutesDownloads } => minutesDownloads.All(x => x is { State: { Start: null } }),
                     _ => true,
                 };
             }
@@ -49,7 +49,7 @@
 
         public ICommand DownloadCommand { get; }
 
-        public DownloadState DownloadState { get; } = new();
+        public DownloadState State { get; } = new();
 
         public TradingDay LastDay => TradingDay.From(this.existingDays.Max);
 
@@ -59,8 +59,8 @@
 
         public async Task DownloadAsync()
         {
-            this.DownloadState.Start = DateTimeOffset.Now;
-            if (this.DaysDownload is { Start: null } daysDownload)
+            this.State.Start = DateTimeOffset.Now;
+            if (this.DaysDownload is { State: { Start: null } } daysDownload)
             {
                 await daysDownload.ExecuteAsync().ConfigureAwait(false);
             }
@@ -69,7 +69,7 @@
             {
                 foreach (var minutesDownload in minutesDownloads)
                 {
-                    if (minutesDownload.Start is null)
+                    if (minutesDownload is { State: { Start: null } })
                     {
                         if (await minutesDownload.ExecuteAsync().ConfigureAwait(false) == 0)
                         {
@@ -79,9 +79,9 @@
                 }
             }
 
-            this.DownloadState.Exception = this.DaysDownload?.Exception ??
-                                           this.MinutesDownloads?.FirstOrDefault(x => x.Exception is { })?.Exception;
-            this.DownloadState.End = DateTimeOffset.Now;
+            this.State.Exception = this.DaysDownload?.State.Exception ??
+                                           this.MinutesDownloads?.FirstOrDefault(x => x.State.Exception is { })?.State.Exception;
+            this.State.End = DateTimeOffset.Now;
         }
 
         public override string ToString() => $"{this.Symbol} last day: {TradingDay.From(this.existingDays.Max)} last minute: {TradingDay.From(this.existingMinutes.Max)}";

@@ -36,12 +36,12 @@
         public async Task<int> ExecuteAsync()
         {
             this.downloader.Add(this);
-            this.Start = DateTimeOffset.Now;
+            this.State.Start = DateTimeOffset.Now;
 
             try
             {
                 var candles = await this.downloader.Client.DailyAdjustedAsync(this.Symbol, this.OutputSize).ConfigureAwait(false);
-                this.End = DateTimeOffset.Now;
+                this.State.End = DateTimeOffset.Now;
                 Database.WriteDays(this.Symbol, candles);
                 return candles.Length;
             }
@@ -49,7 +49,8 @@
             catch (Exception e)
 #pragma warning restore CA1031 // Do not catch general exception types
             {
-                this.Exception = e;
+                this.State.Exception = e;
+                this.State.End = DateTimeOffset.Now;
                 return 0;
             }
         }
