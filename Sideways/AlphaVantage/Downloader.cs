@@ -8,6 +8,9 @@
     using System.Net.Http;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
+    using System.Windows.Input;
+
+    using Sideways;
 
     public sealed class Downloader : IDisposable, INotifyPropertyChanged
     {
@@ -15,9 +18,39 @@
 
         private ImmutableList<Download> downloads = ImmutableList<Download>.Empty;
         private ImmutableList<TopUp> topUps = ImmutableList<TopUp>.Empty;
+        private DownloadState topUpAllState = new();
         private bool disposed;
 
+        public Downloader()
+        {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            this.RefreshTopUpsCommand = new RelayCommand(_ => this.RefreshAsync());
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            this.RunAllTopUpsCommand = new RelayCommand(_ => DownloadAllTopUps(), _ => !this.topUps.IsEmpty);
+
+            async void DownloadAllTopUps()
+            {
+                this.TopUpAllState.Start = DateTimeOffset.Now;
+                foreach (var topUp in this.topUps)
+                {
+                    if (topUp.DownloadCommand.CanExecute(null))
+                    {
+                        await topUp.DownloadAsync().ConfigureAwait(false);
+                    }
+                }
+
+                this.topUpAllState.Exception = this.topUps.FirstOrDefault(x => x.DownloadState.Exception is { })?.DownloadState.Exception;
+                this.TopUpAllState.End = DateTimeOffset.Now;
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public ICommand RefreshTopUpsCommand { get; }
+
+        public ICommand RunAllTopUpsCommand { get; }
+
+        public AlphaVantageClient Client => this.client ??= new(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
 
         public ImmutableList<Download> Downloads
         {
@@ -49,11 +82,25 @@
             }
         }
 
-        public AlphaVantageClient Client => this.client ??= new(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
+        public DownloadState TopUpAllState
+        {
+            get => this.topUpAllState;
+            private set
+            {
+                if (value == this.topUpAllState)
+                {
+                    return;
+                }
+
+                this.topUpAllState = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public async Task RefreshAsync()
         {
             this.TopUps = ImmutableList<TopUp>.Empty;
+            this.TopUpAllState = new DownloadState();
             var dayRanges = await Task.Run(() => Database.DayRanges()).ConfigureAwait(false);
             var minuteRanges = await Task.Run(() => Database.MinuteRanges()).ConfigureAwait(false);
             this.TopUps = TopUps().OrderBy(x => x.LastComplete).ToImmutableList();

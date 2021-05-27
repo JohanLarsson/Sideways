@@ -160,7 +160,7 @@
             var window = new Window
             {
                 Title = "Downloader",
-                Width = 300,
+                SizeToContent = SizeToContent.Width,
                 Height = 500,
                 Content = new DownloadView
                 {
