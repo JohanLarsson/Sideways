@@ -135,7 +135,6 @@
                               IsEditable="True"
                               ItemsSource="{Binding Symbols}"
                               SelectedItem="{Binding CurrentSymbolText}"
-                              Style="{StaticResource ComboBoxStyle}"
                               Text="{Binding CurrentSymbolText, UpdateSourceTrigger=Explicit}" />
 
                     <TextBlock>

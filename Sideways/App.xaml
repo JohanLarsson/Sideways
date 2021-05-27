@@ -8,6 +8,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Geometries.xaml" />
                 <ResourceDictionary Source="Resources/Button.xaml" />
+                <ResourceDictionary Source="Resources/ScrollBar.xaml" />
                 <ResourceDictionary Source="Resources/ComboBox.xaml" />
                 <ResourceDictionary Source="Resources/DataGrid.xaml" />
                 <ResourceDictionary Source="Resources/TabControl.xaml" />
@@ -56,12 +57,6 @@
             <Style TargetType="{x:Type Expander}">
                 <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Gray}" />
                 <Setter Property="Background" Value="Transparent" />
-            </Style>
-
-            <Style TargetType="{x:Type ScrollBar}">
-                <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Gray}" />
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderThickness" Value="0" />
             </Style>
 
             <Style TargetType="{x:Type ToolTip}">
