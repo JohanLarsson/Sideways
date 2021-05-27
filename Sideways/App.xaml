@@ -70,16 +70,17 @@
                 <Setter Property="Height" Value="10" />
                 <Setter Property="Fill" Value="Black" />
                 <Setter Property="StrokeThickness" Value="0" />
-                <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
-                <Setter Property="RenderTransform">
-                    <Setter.Value>
-                        <RotateTransform Angle="0" />
-                    </Setter.Value>
-                </Setter>
                 <Style.Triggers>
                     <Trigger Property="sideways:Icon.IsSpinning" Value="True">
+                        <Setter Property="RenderTransform">
+                            <Setter.Value>
+                                <RotateTransform Angle="0" />
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+
                         <Trigger.EnterActions>
-                            <BeginStoryboard x:Name="SpinWhileWaiting">
+                            <BeginStoryboard x:Name="Spin">
                                 <Storyboard>
                                     <DoubleAnimation RepeatBehavior="Forever"
                                                      Storyboard.TargetProperty="RenderTransform.(RotateTransform.Angle)"
@@ -90,7 +91,30 @@
                             </BeginStoryboard>
                         </Trigger.EnterActions>
                         <Trigger.ExitActions>
-                            <StopStoryboard BeginStoryboardName="SpinWhileWaiting" />
+                            <StopStoryboard BeginStoryboardName="Spin" />
+                        </Trigger.ExitActions>
+                    </Trigger>
+
+                    <Trigger Property="sideways:Icon.IsPulsing" Value="True">
+                        <Setter Property="RenderTransform">
+                            <Setter.Value>
+                                <TranslateTransform X="0" Y="0" />
+                            </Setter.Value>
+                        </Setter>
+
+                        <Trigger.EnterActions>
+                            <BeginStoryboard x:Name="Pulse">
+                                <Storyboard>
+                                    <DoubleAnimation RepeatBehavior="Forever"
+                                                     Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                     From="-1"
+                                                     To="2"
+                                                     Duration="0:0:2" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.EnterActions>
+                        <Trigger.ExitActions>
+                            <StopStoryboard BeginStoryboardName="Pulse" />
                         </Trigger.ExitActions>
                     </Trigger>
                 </Style.Triggers>
