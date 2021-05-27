@@ -13,13 +13,13 @@
     {
         private AlphaVantageClient? client;
 
-        private ImmutableList<IDownload> downloads = ImmutableList<IDownload>.Empty;
+        private ImmutableList<Download> downloads = ImmutableList<Download>.Empty;
         private ImmutableList<TopUp> topUps = ImmutableList<TopUp>.Empty;
         private bool disposed;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public ImmutableList<IDownload> Downloads
+        public ImmutableList<Download> Downloads
         {
             get => this.downloads;
             private set
@@ -84,7 +84,7 @@
                 Database.ReadSplits(symbol));
         }
 
-        public void Add(IDownload download)
+        public void Add(Download download)
         {
             this.Downloads = this.Downloads.Add(download);
         }

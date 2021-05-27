@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Geometry x:Key="QueueGeometry">F1M74,0L82,0 100,48 82,97 74,97 71,87 86,48 71,10 74,0z M49,0L56,0 74,48 56,97 49,97 45,87 60,48 45,10 49,0z M19,0L30,0 49,48 30,97 19,97 0,48 19,0z</Geometry>
+    <Geometry x:Key="QuestionGeometry">F1M30,80C36,80 40,84 40,90 40,96 36,100 30,100 24,100 20,96 20,90 20,84 24,80 30,80z M32,0C50,0 64,11 64,28 64,34 60,44 52,48 44,52 40,57 40,64L40,72 20,72 20,66C20,59 23,54 27,49 30,45 34,42 36,40 44,32 44,31 44,28 44,21 39,16 32,16 25,16 20,21 20,28L20,34 0,34 0,30C0,22 4,14 9,9 15,3 23,0 32,0z</Geometry>
+    <Geometry x:Key="PlayGeometry">F1M0,0L65,49 65,53 0,100 0,0z</Geometry>
+    <Geometry x:Key="RecycleGeometry">F1M71,54L84,54C82,75 64,92 42,92 30,92 19,87 12,79L12,100 0,88 0,58 31,58 42,69 21,69C26,75 34,79 42,79 50,79 56,76 61,72 66,67 70,61 71,54z M73,0L85,12 85,42 54,42 42,31 64,31C59,25 51,21 42,21 35,21 28,24 23,28 18,33 15,39 14,46L0,46C2,25 20,8 42,8 54,8 65,13 73,21L73,0z</Geometry>
+    <Geometry x:Key="CheckGeometry">F1M92,0L100,11 32,71 0,29 11,18 34,50 92,0z</Geometry>
+    <Geometry x:Key="ErrorGeometry">F1M32,18L18,32 39,50 18,68 32,82 50,61 68,82 82,68 61,50 82,32 68,18 50,39 32,18z M34,0L66,0 100,34 100,66 66,100 34,100 0,66 0,34 34,0z</Geometry>
+</ResourceDictionary>

@@ -1,75 +1,20 @@
 ﻿namespace Sideways.AlphaVantage
 {
     using System;
-    using System.Collections.Immutable;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
-    public class DaysDownload : IDownload, INotifyPropertyChanged
+    public class DaysDownload : Download
     {
         private readonly Downloader downloader;
-        private DateTimeOffset? start;
-        private DateTimeOffset? end;
-        private Exception? exception;
 
         public DaysDownload(string symbol, OutputSize outputSize, Downloader downloader)
+            : base(symbol)
         {
             this.downloader = downloader;
-            this.Symbol = symbol;
             this.OutputSize = outputSize;
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public string Symbol { get; }
-
         public OutputSize OutputSize { get; }
-
-        public DateTimeOffset? Start
-        {
-            get => this.start;
-            private set
-            {
-                if (value == this.start)
-                {
-                    return;
-                }
-
-                this.start = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public DateTimeOffset? End
-        {
-            get => this.end;
-            private set
-            {
-                if (value == this.end)
-                {
-                    return;
-                }
-
-                this.end = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public Exception? Exception
-        {
-            get => this.exception;
-            private set
-            {
-                if (ReferenceEquals(value, this.exception))
-                {
-                    return;
-                }
-
-                this.exception = value;
-                this.OnPropertyChanged();
-            }
-        }
 
         public static DaysDownload Create(string symbol, TradingDay? from, Downloader downloader)
         {
@@ -107,11 +52,6 @@
                 this.Exception = e;
                 return 0;
             }
-        }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

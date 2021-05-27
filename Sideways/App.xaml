@@ -6,6 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Geometries.xaml" />
                 <ResourceDictionary Source="Resources/Button.xaml" />
                 <ResourceDictionary Source="Resources/ComboBox.xaml" />
                 <ResourceDictionary Source="Resources/DataGrid.xaml" />
@@ -55,6 +56,44 @@
                 <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Gray}" />
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="BorderThickness" Value="0" />
+            </Style>
+
+            <Style TargetType="{x:Type ToolTip}">
+                <Setter Property="Background" Value="{x:Static sideways:Brushes.Background}" />
+            </Style>
+
+            <Style x:Key="IconStyle" TargetType="{x:Type Shape}">
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="Stretch" Value="Uniform" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Width" Value="10" />
+                <Setter Property="Height" Value="10" />
+                <Setter Property="Fill" Value="Black" />
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <RotateTransform Angle="0" />
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="sideways:Icon.IsSpinning" Value="True">
+                        <Trigger.EnterActions>
+                            <BeginStoryboard x:Name="SpinWhileWaiting">
+                                <Storyboard>
+                                    <DoubleAnimation RepeatBehavior="Forever"
+                                                     Storyboard.TargetProperty="RenderTransform.(RotateTransform.Angle)"
+                                                     From="0"
+                                                     To="360"
+                                                     Duration="0:0:2" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.EnterActions>
+                        <Trigger.ExitActions>
+                            <StopStoryboard BeginStoryboardName="SpinWhileWaiting" />
+                        </Trigger.ExitActions>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
         </ResourceDictionary>
     </Application.Resources>

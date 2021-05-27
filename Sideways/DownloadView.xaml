@@ -11,17 +11,6 @@
              d:DesignWidth="800"
              mc:Ignorable="d">
     <TabControl>
-        <TabItem Header="Running">
-            <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Downloads}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Symbol}" Header="Symbol" />
-                    <DataGridTextColumn Binding="{Binding Start, StringFormat='t'}" Header="Start" />
-                    <DataGridTextColumn Binding="{Binding End, StringFormat='t'}" Header="End" />
-                    <DataGridTextColumn Binding="{Binding Exception.Message}" Header="Exception" Foreground="{x:Static sideways:Brushes.Error}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </TabItem>
-
         <TabItem Header="Top ups">
             <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding TopUps}">
                 <DataGrid.Columns>
@@ -38,6 +27,81 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
+        </TabItem>
+
+        <TabItem Header="Running">
+            <ItemsControl ItemsSource="{Binding Downloads}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type alphaVantage:Download}">
+                        <StackPanel Background="Transparent" Orientation="Horizontal">
+                            <StackPanel.ToolTip>
+                                <ToolTip d:DataContext="{d:DesignInstance alphaVantage:Download, IsDesignTimeCreatable=False}" DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Start, StringFormat='Start: {0:t}'}" />
+                                        <TextBlock Text="{Binding End, StringFormat='End: {0:t}'}" />
+                                        <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding Exception.Message, StringFormat='Error: {0:t}'}" />
+                                    </StackPanel>
+                                </ToolTip>
+                            </StackPanel.ToolTip>
+
+                            <ContentPresenter Margin="2,0" Content="{Binding Status}">
+                                <ContentPresenter.ContentTemplateSelector>
+                                    <sideways:DownloadStatusTemplateSelector>
+                                        <sideways:DownloadStatusTemplateSelector.Unknown>
+                                            <DataTemplate>
+                                                <Path 
+                                                    sideways:Icon.IsSpinning="True"
+                                                    Data="{StaticResource QuestionGeometry}"
+                                                    Fill="{x:Static sideways:Brushes.Disabled}"
+                                                    Style="{StaticResource IconStyle}" />
+                                            </DataTemplate>
+                                        </sideways:DownloadStatusTemplateSelector.Unknown>
+
+                                        <sideways:DownloadStatusTemplateSelector.Waiting>
+                                            <DataTemplate>
+                                                <Path 
+                                                    sideways:Icon.IsSpinning="True"
+                                                    Data="{StaticResource QueueGeometry}"
+                                                    Fill="{x:Static sideways:Brushes.Disabled}"
+                                                    Style="{StaticResource IconStyle}" />
+                                            </DataTemplate>
+                                        </sideways:DownloadStatusTemplateSelector.Waiting>
+
+                                        <sideways:DownloadStatusTemplateSelector.Running>
+                                            <DataTemplate>
+                                                <Path 
+                                                    sideways:Icon.IsSpinning="True"
+                                                    Data="{StaticResource RecycleGeometry}"
+                                                    Fill="{x:Static sideways:Brushes.Green}"
+                                                    Style="{StaticResource IconStyle}" />
+                                            </DataTemplate>
+                                        </sideways:DownloadStatusTemplateSelector.Running>
+
+                                        <sideways:DownloadStatusTemplateSelector.Completed>
+                                            <DataTemplate>
+                                                <Path 
+                                                    Data="{StaticResource CheckGeometry}"
+                                                    Fill="{x:Static sideways:Brushes.Green}"
+                                                    Style="{StaticResource IconStyle}" />
+                                            </DataTemplate>
+                                        </sideways:DownloadStatusTemplateSelector.Completed>
+
+                                        <sideways:DownloadStatusTemplateSelector.Error>
+                                            <DataTemplate>
+                                                <Path 
+                                                    Data="{StaticResource ErrorGeometry}"
+                                                    Fill="{x:Static sideways:Brushes.Red}"
+                                                    Style="{StaticResource IconStyle}" />
+                                            </DataTemplate>
+                                        </sideways:DownloadStatusTemplateSelector.Error>
+                                    </sideways:DownloadStatusTemplateSelector>
+                                </ContentPresenter.ContentTemplateSelector>
+                            </ContentPresenter>
+                            <TextBlock Text="{Binding Symbol}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </TabItem>
     </TabControl>
 </UserControl>

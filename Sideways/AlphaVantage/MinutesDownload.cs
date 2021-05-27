@@ -2,74 +2,20 @@
 {
     using System;
     using System.Collections.Immutable;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
-    public class MinutesDownload : IDownload, INotifyPropertyChanged
+    public class MinutesDownload : Download
     {
         private readonly Downloader downloader;
-        private DateTimeOffset? start;
-        private DateTimeOffset? end;
-        private Exception? exception;
 
         public MinutesDownload(string symbol, Slice? slice, Downloader downloader)
+            : base(symbol)
         {
             this.downloader = downloader;
-            this.Symbol = symbol;
             this.Slice = slice;
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public string Symbol { get; }
-
         public Slice? Slice { get; }
-
-        public DateTimeOffset? Start
-        {
-            get => this.start;
-            private set
-            {
-                if (value == this.start)
-                {
-                    return;
-                }
-
-                this.start = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public DateTimeOffset? End
-        {
-            get => this.end;
-            private set
-            {
-                if (value == this.end)
-                {
-                    return;
-                }
-
-                this.end = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public Exception? Exception
-        {
-            get => this.exception;
-            private set
-            {
-                if (ReferenceEquals(value, this.exception))
-                {
-                    return;
-                }
-
-                this.exception = value;
-                this.OnPropertyChanged();
-            }
-        }
 
         public static ImmutableArray<MinutesDownload> Create(string symbol, TimeRange existingDays, TimeRange existingMinutes, Downloader down)
         {
@@ -112,11 +58,6 @@
                     return this.downloader.Client.IntradayAsync(this.Symbol, Interval.Minute);
                 }
             }
-        }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
