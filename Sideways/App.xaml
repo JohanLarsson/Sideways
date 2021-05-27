@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="Resources/ComboBox.xaml" />
                 <ResourceDictionary Source="Resources/DataGrid.xaml" />
                 <ResourceDictionary Source="Resources/TabControl.xaml" />
+                <ResourceDictionary Source="Resources/TreeView.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="VerticalAxisGridSplitter" TargetType="{x:Type GridSplitter}">
@@ -55,20 +56,6 @@
             <Style TargetType="{x:Type Expander}">
                 <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Gray}" />
                 <Setter Property="Background" Value="Transparent" />
-            </Style>
-
-            <Style TargetType="{x:Type TreeView}">
-                <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Gray}" />
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderBrush" Value="{x:Null}" />
-                <Setter Property="BorderThickness" Value="0" />
-            </Style>
-
-            <Style TargetType="{x:Type TreeViewItem}">
-                <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Gray}" />
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderBrush" Value="{x:Null}" />
-                <Setter Property="BorderThickness" Value="0" />
             </Style>
 
             <Style TargetType="{x:Type ScrollBar}">

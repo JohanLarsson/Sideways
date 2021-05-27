@@ -5,7 +5,7 @@
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="{x:Null}" />
-        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.LightGray}" />
+        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Text}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -34,7 +34,7 @@
                             <Setter TargetName="border" Property="Background" Value="{x:Static sideways:Brushes.Pressed}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.Disabled}" />
+                            <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.DisabledText}" />
                             <Setter TargetName="contentPresenter" Property="TextElement.FontStyle" Value="Oblique" />
                         </Trigger>
                     </ControlTemplate.Triggers>

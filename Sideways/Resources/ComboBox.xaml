@@ -61,7 +61,7 @@
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="arrow" Property="Fill" Value="{x:Static sideways:Brushes.Disabled}" />
+                            <Setter TargetName="arrow" Property="Fill" Value="{x:Static sideways:Brushes.DisabledText}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -125,7 +125,7 @@
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsEnabled" Value="false">
-                <Setter TargetName="PART_EditableTextBox" Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.Disabled}" />
+                <Setter TargetName="PART_EditableTextBox" Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.DisabledText}" />
                 <Setter TargetName="PART_EditableTextBox" Property="TextElement.FontStyle" Value="Oblique" />
             </Trigger>
 

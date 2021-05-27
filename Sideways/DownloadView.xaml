@@ -15,7 +15,7 @@
             <sideways:DownloadStatusTemplateSelector.Unknown>
                 <DataTemplate>
                     <Path Data="{StaticResource QuestionGeometry}"
-                          Fill="{x:Static sideways:Brushes.Disabled}"
+                          Fill="{x:Static sideways:Brushes.DisabledText}"
                           Style="{StaticResource IconStyle}" />
                 </DataTemplate>
             </sideways:DownloadStatusTemplateSelector.Unknown>
@@ -23,7 +23,7 @@
             <sideways:DownloadStatusTemplateSelector.Waiting>
                 <DataTemplate>
                     <Path Data="{StaticResource ArrowDownGeometry}"
-                          Fill="{x:Static sideways:Brushes.Disabled}"
+                          Fill="{x:Static sideways:Brushes.DisabledText}"
                           Style="{StaticResource IconStyle}" />
                 </DataTemplate>
             </sideways:DownloadStatusTemplateSelector.Waiting>
