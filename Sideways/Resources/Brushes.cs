@@ -9,6 +9,7 @@
         public static readonly SolidColorBrush Decreasing = Create(Color.FromArgb(byte.MaxValue, 154, 66, 66));
         public static readonly SolidColorBrush Error = Create(Color.FromArgb(byte.MaxValue, 205, 92, 92));
         public static readonly SolidColorBrush Pressed = Create(Color.FromArgb(byte.MaxValue, 100, 149, 237));
+        public static readonly SolidColorBrush Disabled = Create(Color.FromArgb(byte.MaxValue, 128, 128, 128));
         public static readonly SolidColorBrush Purple = Create(Color.FromArgb(byte.MaxValue, 99, 61, 143));
         public static readonly SolidColorBrush Yellow = Create(Color.FromArgb(byte.MaxValue, 143, 139, 61));
         public static readonly SolidColorBrush Orange = Create(Color.FromArgb(byte.MaxValue, 143, 113, 61));

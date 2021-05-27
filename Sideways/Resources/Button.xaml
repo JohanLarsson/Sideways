@@ -34,7 +34,7 @@
                             <Setter TargetName="border" Property="Background" Value="{x:Static sideways:Brushes.Pressed}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.Gray}" />
+                            <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.Disabled}" />
                             <Setter TargetName="contentPresenter" Property="TextElement.FontStyle" Value="Oblique" />
                         </Trigger>
                     </ControlTemplate.Triggers>
