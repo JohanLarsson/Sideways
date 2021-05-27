@@ -93,7 +93,7 @@
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
@@ -105,22 +105,47 @@
                     <TextBlock Text="{Binding SymbolDownloads.Count, StringFormat='Count: {0}'}" />
                 </StackPanel>
 
-                <ScrollViewer Grid.Row="1"
-                              VerticalScrollBarVisibility="Auto">
-                    <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding SymbolDownloads}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type alphaVantage:SymbolDownloads}">
-                                <Button HorizontalContentAlignment="Left" Command="{Binding DownloadCommand}">
+                <TreeView Grid.Row="1" ItemsSource="{Binding SymbolDownloads}">
+                    <TreeView.ItemTemplateSelector>
+                        <sideways:SymbolDownloadTemplateSelector>
+                            <sideways:SymbolDownloadTemplateSelector.Symbol>
+                                <HierarchicalDataTemplate DataType="{x:Type alphaVantage:SymbolDownloads}" ItemsSource="{Binding AllDownloads}">
+                                    <Button HorizontalContentAlignment="Left" Command="{Binding DownloadCommand}">
+                                        <StackPanel Background="Transparent"
+                                                    Orientation="Horizontal"
+                                                    ToolTipService.ShowOnDisabled="True">
+                                            <StackPanel.ToolTip>
+                                                <ToolTip d:DataContext="{d:DesignInstance alphaVantage:SymbolDownloads, IsDesignTimeCreatable=False}" DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Symbol, StringFormat='Download missing data for: {0}'}" />
+                                                        <TextBlock Text="{Binding LastComplete, StringFormat='Complete to: {0:t}'}" />
+                                                        <TextBlock Text="{Binding LastDay, StringFormat='Days complete to: {0:t}'}" />
+                                                        <TextBlock Text="{Binding LastMinute, StringFormat='Minutes complete to: {0:t}'}" />
+                                                        <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
+                                                        <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
+                                                        <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
+                                                        <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
+                                                    </StackPanel>
+                                                </ToolTip>
+                                            </StackPanel.ToolTip>
+
+                                            <ContentPresenter Margin="2,0"
+                                                              Content="{Binding State.Status}"
+                                                              ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
+                                            <TextBlock Text="{Binding Symbol}" />
+                                        </StackPanel>
+                                    </Button>
+                                </HierarchicalDataTemplate>
+                            </sideways:SymbolDownloadTemplateSelector.Symbol>
+
+                            <sideways:SymbolDownloadTemplateSelector.Days>
+                                <DataTemplate DataType="{x:Type alphaVantage:DaysDownload}">
                                     <StackPanel Background="Transparent"
                                                 Orientation="Horizontal"
                                                 ToolTipService.ShowOnDisabled="True">
                                         <StackPanel.ToolTip>
                                             <ToolTip d:DataContext="{d:DesignInstance alphaVantage:SymbolDownloads, IsDesignTimeCreatable=False}" DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
                                                 <StackPanel>
-                                                    <TextBlock Text="{Binding Symbol, StringFormat='Download missing data for: {0}'}" />
-                                                    <TextBlock Text="{Binding LastComplete, StringFormat='Complete to: {0:t}'}" />
-                                                    <TextBlock Text="{Binding LastDay, StringFormat='Days complete to: {0:t}'}" />
-                                                    <TextBlock Text="{Binding LastMinute, StringFormat='Minutes complete to: {0:t}'}" />
                                                     <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
                                                     <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
                                                     <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
@@ -132,75 +157,100 @@
                                         <ContentPresenter Margin="2,0"
                                                           Content="{Binding State.Status}"
                                                           ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
+                                        <TextBlock Text="Days" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </sideways:SymbolDownloadTemplateSelector.Days>
+
+                            <sideways:SymbolDownloadTemplateSelector.Minutes>
+                                <DataTemplate DataType="{x:Type alphaVantage:MinutesDownload}">
+                                    <StackPanel Background="Transparent"
+                                                Orientation="Horizontal"
+                                                ToolTipService.ShowOnDisabled="True">
+                                        <StackPanel.ToolTip>
+                                            <ToolTip d:DataContext="{d:DesignInstance alphaVantage:SymbolDownloads, IsDesignTimeCreatable=False}" DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
+                                                    <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
+                                                    <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
+                                                    <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
+                                                </StackPanel>
+                                            </ToolTip>
+                                        </StackPanel.ToolTip>
+
+                                        <ContentPresenter Margin="2,0"
+                                                          Content="{Binding State.Status}"
+                                                          ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
+                                        <TextBlock Text="Minutes" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </sideways:SymbolDownloadTemplateSelector.Minutes>
+                        </sideways:SymbolDownloadTemplateSelector>
+                    </TreeView.ItemTemplateSelector>
+                </TreeView>
+            </Grid>
+
+            <Expander Grid.Column="1" ExpandDirection="Left">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="All downloads this session" />
+                        <TextBlock Text="{Binding Downloads.Count, StringFormat='Count: {0}'}" />
+                    </StackPanel>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding Downloads}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type alphaVantage:Download}">
+                                    <StackPanel Background="Transparent" Orientation="Horizontal">
+                                        <StackPanel.ToolTip>
+                                            <ToolTip d:DataContext="{d:DesignInstance alphaVantage:Download, IsDesignTimeCreatable=False}" Content="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
+                                                <ToolTip.ContentTemplateSelector>
+                                                    <sideways:DownloadTemplateSelector>
+                                                        <sideways:DownloadTemplateSelector.Days>
+                                                            <DataTemplate DataType="{x:Type alphaVantage:DaysDownload}">
+                                                                <StackPanel>
+                                                                    <TextBlock Text="{Binding Symbol, StringFormat='Download days for: {0}'}" />
+                                                                    <TextBlock Text="{Binding OutputSize, StringFormat='OutputSize: {0}'}" />
+                                                                    <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
+                                                                    <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
+                                                                    <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
+                                                                    <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </sideways:DownloadTemplateSelector.Days>
+
+                                                        <sideways:DownloadTemplateSelector.Minutes>
+                                                            <DataTemplate DataType="{x:Type alphaVantage:MinutesDownload}">
+                                                                <StackPanel>
+                                                                    <TextBlock Text="{Binding Symbol, StringFormat='Download minutes for: {0}'}" />
+                                                                    <TextBlock Text="{Binding Slice, StringFormat='Slice: {0}'}" />
+                                                                    <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
+                                                                    <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
+                                                                    <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
+                                                                    <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </sideways:DownloadTemplateSelector.Minutes>
+                                                    </sideways:DownloadTemplateSelector>
+                                                </ToolTip.ContentTemplateSelector>
+                                            </ToolTip>
+                                        </StackPanel.ToolTip>
+
+                                        <ContentPresenter Margin="2,0"
+                                                          Content="{Binding State.Status}"
+                                                          ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
                                         <TextBlock Text="{Binding Symbol}" />
                                     </StackPanel>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-            </Grid>
-
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <StackPanel>
-                    <TextBlock Text="All downloads this session" />
-                    <TextBlock Text="{Binding Downloads.Count, StringFormat='Count: {0}'}" />
-                </StackPanel>
-
-                <ScrollViewer Grid.Row="1"
-                              VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding Downloads}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type alphaVantage:Download}">
-                                <StackPanel Background="Transparent" Orientation="Horizontal">
-                                    <StackPanel.ToolTip>
-                                        <ToolTip d:DataContext="{d:DesignInstance alphaVantage:Download, IsDesignTimeCreatable=False}" Content="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
-                                            <ToolTip.ContentTemplateSelector>
-                                                <sideways:DownloadTemplateSelector>
-                                                    <sideways:DownloadTemplateSelector.Days>
-                                                        <DataTemplate DataType="{x:Type alphaVantage:DaysDownload}">
-                                                            <StackPanel>
-                                                                <TextBlock Text="{Binding Symbol, StringFormat='Download days for: {0}'}" />
-                                                                <TextBlock Text="{Binding OutputSize, StringFormat='OutputSize: {0}'}" />
-                                                                <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
-                                                                <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
-                                                                <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
-                                                                <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </sideways:DownloadTemplateSelector.Days>
-
-                                                    <sideways:DownloadTemplateSelector.Minutes>
-                                                        <DataTemplate DataType="{x:Type alphaVantage:MinutesDownload}">
-                                                            <StackPanel>
-                                                                <TextBlock Text="{Binding Symbol, StringFormat='Download minutes for: {0}'}" />
-                                                                <TextBlock Text="{Binding Slice, StringFormat='Slice: {0}'}" />
-                                                                <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
-                                                                <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
-                                                                <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
-                                                                <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </sideways:DownloadTemplateSelector.Minutes>
-                                                </sideways:DownloadTemplateSelector>
-                                            </ToolTip.ContentTemplateSelector>
-                                        </ToolTip>
-                                    </StackPanel.ToolTip>
-
-                                    <ContentPresenter Margin="2,0"
-                                                      Content="{Binding State.Status}"
-                                                      ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
-                                    <TextBlock Text="{Binding Symbol}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-            </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Expander>
         </Grid>
     </Grid>
 </UserControl>

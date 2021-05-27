@@ -43,7 +43,23 @@
 
         public DaysDownload? DaysDownload { get; }
 
-        public ImmutableArray<MinutesDownload>? MinutesDownloads { get; }
+        public ImmutableArray<MinutesDownload> MinutesDownloads { get; }
+
+        public IEnumerable<Download> AllDownloads
+        {
+            get
+            {
+                if (this.DaysDownload is { } daysDownload)
+                {
+                    yield return daysDownload;
+                }
+
+                foreach (var minutesDownload in this.MinutesDownloads)
+                {
+                    yield return minutesDownload;
+                }
+            }
+        }
 
         public ICommand DownloadCommand { get; }
 
@@ -101,7 +117,7 @@
             }
 
             this.State.Exception = this.DaysDownload?.State.Exception ??
-                                   this.MinutesDownloads?.FirstOrDefault(x => x.State.Exception is { })?.State.Exception;
+                                   this.MinutesDownloads.FirstOrDefault(x => x.State.Exception is { })?.State.Exception;
             this.State.End = DateTimeOffset.Now;
         }
 
