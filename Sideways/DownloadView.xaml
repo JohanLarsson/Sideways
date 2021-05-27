@@ -69,7 +69,7 @@
                     <TextBlock Text="{Binding TopUps.Count, StringFormat='Count:{0}'}" />
                     <Button HorizontalAlignment="Left"
                             Command="{Binding RefreshTopUpsCommand}"
-                            Content="Refresh" />
+                            Content="Refresh list" />
                     <Button HorizontalAlignment="Left" Command="{Binding RunAllTopUpsCommand}">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
@@ -81,25 +81,41 @@
                             </StackPanel>
                         </Button.Content>
                     </Button>
+
+                    <TextBlock Text="Download individual symbols:" />
                 </StackPanel>
 
-                <DataGrid Grid.Row="1"
-                          AutoGenerateColumns="False"
-                          ItemsSource="{Binding TopUps}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Symbol}" Header="Symbol" />
-                        <DataGridTextColumn Binding="{Binding LastComplete}" Header="Complete to" />
-                        <DataGridTextColumn Binding="{Binding LastDay}" Header="Last day" />
-                        <DataGridTextColumn Binding="{Binding LastMinute}" Header="Last minute" />
-                        <DataGridTemplateColumn Header="Download">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate DataType="{x:Type alphaVantage:TopUp}">
-                                    <Button Command="{Binding DownloadCommand}" Content="Download" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
+                <ScrollViewer Grid.Row="1">
+                    <ItemsControl ItemsSource="{Binding TopUps}" HorizontalAlignment="Left">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type alphaVantage:TopUp}">
+                                <Button Command="{Binding DownloadCommand}" HorizontalContentAlignment="Left">
+                                    <StackPanel Background="Transparent" Orientation="Horizontal" ToolTipService.ShowOnDisabled="True">
+                                        <StackPanel.ToolTip>
+                                            <ToolTip d:DataContext="{d:DesignInstance alphaVantage:TopUp, IsDesignTimeCreatable=False}" DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Symbol, StringFormat='Download missing data for: {0}'}" />
+                                                    <TextBlock Text="{Binding LastComplete, StringFormat='Complete to: {0:t}'}" />
+                                                    <TextBlock Text="{Binding LastDay, StringFormat='Days complete to: {0:t}'}" />
+                                                    <TextBlock Text="{Binding LastMinute, StringFormat='Minutes complete to: {0:t}'}" />
+                                                    <TextBlock Text="{Binding DownloadState.Start, StringFormat='Start: {0:t}'}" />
+                                                    <TextBlock Text="{Binding DownloadState.End, StringFormat='End: {0:t}'}" />
+                                                    <TextBlock Text="{Binding DownloadState.Duration, StringFormat='Duration: {0:t}'}" />
+                                                    <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding DownloadState.Exception.Message, StringFormat='Error: {0:t}'}" />
+                                                </StackPanel>
+                                            </ToolTip>
+                                        </StackPanel.ToolTip>
+
+                                        <ContentPresenter Margin="2,0"
+                                                  Content="{Binding DownloadState.Status}"
+                                                  ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
+                                        <TextBlock Text="{Binding Symbol}" />
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
             </Grid>
         </TabItem>
 
