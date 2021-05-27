@@ -6,4 +6,5 @@
     <Geometry x:Key="RecycleGeometry">F1M71,54L84,54C82,75 64,92 42,92 30,92 19,87 12,79L12,100 0,88 0,58 31,58 42,69 21,69C26,75 34,79 42,79 50,79 56,76 61,72 66,67 70,61 71,54z M73,0L85,12 85,42 54,42 42,31 64,31C59,25 51,21 42,21 35,21 28,24 23,28 18,33 15,39 14,46L0,46C2,25 20,8 42,8 54,8 65,13 73,21L73,0z</Geometry>
     <Geometry x:Key="CheckGeometry">F1M92,0L100,11 32,71 0,29 11,18 34,50 92,0z</Geometry>
     <Geometry x:Key="CrossGeometry">F1M15,0L50,35 85,0 100,15 65,50 100,85 85,100 50,65 15,100 0,85 35,50 0,15 15,0z</Geometry>
+    <Geometry x:Key="ArrowDownGeometry">F1M25,0L46,0 46,63 71,38 71,64 36,100 0,64 0,38 25,63 25,0z</Geometry>
 </ResourceDictionary>

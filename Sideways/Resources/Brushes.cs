@@ -4,11 +4,12 @@
 
     public static class Brushes
     {
+        public static readonly SolidColorBrush Accent = Create(Color.FromArgb(byte.MaxValue, 100, 149, 237));
         public static readonly SolidColorBrush Background = Create(Color.FromArgb(byte.MaxValue, 5, 5, 15));
         public static readonly SolidColorBrush Increasing = Create(Color.FromArgb(byte.MaxValue, 66, 154, 66));
         public static readonly SolidColorBrush Decreasing = Create(Color.FromArgb(byte.MaxValue, 154, 66, 66));
         public static readonly SolidColorBrush Error = Create(Color.FromArgb(byte.MaxValue, 205, 92, 92));
-        public static readonly SolidColorBrush Pressed = Create(Color.FromArgb(byte.MaxValue, 100, 149, 237));
+        public static readonly SolidColorBrush Pressed = Accent;
         public static readonly SolidColorBrush Disabled = Create(Color.FromArgb(byte.MaxValue, 128, 128, 128));
         public static readonly SolidColorBrush Purple = Create(Color.FromArgb(byte.MaxValue, 99, 61, 143));
         public static readonly SolidColorBrush Yellow = Create(Color.FromArgb(byte.MaxValue, 143, 139, 61));

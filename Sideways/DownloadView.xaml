@@ -31,9 +31,8 @@
 
                 <sideways:DownloadStatusTemplateSelector.Running>
                     <DataTemplate>
-                        <Path sideways:Icon.IsSpinning="True"
-                              Data="{StaticResource RecycleGeometry}"
-                              Fill="{x:Static sideways:Brushes.Green}"
+                        <Path Data="{StaticResource ArrowDownGeometry}"
+                              Fill="{x:Static sideways:Brushes.Pressed}"
                               Style="{StaticResource IconStyle}" />
                     </DataTemplate>
                 </sideways:DownloadStatusTemplateSelector.Running>
