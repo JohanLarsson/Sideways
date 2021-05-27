@@ -105,7 +105,10 @@
                     <TextBlock Text="{Binding SymbolDownloads.Count, StringFormat='Count: {0}'}" />
                 </StackPanel>
 
-                <TreeView Grid.Row="1" ItemsSource="{Binding SymbolDownloads}">
+                <TreeView Grid.Row="1"
+                          ItemsSource="{Binding SymbolDownloads}"
+                          VirtualizingStackPanel.IsVirtualizing="True"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <TreeView.ItemTemplateSelector>
                         <sideways:SymbolDownloadTemplateSelector>
                             <sideways:SymbolDownloadTemplateSelector.Symbol>
