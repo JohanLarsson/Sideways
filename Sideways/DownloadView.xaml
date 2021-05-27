@@ -31,9 +31,19 @@
 
                 <sideways:DownloadStatusTemplateSelector.Running>
                     <DataTemplate>
-                        <Path Data="{StaticResource ArrowDownGeometry}"
-                              Fill="{x:Static sideways:Brushes.Pressed}"
-                              Style="{StaticResource IconStyle}" />
+                        <Grid>
+                            <Path Data="{StaticResource ArrowDownGeometry}"
+                                  Fill="{x:Static sideways:Brushes.Pressed}"
+                                  Style="{StaticResource IconStyle}" />
+
+                            <Ellipse Width="2"
+                                     Height="2"
+                                     sideways:Icon.IsPulsing="True"
+                                     Fill="{x:Static sideways:Brushes.DarkGray}"
+                                     SnapsToDevicePixels="False"
+                                     Stretch="Fill"
+                                     Style="{StaticResource IconStyle}" />
+                        </Grid>
                     </DataTemplate>
                 </sideways:DownloadStatusTemplateSelector.Running>
 

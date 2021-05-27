@@ -107,8 +107,8 @@
                                 <Storyboard>
                                     <DoubleAnimation RepeatBehavior="Forever"
                                                      Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
-                                                     From="-1"
-                                                     To="2"
+                                                     From="-3"
+                                                     To="3"
                                                      Duration="0:0:2" />
                                 </Storyboard>
                             </BeginStoryboard>
