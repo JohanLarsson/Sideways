@@ -23,10 +23,10 @@
         public static readonly SolidColorBrush Transparent = System.Windows.Media.Brushes.Transparent;
         public static readonly SolidColorBrush Accent = Create(Color.FromArgb(byte.MaxValue, 100, 149, 237));
         public static readonly SolidColorBrush Error = Create(Color.FromArgb(byte.MaxValue, 205, 92, 92));
+        public static readonly SolidColorBrush EnabledText = Create(Color.FromArgb(byte.MaxValue, 180, 180, 180));
         public static readonly SolidColorBrush DisabledText = Create(Color.FromArgb(byte.MaxValue, 128, 128, 128));
         public static readonly SolidColorBrush Pressed = Accent;
-        public static readonly SolidColorBrush Text = LightGray;
-        public static readonly SolidColorBrush SelectedText = Accent;
+        public static readonly SolidColorBrush Text = DisabledText;
         public static readonly SolidColorBrush SelectedBackground = DarkGray;
         public static readonly Color SelectedColor = SelectedBackground.Color;
 

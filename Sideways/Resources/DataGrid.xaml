@@ -6,7 +6,7 @@
         <Setter Property="RowBackground" Value="Transparent" />
         <Setter Property="BorderBrush" Value="{x:Null}" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Gray}" />
+        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.EnabledText}" />
         <Setter Property="HeadersVisibility" Value="Column" />
         <Setter Property="GridLinesVisibility" Value="Horizontal" />
         <Setter Property="HorizontalGridLinesBrush" Value="{x:Static sideways:Brushes.DarkGray}" />
@@ -26,7 +26,7 @@
                     </Setter>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="{x:Static sideways:Brushes.LightGray}" />
+                            <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedBackground}" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -36,10 +36,11 @@
         <Setter Property="RowStyle">
             <Setter.Value>
                 <Style TargetType="DataGridRow">
+                    <Setter Property="Foreground" Value="{x:Static sideways:Brushes.EnabledText}" />
+
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="{x:Static sideways:Brushes.LightGray}" />
-                            <Setter Property="Background" Value="{x:Static sideways:Brushes.DarkGray}" />
+                            <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedBackground}" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -49,11 +50,12 @@
         <Setter Property="ColumnHeaderStyle">
             <Setter.Value>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Foreground" Value="{x:Static sideways:Brushes.EnabledText}" />
                     <Setter Property="Background" Value="Transparent" />
                     <Setter Property="Padding" Value="3,0" />
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.LightGray}" />
+                            <Setter Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.SelectedBackground}" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>

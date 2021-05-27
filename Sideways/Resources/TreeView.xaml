@@ -4,17 +4,19 @@
 
     <Style x:Key="ExpandCollapseToggleStyle" TargetType="ToggleButton">
         <Setter Property="Focusable" Value="False" />
-        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Text}" />
+        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.EnabledText}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Border Margin="{TemplateBinding Padding}" Background="Transparent">
-                        <Path x:Name="Path" Margin="1,1,1,1"
+                    <Border Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                        <Path x:Name="Path"
+                              Margin="1,1,1,1"
                               HorizontalAlignment="Left"
                               VerticalAlignment="Center"
                               Data="M 0 4 L 8 4 L 4 8 Z"
-                              RenderTransformOrigin="0.5,0.5"
-                              Fill="{TemplateBinding Foreground}">
+                              Fill="{TemplateBinding Foreground}"
+                              RenderTransformOrigin="0.5,0.5">
                             <Path.RenderTransform>
                                 <RotateTransform Angle="0" />
                             </Path.RenderTransform>
@@ -33,10 +35,15 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedBackground}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="{x:Type TreeViewItem}">
-        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Gray}" />
+        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Text}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="{x:Null}" />
         <Setter Property="BorderThickness" Value="0" />

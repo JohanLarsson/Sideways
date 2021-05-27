@@ -10,7 +10,7 @@
                                          IsDesignTimeCreatable=False}"
         Background="{x:Static sideways:Brushes.Background}"
         Loaded="OnLoaded"
-        TextElement.Foreground="{x:Static sideways:Brushes.Gray}"
+        TextElement.Foreground="{x:Static sideways:Brushes.Text}"
         WindowState="Maximized"
         mc:Ignorable="d">
     <Window.CommandBindings>
