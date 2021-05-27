@@ -10,91 +10,103 @@
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
-    <TabControl>
-        <TabControl.Resources>
-            <sideways:DownloadStatusTemplateSelector x:Key="DownloadStatusTemplateSelector">
-                <sideways:DownloadStatusTemplateSelector.Unknown>
-                    <DataTemplate>
-                        <Path Data="{StaticResource QuestionGeometry}"
-                              Fill="{x:Static sideways:Brushes.Disabled}"
+    <UserControl.Resources>
+        <sideways:DownloadStatusTemplateSelector x:Key="DownloadStatusTemplateSelector">
+            <sideways:DownloadStatusTemplateSelector.Unknown>
+                <DataTemplate>
+                    <Path Data="{StaticResource QuestionGeometry}"
+                          Fill="{x:Static sideways:Brushes.Disabled}"
+                          Style="{StaticResource IconStyle}" />
+                </DataTemplate>
+            </sideways:DownloadStatusTemplateSelector.Unknown>
+
+            <sideways:DownloadStatusTemplateSelector.Waiting>
+                <DataTemplate>
+                    <Path Data="{StaticResource ArrowDownGeometry}"
+                          Fill="{x:Static sideways:Brushes.Disabled}"
+                          Style="{StaticResource IconStyle}" />
+                </DataTemplate>
+            </sideways:DownloadStatusTemplateSelector.Waiting>
+
+            <sideways:DownloadStatusTemplateSelector.Running>
+                <DataTemplate>
+                    <Grid>
+                        <Path Data="{StaticResource ArrowDownGeometry}"
+                              Fill="{x:Static sideways:Brushes.Pressed}"
                               Style="{StaticResource IconStyle}" />
-                    </DataTemplate>
-                </sideways:DownloadStatusTemplateSelector.Unknown>
 
-                <sideways:DownloadStatusTemplateSelector.Waiting>
-                    <DataTemplate>
-                        <Path Data="{StaticResource QueueGeometry}"
-                              Fill="{x:Static sideways:Brushes.Disabled}"
-                              Style="{StaticResource IconStyle}" />
-                    </DataTemplate>
-                </sideways:DownloadStatusTemplateSelector.Waiting>
+                        <Ellipse Width="2"
+                                 Height="2"
+                                 sideways:Icon.IsPulsing="True"
+                                 Fill="{x:Static sideways:Brushes.DarkGray}"
+                                 SnapsToDevicePixels="False"
+                                 Stretch="Fill"
+                                 Style="{StaticResource IconStyle}" />
+                    </Grid>
+                </DataTemplate>
+            </sideways:DownloadStatusTemplateSelector.Running>
 
-                <sideways:DownloadStatusTemplateSelector.Running>
-                    <DataTemplate>
-                        <Grid>
-                            <Path Data="{StaticResource ArrowDownGeometry}"
-                                  Fill="{x:Static sideways:Brushes.Pressed}"
-                                  Style="{StaticResource IconStyle}" />
+            <sideways:DownloadStatusTemplateSelector.Completed>
+                <DataTemplate>
+                    <Path Data="{StaticResource CheckGeometry}"
+                          Fill="{x:Static sideways:Brushes.Green}"
+                          Style="{StaticResource IconStyle}" />
+                </DataTemplate>
+            </sideways:DownloadStatusTemplateSelector.Completed>
 
-                            <Ellipse Width="2"
-                                     Height="2"
-                                     sideways:Icon.IsPulsing="True"
-                                     Fill="{x:Static sideways:Brushes.DarkGray}"
-                                     SnapsToDevicePixels="False"
-                                     Stretch="Fill"
-                                     Style="{StaticResource IconStyle}" />
-                        </Grid>
-                    </DataTemplate>
-                </sideways:DownloadStatusTemplateSelector.Running>
+            <sideways:DownloadStatusTemplateSelector.Error>
+                <DataTemplate>
+                    <Path Margin="1"
+                          Data="{StaticResource CrossGeometry}"
+                          Fill="{x:Static sideways:Brushes.Red}"
+                          Style="{StaticResource IconStyle}" />
+                </DataTemplate>
+            </sideways:DownloadStatusTemplateSelector.Error>
+        </sideways:DownloadStatusTemplateSelector>
+    </UserControl.Resources>
 
-                <sideways:DownloadStatusTemplateSelector.Completed>
-                    <DataTemplate>
-                        <Path Data="{StaticResource CheckGeometry}"
-                              Fill="{x:Static sideways:Brushes.Green}"
-                              Style="{StaticResource IconStyle}" />
-                    </DataTemplate>
-                </sideways:DownloadStatusTemplateSelector.Completed>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <TextBlock Text="All symbols that have missing data." />
+            <TextBlock Text="The list is populated by reading the entire database in the background." />
+            <TextBlock Text="The list updates when calculation is done." />
+            <Button HorizontalAlignment="Left"
+                    Command="{Binding RefreshSymbolsCommand}"
+                    Content="Refresh list" />
+            <Button HorizontalAlignment="Left" Command="{Binding DownloadAllSymbolsCommand}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentPresenter Margin="2,0"
+                                          Content="{Binding SymbolDownloadState.Status}"
+                                          ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
 
-                <sideways:DownloadStatusTemplateSelector.Error>
-                    <DataTemplate>
-                        <Path Data="{StaticResource CrossGeometry}"
-                              Fill="{x:Static sideways:Brushes.Red}"
-                              Style="{StaticResource IconStyle}" />
-                    </DataTemplate>
-                </sideways:DownloadStatusTemplateSelector.Error>
-            </sideways:DownloadStatusTemplateSelector>
-        </TabControl.Resources>
+                        <TextBlock Text="Run All" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </StackPanel>
 
-        <TabItem Header="Symbols">
-            <Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <StackPanel>
-                    <TextBlock Text="All symbols that have missing data." />
-                    <TextBlock Text="The list is populated by reading the entire database in the background which takes a couple of seconds." />
-                    <TextBlock Text="The list updates when calculation is done." />
-                    <TextBlock Text="{Binding SymbolDownloads.Count, StringFormat='Count:{0}'}" />
-                    <Button HorizontalAlignment="Left"
-                            Command="{Binding RefreshSymbolsCommand}"
-                            Content="Refresh list" />
-                    <Button HorizontalAlignment="Left" Command="{Binding DownloadAllSymbolsCommand}">
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal">
-                                <ContentPresenter Margin="2,0"
-                                                  Content="{Binding SymbolDownloadState.Status}"
-                                                  ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
-
-                                <TextBlock Text="Run All" />
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
-
-                    <TextBlock Text="Download individual symbols:" />
+                    <TextBlock Text="Download individual symbols" />
+                    <TextBlock Text="{Binding SymbolDownloads.Count, StringFormat='Count: {0}'}" />
                 </StackPanel>
 
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto">
                     <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding SymbolDownloads}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type alphaVantage:SymbolDownloads}">
@@ -128,20 +140,19 @@
                     </ItemsControl>
                 </ScrollViewer>
             </Grid>
-        </TabItem>
 
-        <TabItem Header="Downloads">
-            <Grid>
+            <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <StackPanel>
                     <TextBlock Text="All downloads this session" />
-                    <TextBlock Text="{Binding Downloads.Count, StringFormat='Count:{0}'}" />
+                    <TextBlock Text="{Binding Downloads.Count, StringFormat='Count: {0}'}" />
                 </StackPanel>
 
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding Downloads}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type alphaVantage:Download}">
@@ -190,6 +201,6 @@
                     </ItemsControl>
                 </ScrollViewer>
             </Grid>
-        </TabItem>
-    </TabControl>
+        </Grid>
+    </Grid>
 </UserControl>
