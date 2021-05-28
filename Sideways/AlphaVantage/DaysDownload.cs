@@ -1,6 +1,7 @@
 ﻿namespace Sideways.AlphaVantage
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     public class DaysDownload : Download
@@ -41,6 +42,11 @@
             try
             {
                 var candles = await this.downloader.Client.DailyAdjustedAsync(this.Symbol, this.OutputSize).ConfigureAwait(false);
+                if (TradingDay.From(candles.Max(x => x.Time).AddDays(5)) < TradingDay.LastComplete())
+                {
+                    this.downloader.Unlisted(this.Symbol);
+                }
+
                 this.State.End = DateTimeOffset.Now;
                 Database.WriteDays(this.Symbol, candles);
                 return candles.Length;

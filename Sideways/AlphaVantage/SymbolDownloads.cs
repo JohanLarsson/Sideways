@@ -71,25 +71,27 @@
 
         public TradingDay LastComplete => TradingDay.Min(this.LastDay, this.LastMinute);
 
-        public static IEnumerable<SymbolDownloads> Create(ImmutableDictionary<string, TimeRange> dayRanges, ImmutableDictionary<string, TimeRange> minuteRanges, Downloader downloader)
+        public static IEnumerable<SymbolDownloads> Create(ImmutableDictionary<string, TimeRange> dayRanges, ImmutableDictionary<string, TimeRange> minuteRanges, Downloader downloader, AlphaVantageSettings settings)
         {
             foreach (var (symbol, dayRange) in dayRanges)
             {
-                if (!minuteRanges.TryGetValue(symbol, out _))
+                if (settings.UnlistedSymbols.Contains(symbol))
                 {
-                    yield return new SymbolDownloads(symbol, dayRange, default, downloader);
+                    continue;
                 }
-            }
 
-            foreach (var (symbol, dayRange) in dayRanges)
-            {
-                if (minuteRanges.TryGetValue(symbol, out var minuteRange))
+                if (minuteRanges.TryGetValue(symbol, out var minuteRange) &&
+                    !settings.SymbolsWithMissingMinutes.Contains(symbol))
                 {
                     if (TradingDay.From(dayRange.Max) < TradingDay.LastComplete() ||
                         TradingDay.From(minuteRange.Max) < TradingDay.LastComplete())
                     {
                         yield return new SymbolDownloads(symbol, dayRange, minuteRange, downloader);
                     }
+                }
+                else if (TradingDay.From(dayRange.Max) < TradingDay.LastComplete())
+                {
+                    yield return new SymbolDownloads(symbol, dayRange, default, downloader);
                 }
             }
         }

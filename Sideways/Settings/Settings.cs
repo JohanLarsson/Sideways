@@ -77,7 +77,7 @@
 
         public void Save()
         {
-            File.WriteAllText(SettingsFile, JsonSerializer.Serialize(this));
+            File.WriteAllText(SettingsFile, JsonSerializer.Serialize(this, SerializerOptions));
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

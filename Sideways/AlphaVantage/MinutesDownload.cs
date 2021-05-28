@@ -68,6 +68,7 @@
                 Database.WriteMinutes(this.Symbol, candles);
                 if (candles.IsDefaultOrEmpty)
                 {
+                    this.downloader.MissingMinutes(this.Symbol);
                     throw new InvalidOperationException("Downloaded empty slice, maybe missing data on AlphaVantage. Exclude this symbol?");
                 }
 

@@ -120,7 +120,7 @@
             this.SymbolDownloadState = new DownloadState();
             var dayRanges = await Task.Run(() => Database.DayRanges()).ConfigureAwait(false);
             var minuteRanges = await Task.Run(() => Database.MinuteRanges()).ConfigureAwait(false);
-            this.SymbolDownloads = AlphaVantage.SymbolDownloads.Create(dayRanges, minuteRanges, this).OrderBy(x => x.LastComplete).ToImmutableList();
+            this.SymbolDownloads = AlphaVantage.SymbolDownloads.Create(dayRanges, minuteRanges, this, this.settings.AlphaVantage).OrderBy(x => x.LastComplete).ToImmutableList();
         }
 
         public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol, TradingDay? from)
@@ -147,6 +147,18 @@
 
             this.disposed = true;
             this.client?.Dispose();
+        }
+
+        public void Unlisted(string symbol)
+        {
+            this.settings.AlphaVantage.Unlisted(symbol);
+            this.settings.Save();
+        }
+
+        public void MissingMinutes(string symbol)
+        {
+            this.settings.AlphaVantage.MissingMinutes(symbol);
+            this.settings.Save();
         }
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)

@@ -193,9 +193,7 @@
                 Height = 500,
                 Content = new SettingsView
                 {
-#pragma warning disable IDISP003 // Dispose previous before re-assigning.
                     DataContext = settings,
-#pragma warning restore IDISP003 // Dispose previous before re-assigning.
                 },
                 Owner = this,
             };
