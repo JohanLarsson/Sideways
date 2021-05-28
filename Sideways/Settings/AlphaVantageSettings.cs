@@ -6,9 +6,16 @@
 
     public class AlphaVantageSettings : INotifyPropertyChanged
     {
-        private AlphaVantageClientSettings clientSettings = new();
-        private ImmutableHashSet<string> symbolsWithMissingMinutes = ImmutableHashSet<string>.Empty;
-        private ImmutableHashSet<string> unlistedSymbols = ImmutableHashSet<string>.Empty;
+        private AlphaVantageClientSettings clientSettings;
+        private ImmutableSortedSet<string> symbolsWithMissingMinutes;
+        private ImmutableSortedSet<string> unlistedSymbols;
+
+        public AlphaVantageSettings(AlphaVantageClientSettings clientSettings, ImmutableSortedSet<string> symbolsWithMissingMinutes, ImmutableSortedSet<string> unlistedSymbols)
+        {
+            this.clientSettings = clientSettings;
+            this.symbolsWithMissingMinutes = symbolsWithMissingMinutes;
+            this.unlistedSymbols = unlistedSymbols;
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -27,7 +34,7 @@
             }
         }
 
-        public ImmutableHashSet<string> SymbolsWithMissingMinutes
+        public ImmutableSortedSet<string> SymbolsWithMissingMinutes
         {
             get => this.symbolsWithMissingMinutes;
             private set
@@ -42,7 +49,7 @@
             }
         }
 
-        public ImmutableHashSet<string> UnlistedSymbols
+        public ImmutableSortedSet<string> UnlistedSymbols
         {
             get => this.unlistedSymbols;
             private set

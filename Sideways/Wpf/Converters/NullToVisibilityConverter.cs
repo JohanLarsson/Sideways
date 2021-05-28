@@ -11,7 +11,7 @@
         public static readonly NullToVisibilityConverter VisibleWhenNullElseCollapsed = new(x => x is null ? Visibility.Visible : Visibility.Collapsed);
         public static readonly NullToVisibilityConverter CollapsedWhenNullElseVisible = new(x => x is null ? Visibility.Collapsed : Visibility.Visible);
 
-        private readonly Func<object, Visibility> func;
+        private readonly Func<object?, Visibility> func;
 
         private NullToVisibilityConverter(Func<object?, Visibility> func)
         {

@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.Immutable;
     using System.ComponentModel;
     using System.IO;
     using System.Runtime.CompilerServices;
@@ -15,7 +16,12 @@
             WriteIndented = true,
         };
 
-        private AlphaVantageSettings alphaVantage = new();
+        private AlphaVantageSettings alphaVantage;
+
+        public Settings(AlphaVantageSettings alphaVantage)
+        {
+            this.alphaVantage = alphaVantage;
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -38,17 +44,11 @@
         {
             if (ReadLegacyApiKey() is { } apiKey)
             {
-                var settings = new Settings
-                {
-                    AlphaVantage = new AlphaVantageSettings
-                    {
-                        ClientSettings = new AlphaVantageClientSettings
-                        {
-                            ApiKey = apiKey,
-                            MaxCallsPerMinute = 5,
-                        },
-                    },
-                };
+                var settings = new Settings(
+                    alphaVantage: new AlphaVantageSettings(
+                        clientSettings: new AlphaVantageClientSettings { ApiKey = apiKey, MaxCallsPerMinute = 5, },
+                        symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
+                        unlistedSymbols: ImmutableSortedSet<string>.Empty));
 
                 File.WriteAllText(SettingsFile, JsonSerializer.Serialize(settings, SerializerOptions));
                 return settings;
@@ -59,7 +59,11 @@
                 return JsonSerializer.Deserialize<Settings>(File.ReadAllText(SettingsFile), SerializerOptions) ?? throw new InvalidOperationException("Empty settings.");
             }
 
-            return new Settings();
+            return new Settings(
+                alphaVantage: new AlphaVantageSettings(
+                    clientSettings: new AlphaVantageClientSettings { ApiKey = null, MaxCallsPerMinute = 5, },
+                    symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
+                    unlistedSymbols: ImmutableSortedSet<string>.Empty));
 
             static string? ReadLegacyApiKey()
             {

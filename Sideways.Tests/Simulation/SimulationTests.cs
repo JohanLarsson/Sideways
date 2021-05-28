@@ -12,7 +12,7 @@
         [Test]
         public static void BuyThenSellAll()
         {
-            var simulation = Simulation.Create();
+            var simulation = Simulation.Create(DateTimeOffset.Now);
             simulation.Buy("TSLA", 580f, 10, DateTimeOffset.Now);
             CollectionAssert.AreEqual(new[] { 10 }, simulation.Positions.SelectMany(x => x.Buys).Select(x => x.Shares));
             CollectionAssert.IsEmpty(simulation.Trades);
@@ -25,7 +25,7 @@
         [Test]
         public static void BuyTwiceThenSellAll()
         {
-            var simulation = Simulation.Create();
+            var simulation = Simulation.Create(DateTimeOffset.Now);
             simulation.Buy("TSLA", 580f, 10, DateTimeOffset.Now);
             CollectionAssert.AreEqual(new[] { 10 }, simulation.Positions.SelectMany(x => x.Buys).Select(x => x.Shares));
             CollectionAssert.IsEmpty(simulation.Trades);
@@ -42,7 +42,7 @@
         [Test]
         public static void BuyThenSellTwice()
         {
-            var simulation = Simulation.Create();
+            var simulation = Simulation.Create(DateTimeOffset.Now);
             simulation.Buy("TSLA", 580f, 30, DateTimeOffset.Now);
             CollectionAssert.AreEqual(new[] { 30 }, simulation.Positions.SelectMany(x => x.Buys).Select(x => x.Shares));
             CollectionAssert.IsEmpty(simulation.Trades);
@@ -59,7 +59,7 @@
         [Test]
         public static void BuyTwiceThenSellTwice()
         {
-            var simulation = Simulation.Create();
+            var simulation = Simulation.Create(DateTimeOffset.Now);
             simulation.Buy("TSLA", 580f, 10, DateTimeOffset.Now);
             CollectionAssert.AreEqual(new[] { 10 }, simulation.Positions.SelectMany(x => x.Buys).Select(x => x.Shares));
             CollectionAssert.IsEmpty(simulation.Trades);
@@ -80,7 +80,7 @@
         [Test]
         public static void RoundtripJson()
         {
-            var simulation = Simulation.Create();
+            var simulation = Simulation.Create(DateTimeOffset.Now);
             simulation.Buy("TSLA", 580f, 10, DateTimeOffset.Now);
             simulation.Buy("TSLA", 580f, 20, DateTimeOffset.Now);
             simulation.Sell("TSLA", 620f, 14, DateTimeOffset.Now);
