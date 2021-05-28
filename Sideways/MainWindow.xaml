@@ -22,7 +22,7 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <Grid x:Name="ChartArea">
+        <Grid x:Name="Charts">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -237,7 +237,6 @@
                 </Button>
             </StackPanel>
 
-
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -254,9 +253,13 @@
                 </ListBox>
 
                 <StackPanel Grid.Row="1" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.VisibleWhenNullElseCollapsed}}">
-                    <Button Command="{Binding StartNewSimulationCommand}" Content="New" />
+                    <Button Command="{Binding StartNewSimulationCommand}"
+                            Content="New"
+                            Focusable="False" />
 
-                    <Button Command="Open" Content="Open">
+                    <Button Command="Open"
+                            Content="Open"
+                            Focusable="False">
                         <Button.CommandBindings>
                             <CommandBinding Command="Open" Executed="OnOpenSimulation" />
                         </Button.CommandBindings>
@@ -278,17 +281,20 @@
                             Content="Sell half"
                             Focusable="False" />
 
-                    <Button Content="Save" Command="Save">
+                    <Button Command="Save"
+                            Content="Save"
+                            Focusable="False">
                         <Button.CommandBindings>
                             <CommandBinding CanExecute="OnCanSaveSimulation"
                                             Command="Save"
                                             Executed="OnSaveSimulation" />
                         </Button.CommandBindings>
                     </Button>
-                    <Button Content="Close" Command="Close">
+                    <Button Command="Close"
+                            Content="Close"
+                            Focusable="False">
                         <Button.CommandBindings>
-                            <CommandBinding Command="Close"
-                                            Executed="OnCloseSimulation" />
+                            <CommandBinding Command="Close" Executed="OnCloseSimulation" />
                         </Button.CommandBindings>
                     </Button>
                 </StackPanel>

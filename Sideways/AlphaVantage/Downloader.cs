@@ -120,7 +120,10 @@
             this.SymbolDownloadState = new DownloadState();
             var dayRanges = await Task.Run(() => Database.DayRanges()).ConfigureAwait(false);
             var minuteRanges = await Task.Run(() => Database.MinuteRanges()).ConfigureAwait(false);
-            this.SymbolDownloads = AlphaVantage.SymbolDownloads.Create(dayRanges, minuteRanges, this, this.settings.AlphaVantage).OrderBy(x => x.LastComplete).ToImmutableList();
+            this.SymbolDownloads = AlphaVantage.SymbolDownloads.Create(dayRanges, minuteRanges, this, this.settings.AlphaVantage)
+                 .OrderBy(x => x.LastComplete)
+                 .ThenBy(x => x.Symbol)
+                 .ToImmutableList();
         }
 
         public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol, TradingDay? from)

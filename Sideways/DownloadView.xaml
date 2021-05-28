@@ -35,13 +35,11 @@
                               Fill="{x:Static sideways:Brushes.Pressed}"
                               Style="{StaticResource IconStyle}" />
 
-                        <Ellipse Width="2"
-                                 Height="2"
-                                 sideways:Icon.IsPulsing="True"
-                                 Fill="{x:Static sideways:Brushes.DarkGray}"
-                                 SnapsToDevicePixels="False"
-                                 Stretch="Fill"
-                                 Style="{StaticResource IconStyle}" />
+                        <Rectangle Width="3"
+                                   Height="3"
+                                   sideways:Icon.IsPulsing="True"
+                                   Fill="{x:Static sideways:Brushes.DarkGray}"
+                                   Style="{StaticResource IconStyle}" />
                     </Grid>
                 </DataTemplate>
             </sideways:DownloadStatusTemplateSelector.Running>

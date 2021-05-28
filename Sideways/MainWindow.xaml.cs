@@ -61,7 +61,7 @@
                     {
                         Interval = TimeSpan.FromMilliseconds(50),
                     };
-                    this.timer.Tick += (_, _) => Skip(CandleInterval.Minute, 5);
+                    this.timer.Tick += (_, _) => Skip(CandleInterval.Minute, 1);
                     this.timer.Start();
                     e.Handled = true;
                     break;
@@ -127,7 +127,7 @@
 
         private void OnCopy(object sender, RoutedEventArgs e)
         {
-            var bmp = new RenderTargetBitmap((int)this.ChartArea.ActualWidth, (int)this.ChartArea.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+            var bmp = new RenderTargetBitmap((int)this.Charts.ActualWidth, (int)this.Charts.ActualHeight, 96, 96, PixelFormats.Pbgra32);
             bmp.Render(this);
             Clipboard.SetImage(bmp);
             e.Handled = true;

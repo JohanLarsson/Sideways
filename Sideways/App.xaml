@@ -71,6 +71,7 @@
                 <Setter Property="Height" Value="10" />
                 <Setter Property="Fill" Value="Black" />
                 <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="Stroke" Value="{x:Null}" />
                 <Style.Triggers>
                     <Trigger Property="sideways:Icon.IsSpinning" Value="True">
                         <Setter Property="RenderTransform">
