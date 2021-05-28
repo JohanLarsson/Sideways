@@ -10,12 +10,13 @@
     [Explicit]
     public static class Download
     {
-        private static readonly AlphaVantageClient Client = new(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
+        private static readonly AlphaVantageClientSettings? ClientSettings = Settings.FromFile()?.AlphaVantage?.ClientSettings;
 
         [Test]
         public static async Task Listings()
         {
-            var listings = await Client.ListingsAsync().ConfigureAwait(false);
+            using var client = new AlphaVantageClient(new HttpClientHandler(), ClientSettings!.ApiKey!, ClientSettings.MaxCallsPerMinute);
+            var listings = await client.ListingsAsync().ConfigureAwait(false);
             Database.WriteListings(listings);
         }
     }

@@ -22,7 +22,8 @@
 
         public MainViewModel()
         {
-            this.Downloader = new();
+            this.Settings = Settings.FromFile();
+            this.Downloader = new(this.Settings);
             _ = this.Downloader.RefreshSymbolDownloadsAsync();
             this.symbolViewModelCache = new(this.Downloader);
             this.Symbols = new ObservableCollection<string>(Database.ReadSymbols());
@@ -101,6 +102,8 @@
         public ICommand SellAllCommand { get; }
 
         public Downloader Downloader { get; }
+
+        public Settings Settings { get; }
 
         public DateTimeOffset Time
         {

@@ -1,4 +1,4 @@
-﻿namespace Sideways.AlphaVantage
+﻿namespace Sideways
 {
     using System.ComponentModel;
     using System.Runtime.CompilerServices;

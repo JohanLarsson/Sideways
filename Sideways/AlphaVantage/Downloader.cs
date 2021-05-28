@@ -13,6 +13,7 @@
 
     public sealed class Downloader : IDisposable, INotifyPropertyChanged
     {
+        private readonly Settings settings;
         private AlphaVantageClient? client;
 
         private ImmutableList<Download> downloads = ImmutableList<Download>.Empty;
@@ -20,8 +21,9 @@
         private DownloadState symbolDownloadState = new();
         private bool disposed;
 
-        public Downloader()
+        public Downloader(Settings settings)
         {
+            this.settings = settings;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.RefreshSymbolsCommand = new RelayCommand(_ => this.RefreshSymbolDownloadsAsync());
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -49,7 +51,23 @@
 
         public ICommand DownloadAllSymbolsCommand { get; }
 
-        public AlphaVantageClient Client => this.client ??= new(new HttpClientHandler(), AlphaVantageClient.ApiKey, 5);
+        public AlphaVantageClient Client
+        {
+            get
+            {
+                if (this.client is { })
+                {
+                    return this.client;
+                }
+
+                if (this.settings is { AlphaVantage: { ClientSettings: { ApiKey: { } apiKey, MaxCallsPerMinute: var maxCallsPerMinute } } })
+                {
+                    return this.client ??= new(new HttpClientHandler(), apiKey, maxCallsPerMinute);
+                }
+
+                throw new InvalidOperationException("Missing AlphaVantage settings. Configure it first and try again.");
+            }
+        }
 
         public ImmutableList<Download> Downloads
         {

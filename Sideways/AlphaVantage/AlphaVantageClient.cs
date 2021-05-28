@@ -10,8 +10,6 @@
 
     public sealed class AlphaVantageClient : IDisposable
     {
-        public static readonly string ApiKeyFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways/AlphaVantage.key");
-
         private readonly string apiKey;
         private readonly HttpClient client;
         private readonly Throttle throttle;
@@ -27,21 +25,6 @@
                 BaseAddress = new Uri("https://www.alphavantage.co", UriKind.Absolute),
             };
 #pragma warning restore IDISP014 // Use a single instance of HttpClient.
-        }
-
-        public static string ApiKey
-        {
-            get
-            {
-                if (File.Exists(ApiKeyFile))
-                {
-                    return File.ReadAllText(ApiKeyFile).Trim();
-                }
-
-                throw new InvalidOperationException($"Missing file {ApiKeyFile}");
-            }
-
-            set => File.WriteAllText(ApiKeyFile, value.Trim());
         }
 
         public async Task<ImmutableArray<Listing>> ListingsAsync(CancellationToken cancellationToken = default)
