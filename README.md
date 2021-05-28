@@ -6,5 +6,6 @@ App for backtesting and viewing charts.
 
 ## Get started
 1. Create an API key at [AlphaVantage](https://www.alphavantage.co/)
-2. Create a text file named `%APPDATA%\Sideways\AlphaVantage.key` with the key. (we will add support for doing this in the app later)
-3. For now chart data is downloaded using the unit tests in Download
+2. Build and run the app and open the settings editor and input the key.
+3. Type in some symbol names. This starts downloads of days in the background.
+4. Open the downloader to download minutes, this is very slow with the free version of AlphaVantage.
