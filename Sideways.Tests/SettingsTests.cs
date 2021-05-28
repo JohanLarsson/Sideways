@@ -10,17 +10,15 @@
         [Test]
         public static void JsonRoundtrip()
         {
-            var settings = new Settings
-            {
-                AlphaVantage = new AlphaVantageSettings(
+            var settings = new Settings(
+                alphaVantage: new AlphaVantageSettings(
                     new AlphaVantageClientSettings
                     {
                         ApiKey = "apiKey",
                         MaxCallsPerMinute = 5,
                     },
                     symbolsWithMissingMinutes: ImmutableSortedSet.Create("I", "LVGO"),
-                    unlistedSymbols: ImmutableSortedSet.Create("I")),
-            };
+                    unlistedSymbols: ImmutableSortedSet.Create("I")));
 
             var json = JsonSerializer.Serialize(settings);
             var read = JsonSerializer.Deserialize<Settings>(json);
