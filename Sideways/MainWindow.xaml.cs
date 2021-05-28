@@ -36,8 +36,18 @@
                     ApplicationCommands.Copy.Execute(null, this);
                     e.Handled = true;
                     break;
+                case Key.Left
+                    when Keyboard.Modifiers == ModifierKeys.Shift:
+                    Skip(CandleInterval.Hour, -1);
+                    e.Handled = true;
+                    break;
                 case Key.Left:
                     Skip(CandleInterval.Day, -1);
+                    e.Handled = true;
+                    break;
+                case Key.Right
+                    when Keyboard.Modifiers == ModifierKeys.Shift:
+                    Skip(CandleInterval.Hour, 1);
                     e.Handled = true;
                     break;
                 case Key.Right:
