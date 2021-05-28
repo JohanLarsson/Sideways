@@ -12,18 +12,13 @@
         private readonly TimeRange existingDays;
         private readonly TimeRange existingMinutes;
 
-        public SymbolDownloads(string symbol, TimeRange existingDays, TimeRange existingMinutes, Downloader downloader)
+        public SymbolDownloads(string symbol, TimeRange existingDays, DaysDownload? daysDownload, TimeRange existingMinutes, ImmutableArray<MinutesDownload> minutesDownloads)
         {
             this.existingDays = existingDays;
             this.existingMinutes = existingMinutes;
             this.Symbol = symbol;
-            if (TradingDay.From(existingDays.Max) < TradingDay.LastComplete())
-            {
-                this.DaysDownload = DaysDownload.Create(symbol, TradingDay.From(existingDays.Max), downloader);
-            }
-
-            this.MinutesDownloads = MinutesDownload.Create(symbol, existingDays, existingMinutes, downloader);
-
+            this.DaysDownload = daysDownload;
+            this.MinutesDownloads = minutesDownloads;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.DownloadCommand = new RelayCommand(_ => this.DownloadAsync(), _ => CanDownload());
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -69,7 +64,9 @@
 
         public TradingDay LastMinute => TradingDay.From(this.existingMinutes.Max);
 
-        public TradingDay LastComplete => TradingDay.Min(this.LastDay, this.LastMinute);
+        public TradingDay LastComplete => this.MinutesDownloads.IsDefaultOrEmpty
+            ? this.LastDay
+            : TradingDay.Min(this.LastDay, this.LastMinute);
 
         public static IEnumerable<SymbolDownloads> Create(ImmutableDictionary<string, TimeRange> dayRanges, ImmutableDictionary<string, TimeRange> minuteRanges, Downloader downloader, AlphaVantageSettings settings)
         {
@@ -80,18 +77,47 @@
                     continue;
                 }
 
-                if (minuteRanges.TryGetValue(symbol, out var minuteRange) &&
-                    !settings.SymbolsWithMissingMinutes.Contains(symbol))
+                var minuteRange = minuteRanges.GetValueOrDefault(symbol);
+
+                switch ((ShouldDownloadDays(), ShouldDownloadMinutes()))
                 {
-                    if (TradingDay.From(dayRange.Max) < TradingDay.LastComplete() ||
-                        TradingDay.From(minuteRange.Max) < TradingDay.LastComplete())
-                    {
-                        yield return new SymbolDownloads(symbol, dayRange, minuteRange, downloader);
-                    }
+                    case (true, false):
+                        yield return new SymbolDownloads(
+                            symbol,
+                            dayRange,
+                            DaysDownload.Create(symbol, TradingDay.From(dayRange.Max), downloader),
+                            minuteRange,
+                            ImmutableArray<MinutesDownload>.Empty);
+                        break;
+                    case (true, true):
+                        yield return new SymbolDownloads(
+                            symbol,
+                            dayRange,
+                            DaysDownload.Create(symbol, TradingDay.From(dayRange.Max), downloader),
+                            minuteRange,
+                            MinutesDownload.Create(symbol, dayRange, minuteRange, downloader));
+                        break;
+                    case (false, true):
+                        yield return new SymbolDownloads(
+                            symbol,
+                            dayRange,
+                            null,
+                            minuteRange,
+                            MinutesDownload.Create(symbol, dayRange, minuteRange, downloader));
+                        break;
+                    case (false, false):
+                        break;
                 }
-                else if (TradingDay.From(dayRange.Max) < TradingDay.LastComplete())
+
+                bool ShouldDownloadDays()
                 {
-                    yield return new SymbolDownloads(symbol, dayRange, default, downloader);
+                    return TradingDay.From(dayRange.Max) < TradingDay.LastComplete();
+                }
+
+                bool ShouldDownloadMinutes()
+                {
+                    return !settings.SymbolsWithMissingMinutes.Contains(symbol) &&
+                           TradingDay.From(minuteRange.Max) < TradingDay.LastComplete();
                 }
             }
         }
