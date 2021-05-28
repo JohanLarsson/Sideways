@@ -7,7 +7,7 @@
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public AlphaVantageClientSettings ClientSettings { get; }
+        public AlphaVantageClientSettings ClientSettings { get; } = new();
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {

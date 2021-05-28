@@ -17,3 +17,6 @@ dotnet_diagnostic.CA1716.severity = none
 
 # CA2000: Dispose objects before losing scope
 dotnet_diagnostic.CA2000.severity = none
+
+# WPF0061: Accessor method for attached property should have standard documentation text.
+dotnet_diagnostic.WPF0061.severity = none

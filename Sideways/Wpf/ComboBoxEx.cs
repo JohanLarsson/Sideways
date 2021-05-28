@@ -69,18 +69,12 @@
             }
         }
 
-        /// <summary>Helper for getting <see cref="IsSymbolSearchProperty"/> from <paramref name="element"/>.</summary>
-        /// <param name="element"><see cref="DependencyObject"/> to read <see cref="IsSymbolSearchProperty"/> from.</param>
-        /// <returns>IsSymbolSearch property value.</returns>
         [AttachedPropertyBrowsableForType(typeof(DependencyObject))]
         public static bool GetIsSymbolSearch(DependencyObject element)
         {
             return (bool)element.GetValue(IsSymbolSearchProperty);
         }
 
-        /// <summary>Helper for setting <see cref="IsSymbolSearchProperty"/> on <paramref name="element"/>.</summary>
-        /// <param name="element"><see cref="DependencyObject"/> to set <see cref="IsSymbolSearchProperty"/> on.</param>
-        /// <param name="value">IsSymbolSearch property value.</param>
         public static void SetIsSymbolSearch(DependencyObject element, bool value)
         {
             element.SetValue(IsSymbolSearchProperty, value);
