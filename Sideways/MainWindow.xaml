@@ -218,8 +218,7 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0">
-                <Button 
-                        VerticalAlignment="Top"
+                <Button VerticalAlignment="Top"
                         Command="Open"
                         Content="Downloader"
                         Focusable="False">
@@ -228,11 +227,10 @@
                     </Button.CommandBindings>
                 </Button>
 
-                <Button 
-                    VerticalAlignment="Top"
-                    Command="Open"
-                    Content="Settings"
-                    Focusable="False">
+                <Button VerticalAlignment="Top"
+                        Command="Open"
+                        Content="Settings"
+                        Focusable="False">
                     <Button.CommandBindings>
                         <CommandBinding Command="Open" Executed="OnOpenSettings" />
                     </Button.CommandBindings>
@@ -241,28 +239,8 @@
 
 
             <Grid Grid.Row="1">
-                <Grid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Command="Save">
-                            <MenuItem.CommandBindings>
-                                <CommandBinding CanExecute="OnCanSave"
-                                                Command="Save"
-                                                Executed="OnSave" />
-                            </MenuItem.CommandBindings>
-                        </MenuItem>
-
-                        <MenuItem Command="Open">
-                            <MenuItem.CommandBindings>
-                                <CommandBinding Command="Open" Executed="OnOpen" />
-                            </MenuItem.CommandBindings>
-                        </MenuItem>
-                    </ContextMenu>
-                </Grid.ContextMenu>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <ListBox Grid.Row="0"
@@ -275,22 +253,45 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-                <TextBlock Grid.Row="1" Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Simulation.Balance, StringFormat='#,#'}" />
+                <StackPanel Grid.Row="1" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.VisibleWhenNullElseCollapsed}}">
+                    <Button Command="{Binding StartNewSimulationCommand}" Content="New" />
 
-                <Button Grid.Row="2"
-                        Command="{Binding BuyCommand}"
-                        Content="Buy"
-                        Focusable="False" />
+                    <Button Command="Open" Content="Open">
+                        <Button.CommandBindings>
+                            <CommandBinding Command="Open" Executed="OnOpenSimulation" />
+                        </Button.CommandBindings>
+                    </Button>
+                </StackPanel>
 
-                <Button Grid.Row="3"
-                        Command="{Binding SellAllCommand}"
-                        Content="Sell all"
-                        Focusable="False" />
+                <StackPanel Grid.Row="1" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Simulation.Balance, StringFormat='#,#'}" />
 
-                <Button Grid.Row="4"
-                        Command="{Binding SellHalfCommand}"
-                        Content="Sell half"
-                        Focusable="False" />
+                    <Button Command="{Binding BuyCommand}"
+                            Content="Buy"
+                            Focusable="False" />
+
+                    <Button Command="{Binding SellAllCommand}"
+                            Content="Sell all"
+                            Focusable="False" />
+
+                    <Button Command="{Binding SellHalfCommand}"
+                            Content="Sell half"
+                            Focusable="False" />
+
+                    <Button Content="Save" Command="Save">
+                        <Button.CommandBindings>
+                            <CommandBinding CanExecute="OnCanSaveSimulation"
+                                            Command="Save"
+                                            Executed="OnSaveSimulation" />
+                        </Button.CommandBindings>
+                    </Button>
+                    <Button Content="Close" Command="Close">
+                        <Button.CommandBindings>
+                            <CommandBinding Command="Close"
+                                            Executed="OnCloseSimulation" />
+                        </Button.CommandBindings>
+                    </Button>
+                </StackPanel>
             </Grid>
         </Grid>
     </Grid>

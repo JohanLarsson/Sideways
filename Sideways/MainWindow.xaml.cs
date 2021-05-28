@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Globalization;
     using System.IO;
     using System.Text.Json;
     using System.Windows;
@@ -82,25 +83,40 @@
             }
         }
 
-        private static void Save(Simulation simulation, DateTimeOffset time)
+        private static void Save(Simulation simulation, DateTimeOffset time, string? fileName = null)
         {
             if (!Directory.Exists(SimulationDirectory))
             {
                 Directory.CreateDirectory(SimulationDirectory);
             }
 
-            var dialog = new SaveFileDialog
-            {
-                InitialDirectory = SimulationDirectory,
-                FileName = simulation.Name,
-                DefaultExt = ".sim",
-                Filter = "Log files|*.sim",
-            };
-
-            if (dialog.ShowDialog() is true)
+            if (File() is { } file)
             {
                 simulation.Time = time;
-                File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(simulation));
+                System.IO.File.WriteAllText(file.FullName, JsonSerializer.Serialize(simulation));
+            }
+
+            FileInfo? File()
+            {
+                if (fileName is { })
+                {
+                    return new(fileName);
+                }
+
+                var dialog = new SaveFileDialog
+                {
+                    InitialDirectory = SimulationDirectory,
+                    FileName = $"Simulation {DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}",
+                    DefaultExt = ".sim",
+                    Filter = "Log files|*.sim",
+                };
+
+                if (dialog.ShowDialog() is true)
+                {
+                    return new(dialog.FileName);
+                }
+
+                return null;
             }
         }
 
@@ -117,25 +133,39 @@
             e.Handled = true;
         }
 
-        private void OnCanSave(object sender, CanExecuteRoutedEventArgs e)
+        private void OnCanSaveSimulation(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (this.DataContext is MainViewModel { Simulation: { Name: { } } })
+            if (this.DataContext is MainViewModel { Simulation: { } })
             {
                 e.CanExecute = true;
                 e.Handled = true;
             }
         }
 
-        private void OnSave(object sender, ExecutedRoutedEventArgs e)
+        private void OnSaveSimulation(object sender, ExecutedRoutedEventArgs e)
         {
             if (this.DataContext is MainViewModel { Time: var time, Simulation: { } simulation })
             {
-                Save(simulation, time);
+                Save(simulation, DateTimeOffsetExtensions.Max(time, simulation.Time));
                 e.Handled = true;
             }
         }
 
-        private void OnOpen(object sender, ExecutedRoutedEventArgs e)
+        private void OnCloseSimulation(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { Time: var time, Simulation: { } simulation } viewModel)
+            {
+                if (MessageBox.Show(this, "Do you want to save current simulation first?", "Simulation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    Save(simulation, DateTimeOffsetExtensions.Max(time, simulation.Time));
+                }
+
+                viewModel.UpdateSimulation(null);
+                e.Handled = true;
+            }
+        }
+
+        private void OnOpenSimulation(object sender, ExecutedRoutedEventArgs e)
         {
             if (this.DataContext is MainViewModel { } mainViewModel)
             {
@@ -193,7 +223,9 @@
                 Height = 500,
                 Content = new SettingsView
                 {
+#pragma warning disable IDISP003 // Dispose previous before re-assigning.
                     DataContext = settings,
+#pragma warning restore IDISP003 // Dispose previous before re-assigning.
                 },
                 Owner = this,
             };

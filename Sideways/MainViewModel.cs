@@ -17,7 +17,7 @@
 
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
-        private Simulation? simulation = Simulation.Create();
+        private Simulation? simulation;
         private bool disposed;
 
         public MainViewModel()
@@ -55,25 +55,27 @@
             this.currentSymbol = this.symbolViewModelCache.Get("TSLA");
             this.BuyCommand = new RelayCommand(
                 _ => Buy(),
-                _ => this.simulation is { Balance: > 1_000 } &&
+                _ => this.Simulation is { Balance: > 1_000 } &&
                              this.currentSymbol is { Candles: { } });
 
             this.SellHalfCommand = new RelayCommand(
                 _ => Sell(0.5),
-                _ => this.simulation is { } simulation &&
+                _ => this.Simulation is { } simulation &&
                      this.currentSymbol is { Candles: { } } symbol &&
                      simulation.Positions.Any(x => x.Symbol == symbol.Symbol));
 
             this.SellAllCommand = new RelayCommand(
                 _ => Sell(1),
-                _ => this.simulation is { } simulation &&
+                _ => this.Simulation is { } simulation &&
                              this.currentSymbol is { Candles: { } } symbol &&
                              simulation.Positions.Any(x => x.Symbol == symbol.Symbol));
+
+            this.StartNewSimulationCommand = new RelayCommand(_ => this.Simulation = Simulation.Create(this.Time));
             void Buy()
             {
                 var price = this.currentSymbol!.Candles!.Get(this.time, CandleInterval.Day).First().Close;
-                var amount = Math.Min(this.simulation.Balance, this.simulation.Equity() / 10);
-                this.simulation.Buy(
+                var amount = Math.Min(this.Simulation.Balance, this.Simulation.Equity() / 10);
+                this.Simulation.Buy(
                     this.currentSymbol.Symbol,
                     price,
                     (int)(amount / price),
@@ -83,10 +85,10 @@
             void Sell(double fraction)
             {
                 var price = this.currentSymbol!.Candles!.Get(this.time, CandleInterval.Day).First().Close;
-                this.simulation.Sell(
+                this.Simulation.Sell(
                     this.currentSymbol.Symbol,
                     price,
-                    (int)(fraction * this.simulation.Positions.Single(x => x.Symbol == this.currentSymbol.Symbol).Buys.Sum(x => x.Shares)),
+                    (int)(fraction * this.Simulation.Positions.Single(x => x.Symbol == this.currentSymbol.Symbol).Buys.Sum(x => x.Shares)),
                     this.time);
             }
         }
@@ -100,6 +102,8 @@
         public ICommand SellHalfCommand { get; }
 
         public ICommand SellAllCommand { get; }
+
+        public ICommand StartNewSimulationCommand { get; }
 
         public Downloader Downloader { get; }
 
@@ -149,7 +153,7 @@
 
         public Position? SelectedPosition
         {
-            get => this.simulation?.Positions.SingleOrDefault(x => x.Symbol == this.currentSymbol?.Symbol);
+            get => this.Simulation?.Positions.SingleOrDefault(x => x.Symbol == this.currentSymbol?.Symbol);
             set
             {
                 if (value is { })
@@ -159,13 +163,25 @@
             }
         }
 
-        public Simulation? Simulation => this.simulation;
+        public Simulation? Simulation
+        {
+            get => this.simulation;
+            private set
+            {
+                if (ReferenceEquals(value, this.simulation))
+                {
+                    return;
+                }
+
+                this.simulation = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.SelectedPosition));
+            }
+        }
 
         public void UpdateSimulation(Simulation? simulation)
         {
-            this.simulation = simulation;
-            this.OnPropertyChanged(nameof(this.Simulation));
-            this.OnPropertyChanged(nameof(this.SelectedPosition));
+            this.Simulation = simulation;
             if (simulation is { })
             {
                 foreach (var position in simulation.Positions)
@@ -178,7 +194,7 @@
                     _ = this.symbolViewModelCache.Get(position.Symbol);
                 }
 
-                this.Time = simulation.Time ?? throw new InvalidOperationException("Missing time in simulation.");
+                this.Time = simulation.Time;
             }
         }
 

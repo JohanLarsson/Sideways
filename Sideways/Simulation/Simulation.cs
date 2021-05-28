@@ -4,21 +4,18 @@
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.ComponentModel;
-    using System.Globalization;
     using System.Linq;
     using System.Runtime.CompilerServices;
 
     public class Simulation : INotifyPropertyChanged
     {
-        private string name;
         private float balance;
         private ImmutableList<Position> positions;
         private ImmutableList<Trade> trades;
-        private DateTimeOffset? time;
+        private DateTimeOffset time;
 
-        public Simulation(string name, float balance, ImmutableList<Position> positions, ImmutableList<Trade> trades, DateTimeOffset? time)
+        public Simulation(float balance, ImmutableList<Position> positions, ImmutableList<Trade> trades, DateTimeOffset time)
         {
-            this.name = name;
             this.balance = balance;
             this.positions = positions;
             this.trades = trades;
@@ -27,22 +24,7 @@
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public string Name
-        {
-            get => this.name;
-            set
-            {
-                if (value == this.name)
-                {
-                    return;
-                }
-
-                this.name = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public DateTimeOffset? Time
+        public DateTimeOffset Time
         {
             get => this.time;
             set
@@ -102,12 +84,11 @@
             }
         }
 
-        public static Simulation Create() => new(
-            $"Simulation {DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}",
+        public static Simulation Create(DateTimeOffset time) => new(
             100_000,
             ImmutableList<Position>.Empty,
             ImmutableList<Trade>.Empty,
-            null);
+            time);
 
         public float Equity() => this.Balance + this.positions.SelectMany(x => x.Buys).Sum(x => x.Price * x.Shares);
 
