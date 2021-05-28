@@ -217,15 +217,28 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Button Grid.Row="0"
+            <StackPanel Grid.Row="0">
+                <Button 
+                        VerticalAlignment="Top"
+                        Command="Open"
+                        Content="Downloader"
+                        Focusable="False">
+                    <Button.CommandBindings>
+                        <CommandBinding Command="Open" Executed="OnOpenDownloader" />
+                    </Button.CommandBindings>
+                </Button>
+
+                <Button 
                     VerticalAlignment="Top"
                     Command="Open"
-                    Content="Downloader"
+                    Content="Settings"
                     Focusable="False">
-                <Button.CommandBindings>
-                    <CommandBinding Command="Open" Executed="OnOpenDownloader" />
-                </Button.CommandBindings>
-            </Button>
+                    <Button.CommandBindings>
+                        <CommandBinding Command="Open" Executed="OnOpenSettings" />
+                    </Button.CommandBindings>
+                </Button>
+            </StackPanel>
+
 
             <Grid Grid.Row="1">
                 <Grid.ContextMenu>

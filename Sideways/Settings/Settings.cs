@@ -15,11 +15,11 @@
             WriteIndented = true,
         };
 
-        private AlphaVantageSettings? alphaVantage;
+        private AlphaVantageSettings alphaVantage = new();
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public AlphaVantageSettings? AlphaVantage
+        public AlphaVantageSettings AlphaVantage
         {
             get => this.alphaVantage;
             set
