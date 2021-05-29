@@ -66,7 +66,8 @@
                 var candles = await Task().ConfigureAwait(false);
                 this.State.End = DateTimeOffset.Now;
                 Database.WriteMinutes(this.Symbol, candles);
-                if (candles.IsDefaultOrEmpty)
+                if (candles.IsDefaultOrEmpty &&
+                    this.Slice is null or AlphaVantage.Slice.Year1Month1)
                 {
                     this.downloader.MissingMinutes(this.Symbol);
                     throw new InvalidOperationException("Downloaded empty slice, maybe missing data on AlphaVantage. Exclude this symbol?");
