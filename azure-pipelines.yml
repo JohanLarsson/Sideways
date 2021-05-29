@@ -15,4 +15,3 @@ steps:
   displayName: Test
   inputs:
     configuration: '$(buildConfiguration)'
-    otherConsoleOptions: '/Framework:.NETCoreApp,Version=v5.0'
