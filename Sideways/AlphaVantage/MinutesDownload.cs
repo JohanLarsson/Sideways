@@ -17,8 +17,19 @@
 
         public Slice? Slice { get; }
 
-        public static ImmutableArray<MinutesDownload> Create(string symbol, TimeRange existingDays, TimeRange existingMinutes, Downloader downloader)
+        public static ImmutableArray<MinutesDownload> Create(string symbol, TimeRange existingDays, TimeRange existingMinutes, Downloader downloader, AlphaVantageSettings settings)
         {
+            if (settings.SymbolsWithMissingMinutes.Contains(symbol))
+            {
+                return ImmutableArray<MinutesDownload>.Empty;
+            }
+
+            if (settings.UnlistedSymbols.Contains(symbol) &&
+                existingDays.Max.Date == existingMinutes.Max.Date)
+            {
+                return ImmutableArray<MinutesDownload>.Empty;
+            }
+
             if (existingMinutes == default)
             {
                 var builder = ImmutableArray.CreateBuilder<MinutesDownload>();
@@ -33,7 +44,8 @@
                 return builder.ToImmutable();
             }
 
-            if (TradingDay.From(existingMinutes.Max.AddMonths(1)) >= TradingDay.LastComplete())
+            if (TradingDay.From(existingMinutes.Max) < TradingDay.LastComplete() &&
+                TradingDay.From(existingMinutes.Max.AddMonths(1)) >= TradingDay.LastComplete())
             {
                 return ImmutableArray.Create(new MinutesDownload(symbol, null, downloader));
             }
@@ -43,8 +55,10 @@
                 var builder = ImmutableArray.CreateBuilder<MinutesDownload>();
                 foreach (var slice in Enum.GetValues<Slice>())
                 {
-                    if (existingDays.Overlaps(TimeRange.FromSlice(slice)) &&
-                        !existingMinutes.Contains(TimeRange.FromSlice(slice)))
+                    var sliceRange = TimeRange.FromSlice(slice);
+                    if (existingDays.Overlaps(sliceRange) &&
+                        existingMinutes.Min > sliceRange.Min &&
+                        existingMinutes.Min > existingDays.Min)
                     {
                         builder.Add(new MinutesDownload(symbol, slice, downloader));
                     }

@@ -81,44 +81,15 @@
 
         public static SymbolDownloads? TryCreate(string symbol, TimeRange dayRange, TimeRange minuteRange, Downloader downloader, AlphaVantageSettings settings)
         {
-            if (settings.UnlistedSymbols.Contains(symbol))
+            var daysDownload = DaysDownload.TryCreate(symbol, dayRange, downloader, settings);
+            var minutesDownload = MinutesDownload.Create(symbol, dayRange, minuteRange, downloader, settings);
+
+            if (daysDownload is null && minutesDownload.IsDefaultOrEmpty)
             {
                 return null;
             }
 
-            return (ShouldDownloadDays(), ShouldDownloadMinutes()) switch
-            {
-                (true, false) => new SymbolDownloads(
-                        symbol,
-                        dayRange,
-                        DaysDownload.Create(symbol, TradingDay.From(dayRange.Max), downloader),
-                        minuteRange,
-                        ImmutableArray<MinutesDownload>.Empty),
-                (true, true) => new SymbolDownloads(
-                    symbol,
-                    dayRange,
-                    DaysDownload.Create(symbol, TradingDay.From(dayRange.Max), downloader),
-                    minuteRange,
-                    MinutesDownload.Create(symbol, dayRange, minuteRange, downloader)),
-                (false, true) => new SymbolDownloads(
-                    symbol,
-                    dayRange,
-                    null,
-                    minuteRange,
-                    MinutesDownload.Create(symbol, dayRange, minuteRange, downloader)),
-                (false, false) => null,
-            };
-
-            bool ShouldDownloadDays()
-            {
-                return TradingDay.From(dayRange.Max) < TradingDay.LastComplete();
-            }
-
-            bool ShouldDownloadMinutes()
-            {
-                return !settings.SymbolsWithMissingMinutes.Contains(symbol) &&
-                       TradingDay.From(minuteRange.Max) < TradingDay.LastComplete();
-            }
+            return new SymbolDownloads(symbol, dayRange, daysDownload, minuteRange, minutesDownload);
         }
 
         public async Task DownloadAsync()

@@ -17,6 +17,17 @@
 
         public OutputSize OutputSize { get; }
 
+        public static DaysDownload? TryCreate(string symbol, TimeRange dayRange, Downloader downloader, AlphaVantageSettings settings)
+        {
+            if (TradingDay.From(dayRange.Max) < TradingDay.LastComplete() &&
+                !settings.UnlistedSymbols.Contains(symbol))
+            {
+                return Create(symbol, TradingDay.From(dayRange.Max), downloader);
+            }
+
+            return null;
+        }
+
         public static DaysDownload Create(string symbol, TradingDay? from, Downloader downloader)
         {
             return new DaysDownload(symbol, OutputSize(), downloader);
