@@ -69,6 +69,11 @@
             this.SymbolsWithMissingMinutes = this.symbolsWithMissingMinutes.Add(symbol);
         }
 
+        public void HasMinutes(string symbol)
+        {
+            this.SymbolsWithMissingMinutes = this.symbolsWithMissingMinutes.Remove(symbol);
+        }
+
         public void Unlisted(string symbol)
         {
             this.UnlistedSymbols = this.unlistedSymbols.Add(symbol);
