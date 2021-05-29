@@ -137,9 +137,9 @@
                  .ToImmutableList();
         }
 
-        public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol, TradingDay? from)
+        public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol)
         {
-            var download = DaysDownload.Create(symbol, from, this);
+            var download = DaysDownload.Create(symbol, default, this);
             await download.ExecuteAsync().ConfigureAwait(false);
 
             return new DaysAndSplits(

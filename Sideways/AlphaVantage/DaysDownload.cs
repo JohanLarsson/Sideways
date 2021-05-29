@@ -22,20 +22,20 @@
             if (TradingDay.From(dayRange.Max) < TradingDay.LastComplete() &&
                 !settings.UnlistedSymbols.Contains(symbol))
             {
-                return Create(symbol, TradingDay.From(dayRange.Max), downloader);
+                return Create(symbol, dayRange, downloader);
             }
 
             return null;
         }
 
-        public static DaysDownload Create(string symbol, TradingDay? from, Downloader downloader)
+        public static DaysDownload Create(string symbol, TimeRange dayRange, Downloader downloader)
         {
             return new DaysDownload(symbol, OutputSize(), downloader);
 
             OutputSize OutputSize()
             {
                 // Compact returns only last 100, below can be tweaked further as it includes holidays but good enough for now
-                if (from is { Year: var y, Month: var m, Day: var d } &&
+                if (dayRange.Max is { Year: var y, Month: var m, Day: var d } &&
                     DateTime.Today - new DateTime(y, m, d) < TimeSpan.FromDays(100))
                 {
                     return AlphaVantage.OutputSize.Compact;
