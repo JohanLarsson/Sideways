@@ -1,10 +1,8 @@
-﻿namespace Sideways.Tests
+﻿namespace Sideways.Tests.AlphaVantage
 {
     using System.Net.Http;
     using System.Threading.Tasks;
-
     using NUnit.Framework;
-
     using Sideways.AlphaVantage;
 
     [Explicit]
