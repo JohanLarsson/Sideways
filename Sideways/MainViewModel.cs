@@ -54,8 +54,8 @@
                 }
             };
 
-            this.Downloader.NewDays += (_, symbol) => this.symbolViewModelCache.Update(symbol); ;
-            this.Downloader.NewMinutes += (_, symbol) => this.symbolViewModelCache.Update(symbol); ;
+            this.Downloader.NewDays += (_, symbol) => this.symbolViewModelCache.Update(symbol);
+            this.Downloader.NewMinutes += (_, symbol) => this.symbolViewModelCache.Update(symbol);
 
             this.currentSymbol = this.symbolViewModelCache.Get("TSLA");
             this.BuyCommand = new RelayCommand(
@@ -65,22 +65,22 @@
 
             this.SellHalfCommand = new RelayCommand(
                 _ => Sell(0.5),
-                _ => this.Simulation is { } simulation &&
+                _ => this.simulation is { } &&
                      this.currentSymbol is { Candles: { } } symbol &&
-                     simulation.Positions.Any(x => x.Symbol == symbol.Symbol));
+                     this.simulation.Positions.Any(x => x.Symbol == symbol.Symbol));
 
             this.SellAllCommand = new RelayCommand(
                 _ => Sell(1),
-                _ => this.Simulation is { } simulation &&
-                             this.currentSymbol is { Candles: { } } symbol &&
-                             simulation.Positions.Any(x => x.Symbol == symbol.Symbol));
+                _ => this.simulation is { } &&
+                     this.currentSymbol is { Candles: { } } symbol &&
+                     this.simulation.Positions.Any(x => x.Symbol == symbol.Symbol));
 
             this.StartNewSimulationCommand = new RelayCommand(_ => this.Simulation = Simulation.Create(this.Time));
             void Buy()
             {
                 var price = this.currentSymbol!.Candles!.Get(this.time, CandleInterval.Day).First().Close;
-                var amount = Math.Min(this.Simulation.Balance, this.Simulation.Equity() / 10);
-                this.Simulation.Buy(
+                var amount = Math.Min(this.simulation!.Balance, this.simulation.Equity() / 10);
+                this.simulation.Buy(
                     this.currentSymbol.Symbol,
                     price,
                     (int)(amount / price),
@@ -90,10 +90,10 @@
             void Sell(double fraction)
             {
                 var price = this.currentSymbol!.Candles!.Get(this.time, CandleInterval.Day).First().Close;
-                this.Simulation.Sell(
+                this.simulation!.Sell(
                     this.currentSymbol.Symbol,
                     price,
-                    (int)(fraction * this.Simulation.Positions.Single(x => x.Symbol == this.currentSymbol.Symbol).Buys.Sum(x => x.Shares)),
+                    (int)(fraction * this.simulation.Positions.Single(x => x.Symbol == this.currentSymbol.Symbol).Buys.Sum(x => x.Shares)),
                     this.time);
             }
         }
@@ -197,22 +197,22 @@
             }
         }
 
-        public void UpdateSimulation(Simulation? simulation)
+        public void UpdateSimulation(Simulation? fresh)
         {
-            this.Simulation = simulation;
-            if (simulation is { })
+            this.Simulation = fresh;
+            if (fresh is { })
             {
-                foreach (var position in simulation.Positions)
+                foreach (var position in fresh.Positions)
                 {
                     _ = this.symbolViewModelCache.Get(position.Symbol);
                 }
 
-                foreach (var position in simulation.Trades)
+                foreach (var position in fresh.Trades)
                 {
                     _ = this.symbolViewModelCache.Get(position.Symbol);
                 }
 
-                this.Time = simulation.Time;
+                this.Time = fresh.Time;
             }
         }
 
@@ -234,7 +234,7 @@
 
         private sealed class SymbolViewModelCache
         {
-            private readonly ConcurrentDictionary<string, SymbolViewModel?> symbolViewModels =
+            private readonly ConcurrentDictionary<string, SymbolViewModel> symbolViewModels =
                 new(StringComparer.OrdinalIgnoreCase);
 
             private readonly Downloader downloader;
@@ -251,9 +251,9 @@
                     return null;
                 }
 
-                return this.symbolViewModels.GetOrAdd(symbol, x => Create(x));
+                return this.symbolViewModels.GetOrAdd(symbol, _ => Create());
 
-                SymbolViewModel? Create(string symbol)
+                SymbolViewModel Create()
                 {
                     var vm = new SymbolViewModel(symbol.ToUpperInvariant());
                     Load(vm);
@@ -299,8 +299,7 @@
             internal void Update(string? symbol)
             {
                 if (!string.IsNullOrWhiteSpace(symbol) &&
-                    this.symbolViewModels.TryGetValue(symbol, out var vm) &&
-                    vm is { })
+                    this.symbolViewModels.TryGetValue(symbol, out var vm))
                 {
                     var splits = Database.ReadSplits(symbol);
                     var days = Database.ReadDays(symbol);
