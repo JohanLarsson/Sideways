@@ -89,7 +89,12 @@
             {
                 var candles = await Task().ConfigureAwait(false);
                 this.State.End = DateTimeOffset.Now;
-                Database.WriteMinutes(this.Symbol, candles);
+                if (!candles.IsDefaultOrEmpty)
+                {
+                    Database.WriteMinutes(this.Symbol, candles);
+                    this.downloader.NotifyDownloadedMinutes(this.Symbol);
+                }
+
                 if (candles.IsDefaultOrEmpty &&
                     this.Slice is null or AlphaVantage.Slice.Year1Month1)
                 {

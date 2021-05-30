@@ -70,7 +70,12 @@
                 }
 
                 this.State.End = DateTimeOffset.Now;
-                Database.WriteDays(this.Symbol, candles);
+                if (!candles.IsDefaultOrEmpty)
+                {
+                    Database.WriteDays(this.Symbol, candles);
+                    this.downloader.NotifyDownloadedDays(this.Symbol);
+                }
+
                 return candles.Length;
             }
 #pragma warning disable CA1031 // Do not catch general exception types

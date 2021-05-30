@@ -8,7 +8,6 @@
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows.Input;
-
     using Sideways.AlphaVantage;
 
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
@@ -29,22 +28,22 @@
 
             _ = this.Downloader.RefreshSymbolDownloadsAsync();
 
-            this.Downloader.NewSymbol += (_, s) =>
+            this.Downloader.NewSymbol += (_, symbol) =>
             {
                 if (InsertAt() is { } insertAt)
                 {
-                    this.Symbols = this.Symbols.Insert(insertAt, s);
+                    this.Symbols = this.Symbols.Insert(insertAt, symbol);
                 }
                 else
                 {
-                    this.Symbols = this.Symbols.Add(s);
+                    this.Symbols = this.Symbols.Add(symbol);
                 }
 
                 int? InsertAt()
                 {
                     for (var i = 0; i < this.Symbols.Length; i++)
                     {
-                        if (StringComparer.Ordinal.Compare(s, this.Symbols[i]) < 0)
+                        if (StringComparer.Ordinal.Compare(symbol, this.Symbols[i]) < 0)
                         {
                             return i;
                         }
@@ -53,6 +52,9 @@
                     return null;
                 }
             };
+
+            this.Downloader.NewDays += (_, symbol) => this.symbolViewModelCache.Update(symbol);;
+            this.Downloader.NewMinutes += (_, symbol) => this.symbolViewModelCache.Update(symbol);;
 
             this.currentSymbol = this.symbolViewModelCache.Get("TSLA");
             this.BuyCommand = new RelayCommand(
@@ -231,7 +233,9 @@
 
         private sealed class SymbolViewModelCache
         {
-            private readonly ConcurrentDictionary<string, SymbolViewModel?> symbolViewModels = new(StringComparer.OrdinalIgnoreCase);
+            private readonly ConcurrentDictionary<string, SymbolViewModel?> symbolViewModels =
+                new(StringComparer.OrdinalIgnoreCase);
+
             private readonly Downloader downloader;
 
             internal SymbolViewModelCache(Downloader downloader)
@@ -288,6 +292,18 @@
                     {
                         vm.Exception = e;
                     }
+                }
+            }
+
+            internal void Update(string? symbol)
+            {
+                if (!string.IsNullOrWhiteSpace(symbol) &&
+                    this.symbolViewModels.TryGetValue(symbol, out var vm))
+                {
+                    var splits = Database.ReadSplits(symbol);
+                    var days = Database.ReadDays(symbol);
+                    var minutes = Database.ReadMinutes(symbol);
+                    vm.Candles = Candles.Adjusted(splits, days, minutes);
                 }
             }
         }

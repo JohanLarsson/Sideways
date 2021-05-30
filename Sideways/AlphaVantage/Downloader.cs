@@ -50,6 +50,10 @@
 
         public event EventHandler<string>? NewSymbol;
 
+        public event EventHandler<string>? NewDays;
+
+        public event EventHandler<string>? NewMinutes;
+
         public ICommand RefreshSymbolsCommand { get; }
 
         public ICommand DownloadAllSymbolsCommand { get; }
@@ -247,6 +251,10 @@
             this.settings.AlphaVantage.MissingMinutes(symbol);
             this.settings.Save();
         }
+
+        public void NotifyDownloadedDays(string symbol) => this.NewDays?.Invoke(this, symbol);
+
+        public void NotifyDownloadedMinutes(string symbol) => this.NewMinutes?.Invoke(this, symbol);
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
