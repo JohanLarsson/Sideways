@@ -9,14 +9,11 @@
 
     public class SymbolDownloads
     {
-        private readonly TimeRange existingDays;
-        private readonly TimeRange existingMinutes;
-
         public SymbolDownloads(string symbol, TimeRange existingDays, DaysDownload? daysDownload, TimeRange existingMinutes, ImmutableArray<MinutesDownload> minutesDownloads)
         {
-            this.existingDays = existingDays;
-            this.existingMinutes = existingMinutes;
             this.Symbol = symbol;
+            this.ExistingDays = existingDays;
+            this.ExistingMinutes = existingMinutes;
             this.DaysDownload = daysDownload;
             this.MinutesDownloads = minutesDownloads;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -35,6 +32,10 @@
         }
 
         public string Symbol { get; }
+
+        public TimeRange ExistingDays { get; }
+
+        public TimeRange ExistingMinutes { get; }
 
         public DaysDownload? DaysDownload { get; }
 
@@ -60,9 +61,9 @@
 
         public DownloadState State { get; } = new();
 
-        public TradingDay LastDay => TradingDay.From(this.existingDays.Max);
+        public TradingDay LastDay => TradingDay.From(this.ExistingDays.Max);
 
-        public TradingDay LastMinute => TradingDay.From(this.existingMinutes.Max);
+        public TradingDay LastMinute => TradingDay.From(this.ExistingMinutes.Max);
 
         public TradingDay LastComplete => this.MinutesDownloads.IsDefaultOrEmpty
             ? this.LastDay
@@ -108,6 +109,6 @@
             this.State.End = DateTimeOffset.Now;
         }
 
-        public override string ToString() => $"{this.Symbol} last day: {TradingDay.From(this.existingDays.Max)} last minute: {TradingDay.From(this.existingMinutes.Max)}";
+        public override string ToString() => $"{this.Symbol} last day: {TradingDay.From(this.ExistingDays.Max)} last minute: {TradingDay.From(this.ExistingMinutes.Max)}";
     }
 }

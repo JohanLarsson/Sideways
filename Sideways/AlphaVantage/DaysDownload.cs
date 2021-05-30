@@ -8,12 +8,15 @@
     {
         private readonly Downloader downloader;
 
-        public DaysDownload(string symbol, OutputSize outputSize, Downloader downloader)
+        public DaysDownload(string symbol, TimeRange existingDays, OutputSize outputSize, Downloader downloader)
             : base(symbol)
         {
             this.downloader = downloader;
+            this.ExistingDays = existingDays;
             this.OutputSize = outputSize;
         }
+
+        public TimeRange ExistingDays { get; }
 
         public OutputSize OutputSize { get; }
 
@@ -30,7 +33,7 @@
 
         public static DaysDownload Create(string symbol, TimeRange dayRange, Downloader downloader)
         {
-            return new DaysDownload(symbol, OutputSize(), downloader);
+            return new DaysDownload(symbol, dayRange, OutputSize(), downloader);
 
             OutputSize OutputSize()
             {

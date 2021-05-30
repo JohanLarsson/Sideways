@@ -124,20 +124,8 @@
             FixAlphaVantageSettings();
 
             this.SymbolDownloads = Create()
-                 .OrderBy(x => x.LastComplete)
-                 .ThenBy(x => x.Symbol)
+                 .OrderBy(x => x, Comparer<SymbolDownloads>.Create((x, y) => Compare(x, y)))
                  .ToImmutableList();
-
-            IEnumerable<SymbolDownloads> Create()
-            {
-                foreach (var (symbol, dayRange) in dayRanges)
-                {
-                    if (AlphaVantage.SymbolDownloads.TryCreate(symbol, dayRange, minuteRanges.GetValueOrDefault(symbol), this, this.settings.AlphaVantage) is { } symbolDownloads)
-                    {
-                        yield return symbolDownloads;
-                    }
-                }
-            }
 
             void FixAlphaVantageSettings()
             {
@@ -150,6 +138,71 @@
                         this.settings.AlphaVantage.HasMinutes(symbol);
                         this.settings.Save();
                     }
+                }
+            }
+
+            IEnumerable<SymbolDownloads> Create()
+            {
+                foreach (var (symbol, dayRange) in dayRanges)
+                {
+                    if (AlphaVantage.SymbolDownloads.TryCreate(symbol, dayRange, minuteRanges.GetValueOrDefault(symbol), this, this.settings.AlphaVantage) is { } symbolDownloads)
+                    {
+                        yield return symbolDownloads;
+                    }
+                }
+            }
+
+            int Compare(SymbolDownloads? x, SymbolDownloads? y)
+            {
+                if (ReferenceEquals(x, y))
+                {
+                    return 0;
+                }
+
+                if (y is null)
+                {
+                    return 1;
+                }
+
+                if (x is null)
+                {
+                    return -1;
+                }
+
+                var result = Comparer<int>.Default.Compare(ExcludingMinutes(x), ExcludingMinutes(y));
+                if (result != 0)
+                {
+                    return result;
+                }
+
+                result = Comparer<int>.Default.Compare(x.MinutesDownloads.Length, y.MinutesDownloads.Length);
+                if (result != 0)
+                {
+                    return -1 * result;
+                }
+
+                result = Comparer<int>.Default.Compare(DaysAndMinutesInSync(x), DaysAndMinutesInSync(y));
+                if (result != 0)
+                {
+                    return result;
+                }
+
+                result = Comparer<DateTimeOffset>.Default.Compare(x.ExistingDays.Max, y.ExistingDays.Max);
+                if (result != 0)
+                {
+                    return result;
+                }
+
+                return string.Compare(x.Symbol, y.Symbol, StringComparison.OrdinalIgnoreCase);
+
+                int ExcludingMinutes(SymbolDownloads candidate)
+                {
+                    return this.settings.AlphaVantage.SymbolsWithMissingMinutes.Contains(candidate.Symbol) ? 1 : 0;
+                }
+
+                static int DaysAndMinutesInSync(SymbolDownloads x)
+                {
+                    return TradingDay.From(x.ExistingDays.Max) != TradingDay.From(x.ExistingMinutes.Max) ? 0 : 1;
                 }
             }
         }
