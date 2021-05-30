@@ -1,6 +1,7 @@
 ﻿namespace Sideways.AlphaVantage
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.ComponentModel;
     using System.Linq;
@@ -120,21 +121,37 @@
             this.SymbolDownloadState = new DownloadState();
             var dayRanges = await Task.Run(() => Database.DayRanges()).ConfigureAwait(false);
             var minuteRanges = await Task.Run(() => Database.MinuteRanges()).ConfigureAwait(false);
-            foreach (var (symbol, range) in minuteRanges)
-            {
-                // Migrate settings in case symbol was marked as missing minutes due to empty old slice.
-                if (range != default &&
-                    this.settings.AlphaVantage.SymbolsWithMissingMinutes.Contains(symbol))
-                {
-                    this.settings.AlphaVantage.HasMinutes(symbol);
-                    this.settings.Save();
-                }
-            }
+            FixAlphaVantageSettings();
 
-            this.SymbolDownloads = AlphaVantage.SymbolDownloads.Create(dayRanges, minuteRanges, this, this.settings.AlphaVantage)
+            this.SymbolDownloads = Create()
                  .OrderBy(x => x.LastComplete)
                  .ThenBy(x => x.Symbol)
                  .ToImmutableList();
+
+            IEnumerable<SymbolDownloads> Create()
+            {
+                foreach (var (symbol, dayRange) in dayRanges)
+                {
+                    if (AlphaVantage.SymbolDownloads.TryCreate(symbol, dayRange, minuteRanges.GetValueOrDefault(symbol), this, this.settings.AlphaVantage) is { } symbolDownloads)
+                    {
+                        yield return symbolDownloads;
+                    }
+                }
+            }
+
+            void FixAlphaVantageSettings()
+            {
+                foreach (var (symbol, range) in minuteRanges)
+                {
+                    // Migrate settings in case symbol was marked as missing minutes due to empty old slice.
+                    if (range != default &&
+                        this.settings.AlphaVantage.SymbolsWithMissingMinutes.Contains(symbol))
+                    {
+                        this.settings.AlphaVantage.HasMinutes(symbol);
+                        this.settings.Save();
+                    }
+                }
+            }
         }
 
         public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol)

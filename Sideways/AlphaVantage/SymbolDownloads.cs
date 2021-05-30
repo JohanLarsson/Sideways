@@ -68,17 +68,6 @@
             ? this.LastDay
             : TradingDay.Min(this.LastDay, this.LastMinute);
 
-        public static IEnumerable<SymbolDownloads> Create(ImmutableDictionary<string, TimeRange> dayRanges, ImmutableDictionary<string, TimeRange> minuteRanges, Downloader downloader, AlphaVantageSettings settings)
-        {
-            foreach (var (symbol, dayRange) in dayRanges)
-            {
-                if (TryCreate(symbol, dayRange, minuteRanges.GetValueOrDefault(symbol), downloader, settings) is { } symbolDownloads)
-                {
-                    yield return symbolDownloads;
-                }
-            }
-        }
-
         public static SymbolDownloads? TryCreate(string symbol, TimeRange dayRange, TimeRange minuteRange, Downloader downloader, AlphaVantageSettings settings)
         {
             var daysDownload = DaysDownload.TryCreate(symbol, dayRange, downloader, settings);
