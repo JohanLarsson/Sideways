@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Windows.Input;
 
     public class DaysDownload : Download
     {
@@ -14,11 +15,18 @@
             this.downloader = downloader;
             this.ExistingDays = existingDays;
             this.OutputSize = outputSize;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            this.DownloadCommand = new RelayCommand(_ => this.ExecuteAsync(), _ => this.State.Start is null);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         public TimeRange ExistingDays { get; }
 
         public OutputSize OutputSize { get; }
+
+        public ICommand DownloadCommand { get; }
+
+        public override string Info => $"Days from {this.ExistingDays.Max:d}";
 
         public static DaysDownload? TryCreate(string symbol, TimeRange dayRange, Downloader downloader, AlphaVantageSettings settings)
         {

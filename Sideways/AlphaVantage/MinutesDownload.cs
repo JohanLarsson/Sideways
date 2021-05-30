@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Immutable;
     using System.Threading.Tasks;
+    using System.Windows.Input;
 
     public class MinutesDownload : Download
     {
@@ -13,9 +14,18 @@
         {
             this.downloader = downloader;
             this.Slice = slice;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            this.DownloadCommand = new RelayCommand(_ => this.ExecuteAsync(), _ => this.State.Start is null);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         public Slice? Slice { get; }
+
+        public ICommand DownloadCommand { get; }
+
+        public TimeRange SliceRange => TimeRange.FromSlice(this.Slice ?? AlphaVantage.Slice.Year1Month1);
+
+        public override string Info => $"Minutes from {this.SliceRange.Min:d} to {this.SliceRange.Max:d}";
 
         public static ImmutableArray<MinutesDownload> Create(string symbol, TimeRange existingDays, TimeRange existingMinutes, Downloader downloader, AlphaVantageSettings settings)
         {

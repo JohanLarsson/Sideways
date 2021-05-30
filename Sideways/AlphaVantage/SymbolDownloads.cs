@@ -61,13 +61,36 @@
 
         public DownloadState State { get; } = new();
 
+        public string DayText => TradingDay.From(this.ExistingDays.Max) == TradingDay.LastComplete()
+            ? "No missing days"
+            : $"Download days from {this.ExistingDays.Max:D}";
+
+        public string MinutesText
+        {
+            get
+            {
+                if (this.MinutesDownloads.IsEmpty)
+                {
+                    return "No missing minutes";
+                }
+
+                if (this.ExistingMinutes == default)
+                {
+                    return "Download all minutes";
+                }
+
+                if (this.MinutesDownloads.Length == 1)
+                {
+                    return $"Download minutes from {this.ExistingMinutes.Max:D}";
+                }
+
+                return "Download minutes from beginning";
+            }
+        }
+
         public TradingDay LastDay => TradingDay.From(this.ExistingDays.Max);
 
         public TradingDay LastMinute => TradingDay.From(this.ExistingMinutes.Max);
-
-        public TradingDay LastComplete => this.MinutesDownloads.IsDefaultOrEmpty
-            ? this.LastDay
-            : TradingDay.Min(this.LastDay, this.LastMinute);
 
         public static SymbolDownloads? TryCreate(string symbol, TimeRange dayRange, TimeRange minuteRange, Downloader downloader, AlphaVantageSettings settings)
         {

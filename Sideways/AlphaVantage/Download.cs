@@ -16,6 +16,8 @@
 
         public DownloadState State { get; } = new();
 
+        public abstract string Info { get; }
+
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
