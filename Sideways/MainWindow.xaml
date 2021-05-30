@@ -213,6 +213,7 @@
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
+                <RowDefinition />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -239,9 +240,22 @@
 
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="Watch list" />
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding WatchList.Symbols}"
+                         SelectedItem="{Binding CurrentSymbol}" />
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+                <TextBlock Text="Simulation" />
                 <ListBox Grid.Row="0"
                          ItemsSource="{Binding Simulation.Positions}"
                          SelectedItem="{Binding SelectedPosition}">

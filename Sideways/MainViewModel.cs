@@ -14,6 +14,7 @@
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         private readonly SymbolViewModelCache symbolViewModelCache;
+        private WatchList watchList;
         private ImmutableArray<string> symbols;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
@@ -111,6 +112,28 @@
         public Downloader Downloader { get; }
 
         public Settings Settings { get; }
+
+        public WatchList WatchList
+        {
+            get => this.watchList;
+            private set
+            {
+                if (ReferenceEquals(value, this.watchList))
+                {
+                    return;
+                }
+
+                this.watchList = value;
+                this.OnPropertyChanged();
+                if (value is { })
+                {
+                    foreach (var symbol in value.Symbols)
+                    {
+                        _ = this.symbolViewModelCache.Get(symbol);
+                    }
+                }
+            }
+        }
 
         public ImmutableArray<string> Symbols
         {
