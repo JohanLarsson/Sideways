@@ -48,6 +48,8 @@
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        public event EventHandler<string>? NewSymbol;
+
         public ICommand RefreshSymbolsCommand { get; }
 
         public ICommand DownloadAllSymbolsCommand { get; }
@@ -211,6 +213,7 @@
         {
             var download = DaysDownload.Create(symbol, default, this);
             await download.ExecuteAsync().ConfigureAwait(false);
+            this.NewSymbol?.Invoke(this, symbol);
 
             return new DaysAndSplits(
                 Database.ReadDays(symbol),

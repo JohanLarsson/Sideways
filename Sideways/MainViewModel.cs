@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Collections.ObjectModel;
+    using System.Collections.Immutable;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.CompilerServices;
@@ -14,7 +14,7 @@
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         private readonly SymbolViewModelCache symbolViewModelCache;
-
+        private ImmutableArray<string> symbols;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
         private Simulation? simulation;
@@ -24,23 +24,25 @@
         {
             this.Settings = Settings.FromFile();
             this.Downloader = new(this.Settings);
-            _ = this.Downloader.RefreshSymbolDownloadsAsync();
             this.symbolViewModelCache = new(this.Downloader);
-            this.Symbols = new ObservableCollection<string>(Database.ReadSymbols());
-            this.symbolViewModelCache.NewSymbol += (_, s) =>
+            this.Symbols = Database.ReadSymbols();
+
+            _ = this.Downloader.RefreshSymbolDownloadsAsync();
+
+            this.Downloader.NewSymbol += (_, s) =>
             {
                 if (InsertAt() is { } insertAt)
                 {
-                    this.Symbols.Insert(insertAt, s);
+                    this.Symbols = this.Symbols.Insert(insertAt, s);
                 }
                 else
                 {
-                    this.Symbols.Add(s);
+                    this.Symbols = this.Symbols.Add(s);
                 }
 
                 int? InsertAt()
                 {
-                    for (var i = 0; i < this.Symbols.Count; i++)
+                    for (var i = 0; i < this.Symbols.Length; i++)
                     {
                         if (StringComparer.Ordinal.Compare(s, this.Symbols[i]) < 0)
                         {
@@ -95,8 +97,6 @@
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public ObservableCollection<string> Symbols { get; }
-
         public ICommand BuyCommand { get; }
 
         public ICommand SellHalfCommand { get; }
@@ -108,6 +108,21 @@
         public Downloader Downloader { get; }
 
         public Settings Settings { get; }
+
+        public ImmutableArray<string> Symbols
+        {
+            get => this.symbols;
+            private set
+            {
+                if (value == this.symbols)
+                {
+                    return;
+                }
+
+                this.symbols = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public DateTimeOffset Time
         {
@@ -224,8 +239,6 @@
                 this.downloader = downloader;
             }
 
-            internal event EventHandler<string>? NewSymbol;
-
             internal SymbolViewModel? Get(string? symbol)
             {
                 if (string.IsNullOrWhiteSpace(symbol))
@@ -259,14 +272,13 @@
                             splits = download.Splits;
                             days = download.Candles;
                             vm.Candles = Candles.Adjusted(splits, days, default);
-                            this.NewSymbol?.Invoke(this, vm.Symbol);
                         }
                         else
                         {
                             vm.Candles = Candles.Adjusted(splits, days, default);
                         }
 
-                        // Updating minutes.
+                        // Update minutes.
                         var minutes = await Task.Run(() => Database.ReadMinutes(vm.Symbol)).ConfigureAwait(false);
                         vm.Candles = Candles.Adjusted(splits, days, minutes);
                     }
