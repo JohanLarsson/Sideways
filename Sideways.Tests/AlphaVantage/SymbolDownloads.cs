@@ -10,7 +10,7 @@
 
     public static class SymbolDownloadsTests
     {
-        private static readonly AlphaVantageClientSettings AlphaVantageClientSettings = new AlphaVantageClientSettings
+        private static readonly AlphaVantageClientSettings AlphaVantageClientSettings = new()
         {
             ApiKey = "apiKey",
             MaxCallsPerMinute = 5,
