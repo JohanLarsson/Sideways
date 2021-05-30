@@ -8,6 +8,7 @@
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows.Input;
+
     using Sideways.AlphaVantage;
 
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
@@ -53,8 +54,8 @@
                 }
             };
 
-            this.Downloader.NewDays += (_, symbol) => this.symbolViewModelCache.Update(symbol);;
-            this.Downloader.NewMinutes += (_, symbol) => this.symbolViewModelCache.Update(symbol);;
+            this.Downloader.NewDays += (_, symbol) => this.symbolViewModelCache.Update(symbol); ;
+            this.Downloader.NewMinutes += (_, symbol) => this.symbolViewModelCache.Update(symbol); ;
 
             this.currentSymbol = this.symbolViewModelCache.Get("TSLA");
             this.BuyCommand = new RelayCommand(
@@ -298,7 +299,8 @@
             internal void Update(string? symbol)
             {
                 if (!string.IsNullOrWhiteSpace(symbol) &&
-                    this.symbolViewModels.TryGetValue(symbol, out var vm))
+                    this.symbolViewModels.TryGetValue(symbol, out var vm) &&
+                    vm is { })
                 {
                     var splits = Database.ReadSplits(symbol);
                     var days = Database.ReadDays(symbol);
