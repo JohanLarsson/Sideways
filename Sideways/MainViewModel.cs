@@ -14,7 +14,7 @@
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         private readonly SymbolViewModelCache symbolViewModelCache;
-        private WatchList watchList;
+        private WatchList? watchList;
         private ImmutableArray<string> symbols;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
@@ -113,7 +113,7 @@
 
         public Settings Settings { get; }
 
-        public WatchList WatchList
+        public WatchList? WatchList
         {
             get => this.watchList;
             private set
