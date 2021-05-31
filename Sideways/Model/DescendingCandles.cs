@@ -18,7 +18,7 @@
             this.candles = candles;
         }
 
-        public int Count => this.candles.Length;
+        public int Count => this.candles.IsDefault ? 0 : this.candles.Length;
 
         public Candle this[int index] => this.candles[index];
 

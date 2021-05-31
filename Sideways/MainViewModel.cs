@@ -26,7 +26,7 @@
             this.Settings = Settings.FromFile();
             this.Downloader = new(this.Settings);
             this.symbolViewModelCache = new(this.Downloader);
-            this.Symbols = Database.ReadSymbols();
+            this.symbols = Database.ReadSymbols();
 
             _ = this.Downloader.RefreshSymbolDownloadsAsync();
 
