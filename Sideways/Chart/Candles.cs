@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class Candles
     {
@@ -29,7 +30,7 @@
         public IEnumerable<Candle> Days(DateTimeOffset end)
         {
             if (TradingDay.IsOrdinaryHours(end) &&
-                MergeBy(DayMinutes(), (_, _) => true).FirstOrNull(_ => true) is { } merged)
+                this.Minutes(end).TakeWhile(IsSameDayOrdinaryHours).MergeBy((_, _) => true).FirstOrNull() is { } merged)
             {
                 yield return merged;
                 end = end.AddDays(-1);
@@ -53,22 +54,10 @@
                 yield return day.WithTime(TradingDay.EndOfDay(day.Time));
             }
 
-            IEnumerable<Candle> DayMinutes()
+            bool IsSameDayOrdinaryHours(Candle minute)
             {
-                foreach (var minute in this.Minutes(end))
-                {
-                    if (minute.Time.IsSameDay(end) &&
-                        TradingDay.IsOrdinaryHours(minute.Time))
-                    {
-                        yield return minute;
-                    }
-
-                    if (TradingDay.IsPostMarket(minute.Time) ||
-                        !minute.Time.IsSameDay(end.Date))
-                    {
-                        yield break;
-                    }
-                }
+                return minute.Time.IsSameDay(end) &&
+                       TradingDay.IsOrdinaryHours(minute.Time);
             }
         }
 

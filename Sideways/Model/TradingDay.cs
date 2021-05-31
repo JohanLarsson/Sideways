@@ -33,7 +33,7 @@
             t.Hour is >= 4 and < 9 ||
             t is { Hour: 9, Minute: < 30 };
 
-        public static bool IsPostMarket(DateTimeOffset t) => t.Hour > 16;
+        public static bool IsPostMarket(DateTimeOffset t) => t.Hour > 15;
 
         public static bool IsOrdinaryHours(DateTimeOffset t) =>
             !IsPreMarket(t) &&
