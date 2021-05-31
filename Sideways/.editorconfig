@@ -20,3 +20,6 @@ dotnet_diagnostic.CA2000.severity = none
 
 # WPF0061: Accessor method for attached property should have standard documentation text.
 dotnet_diagnostic.WPF0061.severity = none
+
+# CA1003: Use generic event handler instances
+dotnet_diagnostic.CA1003.severity = none
