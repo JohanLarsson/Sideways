@@ -26,14 +26,14 @@
 
         public static Builder CreateBuilder() => new();
 
-        public DescendingCandles Adjust(DescendingCandles days)
+        public DescendingCandles Adjust(DescendingCandles candles)
         {
             if (this.splits.IsEmpty)
             {
-                return days;
+                return candles;
             }
 
-            return days.AdjustBy(this);
+            return candles.AdjustBy(this);
         }
 
         public bool Equals(DescendingSplits other) => this.splits.Equals(other.splits);
