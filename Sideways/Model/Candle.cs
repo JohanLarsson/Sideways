@@ -38,6 +38,37 @@
             return !left.Equals(right);
         }
 
+        public static bool ShouldMergeHour(DateTimeOffset x, DateTimeOffset y)
+        {
+            Debug.Assert(x < y, "x < y");
+            if (x.IsSameDay(y))
+            {
+                if (x.Hour == y.Hour && x.Minute != 0)
+                {
+                    if (x.Hour == 9)
+                    {
+                        // Start new hour candle at market open.
+                        return x.Minute <= 30 == y.Minute <= 30;
+                    }
+
+                    return true;
+                }
+
+                if (x.Hour == y.Hour - 1 && x.Minute != 0 && y.Minute == 0)
+                {
+                    if (x.Hour == 9)
+                    {
+                        // Start new hour candle at market open.
+                        return x.Minute > 30;
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public Candle WithTime(DateTimeOffset time) => new(
             time: time,
             open: this.Open,

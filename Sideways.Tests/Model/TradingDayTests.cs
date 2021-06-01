@@ -8,6 +8,44 @@
     {
         private static readonly DateTimeOffset[] RealDates = Database.ReadDays("MSFT").Select(x => x.Time).ToArray();
 
+        [TestCase(06, 00, true)]
+        [TestCase(09, 29, true)]
+        [TestCase(09, 30, true)]
+        [TestCase(09, 31, false)]
+        [TestCase(10, 00, false)]
+        [TestCase(16, 00, false)]
+        public static void IsPreMarket(int hour, int minute, bool expected)
+        {
+            Assert.AreEqual(expected, TradingDay.IsPreMarket(new DateTimeOffset(2021, 06, 01, hour, minute, 0, TimeSpan.Zero)));
+        }
+
+        [TestCase(06, 00, false)]
+        [TestCase(09, 29, false)]
+        [TestCase(09, 30, false)]
+        [TestCase(10, 00, false)]
+        [TestCase(16, 00, false)]
+        [TestCase(16, 01, true)]
+        [TestCase(17, 00, true)]
+        [TestCase(20, 00, true)]
+        public static void IsPostMarket(int hour, int minute, bool expected)
+        {
+            Assert.AreEqual(expected, TradingDay.IsPostMarket(new DateTimeOffset(2021, 06, 01, hour, minute, 0, TimeSpan.Zero)));
+        }
+
+        [TestCase(06, 00, false)]
+        [TestCase(09, 29, false)]
+        [TestCase(09, 30, false)]
+        [TestCase(09, 31, true)]
+        [TestCase(10, 00, true)]
+        [TestCase(15, 59, true)]
+        [TestCase(16, 00, true)]
+        [TestCase(16, 01, false)]
+        [TestCase(20, 00, false)]
+        public static void IsOrdinaryHours(int hour, int minute, bool expected)
+        {
+            Assert.AreEqual(expected, TradingDay.IsOrdinaryHours(new DateTimeOffset(2021, 06, 01, hour, minute, 0, TimeSpan.Zero)));
+        }
+
         [TestCase(2020, 01, 01, false, Description = "New Year's Day")]
         [TestCase(2020, 01, 20, false, Description = "Martin Luther King, Jr. Day")]
         [TestCase(2020, 02, 17, false, Description = "Presidents' Day")]

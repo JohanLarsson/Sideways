@@ -27,7 +27,7 @@
         public IEnumerable<Candle> Days(DateTimeOffset end)
         {
             if (TradingDay.IsOrdinaryHours(end) &&
-                this.Minutes(end).TakeWhile(IsSameDayOrdinaryHours).MergeBy((_, _) => true).FirstOrNull() is { } merged)
+                this.Minutes(end).TakeWhile(x => IsSameDayOrdinaryHours(x.Time)).MergeBy((_, _) => true).FirstOrNull() is { } merged)
             {
                 yield return merged;
                 end = end.AddDays(-1);
@@ -51,32 +51,16 @@
                 yield return day.WithTime(TradingDay.EndOfDay(day.Time));
             }
 
-            bool IsSameDayOrdinaryHours(Candle minute)
+            bool IsSameDayOrdinaryHours(DateTimeOffset time)
             {
-                return minute.Time.IsSameDay(end) &&
-                       TradingDay.IsOrdinaryHours(minute.Time);
+                return time.IsSameDay(end) &&
+                       TradingDay.IsOrdinaryHours(time);
             }
         }
 
         public IEnumerable<Candle> Hours(DateTimeOffset end)
         {
-            return this.Minutes(end).MergeBy((x, y) => ShouldMerge(x.Time, y.Time));
-
-            static bool ShouldMerge(DateTimeOffset x, DateTimeOffset y)
-            {
-                if (x.IsSameHour(y))
-                {
-                    if (x.Hour == 9)
-                    {
-                        // Start new hour candle at market open.
-                        return x.Minute < 30 == y.Minute < 30;
-                    }
-
-                    return true;
-                }
-
-                return false;
-            }
+            return this.Minutes(end).MergeBy((x, y) => Candle.ShouldMergeHour(y.Time, x.Time));
         }
 
         public IEnumerable<Candle> Minutes(DateTimeOffset end)
@@ -112,7 +96,7 @@
             {
                 CandleInterval.Week => TradingDay.EndOfDay(FindInterval(this.days, time, (x, y) => x.Time.IsSameWeek(y.Time), this.dayIndex, count)),
                 CandleInterval.Day => TradingDay.EndOfDay(Find(this.days, time, this.dayIndex, count)),
-                CandleInterval.Hour => FindInterval(this.minutes, time, (x, y) => x.Time.IsSameHour(y.Time), this.minuteIndex, count),
+                CandleInterval.Hour => FindInterval(this.minutes, time, (x, y) => Candle.ShouldMergeHour(y.Time, x.Time), this.minuteIndex, count),
                 CandleInterval.Minute => Find(this.minutes, time, this.minuteIndex, count),
                 _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, null),
             };
