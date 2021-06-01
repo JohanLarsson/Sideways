@@ -1,5 +1,6 @@
 ﻿namespace Sideways
 {
+    using System;
     using System.Collections.Immutable;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
@@ -9,18 +10,20 @@
         private AlphaVantageClientSettings clientSettings;
         private ImmutableSortedSet<string> symbolsWithMissingMinutes;
         private ImmutableSortedSet<string> unlistedSymbols;
-        private ImmutableDictionary<string, TradingDay> firstDayWithMinutes;
+        private ImmutableDictionary<string, DateTimeOffset> firstMinutes;
 
         public AlphaVantageSettings(
             AlphaVantageClientSettings clientSettings,
             ImmutableSortedSet<string> symbolsWithMissingMinutes,
             ImmutableSortedSet<string> unlistedSymbols,
-            ImmutableDictionary<string, TradingDay> firstDayWithMinutes)
+            ImmutableDictionary<string, DateTimeOffset> firstMinutes)
         {
             this.clientSettings = clientSettings;
-            this.symbolsWithMissingMinutes = symbolsWithMissingMinutes;
-            this.unlistedSymbols = unlistedSymbols;
-            this.firstDayWithMinutes = firstDayWithMinutes;
+            //// ReSharper disable ConstantNullCoalescingCondition
+            this.symbolsWithMissingMinutes = symbolsWithMissingMinutes ?? ImmutableSortedSet<string>.Empty;
+            this.unlistedSymbols = unlistedSymbols ?? ImmutableSortedSet<string>.Empty;
+            this.firstMinutes = firstMinutes ?? ImmutableDictionary<string, DateTimeOffset>.Empty;
+            //// ReSharper restore ConstantNullCoalescingCondition
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -70,17 +73,17 @@
             }
         }
 
-        public ImmutableDictionary<string, TradingDay> FirstDayWithMinutes
+        public ImmutableDictionary<string, DateTimeOffset> FirstMinutes
         {
-            get => this.firstDayWithMinutes;
+            get => this.firstMinutes;
             private set
             {
-                if (ReferenceEquals(value, this.firstDayWithMinutes))
+                if (ReferenceEquals(value, this.firstMinutes))
                 {
                     return;
                 }
 
-                this.firstDayWithMinutes = value;
+                this.firstMinutes = value;
                 this.OnPropertyChanged();
             }
         }
@@ -100,9 +103,9 @@
             this.SymbolsWithMissingMinutes = this.symbolsWithMissingMinutes.Remove(symbol);
         }
 
-        public void AddFirstDayWithMinutes(string symbol, TradingDay day)
+        public void FirstMinute(string symbol, DateTimeOffset first)
         {
-            this.FirstDayWithMinutes = this.firstDayWithMinutes.Add(symbol, day);
+            this.FirstMinutes = this.firstMinutes.Add(symbol, first);
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

@@ -252,6 +252,12 @@
             this.settings.Save();
         }
 
+        public void FirstMinute(string symbol, DateTimeOffset first)
+        {
+            this.settings.AlphaVantage.FirstMinute(symbol, first);
+            this.settings.Save();
+        }
+
         public void NotifyDownloadedDays(string symbol) => this.NewDays?.Invoke(this, symbol);
 
         public void NotifyDownloadedMinutes(string symbol) => this.NewMinutes?.Invoke(this, symbol);

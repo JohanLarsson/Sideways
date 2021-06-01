@@ -1,5 +1,6 @@
 ﻿namespace Sideways.Tests
 {
+    using System;
     using System.Collections.Immutable;
     using System.Text.Json;
 
@@ -19,7 +20,7 @@
                     },
                     symbolsWithMissingMinutes: ImmutableSortedSet.Create("I", "LVGO"),
                     unlistedSymbols: ImmutableSortedSet.Create("I"),
-                    firstDayWithMinutes: ImmutableDictionary<string, TradingDay>.Empty.Add("GTX", new TradingDay(2021, 05, 03))));
+                    firstMinutes: ImmutableDictionary<string, DateTimeOffset>.Empty.Add("GTX", new DateTimeOffset(2021, 05, 03, 09, 31, 00, TimeSpan.Zero))));
 
             var json = JsonSerializer.Serialize(settings);
             var read = JsonSerializer.Deserialize<Settings>(json);

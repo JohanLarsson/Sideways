@@ -49,7 +49,7 @@
                         clientSettings: new AlphaVantageClientSettings { ApiKey = apiKey, MaxCallsPerMinute = 5, },
                         symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
                         unlistedSymbols: ImmutableSortedSet<string>.Empty,
-                        firstDayWithMinutes: ImmutableDictionary<string, TradingDay>.Empty));
+                        firstMinutes: ImmutableDictionary<string, DateTimeOffset>.Empty));
 
                 File.WriteAllText(SettingsFile, JsonSerializer.Serialize(settings, SerializerOptions));
                 return settings;
@@ -65,7 +65,7 @@
                     clientSettings: new AlphaVantageClientSettings { ApiKey = null, MaxCallsPerMinute = 5, },
                     symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
                     unlistedSymbols: ImmutableSortedSet<string>.Empty,
-                    firstDayWithMinutes: ImmutableDictionary<string, TradingDay>.Empty));
+                    firstMinutes: ImmutableDictionary<string, DateTimeOffset>.Empty));
 
             static string? ReadLegacyApiKey()
             {

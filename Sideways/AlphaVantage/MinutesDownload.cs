@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Immutable;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
@@ -62,12 +63,14 @@
 
             if (TradingDay.From(existingMinutes.Min) > TradingDay.Max(TradingDay.From(existingDays.Min), TradingDay.From(TimeRange.FromSlice(AlphaVantage.Slice.Year2Month2).Min)))
             {
+                var firstDay = settings.FirstMinutes.GetValueOrDefault(symbol);
                 var builder = ImmutableArray.CreateBuilder<MinutesDownload>();
                 foreach (var slice in Enum.GetValues<Slice>())
                 {
                     var sliceRange = TimeRange.FromSlice(slice);
                     if (existingDays.Overlaps(sliceRange) &&
                         existingMinutes.Min > sliceRange.Min &&
+                        sliceRange.Min > firstDay &&
                         existingMinutes.Min > existingDays.Min)
                     {
                         builder.Add(new MinutesDownload(symbol, slice, downloader));
@@ -93,6 +96,12 @@
                 {
                     Database.WriteMinutes(this.Symbol, candles);
                     this.downloader.NotifyDownloadedMinutes(this.Symbol);
+                }
+
+                if (candles.IsDefaultOrEmpty && this.Slice is { } &&
+                    Database.FirstMinute(this.Symbol) is { } first)
+                {
+                    this.downloader.FirstMinute(this.Symbol, first);
                 }
 
                 if (candles.IsDefaultOrEmpty &&

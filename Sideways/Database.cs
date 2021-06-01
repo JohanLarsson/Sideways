@@ -159,6 +159,22 @@
             transaction.Commit();
         }
 
+        public static DateTimeOffset? FirstMinute(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT time FROM minutes" +
+                " WHERE symbol = @symbol" +
+                " ORDER BY time ASC" +
+                "  LIMIT 1",
+                connection);
+            command.Parameters.AddWithValue("@symbol", symbol);
+            return command.ExecuteScalar() is long s ?
+                DateTimeOffset.FromUnixTimeSeconds(s)
+                : null;
+        }
+
         public static DescendingCandles ReadMinutes(string symbol, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
