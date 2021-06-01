@@ -61,7 +61,8 @@
 
         [TestCase(06, 00, true)]
         [TestCase(09, 29, true)]
-        [TestCase(09, 30, false)]
+        [TestCase(09, 30, true)]
+        [TestCase(09, 31, false)]
         [TestCase(10, 00, false)]
         [TestCase(16, 00, false)]
         public static void IsPreMarket(int hour, int minute, bool expected)
@@ -73,7 +74,9 @@
         [TestCase(09, 29, false)]
         [TestCase(09, 30, false)]
         [TestCase(10, 00, false)]
-        [TestCase(16, 00, true)]
+        [TestCase(16, 00, false)]
+        [TestCase(16, 01, true)]
+        [TestCase(17, 00, true)]
         [TestCase(20, 00, true)]
         public static void IsPostMarket(int hour, int minute, bool expected)
         {
@@ -82,10 +85,12 @@
 
         [TestCase(06, 00, false)]
         [TestCase(09, 29, false)]
-        [TestCase(09, 30, true)]
+        [TestCase(09, 30, false)]
+        [TestCase(09, 31, true)]
         [TestCase(10, 00, true)]
         [TestCase(15, 59, true)]
-        [TestCase(16, 00, false)]
+        [TestCase(16, 00, true)]
+        [TestCase(16, 01, false)]
         [TestCase(20, 00, false)]
         public static void IsOrdinaryHours(int hour, int minute, bool expected)
         {
