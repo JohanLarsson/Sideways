@@ -18,7 +18,8 @@
                         MaxCallsPerMinute = 5,
                     },
                     symbolsWithMissingMinutes: ImmutableSortedSet.Create("I", "LVGO"),
-                    unlistedSymbols: ImmutableSortedSet.Create("I")));
+                    unlistedSymbols: ImmutableSortedSet.Create("I"),
+                    firstDayWithMinutes: ImmutableDictionary<string, TradingDay>.Empty.Add("GTX", new TradingDay(2021, 05, 03))));
 
             var json = JsonSerializer.Serialize(settings);
             var read = JsonSerializer.Deserialize<Settings>(json);

@@ -88,10 +88,6 @@
             }
         }
 
-        public TradingDay LastDay => TradingDay.From(this.ExistingDays.Max);
-
-        public TradingDay LastMinute => TradingDay.From(this.ExistingMinutes.Max);
-
         public static SymbolDownloads? TryCreate(string symbol, TimeRange dayRange, TimeRange minuteRange, Downloader downloader, AlphaVantageSettings settings)
         {
             var daysDownload = DaysDownload.TryCreate(symbol, dayRange, downloader, settings);

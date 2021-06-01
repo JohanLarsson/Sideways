@@ -8,7 +8,7 @@
         public readonly int Month;
         public readonly int Day;
 
-        private TradingDay(int year, int month, int day)
+        public TradingDay(int year, int month, int day)
         {
             this.Year = year;
             this.Month = month;
