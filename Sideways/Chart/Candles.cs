@@ -60,7 +60,7 @@
 
         public IEnumerable<Candle> Hours(DateTimeOffset end)
         {
-            return this.Minutes(end).MergeBy((x, y) => Candle.ShouldMergeHour(y.Time, x.Time));
+            return this.Minutes(end).MergeBy((x, y) => Candle.ShouldMergeHour(x.Time, y.Time));
         }
 
         public IEnumerable<Candle> Minutes(DateTimeOffset end)
@@ -96,7 +96,7 @@
             {
                 CandleInterval.Week => TradingDay.EndOfDay(FindInterval(this.days, time, (x, y) => x.Time.IsSameWeek(y.Time), this.dayIndex, count)),
                 CandleInterval.Day => TradingDay.EndOfDay(Find(this.days, time, this.dayIndex, count)),
-                CandleInterval.Hour => FindInterval(this.minutes, time, (x, y) => Candle.ShouldMergeHour(y.Time, x.Time), this.minuteIndex, count),
+                CandleInterval.Hour => FindInterval(this.minutes, time, (x, y) => Candle.ShouldMergeHour(x.Time, y.Time), this.minuteIndex, count),
                 CandleInterval.Minute => Find(this.minutes, time, this.minuteIndex, count),
                 _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, null),
             };

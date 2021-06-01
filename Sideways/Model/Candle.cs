@@ -40,7 +40,11 @@
 
         public static bool ShouldMergeHour(DateTimeOffset x, DateTimeOffset y)
         {
-            Debug.Assert(x < y, "x < y");
+            if (x > y)
+            {
+                return ShouldMergeHour(y, x);
+            }
+
             if (x.IsSameDay(y))
             {
                 if (x.Hour == y.Hour && x.Minute != 0)
