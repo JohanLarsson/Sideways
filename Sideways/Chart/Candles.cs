@@ -22,10 +22,7 @@
 
         public static Candles Adjusted(DescendingSplits splits, DescendingCandles days, DescendingCandles minutes) => new(splits.Adjust(days), splits.Adjust(minutes));
 
-        public IEnumerable<Candle> Weeks(DateTimeOffset end)
-        {
-            return MergeBy(this.Days(end), (x, y) => x.Time.IsSameWeek(y.Time));
-        }
+        public IEnumerable<Candle> Weeks(DateTimeOffset end) => this.Days(end).MergeBy((x, y) => x.Time.IsSameWeek(y.Time));
 
         public IEnumerable<Candle> Days(DateTimeOffset end)
         {
@@ -195,32 +192,6 @@
 
                 var index = Math.Clamp(candles.IndexOf(time, statAt) - count, 0, candles.Count - 1);
                 return candles[index].Time;
-            }
-        }
-
-        private static IEnumerable<Candle> MergeBy(IEnumerable<Candle> candles, Func<Candle, Candle, bool> criteria)
-        {
-            var merged = default(Candle);
-            foreach (var candle in candles)
-            {
-                if (merged == default)
-                {
-                    merged = candle;
-                }
-                else if (criteria(merged, candle))
-                {
-                    merged = merged.Merge(candle);
-                }
-                else
-                {
-                    yield return merged;
-                    merged = candle;
-                }
-            }
-
-            if (merged != default)
-            {
-                yield return merged;
             }
         }
     }
