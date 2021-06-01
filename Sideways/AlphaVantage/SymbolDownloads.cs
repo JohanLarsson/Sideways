@@ -61,9 +61,12 @@
 
         public DownloadState State { get; } = new();
 
-        public string DayText => TradingDay.From(this.ExistingDays.Max) == TradingDay.LastComplete()
-            ? "No missing days"
-            : $"Download days from {this.ExistingDays.Max:D}";
+        public string DayText =>
+            this.ExistingDays == default
+            ? "Download days from beginning"
+            : TradingDay.From(this.ExistingDays.Max) == TradingDay.LastComplete()
+                ? "No missing days"
+                : $"Download days from {this.ExistingDays.Max:D}";
 
         public string MinutesText
         {
