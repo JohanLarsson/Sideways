@@ -15,7 +15,6 @@
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         private readonly SymbolViewModelCache symbolViewModelCache;
-        private ObservableCollection<string> watchList = new();
         private ImmutableSortedSet<string> symbols;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
@@ -34,6 +33,13 @@
             this.Downloader.NewSymbol += (_, symbol) => this.Symbols = this.symbols.Add(symbol);
             this.Downloader.NewDays += (_, symbol) => this.symbolViewModelCache.Update(symbol);
             this.Downloader.NewMinutes += (_, symbol) => this.symbolViewModelCache.Update(symbol);
+            this.WatchList.CollectionChanged += (_, _) =>
+            {
+                foreach (var symbol in this.WatchList)
+                {
+                    _ = this.symbolViewModelCache.Get(symbol);
+                }
+            };
 
             this.currentSymbol = this.symbolViewModelCache.Get("TSLA");
             this.BuyCommand = new RelayCommand(
@@ -89,25 +95,6 @@
         public Downloader Downloader { get; }
 
         public Settings Settings { get; }
-
-        public ObservableCollection<string> WatchList
-        {
-            get => this.watchList;
-            set
-            {
-                if (ReferenceEquals(value, this.watchList))
-                {
-                    return;
-                }
-
-                this.watchList = value;
-                this.OnPropertyChanged();
-                foreach (var symbol in value)
-                {
-                    _ = this.symbolViewModelCache.Get(symbol);
-                }
-            }
-        }
 
         public ImmutableSortedSet<string> Symbols
         {
@@ -177,6 +164,8 @@
                 }
             }
         }
+
+        public ObservableCollection<string> WatchList { get; } = new();
 
         public Simulation? Simulation
         {
