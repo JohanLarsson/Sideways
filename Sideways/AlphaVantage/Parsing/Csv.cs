@@ -1,4 +1,4 @@
-﻿namespace Sideways
+﻿namespace Sideways.AlphaVantage
 {
     using System;
     using System.Collections.Immutable;
@@ -6,8 +6,6 @@
     using System.IO;
     using System.Text;
     using System.Threading.Tasks;
-
-    using Sideways.AlphaVantage;
 
     public static class Csv
     {
@@ -95,7 +93,7 @@
                         high: float.Parse(parts[2], CultureInfo.InvariantCulture),
                         low: float.Parse(parts[3], CultureInfo.InvariantCulture),
                         close: float.Parse(parts[4], CultureInfo.InvariantCulture),
-                        volume: int.Parse(parts[5], CultureInfo.InvariantCulture)));
+                        volume: (int)long.Parse(parts[5], CultureInfo.InvariantCulture)));
             }
 
             return builder.ToImmutable();
@@ -144,7 +142,7 @@
                         low: float.Parse(parts[3], CultureInfo.InvariantCulture),
                         close: float.Parse(parts[4], CultureInfo.InvariantCulture),
                         adjustedClose: float.Parse(parts[5], CultureInfo.InvariantCulture),
-                        volume: int.Parse(parts[6], CultureInfo.InvariantCulture),
+                        volume: (int)long.Parse(parts[6], CultureInfo.InvariantCulture),
                         dividend: float.Parse(parts[7], CultureInfo.InvariantCulture),
                         splitCoefficient: float.Parse(parts[8], CultureInfo.InvariantCulture)));
             }

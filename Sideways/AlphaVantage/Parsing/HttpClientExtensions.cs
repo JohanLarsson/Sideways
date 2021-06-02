@@ -1,4 +1,4 @@
-﻿namespace Sideways
+﻿namespace Sideways.AlphaVantage
 {
     using System;
     using System.Collections.Immutable;
@@ -6,7 +6,6 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using Sideways.AlphaVantage;
 
     internal static class HttpClientExtensions
     {
