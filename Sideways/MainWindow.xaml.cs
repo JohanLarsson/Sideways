@@ -37,6 +37,12 @@
                     ApplicationCommands.Copy.Execute(null, this);
                     e.Handled = true;
                     break;
+                case Key.W
+                    when Keyboard.Modifiers == ModifierKeys.Control &&
+                         this.DataContext is MainViewModel { CurrentSymbolText: { } symbol } vm:
+                    vm.WatchList.Add(symbol);
+                    e.Handled = true;
+                    break;
                 case Key.Left
                     when Keyboard.Modifiers == ModifierKeys.Shift:
                     Skip(CandleInterval.Hour, this.timer is null ? -1 : -2);

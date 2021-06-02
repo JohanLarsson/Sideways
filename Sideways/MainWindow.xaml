@@ -1,7 +1,6 @@
 ﻿<Window x:Class="Sideways.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:converters="clr-namespace:Sideways.Converters"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sideways="clr-namespace:Sideways"
@@ -139,7 +138,7 @@
 
                     <TextBlock>
                         <TextBlock.Text>
-                            <MultiBinding Converter="{x:Static converters:AdrConverter.Default}" StringFormat="ADR(20) {0:F1}%">
+                            <MultiBinding Converter="{x:Static sideways:AdrConverter.Default}" StringFormat="ADR(20) {0:F1}%">
                                 <Binding ElementName="DailyChart" Path="Candles" />
                                 <Binding ElementName="DailyChart" Path="Time" />
                                 <Binding ElementName="DailyChart" Path="PriceRange" />
@@ -149,7 +148,7 @@
 
                     <TextBlock>
                         <TextBlock.Text>
-                            <MultiBinding Converter="{x:Static converters:AverageDollarVolumeConverter.Default}" StringFormat="A$(20) {0:##,#0} M">
+                            <MultiBinding Converter="{x:Static sideways:AverageDollarVolumeConverter.Default}" StringFormat="A$(20) {0:##,#0} M">
                                 <Binding ElementName="DailyChart" Path="Candles" />
                                 <Binding ElementName="DailyChart" Path="Time" />
                                 <Binding ElementName="DailyChart" Path="PriceRange" />
@@ -245,8 +244,8 @@
                 </Grid.RowDefinitions>
                 <TextBlock Text="Watch list" />
                 <ListBox Grid.Row="1"
-                         ItemsSource="{Binding WatchList.Symbols}"
-                         SelectedItem="{Binding CurrentSymbol}" />
+                         ItemsSource="{Binding WatchList}"
+                         SelectedItem="{Binding CurrentSymbolText}" />
             </Grid>
 
             <Grid Grid.Row="2">

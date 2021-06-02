@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Immutable;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.CompilerServices;
@@ -14,7 +15,7 @@
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         private readonly SymbolViewModelCache symbolViewModelCache;
-        private WatchList? watchList;
+        private ObservableCollection<string> watchList = new();
         private ImmutableArray<string> symbols;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
@@ -113,10 +114,10 @@
 
         public Settings Settings { get; }
 
-        public WatchList? WatchList
+        public ObservableCollection<string> WatchList
         {
             get => this.watchList;
-            private set
+            set
             {
                 if (ReferenceEquals(value, this.watchList))
                 {
@@ -125,12 +126,9 @@
 
                 this.watchList = value;
                 this.OnPropertyChanged();
-                if (value is { })
+                foreach (var symbol in value)
                 {
-                    foreach (var symbol in value.Symbols)
-                    {
-                        _ = this.symbolViewModelCache.Get(symbol);
-                    }
+                    _ = this.symbolViewModelCache.Get(symbol);
                 }
             }
         }
