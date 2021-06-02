@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Immutable;
-    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
@@ -102,13 +101,14 @@
                     Database.FirstMinute(this.Symbol) is { } first)
                 {
                     this.downloader.FirstMinute(this.Symbol, first);
+                    throw new InvalidOperationException("Downloaded empty slice, maybe missing data on AlphaVantage. Adding symbol to FirstMinutes in %APPDATA%\\Sideways\\Sideways.cfg");
                 }
 
                 if (candles.IsDefaultOrEmpty &&
                     this.Slice is null or AlphaVantage.Slice.Year1Month1)
                 {
                     this.downloader.MissingMinutes(this.Symbol);
-                    throw new InvalidOperationException("Downloaded empty slice, maybe missing data on AlphaVantage. Exclude this symbol?");
+                    throw new InvalidOperationException("Downloaded empty slice, maybe missing data on AlphaVantage. Adding symbol to SymbolsWithMissingMinutes in %APPDATA%\\Sideways\\Sideways.cfg");
                 }
 
                 return candles.Length;
