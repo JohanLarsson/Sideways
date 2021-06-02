@@ -70,7 +70,6 @@
 
         public Candle Merge(Candle other)
         {
-            Debug.Assert(this.Time != other.Time, "this.Time != other.Time");
             return other.Time <= this.Time
                 ? new(
                     time: this.Time,
