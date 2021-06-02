@@ -1,4 +1,4 @@
-﻿namespace Sideways.Converters
+﻿namespace Sideways
 {
     using System;
     using System.Collections.Generic;
