@@ -40,38 +40,17 @@
 
         public static bool ShouldMergeHour(DateTimeOffset x, DateTimeOffset y)
         {
-            if (x > y)
-            {
-                return ShouldMergeHour(y, x);
-            }
-
-            if (x.IsSameDay(y))
-            {
-                if (x.Hour == y.Hour && x.Minute != 0)
-                {
-                    if (x.Hour == 9)
-                    {
-                        // Start new hour candle at market open.
-                        return x.Minute <= 30 == y.Minute <= 30;
-                    }
-
-                    return true;
-                }
-
-                if (x.Hour == y.Hour - 1 && x.Minute != 0 && y.Minute == 0)
-                {
-                    if (x.Hour == 9)
-                    {
-                        // Start new hour candle at market open.
-                        return x.Minute > 30;
-                    }
-
-                    return true;
-                }
-            }
-
-            return false;
+            return x.IsSameDay(y) &&
+                   HourAndMinute.EndOfHourCandle(x) == HourAndMinute.EndOfHourCandle(y);
         }
+
+        public Candle WithTime(HourAndMinute time) => new(
+            time: new DateTimeOffset(this.Time.Year, this.Time.Month, this.Time.Day, time.Hour, time.Minute, 0, this.Time.Offset),
+            open: this.Open,
+            high: this.High,
+            low: this.Low,
+            close: this.Close,
+            volume: this.Volume);
 
         public Candle WithTime(DateTimeOffset time) => new(
             time: time,
