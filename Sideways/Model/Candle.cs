@@ -44,8 +44,8 @@
                    HourAndMinute.EndOfHourCandle(x) == HourAndMinute.EndOfHourCandle(y);
         }
 
-        public Candle WithTime(HourAndMinute time) => new(
-            time: new DateTimeOffset(this.Time.Year, this.Time.Month, this.Time.Day, time.Hour, time.Minute, 0, this.Time.Offset),
+        public Candle WithTime(HourAndMinute hourAndMinute) => new(
+            time: this.Time.WithHourAndMinute(hourAndMinute),
             open: this.Open,
             high: this.High,
             low: this.Low,

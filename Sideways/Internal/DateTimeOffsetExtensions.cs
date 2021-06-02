@@ -5,6 +5,8 @@
 
     public static class DateTimeOffsetExtensions
     {
+        public static DateTimeOffset WithHourAndMinute(this DateTimeOffset t, HourAndMinute hm) => new(t.Year, t.Month, t.Day, hm.Hour, hm.Minute, t.Second, t.Millisecond, t.Offset);
+
         public static bool IsSameWeek(this DateTimeOffset x, DateTimeOffset y) => x.Year == y.Year && Week(x) == Week(y);
 
         public static bool IsSameDay(this DateTimeOffset x, DateTimeOffset y) => x.Year == y.Year && x.Month == y.Month && x.Day == y.Day;
