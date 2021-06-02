@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
 
@@ -12,6 +13,22 @@
     public static class Sync
     {
         private static readonly FileInfo FlashDrive = new("D:\\Database.sqlite3");
+
+        [Test]
+        public static void Rebuild()
+        {
+            var rebuilt = new FileInfo(Database.DbFile.FullName + ".new");
+            var stopwatch = Stopwatch.StartNew();
+            _ = Database.ReadSymbols(rebuilt);
+            Sideways.Sync.CopyDays(Database.DbFile, rebuilt);
+            Console.WriteLine($"Copied days {stopwatch.Elapsed.TotalSeconds} s.");
+            Sideways.Sync.CopySplits(Database.DbFile, rebuilt);
+            Console.WriteLine($"Copied splits {stopwatch.Elapsed.TotalSeconds} s.");
+            Sideways.Sync.CopyDividends(Database.DbFile, rebuilt);
+            Console.WriteLine($"Copied dividends {stopwatch.Elapsed.TotalSeconds} s.");
+            Sideways.Sync.CopyMinutes(Database.DbFile, rebuilt);
+            Console.WriteLine($"Copied minutes {stopwatch.Elapsed.TotalSeconds} s.");
+        }
 
         [TestCaseSource(nameof(AppSymbols))]
         public static void OneWayToFlash(string symbol)

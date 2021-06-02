@@ -8,12 +8,12 @@
     [Explicit]
     public static class Download
     {
-        private static readonly AlphaVantageClientSettings? ClientSettings = Settings.FromFile()?.AlphaVantage?.ClientSettings;
+        private static readonly AlphaVantageClientSettings ClientSettings = Settings.FromFile().AlphaVantage.ClientSettings;
 
         [Test]
         public static async Task Listings()
         {
-            using var client = new AlphaVantageClient(new HttpClientHandler(), ClientSettings!.ApiKey!, ClientSettings.MaxCallsPerMinute);
+            using var client = new AlphaVantageClient(new HttpClientHandler(), ClientSettings.ApiKey!, ClientSettings.MaxCallsPerMinute);
             var listings = await client.ListingsAsync().ConfigureAwait(false);
             Database.WriteListings(listings);
         }
