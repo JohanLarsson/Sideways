@@ -19,9 +19,9 @@
 
         public static HourAndMinute EndOfHourCandle(DateTimeOffset t) => t switch
         {
-            { Hour: 9, Minute: 00 } => new(t.Hour, 0),
-            { Hour: 9, Minute: <= 30 } => new(t.Hour, 0),
-            { Hour: 9 } => new(10, 0),
+            { Hour: 9, Minute: 00 } => new(9, 00),
+            { Hour: 9, Minute: <= 30 } => new(9, 30),
+            { Hour: 9, Minute: > 30 } => new(10, 0),
             { Minute: 0 } => new(t.Hour, 0),
             _ => new(t.Hour + 1, 0),
         };
