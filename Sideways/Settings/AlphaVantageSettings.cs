@@ -10,19 +10,19 @@
         private AlphaVantageClientSettings clientSettings;
         private ImmutableSortedSet<string> symbolsWithMissingMinutes;
         private ImmutableSortedSet<string> unlistedSymbols;
-        private ImmutableDictionary<string, DateTimeOffset> firstMinutes;
+        private ImmutableSortedDictionary<string, DateTimeOffset> firstMinutes;
 
         public AlphaVantageSettings(
             AlphaVantageClientSettings clientSettings,
             ImmutableSortedSet<string> symbolsWithMissingMinutes,
             ImmutableSortedSet<string> unlistedSymbols,
-            ImmutableDictionary<string, DateTimeOffset> firstMinutes)
+            ImmutableSortedDictionary<string, DateTimeOffset> firstMinutes)
         {
             this.clientSettings = clientSettings;
             //// ReSharper disable ConstantNullCoalescingCondition
             this.symbolsWithMissingMinutes = symbolsWithMissingMinutes ?? ImmutableSortedSet<string>.Empty;
             this.unlistedSymbols = unlistedSymbols ?? ImmutableSortedSet<string>.Empty;
-            this.firstMinutes = firstMinutes ?? ImmutableDictionary<string, DateTimeOffset>.Empty;
+            this.firstMinutes = firstMinutes ?? ImmutableSortedDictionary<string, DateTimeOffset>.Empty;
             //// ReSharper restore ConstantNullCoalescingCondition
         }
 
@@ -73,7 +73,7 @@
             }
         }
 
-        public ImmutableDictionary<string, DateTimeOffset> FirstMinutes
+        public ImmutableSortedDictionary<string, DateTimeOffset> FirstMinutes
         {
             get => this.firstMinutes;
             private set

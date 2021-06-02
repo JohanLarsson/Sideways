@@ -24,7 +24,7 @@
                     AlphaVantageClientSettings,
                     symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
                     unlistedSymbols: ImmutableSortedSet.Create("I"),
-                    firstMinutes: ImmutableDictionary<string, DateTimeOffset>.Empty));
+                    firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty));
             Assert.AreEqual(null, SymbolDownloads.TryCreate("I", default, default, new Downloader(settings), settings.AlphaVantage));
         }
 
@@ -36,7 +36,7 @@
                     AlphaVantageClientSettings,
                     symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
                     unlistedSymbols: ImmutableSortedSet<string>.Empty,
-                    firstMinutes: ImmutableDictionary<string, DateTimeOffset>.Empty));
+                    firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty));
             var last = TradingDay.LastComplete();
             var end = new DateTimeOffset(last.Year, last.Month, last.Day, 0, 0, 0, TimeSpan.Zero);
             Assert.AreEqual(null, SymbolDownloads.TryCreate("TSLA", new TimeRange(end.AddDays(-100), end), new TimeRange(end.AddDays(-100), end), new Downloader(settings), settings.AlphaVantage));
@@ -50,7 +50,7 @@
                     AlphaVantageClientSettings,
                     symbolsWithMissingMinutes: ImmutableSortedSet.Create("ETHE"),
                     unlistedSymbols: ImmutableSortedSet<string>.Empty,
-                    firstMinutes: ImmutableDictionary<string, DateTimeOffset>.Empty));
+                    firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty));
             var last = TradingDay.LastComplete();
             var end = new DateTimeOffset(last.Year, last.Month, last.Day, 0, 0, 0, TimeSpan.Zero);
             Assert.AreEqual(null, SymbolDownloads.TryCreate("ETHE", new TimeRange(end.AddDays(-100), end), default, new Downloader(settings), settings.AlphaVantage));
@@ -64,7 +64,7 @@
                     AlphaVantageClientSettings,
                     symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
                     unlistedSymbols: ImmutableSortedSet<string>.Empty,
-                    firstMinutes: ImmutableDictionary<string, DateTimeOffset>.Empty));
+                    firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty));
             var last = TradingDay.LastComplete();
             var end = new DateTimeOffset(last.Year, last.Month, last.Day, 0, 0, 0, TimeSpan.Zero);
             var symbolDownloads = SymbolDownloads.TryCreate("TSLA", new TimeRange(end.AddDays(-100), end.AddDays(-5)), new TimeRange(end.AddDays(-100), end), new Downloader(settings), settings.AlphaVantage);
@@ -80,7 +80,7 @@
                     AlphaVantageClientSettings,
                     symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
                     unlistedSymbols: ImmutableSortedSet<string>.Empty,
-                    firstMinutes: ImmutableDictionary<string, DateTimeOffset>.Empty));
+                    firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty));
             var last = TradingDay.LastComplete();
             var end = new DateTimeOffset(last.Year, last.Month, last.Day, 0, 0, 0, TimeSpan.Zero);
             var symbolDownloads = SymbolDownloads.TryCreate("TSLA", new TimeRange(end.AddDays(-100), end), new TimeRange(end.AddDays(-100), end.AddDays(-5)), new Downloader(settings), settings.AlphaVantage);
@@ -96,7 +96,7 @@
                     AlphaVantageClientSettings,
                     symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
                     unlistedSymbols: ImmutableSortedSet<string>.Empty,
-                    firstMinutes: ImmutableDictionary<string, DateTimeOffset>.Empty));
+                    firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty));
             var last = TradingDay.LastComplete();
             var end = new DateTimeOffset(last.Year, last.Month, last.Day, 0, 0, 0, TimeSpan.Zero);
             var symbolDownloads = SymbolDownloads.TryCreate("TSLA", new TimeRange(end.AddYears(-3), end), default, new Downloader(settings), settings.AlphaVantage);
@@ -112,7 +112,7 @@
                     AlphaVantageClientSettings,
                     symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
                     unlistedSymbols: ImmutableSortedSet<string>.Empty,
-                    firstMinutes: ImmutableDictionary<string, DateTimeOffset>.Empty));
+                    firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty));
             var last = TradingDay.LastComplete();
             var end = new DateTimeOffset(last.Year, last.Month, last.Day, 0, 0, 0, TimeSpan.Zero);
             var symbolDownloads = SymbolDownloads.TryCreate("TSLA", new TimeRange(end.AddYears(-3), end), new TimeRange(end.AddDays(-40), end), new Downloader(settings), settings.AlphaVantage);
@@ -128,7 +128,7 @@
                     AlphaVantageClientSettings,
                     symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
                     unlistedSymbols: ImmutableSortedSet<string>.Empty,
-                    firstMinutes: ImmutableDictionary<string, DateTimeOffset>.Empty));
+                    firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty));
             var last = TradingDay.LastComplete();
             var end = new DateTimeOffset(last.Year, last.Month, last.Day, 0, 0, 0, TimeSpan.Zero).AddDays(-5);
             var symbolDownloads = SymbolDownloads.TryCreate("TSLA", new TimeRange(end.AddDays(-100), end), new TimeRange(end.AddDays(-100), end), new Downloader(settings), settings.AlphaVantage);
