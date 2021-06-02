@@ -39,11 +39,11 @@
                     break;
                 case Key.Left
                     when Keyboard.Modifiers == ModifierKeys.Shift:
-                    Skip(CandleInterval.Hour, -1);
+                    Skip(CandleInterval.Hour, this.timer is null ? -1 : -2);
                     e.Handled = true;
                     break;
                 case Key.Left:
-                    Skip(CandleInterval.Day, -1);
+                    Skip(CandleInterval.Day, this.timer is null ? -1 : -2);
                     e.Handled = true;
                     break;
                 case Key.Right
