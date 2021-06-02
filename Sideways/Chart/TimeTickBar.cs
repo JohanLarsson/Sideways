@@ -81,7 +81,7 @@
                     case CandleInterval.Hour:
                         for (var i = 0; i < max; i++)
                         {
-                            if (candles[i].Time is { Hour: 9, Minute: > 30 } or { Hour: 10, Minute: 00 })
+                            if (HourAndMinute.EndOfHourCandle(candles[i].Time) == new HourAndMinute(10, 00))
                             {
                                 DrawText(candles[i].Time.Day.ToString(CultureInfo.InvariantCulture), actualWidth - (i * candleWidth));
                             }
