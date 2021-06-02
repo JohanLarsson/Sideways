@@ -16,7 +16,7 @@
     {
         private readonly SymbolViewModelCache symbolViewModelCache;
         private ObservableCollection<string> watchList = new();
-        private ImmutableArray<string> symbols;
+        private ImmutableSortedSet<string> symbols;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
         private Simulation? simulation;
@@ -27,35 +27,11 @@
             this.Settings = Settings.FromFile();
             this.Downloader = new(this.Settings);
             this.symbolViewModelCache = new(this.Downloader);
-            this.symbols = Database.ReadSymbols();
+            this.symbols = ImmutableSortedSet.CreateRange(Database.ReadSymbols());
 
             _ = this.Downloader.RefreshSymbolDownloadsAsync();
 
-            this.Downloader.NewSymbol += (_, symbol) =>
-            {
-                if (InsertAt() is { } insertAt)
-                {
-                    this.Symbols = this.Symbols.Insert(insertAt, symbol);
-                }
-                else
-                {
-                    this.Symbols = this.Symbols.Add(symbol);
-                }
-
-                int? InsertAt()
-                {
-                    for (var i = 0; i < this.Symbols.Length; i++)
-                    {
-                        if (StringComparer.Ordinal.Compare(symbol, this.Symbols[i]) < 0)
-                        {
-                            return i;
-                        }
-                    }
-
-                    return null;
-                }
-            };
-
+            this.Downloader.NewSymbol += (_, symbol) => this.Symbols = this.symbols.Add(symbol);
             this.Downloader.NewDays += (_, symbol) => this.symbolViewModelCache.Update(symbol);
             this.Downloader.NewMinutes += (_, symbol) => this.symbolViewModelCache.Update(symbol);
 
@@ -133,7 +109,7 @@
             }
         }
 
-        public ImmutableArray<string> Symbols
+        public ImmutableSortedSet<string> Symbols
         {
             get => this.symbols;
             private set

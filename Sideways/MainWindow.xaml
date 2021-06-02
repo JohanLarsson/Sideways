@@ -244,6 +244,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Text="Watch list" />
                 <ListBox Grid.Row="1"
+                         sideways:Sort.Direction="Ascending"
                          ItemsSource="{Binding WatchList}"
                          SelectedItem="{Binding CurrentSymbolText}" />
             </Grid>
