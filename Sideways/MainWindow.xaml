@@ -256,7 +256,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <TextBlock Text="Simulation" />
-                <ListBox Grid.Row="0"
+                <ListBox Grid.Row="1"
                          ItemsSource="{Binding Simulation.Positions}"
                          SelectedItem="{Binding SelectedPosition}">
                     <ListBox.ItemTemplate>
@@ -266,7 +266,7 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-                <StackPanel Grid.Row="1" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.VisibleWhenNullElseCollapsed}}">
+                <StackPanel Grid.Row="2" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.VisibleWhenNullElseCollapsed}}">
                     <Button Command="{Binding StartNewSimulationCommand}"
                             Content="New"
                             Focusable="False" />
@@ -280,7 +280,7 @@
                     </Button>
                 </StackPanel>
 
-                <StackPanel Grid.Row="1" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+                <StackPanel Grid.Row="2" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
                     <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Simulation.Balance, StringFormat='#,#'}" />
 
                     <Button Command="{Binding BuyCommand}"
