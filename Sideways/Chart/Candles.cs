@@ -98,6 +98,11 @@
 
             static DateTimeOffset FindInterval(SortedCandles candles, DateTimeOffset time, int statAt, Func<Candle, Candle, bool> isSameInterval, int count, Func<Candle, DateTimeOffset> map)
             {
+                if (candles.Count == 0)
+                {
+                    return time;
+                }
+
                 var index = candles.IndexOf(time, statAt);
                 if (index < 0)
                 {
@@ -141,6 +146,11 @@
 
             static DateTimeOffset Find(SortedCandles candles, DateTimeOffset time, int statAt, int count, Func<Candle, DateTimeOffset> map)
             {
+                if (candles.Count == 0)
+                {
+                    return time;
+                }
+
                 var index = candles.IndexOf(time, statAt) + count;
                 if (index < 0)
                 {
