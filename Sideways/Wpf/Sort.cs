@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System.ComponentModel;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
 
@@ -14,7 +15,7 @@
                 default(ListSortDirection?),
                 OnDirectionChanged));
 
-        [AttachedPropertyBrowsableForType(typeof(DependencyObject))]
+        [AttachedPropertyBrowsableForType(typeof(ItemsControl))]
         public static ListSortDirection? GetDirection(ItemsControl element)
         {
             return (ListSortDirection)element.GetValue(DirectionProperty);
@@ -33,9 +34,10 @@
                 {
                     items.SortDescriptions.Add(new SortDescription(string.Empty, direction));
                 }
-                else
+                else if (e.OldValue is ListSortDirection old &&
+                         items.SortDescriptions.FirstOrDefault(x => x.Direction == old) is { } oldDescription)
                 {
-                    items.SortDescriptions.Clear();
+                    items.SortDescriptions.Remove(oldDescription);
                 }
             }
         }
