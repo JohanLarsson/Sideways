@@ -1,5 +1,6 @@
 ﻿namespace Sideways
 {
+    using System;
     using System.IO;
 
     using Microsoft.Data.Sqlite;
@@ -108,6 +109,45 @@
             select.Parameters.AddWithValue("@symbol", symbol);
             using var reader = select.ExecuteReader();
             WriteMinutes(reader, target);
+        }
+
+        public static void CopyListings(FileInfo source, FileInfo target)
+        {
+            using var connection = Database.CreateConnection(source);
+            connection.Open();
+
+            using var command = new SqliteCommand(
+                "SELECT symbol, name, exchange, asset_type, ipo_date, delisting_date FROM listings",
+                connection);
+            using var reader = command.ExecuteReader();
+            WriteListings(reader, target);
+
+            static void WriteListings(SqliteDataReader reader, FileInfo target)
+            {
+                using var targetConnection = Database.CreateConnection(target);
+                targetConnection.Open();
+
+                using var targetTransaction = targetConnection.BeginTransaction();
+                using var insert = targetConnection.CreateCommand();
+                insert.CommandText =
+                    "INSERT INTO listings (symbol, name, exchange, asset_type, ipo_date, delisting_date) VALUES (@symbol, @name, @exchange, @asset_type, @ipo_date, @delisting_date)" +
+                    "  ON CONFLICT(symbol) DO NOTHING";
+                insert.Prepare();
+
+                while (reader.Read())
+                {
+                    insert.Parameters.Clear();
+                    insert.Parameters.AddWithValue("@symbol", reader.GetString(0).ToUpperInvariant());
+                    insert.Parameters.AddWithValue("@name", reader.IsDBNull(1) ? DBNull.Value : reader.GetString(1));
+                    insert.Parameters.AddWithValue("@exchange", reader.GetString(2));
+                    insert.Parameters.AddWithValue("@asset_type", reader.GetString(3));
+                    insert.Parameters.AddWithValue("@ipo_date", reader.GetInt64(4));
+                    insert.Parameters.AddWithValue("@delisting_date", reader.IsDBNull(5) ? DBNull.Value : reader.GetInt64(5));
+                    insert.ExecuteNonQuery();
+                }
+
+                targetTransaction.Commit();
+            }
         }
 
         private static void WriteDays(SqliteDataReader reader, FileInfo target)

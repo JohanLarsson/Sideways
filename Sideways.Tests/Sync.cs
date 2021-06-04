@@ -25,8 +25,22 @@
             Console.WriteLine($"Copied splits {stopwatch.Elapsed.TotalSeconds} s.");
             Sideways.Sync.CopyDividends(Database.DbFile, rebuilt);
             Console.WriteLine($"Copied dividends {stopwatch.Elapsed.TotalSeconds} s.");
+
             Sideways.Sync.CopyMinutes(Database.DbFile, rebuilt);
             Console.WriteLine($"Copied minutes {stopwatch.Elapsed.TotalSeconds} s.");
+
+            Sideways.Sync.CopyListings(Database.DbFile, rebuilt);
+            Console.WriteLine($"Copied listings {stopwatch.Elapsed.TotalSeconds} s.");
+        }
+
+        [Test]
+        public static void CopyListings()
+        {
+            var rebuilt = new FileInfo(Database.DbFile.FullName + ".new");
+            var stopwatch = Stopwatch.StartNew();
+
+            Sideways.Sync.CopyListings(Database.DbFile, rebuilt);
+            Console.WriteLine($"Copied listings {stopwatch.Elapsed.TotalSeconds} s.");
         }
 
         [TestCaseSource(nameof(AppSymbols))]
@@ -51,6 +65,7 @@
             Sideways.Sync.CopyDividends(Database.DbFile, FlashDrive);
             Console.WriteLine("Copied dividends.");
             Sideways.Sync.CopyMinutes(Database.DbFile, FlashDrive);
+            Sideways.Sync.CopyListings(Database.DbFile, FlashDrive);
         }
 
         [TestCaseSource(nameof(FlashSymbols))]
@@ -75,6 +90,7 @@
             Sideways.Sync.CopyDividends(FlashDrive, Database.DbFile);
             Console.WriteLine("Copied dividends.");
             Sideways.Sync.CopyMinutes(FlashDrive, Database.DbFile);
+            Sideways.Sync.CopyListings(FlashDrive, Database.DbFile);
         }
 
         [TestCaseSource(nameof(Diffs))]
