@@ -4,11 +4,22 @@
     using System.Collections.Concurrent;
     using System.Collections.Immutable;
     using System.Net.Http;
+    using System.Net.Http.Json;
+    using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
 
     public sealed class AlphaVantageClient : IDisposable
     {
+        private static readonly JsonSerializerOptions EarningsOptions = new(JsonSerializerDefaults.Web)
+        {
+            Converters =
+            {
+                AnnualEarningConverter.Default,
+                QuarterlyEarningConverter.Default,
+            },
+        };
+
         private readonly string apiKey;
         private readonly HttpClient client;
         private readonly Throttle throttle;
@@ -139,6 +150,19 @@
                 AlphaVantage.Interval.Hour => "60min",
                 _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, null),
             };
+        }
+
+        public async Task<Earnings> EarningsAsync(string symbol, CancellationToken cancellationToken = default)
+        {
+            this.ThrowIfDisposed();
+            using (await this.throttle.WaitAsync().ConfigureAwait(false))
+            {
+                return await this.client.GetFromJsonAsync<Earnings>(
+                    new Uri($"/query?function=EARNINGS&symbol={symbol}&apikey={this.apiKey}", UriKind.Relative),
+                    EarningsOptions,
+                    cancellationToken)
+                                 .ConfigureAwait(false) ?? throw new InvalidOperationException("Earnings returned null.");
+            }
         }
 
         public void Dispose()
