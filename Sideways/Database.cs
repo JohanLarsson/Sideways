@@ -385,6 +385,8 @@
             return (long)command.ExecuteScalar();
         }
 
+        public static SqliteConnection CreateConnection(FileInfo file) => new($"Data Source={Source(file)}");
+
         private static SortedCandles ReadCandles(SqliteDataReader reader)
         {
             var builder = SortedCandles.CreateBuilder();

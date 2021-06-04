@@ -8,7 +8,7 @@
     {
         public static void CopyDays(FileInfo source, FileInfo target)
         {
-            using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
+            using var sourceConnection = Database.CreateConnection(source);
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT symbol, date, open, high, low, close, volume FROM days" +
@@ -20,7 +20,7 @@
 
         public static void CopyDays(string symbol, FileInfo source, FileInfo target)
         {
-            using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
+            using var sourceConnection = Database.CreateConnection(source);
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT symbol, date, open, high, low, close, volume FROM days" +
@@ -34,7 +34,7 @@
 
         public static void CopySplits(FileInfo source, FileInfo target)
         {
-            using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
+            using var sourceConnection = Database.CreateConnection(source);
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT symbol, date, coefficient FROM splits" +
@@ -46,7 +46,7 @@
 
         public static void CopySplits(string symbol, FileInfo source, FileInfo target)
         {
-            using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
+            using var sourceConnection = Database.CreateConnection(source);
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT symbol, date, coefficient FROM splits" +
@@ -60,7 +60,7 @@
 
         public static void CopyDividends(FileInfo source, FileInfo target)
         {
-            using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
+            using var sourceConnection = Database.CreateConnection(source);
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT symbol, date, dividend FROM dividends" +
@@ -72,7 +72,7 @@
 
         public static void CopyDividends(string symbol, FileInfo source, FileInfo target)
         {
-            using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
+            using var sourceConnection = Database.CreateConnection(source);
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT symbol, date, dividend FROM dividends" +
@@ -86,7 +86,7 @@
 
         public static void CopyMinutes(FileInfo source, FileInfo target)
         {
-            using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
+            using var sourceConnection = Database.CreateConnection(source);
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT symbol, time, open, high, low, close, volume FROM minutes" +
@@ -98,7 +98,7 @@
 
         public static void CopyMinutes(string symbol, FileInfo source, FileInfo target)
         {
-            using var sourceConnection = new SqliteConnection($"Data Source={source.FullName}");
+            using var sourceConnection = Database.CreateConnection(source);
             sourceConnection.Open();
             using var select = new SqliteCommand(
                 "SELECT symbol, time, open, high, low, close, volume FROM minutes" +
@@ -112,7 +112,7 @@
 
         private static void WriteDays(SqliteDataReader reader, FileInfo target)
         {
-            using var targetConnection = new SqliteConnection($"Data Source={target.FullName}");
+            using var targetConnection = Database.CreateConnection(target);
             targetConnection.Open();
 
             using var targetTransaction = targetConnection.BeginTransaction();
@@ -140,7 +140,7 @@
 
         private static void WriteSplits(SqliteDataReader reader, FileInfo target)
         {
-            using var targetConnection = new SqliteConnection($"Data Source={target.FullName}");
+            using var targetConnection = Database.CreateConnection(target);
             targetConnection.Open();
 
             using var targetTransaction = targetConnection.BeginTransaction();
@@ -163,7 +163,7 @@
 
         private static void WriteDividends(SqliteDataReader reader, FileInfo target)
         {
-            using var targetConnection = new SqliteConnection($"Data Source={target.FullName}");
+            using var targetConnection = Database.CreateConnection(target);
             targetConnection.Open();
 
             using var targetTransaction = targetConnection.BeginTransaction();
@@ -186,7 +186,7 @@
 
         private static void WriteMinutes(SqliteDataReader reader, FileInfo target)
         {
-            using var targetConnection = new SqliteConnection($"Data Source={target.FullName}");
+            using var targetConnection = Database.CreateConnection(target);
             targetConnection.Open();
 
             using var targetTransaction = targetConnection.BeginTransaction();
