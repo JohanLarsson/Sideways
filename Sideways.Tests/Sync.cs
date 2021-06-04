@@ -19,7 +19,6 @@
         {
             var rebuilt = new FileInfo(Database.DbFile.FullName + ".new");
             var stopwatch = Stopwatch.StartNew();
-            _ = Database.ReadSymbols(rebuilt);
             Sideways.Sync.CopyDays(Database.DbFile, rebuilt);
             Console.WriteLine($"Copied days {stopwatch.Elapsed.TotalSeconds} s.");
             Sideways.Sync.CopySplits(Database.DbFile, rebuilt);
