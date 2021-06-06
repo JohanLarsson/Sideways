@@ -317,6 +317,56 @@
             transaction.Commit();
         }
 
+        public static ImmutableArray<AnnualEarning> ReadAnnualEarnings(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+
+            using var command = new SqliteCommand(
+                "SELECT fiscal_date_ending, reported_eps FROM annual_earnings" +
+                " WHERE symbol = @symbol" +
+                " ORDER BY fiscal_date_ending ASC",
+                connection);
+            command.Parameters.AddWithValue("@symbol", symbol);
+            using var reader = command.ExecuteReader();
+            var builder = ImmutableArray.CreateBuilder<AnnualEarning>();
+            while (reader.Read())
+            {
+                builder.Add(
+                    new AnnualEarning(
+                        fiscalDateEnding: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(0)),
+                        reportedEps: reader.GetFloat(1)));
+            }
+
+            return builder.ToImmutable();
+        }
+
+        public static void WriteAnnualEarnings(string symbol, IEnumerable<AnnualEarning> earnings, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+
+            using var transaction = connection.BeginTransaction();
+            using var insert = connection.CreateCommand();
+            insert.CommandText = "INSERT INTO annual_earnings (symbol, fiscal_date_ending, reported_eps) VALUES (@symbol, @fiscal_date_ending, @reported_eps)" +
+                                 "  ON CONFLICT(symbol, fiscal_date_ending) DO UPDATE SET" +
+                                 "    symbol = excluded.symbol," +
+                                 "    fiscal_date_ending = excluded.fiscal_date_ending," +
+                                 "    reported_eps = excluded.reported_eps";
+            insert.Prepare();
+
+            foreach (var annualEarning in earnings)
+            {
+                insert.Parameters.Clear();
+                insert.Parameters.AddWithValue("@symbol", symbol);
+                insert.Parameters.AddWithValue("@fiscal_date_ending", annualEarning.FiscalDateEnding.ToUnixTimeSeconds());
+                insert.Parameters.AddWithValue("@reported_eps", annualEarning.ReportedEPS);
+                insert.ExecuteNonQuery();
+            }
+
+            transaction.Commit();
+        }
+
         public static ImmutableDictionary<string, TimeRange> DayRanges(FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
@@ -462,7 +512,20 @@
                         ipo_date INTEGER NOT NULL,
                         delisting_date INTEGER NULL,
                         PRIMARY KEY(symbol))");
-
+                Execute(
+                    @"CREATE TABLE IF NOT EXISTS annual_earnings(
+                        symbol TEXT NOT NULL,
+                        fiscal_date_ending INTEGER NOT NULL,
+                        reported_eps REAL NOT NULL,
+                        PRIMARY KEY(symbol, fiscal_date_ending))");
+                Execute(
+                    @"CREATE TABLE IF NOT EXISTS quarterly_earnings(
+                        symbol TEXT NOT NULL,
+                        fiscal_date_ending INTEGER NOT NULL,
+                        reported_date INTEGER NOT NULL,
+                        reported_eps REAL NOT NULL,
+                        estimated_eps REAL NOT NULL,
+                        PRIMARY KEY(symbol, fiscal_date_ending))");
                 transaction.Commit();
 
                 Migrated.TryAdd(file, null);

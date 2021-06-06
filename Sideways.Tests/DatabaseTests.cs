@@ -33,15 +33,37 @@
         }
 
         [Test]
-        public static void WriteMinutes()
+        public static void Minutes()
         {
             Database.WriteMinutes("UNIT_TEST", MinuteCandles, DbFile);
 
-            var candles = Database.ReadMinutes("UNIT_TEST", DbFile);
-            CollectionAssert.AreEqual(MinuteCandles.OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
+            var read = Database.ReadMinutes("UNIT_TEST", DbFile);
+            CollectionAssert.AreEqual(MinuteCandles.OrderBy(x => x.Time), read.OrderBy(x => x.Time));
 
-            candles = Database.ReadMinutes("UNIT_TEST", DayCandles.Min(x => x.Time), DayCandles.Max(x => x.Time), DbFile);
-            CollectionAssert.AreEqual(MinuteCandles.OrderBy(x => x.Time), candles.OrderBy(x => x.Time));
+            read = Database.ReadMinutes("UNIT_TEST", DayCandles.Min(x => x.Time), DayCandles.Max(x => x.Time), DbFile);
+            CollectionAssert.AreEqual(MinuteCandles.OrderBy(x => x.Time), read.OrderBy(x => x.Time));
+        }
+
+        [Test]
+        public static void AnnualEarnings()
+        {
+            var earnings = ImmutableArray.Create(
+                new AnnualEarning(
+                    new DateTimeOffset(2021, 03, 31, 00, 00, 00, 0, TimeSpan.Zero),
+                    1.77f),
+                new AnnualEarning(
+                    new DateTimeOffset(2020, 12, 31, 00, 00, 00, 0, TimeSpan.Zero),
+                    8.67f),
+                new AnnualEarning(
+                    new DateTimeOffset(2019, 12, 31, 00, 00, 00, 0, TimeSpan.Zero),
+                    12.81f),
+                new AnnualEarning(
+                    new DateTimeOffset(2018, 12, 31, 00, 00, 00, 0, TimeSpan.Zero),
+                    13.82f));
+            Database.WriteAnnualEarnings("UNIT_TEST", earnings, DbFile);
+
+            var read = Database.ReadAnnualEarnings("UNIT_TEST", DbFile);
+            CollectionAssert.AreEqual(earnings.OrderBy(x => x.FiscalDateEnding), read.OrderBy(x => x.FiscalDateEnding));
         }
 
         [Explicit]

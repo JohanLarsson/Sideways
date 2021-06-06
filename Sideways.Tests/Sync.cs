@@ -29,6 +29,9 @@
             Sideways.Sync.CopyMinutes(Database.DbFile, rebuilt);
             Console.WriteLine($"Copied minutes {stopwatch.Elapsed.TotalSeconds} s.");
 
+            Sideways.Sync.CopyAnnualEarnings(Database.DbFile, rebuilt);
+            Console.WriteLine($"Copied annual earnings {stopwatch.Elapsed.TotalSeconds} s.");
+
             Sideways.Sync.CopyListings(Database.DbFile, rebuilt);
             Console.WriteLine($"Copied listings {stopwatch.Elapsed.TotalSeconds} s.");
         }
@@ -65,6 +68,7 @@
             Sideways.Sync.CopyDividends(Database.DbFile, FlashDrive);
             Console.WriteLine("Copied dividends.");
             Sideways.Sync.CopyMinutes(Database.DbFile, FlashDrive);
+            Sideways.Sync.CopyAnnualEarnings(Database.DbFile, FlashDrive);
             Sideways.Sync.CopyListings(Database.DbFile, FlashDrive);
         }
 
@@ -90,6 +94,7 @@
             Sideways.Sync.CopyDividends(FlashDrive, Database.DbFile);
             Console.WriteLine("Copied dividends.");
             Sideways.Sync.CopyMinutes(FlashDrive, Database.DbFile);
+            Sideways.Sync.CopyAnnualEarnings(FlashDrive, Database.DbFile);
             Sideways.Sync.CopyListings(FlashDrive, Database.DbFile);
         }
 

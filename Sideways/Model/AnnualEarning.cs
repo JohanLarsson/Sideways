@@ -14,29 +14,16 @@
 
         public float ReportedEPS { get; }
 
-        public static bool operator ==(AnnualEarning left, AnnualEarning right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(AnnualEarning left, AnnualEarning right) => left.Equals(right);
 
-        public static bool operator !=(AnnualEarning left, AnnualEarning right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(AnnualEarning left, AnnualEarning right) => !left.Equals(right);
 
-        public bool Equals(AnnualEarning other)
-        {
-            return this.FiscalDateEnding.Equals(other.FiscalDateEnding) && this.ReportedEPS.Equals(other.ReportedEPS);
-        }
+        public bool Equals(AnnualEarning other) => this.FiscalDateEnding.Equals(other.FiscalDateEnding) && this.ReportedEPS.Equals(other.ReportedEPS);
 
-        public override bool Equals(object? obj)
-        {
-            return obj is AnnualEarning other && this.Equals(other);
-        }
+        public override bool Equals(object? obj) => obj is AnnualEarning other && this.Equals(other);
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.FiscalDateEnding, this.ReportedEPS);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.FiscalDateEnding, this.ReportedEPS);
+
+        public override string ToString() => $"{this.FiscalDateEnding:yyyy-MM-dd} {this.ReportedEPS}";
     }
 }

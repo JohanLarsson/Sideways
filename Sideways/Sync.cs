@@ -150,6 +150,43 @@
             }
         }
 
+        public static void CopyAnnualEarnings(FileInfo source, FileInfo target)
+        {
+            using var connection = Database.CreateConnection(source);
+            connection.Open();
+
+            using var command = new SqliteCommand(
+                "SELECT symbol, fiscal_date_ending, reported_eps FROM annual_earnings" +
+                "  ORDER BY symbol, fiscal_date_ending ASC",
+                connection);
+            using var reader = command.ExecuteReader();
+            WriteEarnings(reader, target);
+
+            static void WriteEarnings(SqliteDataReader reader, FileInfo target)
+            {
+                using var targetConnection = Database.CreateConnection(target);
+                targetConnection.Open();
+
+                using var targetTransaction = targetConnection.BeginTransaction();
+                using var insert = targetConnection.CreateCommand();
+                insert.CommandText =
+                    "INSERT INTO annual_earnings (symbol, fiscal_date_ending, reported_eps) VALUES (@symbol, @fiscal_date_ending, @reported_eps)" +
+                    "  ON CONFLICT(symbol, fiscal_date_ending) DO NOTHING";
+                insert.Prepare();
+
+                while (reader.Read())
+                {
+                    insert.Parameters.Clear();
+                    insert.Parameters.AddWithValue("@symbol", reader.GetString(0).ToUpperInvariant());
+                    insert.Parameters.AddWithValue("@fiscal_date_ending", reader.GetInt64(5));
+                    insert.Parameters.AddWithValue("@reported_eps", reader.GetFloat(2));
+                    insert.ExecuteNonQuery();
+                }
+
+                targetTransaction.Commit();
+            }
+        }
+
         private static void WriteDays(SqliteDataReader reader, FileInfo target)
         {
             using var targetConnection = Database.CreateConnection(target);
