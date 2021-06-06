@@ -218,7 +218,7 @@
                     insert.Parameters.AddWithValue("@fiscal_date_ending", reader.GetInt64(1));
                     insert.Parameters.AddWithValue("@reported_date", reader.GetInt64(2));
                     insert.Parameters.AddWithValue("@reported_eps", reader.GetFloat(3));
-                    insert.Parameters.AddWithValue("@estimated_eps", reader.GetFloat(4));
+                    insert.Parameters.AddWithValue("@estimated_eps", reader.IsDBNull(4) ? DBNull.Value : reader.GetFloat(4));
                     insert.ExecuteNonQuery();
                 }
 

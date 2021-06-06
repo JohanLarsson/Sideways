@@ -165,6 +165,15 @@
             }
         }
 
+        public async Task<string> GetStringAsync(Uri uri)
+        {
+            this.ThrowIfDisposed();
+            using (await this.throttle.WaitAsync().ConfigureAwait(false))
+            {
+                return await this.client.GetStringAsync(uri).ConfigureAwait(false);
+            }
+        }
+
         public void Dispose()
         {
             if (this.disposed)

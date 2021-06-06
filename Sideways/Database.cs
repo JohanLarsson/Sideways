@@ -387,7 +387,7 @@
                         fiscalDateEnding: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(0)),
                         reportedDate: DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(1)),
                         reportedEps: reader.GetFloat(2),
-                        estimatedEps: reader.GetFloat(3)));
+                        estimatedEps: reader.IsDBNull(3) ? null : reader.GetFloat(3)));
             }
 
             return builder.ToImmutable();
@@ -416,7 +416,7 @@
                 insert.Parameters.AddWithValue("@fiscal_date_ending", earning.FiscalDateEnding.ToUnixTimeSeconds());
                 insert.Parameters.AddWithValue("@reported_date", earning.ReportedDate.ToUnixTimeSeconds());
                 insert.Parameters.AddWithValue("@reported_eps", earning.ReportedEps);
-                insert.Parameters.AddWithValue("@estimated_eps", earning.EstimatedEps);
+                insert.Parameters.AddWithValue("@estimated_eps", earning.EstimatedEps is null ? DBNull.Value : earning.EstimatedEps);
                 insert.ExecuteNonQuery();
             }
 
@@ -580,7 +580,7 @@
                         fiscal_date_ending INTEGER NOT NULL,
                         reported_date INTEGER NOT NULL,
                         reported_eps REAL NOT NULL,
-                        estimated_eps REAL NOT NULL,
+                        estimated_eps REAL NULL,
                         PRIMARY KEY(symbol, fiscal_date_ending))");
                 transaction.Commit();
 

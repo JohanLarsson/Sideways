@@ -15,9 +15,9 @@
                 reader.ReadDate("fiscalDateEnding"),
                 reader.ReadDate("reportedDate"),
                 reader.ReadFloat("reportedEPS"),
-                reader.ReadFloat("estimatedEPS"));
-            _ = reader.ReadFloat("surprise");
-            _ = reader.ReadFloat("surprisePercentage");
+                reader.ReadFloatOrNull("estimatedEPS"));
+            _ = reader.ReadFloatOrNull("surprise");
+            _ = reader.ReadFloatOrNull("surprisePercentage");
             return quarterlyEarning;
         }
 

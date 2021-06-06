@@ -65,5 +65,36 @@
 
             throw new JsonException($"Error parsing float");
         }
+
+        internal static float? ReadFloatOrNull(this ref Utf8JsonReader reader, string propertyName)
+        {
+            if (reader.TokenType != JsonTokenType.PropertyName)
+            {
+                throw new JsonException($"Expected {JsonTokenType.PropertyName}");
+            }
+
+            if (!reader.ValueTextEquals(propertyName))
+            {
+                throw new JsonException($"Expected {propertyName}");
+            }
+
+            reader.Read(JsonTokenType.PropertyName);
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                if (Utf8Parser.TryParse(reader.ValueSpan, out float result, out _))
+                {
+                    reader.Read(JsonTokenType.String);
+                    return result;
+                }
+
+                if (reader.ValueTextEquals("None"))
+                {
+                    reader.Read(JsonTokenType.String);
+                    return null;
+                }
+            }
+
+            throw new JsonException($"Error parsing float");
+        }
     }
 }
