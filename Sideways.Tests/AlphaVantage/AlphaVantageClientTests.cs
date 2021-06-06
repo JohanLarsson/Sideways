@@ -1482,10 +1482,12 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
             Assert.AreEqual(101, earnings.QuarterlyEarnings.Length);
             Assert.AreEqual(new DateTimeOffset(1996, 03, 31, 00, 00, 00, TimeSpan.Zero), earnings.QuarterlyEarnings[^1].FiscalDateEnding);
             Assert.AreEqual(new DateTimeOffset(1996, 04, 17, 00, 00, 00, TimeSpan.Zero), earnings.QuarterlyEarnings[^1].ReportedDate);
+#pragma warning disable CS0618 // Type or member is obsolete
             Assert.AreEqual(0.55, earnings.QuarterlyEarnings[^1].ReportedEps, 0.001f);
-            Assert.AreEqual(0.6, earnings.QuarterlyEarnings[^1].EstimatedEps, 0.001f);
-            Assert.AreEqual(-0.05, earnings.QuarterlyEarnings[^1].Surprise, 0.001f);
-            Assert.AreEqual(-0.083333, earnings.QuarterlyEarnings[^1].SurprisePercentage, 0.001f);
+            Assert.AreEqual(0.6f, earnings.QuarterlyEarnings[^1].EstimatedEps, 0.001f);
+            Assert.AreEqual(-0.05f, earnings.QuarterlyEarnings[^1].Surprise, 0.001f);
+            Assert.AreEqual(-0.083333f, earnings.QuarterlyEarnings[^1].SurprisePercentage, 0.001f);
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         private class MockHandler : HttpMessageHandler
