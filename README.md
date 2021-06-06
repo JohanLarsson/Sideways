@@ -6,6 +6,8 @@ App for backtesting and viewing charts.
 
 ![image](https://user-images.githubusercontent.com/1640096/119938653-0891d100-bf8d-11eb-80d2-1dd383fb06cf.png)
 
+This is currently pre alpha so there may be breaking changes.
+
 # Get started
 1. Create an API key at [AlphaVantage](https://www.alphavantage.co/)
 2. Build and run the app and open the settings editor and input the key.
