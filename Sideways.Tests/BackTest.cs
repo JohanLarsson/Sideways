@@ -39,21 +39,20 @@ namespace Sideways.Tests
         [Test]
         public static void AllGapUps()
         {
-            const double minGap = 0.05;
+            const double minGap = 0.1;
             Console.WriteLine("symbol;date;gap;relative_volume;relative_close;three_day;five_day;link");
             var bookmarks = new List<Bookmark>();
             foreach (var symbol in Symbols)
             {
                 var candles = Database.ReadDays(symbol);
-                for (var i = 10; i < candles.Count - 5; i++)
+                for (var i = 10; i < candles.Count - 20; i++)
                 {
                     var candle = candles[i];
-                    var gap = Percent(candles[i - 1].High, candle.Open);
-                    if (gap > minGap &&
+                    if (Percent(candles[i - 1].High, candle.Open) > minGap &&
                         candle.Close * candle.Volume > 10_000_000)
                     {
-                        Console.WriteLine($"{symbol};{candle.Time:yyyy-MM-dd};{gap};{RelativeVolume()};{RelativeClose()};{Percent(candle.Open, candles[i + 3].Close)};{Percent(candle.Open, candles[i + 5].Close)};https://www.tradingview.com/chart/?symbol={symbol}&interval=1D&date={candle.Time:yyyy-MM-dd}");
-                        bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i + 5].Time), ImmutableSortedSet<string>.Empty, null));
+                        // Console.WriteLine($"{symbol};{candle.Time:yyyy-MM-dd};{gap};{RelativeVolume()};{RelativeClose()};{Percent(candle.Open, candles[i + 3].Close)};{Percent(candle.Open, candles[i + 5].Close)};https://www.tradingview.com/chart/?symbol={symbol}&interval=1D&date={candle.Time:yyyy-MM-dd}");
+                        bookmarks.Add(new Bookmark(symbol, candle.Time, ImmutableSortedSet<string>.Empty, null));
                     }
 
                     double Percent(float start, float end)
@@ -61,23 +60,23 @@ namespace Sideways.Tests
                         return (end - start) / start;
                     }
 
-                    double RelativeVolume()
-                    {
-                        return candle.Volume / Slice(candles, i - 10, i - 1).Average(x => x.Volume);
-                    }
+                    ////double RelativeVolume()
+                    ////{
+                    ////    return candle.Volume / Slice(candles, i - 10, i - 1).Average(x => x.Volume);
+                    ////}
 
-                    double RelativeClose()
-                    {
-                        return (candle.Close - candle.Low) / (candle.High - candle.Low);
-                    }
+                    ////double RelativeClose()
+                    ////{
+                    ////    return (candle.Close - candle.Low) / (candle.High - candle.Low);
+                    ////}
 
-                    static IEnumerable<Candle> Slice(SortedCandles source, int from, int to)
-                    {
-                        for (var i = from; i <= to; i++)
-                        {
-                            yield return source[i];
-                        }
-                    }
+                    ////static IEnumerable<Candle> Slice(SortedCandles source, int from, int to)
+                    ////{
+                    ////    for (var i = from; i <= to; i++)
+                    ////    {
+                    ////        yield return source[i];
+                    ////    }
+                    ////}
                 }
             }
 
@@ -87,6 +86,7 @@ namespace Sideways.Tests
                 Directory.CreateDirectory(file.DirectoryName!);
             }
 
+            Console.WriteLine(bookmarks.Count);
             File.WriteAllText(
                 file.FullName,
                 JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
