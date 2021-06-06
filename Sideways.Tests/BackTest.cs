@@ -88,7 +88,7 @@ namespace Sideways.Tests
 
             File.WriteAllText(
                 file.FullName,
-                JsonSerializer.Serialize(bookmarks));
+                JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
         }
     }
 }
