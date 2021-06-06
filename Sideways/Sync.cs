@@ -178,7 +178,7 @@
                 {
                     insert.Parameters.Clear();
                     insert.Parameters.AddWithValue("@symbol", reader.GetString(0).ToUpperInvariant());
-                    insert.Parameters.AddWithValue("@fiscal_date_ending", reader.GetInt64(5));
+                    insert.Parameters.AddWithValue("@fiscal_date_ending", reader.GetInt64(1));
                     insert.Parameters.AddWithValue("@reported_eps", reader.GetFloat(2));
                     insert.ExecuteNonQuery();
                 }
