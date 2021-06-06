@@ -49,7 +49,8 @@ namespace Sideways.Tests
                 {
                     var candle = candles[i];
                     var gap = Percent(candles[i - 1].High, candle.Open);
-                    if (gap > minGap)
+                    if (gap > minGap &&
+                        candle.Close * candle.Volume > 10_000_000)
                     {
                         Console.WriteLine($"{symbol};{candle.Time:yyyy-MM-dd};{gap};{RelativeVolume()};{RelativeClose()};{Percent(candle.Open, candles[i + 3].Close)};{Percent(candle.Open, candles[i + 5].Close)};https://www.tradingview.com/chart/?symbol={symbol}&interval=1D&date={candle.Time:yyyy-MM-dd}");
                         bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i + 5].Time), ImmutableSortedSet<string>.Empty, null));
