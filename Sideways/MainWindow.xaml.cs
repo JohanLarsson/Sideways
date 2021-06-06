@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.Immutable;
     using System.ComponentModel;
     using System.Globalization;
     using System.IO;
@@ -16,6 +17,7 @@
     public partial class MainWindow : Window
     {
         private static readonly string SimulationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Simulations");
+        private static readonly string BookmarksDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks");
 
         private DispatcherTimer? timer;
 
@@ -113,8 +115,8 @@
                 {
                     InitialDirectory = SimulationDirectory,
                     FileName = $"Simulation {DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}",
-                    DefaultExt = ".sim",
-                    Filter = "Log files|*.sim",
+                    DefaultExt = ".simulation",
+                    Filter = "Simulation files|*.simulation;*.sim",
                 };
 
                 if (dialog.ShowDialog() is true)
@@ -173,7 +175,7 @@
 
         private void OnOpenSimulation(object sender, ExecutedRoutedEventArgs e)
         {
-            if (this.DataContext is MainViewModel { } mainViewModel)
+            if (this.DataContext is MainViewModel mainViewModel)
             {
                 if (mainViewModel is { Time: var time, Simulation: { } simulation } &&
                     MessageBox.Show(this, "Do you want to save current simulation first?", "Simulation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
@@ -189,13 +191,35 @@
                 var dialog = new OpenFileDialog
                 {
                     InitialDirectory = SimulationDirectory,
-                    Filter = "Log files|*.sim",
+                    Filter = "Simulation files|*.simulation;*.sim",
                 };
 
                 if (dialog.ShowDialog() is true)
                 {
-                    var sim = JsonSerializer.Deserialize<Simulation>(File.ReadAllText(dialog.FileName));
-                    mainViewModel.UpdateSimulation(sim);
+                    mainViewModel.UpdateSimulation(JsonSerializer.Deserialize<Simulation>(File.ReadAllText(dialog.FileName)));
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void OnOpenBookmarks(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel mainViewModel)
+            {
+                if (!Directory.Exists(BookmarksDirectory))
+                {
+                    Directory.CreateDirectory(BookmarksDirectory);
+                }
+
+                var dialog = new OpenFileDialog
+                {
+                    InitialDirectory = BookmarksDirectory,
+                    Filter = "Bookmark files|*.bookmarks",
+                };
+
+                if (dialog.ShowDialog() is true)
+                {
+                    mainViewModel.Bookmarks = JsonSerializer.Deserialize<ImmutableList<Bookmark>>(File.ReadAllText(dialog.FileName));
                     e.Handled = true;
                 }
             }

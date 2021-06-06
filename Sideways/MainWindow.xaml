@@ -214,7 +214,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0">
@@ -309,6 +310,34 @@
                             Focusable="False">
                         <Button.CommandBindings>
                             <CommandBinding Command="Close" Executed="OnCloseSimulation" />
+                        </Button.CommandBindings>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="Bookmarks" />
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding Bookmarks}"
+                         SelectedItem="{Binding SelectedBookmark}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type sideways:Bookmark}">
+                            <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <StackPanel Grid.Row="2" Visibility="{Binding Bookmarks, Converter={x:Static sideways:NullToVisibilityConverter.VisibleWhenNullElseCollapsed}}">
+                    <Button Command="Open"
+                            Content="Open"
+                            Focusable="False">
+                        <Button.CommandBindings>
+                            <CommandBinding Command="Open" Executed="OnOpenBookmarks" />
                         </Button.CommandBindings>
                     </Button>
                 </StackPanel>

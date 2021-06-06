@@ -18,6 +18,8 @@
         private ImmutableSortedSet<string> symbols;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
+        private ImmutableList<Bookmark>? bookmarks;
+        private Bookmark? selectedBookmark;
         private Simulation? simulation;
         private bool disposed;
 
@@ -166,6 +168,41 @@
         }
 
         public ObservableCollection<string> WatchList { get; } = new();
+
+        public ImmutableList<Bookmark>? Bookmarks
+        {
+            get => this.bookmarks;
+            set
+            {
+                if (value == this.bookmarks)
+                {
+                    return;
+                }
+
+                this.bookmarks = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public Bookmark? SelectedBookmark
+        {
+            get => this.selectedBookmark;
+            set
+            {
+                if (ReferenceEquals(value, this.selectedBookmark))
+                {
+                    return;
+                }
+
+                this.selectedBookmark = value;
+                this.OnPropertyChanged();
+                if (value is { })
+                {
+                    this.CurrentSymbol = this.symbolViewModelCache.Get(value.Symbol);
+                    this.Time = value.Time;
+                }
+            }
+        }
 
         public Simulation? Simulation
         {

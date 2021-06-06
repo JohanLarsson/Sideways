@@ -4,7 +4,9 @@ namespace Sideways.Tests
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.IO;
     using System.Linq;
+    using System.Text.Json;
 
     using NUnit.Framework;
 
@@ -39,6 +41,7 @@ namespace Sideways.Tests
         {
             const double minGap = 0.05;
             Console.WriteLine("symbol;date;gap;relative_volume;relative_close;three_day;five_day;link");
+            var bookmarks = new List<Bookmark>();
             foreach (var symbol in Symbols)
             {
                 var candles = Database.ReadDays(symbol);
@@ -49,6 +52,7 @@ namespace Sideways.Tests
                     if (gap > minGap)
                     {
                         Console.WriteLine($"{symbol};{candle.Time:yyyy-MM-dd};{gap};{RelativeVolume()};{RelativeClose()};{Percent(candle.Open, candles[i + 3].Close)};{Percent(candle.Open, candles[i + 5].Close)};https://www.tradingview.com/chart/?symbol={symbol}&interval=1D&date={candle.Time:yyyy-MM-dd}");
+                        bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i + 5].Time), ImmutableSortedSet<string>.Empty, null));
                     }
 
                     double Percent(float start, float end)
@@ -75,6 +79,16 @@ namespace Sideways.Tests
                     }
                 }
             }
+
+            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Gap-ups.bookmarks"));
+            if (!Directory.Exists(file.DirectoryName))
+            {
+                Directory.CreateDirectory(file.DirectoryName!);
+            }
+
+            File.WriteAllText(
+                file.FullName,
+                JsonSerializer.Serialize(bookmarks));
         }
     }
 }
