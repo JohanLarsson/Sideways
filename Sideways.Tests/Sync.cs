@@ -31,6 +31,8 @@
 
             Sideways.Sync.CopyAnnualEarnings(Database.DbFile, rebuilt);
             Console.WriteLine($"Copied annual earnings {stopwatch.Elapsed.TotalSeconds} s.");
+            Sideways.Sync.CopyQuarterlyEarnings(Database.DbFile, rebuilt);
+            Console.WriteLine($"Copied quarterly earnings {stopwatch.Elapsed.TotalSeconds} s.");
 
             Sideways.Sync.CopyListings(Database.DbFile, rebuilt);
             Console.WriteLine($"Copied listings {stopwatch.Elapsed.TotalSeconds} s.");
@@ -43,6 +45,26 @@
             var stopwatch = Stopwatch.StartNew();
 
             Sideways.Sync.CopyListings(Database.DbFile, rebuilt);
+            Console.WriteLine($"Copied listings {stopwatch.Elapsed.TotalSeconds} s.");
+        }
+
+        [Test]
+        public static void CopyAnnualEarnings()
+        {
+            var rebuilt = new FileInfo(Database.DbFile.FullName + ".new");
+            var stopwatch = Stopwatch.StartNew();
+
+            Sideways.Sync.CopyAnnualEarnings(Database.DbFile, rebuilt);
+            Console.WriteLine($"Copied listings {stopwatch.Elapsed.TotalSeconds} s.");
+        }
+
+        [Test]
+        public static void CopyQuarterlyEarnings()
+        {
+            var rebuilt = new FileInfo(Database.DbFile.FullName + ".new");
+            var stopwatch = Stopwatch.StartNew();
+
+            Sideways.Sync.CopyQuarterlyEarnings(Database.DbFile, rebuilt);
             Console.WriteLine($"Copied listings {stopwatch.Elapsed.TotalSeconds} s.");
         }
 
@@ -69,6 +91,7 @@
             Console.WriteLine("Copied dividends.");
             Sideways.Sync.CopyMinutes(Database.DbFile, FlashDrive);
             Sideways.Sync.CopyAnnualEarnings(Database.DbFile, FlashDrive);
+            Sideways.Sync.CopyQuarterlyEarnings(Database.DbFile, FlashDrive);
             Sideways.Sync.CopyListings(Database.DbFile, FlashDrive);
         }
 
@@ -95,6 +118,7 @@
             Console.WriteLine("Copied dividends.");
             Sideways.Sync.CopyMinutes(FlashDrive, Database.DbFile);
             Sideways.Sync.CopyAnnualEarnings(FlashDrive, Database.DbFile);
+            Sideways.Sync.CopyQuarterlyEarnings(FlashDrive, Database.DbFile);
             Sideways.Sync.CopyListings(FlashDrive, Database.DbFile);
         }
 

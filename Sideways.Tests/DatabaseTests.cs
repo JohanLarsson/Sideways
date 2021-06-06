@@ -66,6 +66,36 @@
             CollectionAssert.AreEqual(earnings.OrderBy(x => x.FiscalDateEnding), read.OrderBy(x => x.FiscalDateEnding));
         }
 
+        [Test]
+        public static void QuarterlyEarnings()
+        {
+            var earnings = ImmutableArray.Create(
+                new QuarterlyEarning(
+                    new DateTimeOffset(2021, 03, 31, 00, 00, 00, 0, TimeSpan.Zero),
+                    new DateTimeOffset(2021, 04, 19, 00, 00, 00, 0, TimeSpan.Zero),
+                    1.77f,
+                    1.6524f),
+                new QuarterlyEarning(
+                    new DateTimeOffset(2020, 12, 31, 00, 00, 00, 0, TimeSpan.Zero),
+                    new DateTimeOffset(2020, 01, 21, 00, 00, 00, 0, TimeSpan.Zero),
+                    2.08f,
+                    2.07f),
+                new QuarterlyEarning(
+                    new DateTimeOffset(2020, 09, 30, 00, 00, 00, 0, TimeSpan.Zero),
+                    new DateTimeOffset(2020, 10, 19, 00, 00, 00, 0, TimeSpan.Zero),
+                    2.58f,
+                    2.579f),
+                new QuarterlyEarning(
+                    new DateTimeOffset(2020, 06, 30, 00, 00, 00, 0, TimeSpan.Zero),
+                    new DateTimeOffset(2020, 07, 20, 00, 00, 00, 0, TimeSpan.Zero),
+                    2.18f,
+                    2.0851f));
+            Database.WriteQuarterlyEarnings("UNIT_TEST", earnings, DbFile);
+
+            var read = Database.ReadQuarterlyEarnings("UNIT_TEST", DbFile);
+            CollectionAssert.AreEqual(earnings.OrderBy(x => x.FiscalDateEnding), read.OrderBy(x => x.FiscalDateEnding));
+        }
+
         [Explicit]
         [Test]
         public static void Timings()
