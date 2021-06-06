@@ -243,7 +243,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <TextBlock Text="Watch list" />
+                <TextBlock Text="Watchlist" />
                 <ListBox Grid.Row="1"
                          sideways:Sort.Direction="Ascending"
                          ItemsSource="{Binding WatchList}"
@@ -318,11 +318,16 @@
             <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <TextBlock Text="Bookmarks" />
-                <ListBox Grid.Row="1"
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <TextBlock Text="Offset:" />
+                    <TextBox MinWidth="30" Text="{Binding BookmarkOffset}" />
+                </StackPanel>
+                <ListBox Grid.Row="2"
                          ItemsSource="{Binding Bookmarks}"
                          SelectedItem="{Binding SelectedBookmark}">
                     <ListBox.ItemTemplate>
@@ -332,7 +337,7 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-                <StackPanel Grid.Row="2" Visibility="{Binding Bookmarks, Converter={x:Static sideways:NullToVisibilityConverter.VisibleWhenNullElseCollapsed}}">
+                <StackPanel Grid.Row="3" Visibility="{Binding Bookmarks, Converter={x:Static sideways:NullToVisibilityConverter.VisibleWhenNullElseCollapsed}}">
                     <Button Command="Open"
                             Content="Open"
                             Focusable="False">

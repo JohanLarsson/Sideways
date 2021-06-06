@@ -121,6 +121,20 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="SelectionBrush" Value="{x:Null}" />
+                <Setter Property="Foreground" Value="{x:Static sideways:Brushes.EnabledText}" />
+                <Setter Property="Background" Value="Transparent" />
+
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.DisabledText}" />
+                        <Setter Property="FontStyle" Value="Oblique" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -20,6 +20,7 @@
         private SymbolViewModel? currentSymbol;
         private ImmutableList<Bookmark>? bookmarks;
         private Bookmark? selectedBookmark;
+        private int bookmarkOffset;
         private Simulation? simulation;
         private bool disposed;
 
@@ -199,8 +200,25 @@
                 if (value is { })
                 {
                     this.CurrentSymbol = this.symbolViewModelCache.Get(value.Symbol);
-                    this.Time = value.Time;
+                    this.Time = this.currentSymbol?.Candles is { } candles
+                        ? candles.Skip(value.Time, CandleInterval.Day, this.bookmarkOffset)
+                        : value.Time.AddDays(this.bookmarkOffset);
                 }
+            }
+        }
+
+        public int BookmarkOffset
+        {
+            get => this.bookmarkOffset;
+            set
+            {
+                if (value == this.bookmarkOffset)
+                {
+                    return;
+                }
+
+                this.bookmarkOffset = value;
+                this.OnPropertyChanged();
             }
         }
 
