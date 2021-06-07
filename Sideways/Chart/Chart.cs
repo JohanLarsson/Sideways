@@ -83,6 +83,14 @@
                 default(int?),
                 FrameworkPropertyMetadataOptions.Inherits));
 
+        public static readonly DependencyProperty BookmarkTimeProperty = DependencyProperty.RegisterAttached(
+            "BookmarkTime",
+            typeof(DateTimeOffset?),
+            typeof(Chart),
+            new FrameworkPropertyMetadata(
+                default(DateTimeOffset?),
+                FrameworkPropertyMetadataOptions.Inherits));
+
         private readonly List<Candle> candles = new();
 
         public Chart()
@@ -146,6 +154,11 @@
         protected override int VisualChildrenCount => this.Children.Count;
 
         protected override IEnumerator LogicalChildren => this.Children.GetEnumerator();
+
+        [AttachedPropertyBrowsableForType(typeof(DependencyObject))]
+        public static DateTimeOffset? GetBookmarkTime(DependencyObject element) => (DateTimeOffset?)element.GetValue(BookmarkTimeProperty);
+
+        public static void SetBookmarkTime(DependencyObject element, DateTimeOffset? value) => element.SetValue(BookmarkTimeProperty, value);
 
         protected override Visual GetVisualChild(int index) => this.Children[index];
 

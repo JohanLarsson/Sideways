@@ -124,7 +124,6 @@
 
             <Style TargetType="{x:Type TextBox}">
                 <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                <Setter Property="SelectionBrush" Value="{x:Null}" />
                 <Setter Property="Foreground" Value="{x:Static sideways:Brushes.EnabledText}" />
                 <Setter Property="Background" Value="Transparent" />
 

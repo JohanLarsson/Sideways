@@ -6,8 +6,23 @@
 
     public class ChartBackground : CandleSeries
     {
+        public static readonly DependencyProperty BookmarkTimeProperty = Chart.BookmarkTimeProperty.AddOwner(
+            typeof(ChartBackground),
+            new FrameworkPropertyMetadata(
+                default(DateTimeOffset?),
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
+        public DateTimeOffset? BookmarkTime
+        {
+            get => (DateTimeOffset?)this.GetValue(BookmarkTimeProperty);
+            set => this.SetValue(BookmarkTimeProperty, value);
+        }
+
         protected override void OnRender(DrawingContext drawingContext)
         {
+            var renderSize = this.RenderSize;
+            var position = CandlePosition.Create(renderSize, this.CandleWidth, default);
+
             switch (this.CandleInterval)
             {
                 case CandleInterval.Hour or CandleInterval.Minute:
@@ -22,11 +37,20 @@
                     break;
             }
 
+            if (this.BookmarkTime is { } bookmarkTime &&
+                position.X(bookmarkTime, this.Candles) is { } bookMarkX)
+            {
+                drawingContext.DrawRectangle(
+                    Brushes.Gray,
+                    null,
+                    new Rect(
+                        new Point(bookMarkX, 0),
+                        new Point(bookMarkX + 1, renderSize.Height)));
+            }
+
             void DrawBand(Func<Candle, bool> func, SolidColorBrush brush)
             {
-                var renderSize = this.RenderSize;
                 var candles = this.Candles;
-                var position = CandlePosition.Create(renderSize, this.CandleWidth, default);
                 for (var i = 0; i < candles.Count; i++)
                 {
                     if (func(candles[i]))

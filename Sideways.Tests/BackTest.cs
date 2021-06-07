@@ -20,7 +20,7 @@ namespace Sideways.Tests
             foreach (var symbol in Database.ReadSymbols())
             {
                 var candles = Database.ReadDays(symbol);
-                for (var i = 10; i < candles.Count - 20; i++)
+                for (var i = 10; i < candles.Count; i++)
                 {
                     var candle = candles[i];
                     if (Percent(candles[i - 1].High, candle.Open) > 0.1 &&
@@ -62,10 +62,10 @@ namespace Sideways.Tests
                 Directory.CreateDirectory(file.DirectoryName!);
             }
 
-            Console.WriteLine(bookmarks.Count);
             File.WriteAllText(
                 file.FullName,
                 JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
+            Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
         }
     }
 }

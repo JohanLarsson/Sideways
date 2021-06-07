@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.Generic;
     using System.Windows;
 
     public readonly struct CandlePosition : IEquatable<CandlePosition>
@@ -66,6 +67,35 @@
         }
 
         public double Y(float value) => this.valueRange.Y(value, this.renderSize.Height);
+
+        public double? X(DateTimeOffset time, IReadOnlyList<Candle> candles)
+        {
+            if (candles.Count == 0 ||
+                time > candles[0].Time)
+            {
+                return null;
+            }
+
+            var x = this.renderSize.Width + (this.candleWidth / 2.0);
+            foreach (var candle in candles)
+            {
+                if (candle.Time <= time)
+                {
+                    return x;
+                }
+
+                if (candle.Time > time)
+                {
+                    x -= this.candleWidth;
+                    if (x < 0)
+                    {
+                        return null;
+                    }
+                }
+            }
+
+            return null;
+        }
 
         public CandlePosition ShiftLeft() => new(
             left: this.Left - this.candleWidth,
