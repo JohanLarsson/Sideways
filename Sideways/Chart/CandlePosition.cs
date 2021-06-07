@@ -76,7 +76,8 @@
                 return null;
             }
 
-            var x = this.renderSize.Width + (this.candleWidth / 2.0);
+            // ReSharper disable once PossibleLossOfFraction
+            var x = this.renderSize.Width + (this.candleWidth / 2);
             foreach (var candle in candles)
             {
                 if (candle.Time <= time)

@@ -41,7 +41,7 @@
                 position.X(bookmarkTime, this.Candles) is { } bookMarkX)
             {
                 drawingContext.DrawRectangle(
-                    Brushes.Gray,
+                    Brushes.DarkGray,
                     null,
                     new Rect(
                         new Point(bookMarkX, 0),
