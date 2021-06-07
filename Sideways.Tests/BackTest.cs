@@ -14,7 +14,7 @@ namespace Sideways.Tests
     public static class BackTest
     {
         [Test]
-        public static void GapUps()
+        public static void EpisodicPivots()
         {
             var bookmarks = new List<Bookmark>();
             foreach (var symbol in Database.ReadSymbols())
@@ -56,7 +56,7 @@ namespace Sideways.Tests
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Gap-ups.bookmarks"));
+            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Episodic pivot.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
@@ -77,38 +77,50 @@ namespace Sideways.Tests
                 if (Database.FirstMinute(symbol) is { } firstMinute)
                 {
                     var candles = Database.ReadDays(symbol, firstMinute.Date, DateTimeOffset.Now);
-                    for (var i = 10; i < candles.Count; i++)
+                    foreach (var candle in candles)
                     {
-                        var candle = candles[i];
-                        if (Percent(candle.Open, candle.Close) > 0.05 &&
-                            candle.Close * candle.Volume > 10_000_000 &&
-                            RelativeVolume() > 2)
+                        if ((candle.Close - candle.Open) / candle.Open > 0.05 &&
+                            candle.Close * candle.Volume > 10_000_000)
                         {
                             bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candle.Time), ImmutableSortedSet<string>.Empty, null));
-                        }
-
-                        double Percent(float start, float end)
-                        {
-                            return (end - start) / start;
-                        }
-
-                        double RelativeVolume()
-                        {
-                            return candle.Volume / Slice(candles, i - 10, i - 1).Average(x => x.Volume);
-                        }
-
-                        static IEnumerable<Candle> Slice(SortedCandles source, int from, int to)
-                        {
-                            for (var i = from; i <= to; i++)
-                            {
-                                yield return source[i];
-                            }
                         }
                     }
                 }
             }
 
             var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Big green.bookmarks"));
+            if (!Directory.Exists(file.DirectoryName))
+            {
+                Directory.CreateDirectory(file.DirectoryName!);
+            }
+
+            File.WriteAllText(
+                file.FullName,
+                JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
+            Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
+        }
+
+        [Test]
+        public static void GapUps()
+        {
+            var bookmarks = new List<Bookmark>();
+            foreach (var symbol in Database.ReadSymbols())
+            {
+                if (Database.FirstMinute(symbol) is { } firstMinute)
+                {
+                    var candles = Database.ReadDays(symbol, firstMinute.Date, DateTimeOffset.Now);
+                    for (var i = 1; i < candles.Count; i++)
+                    {
+                        if (candles[i].Open > candles[i - 1].High &&
+                            candles[i].Close * candles[i].Volume > 10_000_000)
+                        {
+                            bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
+                        }
+                    }
+                }
+            }
+
+            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Gap up.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
