@@ -13,32 +13,11 @@ namespace Sideways.Tests
     [Explicit]
     public static class BackTest
     {
-        private static readonly ImmutableArray<string> Symbols = Database.ReadSymbols();
-
-        [TestCaseSource(nameof(Symbols))]
-        public static void GapUp(string symbol)
-        {
-            var candles = Database.ReadDays(symbol);
-            for (var i = 1; i < candles.Count - 5; i++)
-            {
-                var candle = candles[i];
-                if (Gap() > 0.10)
-                {
-                    Console.WriteLine($"{candle.Time:yyyy-MM-dd} {100 * (candles[i + 5].Close - candle.Open) / candle.Open,6:F1}%");
-                }
-
-                double Gap()
-                {
-                    return (candle.Open - candles[i - 1].High) / candle.Open;
-                }
-            }
-        }
-
         [Test]
-        public static void AllGapUps()
+        public static void GapUps()
         {
             var bookmarks = new List<Bookmark>();
-            foreach (var symbol in Symbols)
+            foreach (var symbol in Database.ReadSymbols())
             {
                 var candles = Database.ReadDays(symbol);
                 for (var i = 10; i < candles.Count - 20; i++)
