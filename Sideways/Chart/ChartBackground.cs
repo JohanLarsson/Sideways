@@ -21,14 +21,41 @@
         protected override void OnRender(DrawingContext drawingContext)
         {
             var renderSize = this.RenderSize;
-            var position = CandlePosition.Create(renderSize, this.CandleWidth, default);
+            var candles = this.Candles;
 
             switch (this.CandleInterval)
             {
                 case CandleInterval.Hour or CandleInterval.Minute:
+                    DrawBetweenDays(Brushes.PreMarket);
                     DrawBand(x => TradingDay.IsPreMarket(x.Time), Brushes.PreMarket);
                     DrawBand(x => TradingDay.IsPostMarket(x.Time), Brushes.PostMarket);
                     break;
+
+                    void DrawBetweenDays(SolidColorBrush brush)
+                    {
+                        var position = CandlePosition.Create(renderSize, this.CandleWidth, default);
+                        for (var i = 0; i < candles.Count - 1; i++)
+                        {
+                            if (candles[i].Time.Date != candles[i + 1].Time.Date &&
+                                TradingDay.IsOrdinaryHours(candles[i].Time) &&
+                                TradingDay.IsOrdinaryHours(candles[i + 1].Time))
+                            {
+                                drawingContext.DrawRectangle(
+                                    brush,
+                                    null,
+                                    new Rect(
+                                        new Point(position.Left, 0),
+                                        new Point(position.Left + 1, renderSize.Height)));
+                            }
+
+                            position = position.ShiftLeft();
+                            if (position.Left < 0)
+                            {
+                                break;
+                            }
+                        }
+                    }
+
                 case CandleInterval.Day:
                     DrawBand(x => x.Time.Month % 2 == 0, Brushes.Even);
                     break;
@@ -38,7 +65,7 @@
             }
 
             if (this.BookmarkTime is { } bookmarkTime &&
-                position.X(bookmarkTime, this.Candles) is { } bookMarkX)
+                CandlePosition.Create(renderSize, this.CandleWidth, default).X(bookmarkTime, candles) is { } bookMarkX)
             {
                 drawingContext.DrawRectangle(
                     Brushes.DarkGray,
@@ -50,7 +77,7 @@
 
             void DrawBand(Func<Candle, bool> func, SolidColorBrush brush)
             {
-                var candles = this.Candles;
+                var position = CandlePosition.Create(renderSize, this.CandleWidth, default);
                 for (var i = 0; i < candles.Count; i++)
                 {
                     if (func(candles[i]))
