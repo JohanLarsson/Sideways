@@ -126,6 +126,11 @@
             Console.WriteLine($"Count {n} minutes took {stopwatch.ElapsedMilliseconds} ms.");
 
             stopwatch.Restart();
+            _ = Database.FirstMinute("TSLA");
+            stopwatch.Stop();
+            Console.WriteLine($"FirstMinute(TSLA) took {stopwatch.ElapsedMilliseconds} ms.");
+
+            stopwatch.Restart();
             var symbols = Database.ReadSymbols();
             stopwatch.Stop();
             Console.WriteLine($"Read {symbols.Length} symbols took {stopwatch.ElapsedMilliseconds} ms.");
