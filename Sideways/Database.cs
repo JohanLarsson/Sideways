@@ -182,38 +182,6 @@
             transaction.Commit();
         }
 
-        public static DateTimeOffset? FirstMinute(string symbol, FileInfo? file = null)
-        {
-            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
-            connection.Open();
-            using var command = new SqliteCommand(
-                "SELECT time FROM minutes" +
-                "  WHERE symbol = @symbol" +
-                "  ORDER BY time ASC" +
-                "  LIMIT 1",
-                connection);
-            command.Parameters.AddWithValue("@symbol", symbol);
-            return command.ExecuteScalar() is long s ?
-                DateTimeOffset.FromUnixTimeSeconds(s)
-                : null;
-        }
-
-        public static DateTimeOffset? LastMinute(string symbol, FileInfo? file = null)
-        {
-            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
-            connection.Open();
-            using var command = new SqliteCommand(
-                "SELECT time FROM minutes" +
-                "  WHERE symbol = @symbol" +
-                "  ORDER BY time DESC" +
-                "  LIMIT 1",
-                connection);
-            command.Parameters.AddWithValue("@symbol", symbol);
-            return command.ExecuteScalar() is long s ?
-                DateTimeOffset.FromUnixTimeSeconds(s)
-                : null;
-        }
-
         public static SortedCandles ReadMinutes(string symbol, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
@@ -244,26 +212,63 @@
             return ReadCandles(reader);
         }
 
+        public static DateTimeOffset? FirstMinute(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            return connection.ExecuteScalar(
+                "SELECT time FROM minutes" +
+                "  WHERE symbol = @symbol" +
+                "  ORDER BY time ASC" +
+                "  LIMIT 1",
+                new SqliteParameter("@symbol", symbol)) is long s
+                ? DateTimeOffset.FromUnixTimeSeconds(s)
+                : null;
+        }
+
+        public static DateTimeOffset? LastMinute(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            return connection.ExecuteScalar(
+                "SELECT time FROM minutes" +
+                "  WHERE symbol = @symbol" +
+                "  ORDER BY time DESC" +
+                "  LIMIT 1",
+                new SqliteParameter("@symbol", symbol)) is long s
+                ? DateTimeOffset.FromUnixTimeSeconds(s)
+                : null;
+        }
+
         public static TimeRange MinuteRange(string symbol, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
             connection.Open();
-            using var command = new SqliteCommand(
-                "SELECT MIN(time), MAX(time) FROM minutes" +
-                "  WHERE symbol = @symbol",
-                connection);
-            command.Parameters.AddWithValue("@symbol", symbol);
-            using var reader = command.ExecuteReader();
+            var parameter = new SqliteParameter("@symbol", symbol);
 
-            if (reader.Read() &&
-                !reader.IsDBNull(0))
+            if (Min() is long min &&
+                Max() is long max)
             {
                 return new TimeRange(
-                    DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(0)),
-                    DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(1)));
+                    DateTimeOffset.FromUnixTimeSeconds(min),
+                    DateTimeOffset.FromUnixTimeSeconds(max));
             }
 
             return default;
+
+            object Min() => connection.ExecuteScalar(
+                "SELECT time FROM minutes" +
+                "  WHERE symbol = @symbol" +
+                "  ORDER BY time ASC" +
+                "  LIMIT 1",
+                parameter);
+
+            object Max() => connection.ExecuteScalar(
+                "SELECT time FROM minutes" +
+                "  WHERE symbol = @symbol" +
+                "  ORDER BY time DESC" +
+                "  LIMIT 1",
+                parameter);
         }
 
         public static ImmutableDictionary<string, TimeRange> MinuteRanges(IEnumerable<string> symbols, FileInfo? file = null)
@@ -646,6 +651,17 @@
             }
 
             return file.FullName;
+        }
+
+        private static object ExecuteScalar(this SqliteConnection connection, string sql, SqliteParameter parameter)
+        {
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
+            using var command = new SqliteCommand(
+                sql,
+                connection);
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
+            command.Parameters.Add(parameter);
+            return command.ExecuteScalar();
         }
 
         private class FullNameComparer : IEqualityComparer<FileInfo>
