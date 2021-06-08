@@ -273,10 +273,36 @@
 
         public static ImmutableDictionary<string, TimeRange> MinuteRanges(IEnumerable<string> symbols, FileInfo? file = null)
         {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
             var builder = ImmutableDictionary.CreateBuilder<string, TimeRange>();
             foreach (var symbol in symbols)
             {
-                builder.Add(symbol, MinuteRange(symbol, file));
+                var parameter = new SqliteParameter("@symbol", symbol);
+
+                if (Min() is long min &&
+                    Max() is long max)
+                {
+                    builder.Add(
+                        symbol,
+                        new TimeRange(
+                            DateTimeOffset.FromUnixTimeSeconds(min),
+                            DateTimeOffset.FromUnixTimeSeconds(max)));
+                }
+
+                object Min() => connection.ExecuteScalar(
+                    "SELECT time FROM minutes" +
+                    "  WHERE symbol = @symbol" +
+                    "  ORDER BY time ASC" +
+                    "  LIMIT 1",
+                    parameter);
+
+                object Max() => connection.ExecuteScalar(
+                    "SELECT time FROM minutes" +
+                    "  WHERE symbol = @symbol" +
+                    "  ORDER BY time DESC" +
+                    "  LIMIT 1",
+                    parameter);
             }
 
             return builder.ToImmutable();
