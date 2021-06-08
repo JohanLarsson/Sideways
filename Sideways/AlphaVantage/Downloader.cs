@@ -125,35 +125,38 @@
         {
             this.SymbolDownloads = ImmutableList<SymbolDownloads>.Empty;
             this.SymbolDownloadState = new DownloadState();
-            var dayRanges = await Task.Run(() => Database.DayRanges()).ConfigureAwait(false);
-            var minuteRanges = await Task.Run(() => Database.MinuteRanges()).ConfigureAwait(false);
-            FixAlphaVantageSettings();
-
-            this.SymbolDownloads = Create()
+            var downloads = await Task.Run(Create).ConfigureAwait(false);
+            this.SymbolDownloads = downloads
                  .OrderBy(x => x, Comparer<SymbolDownloads>.Create((x, y) => Compare(x, y)))
                  .ToImmutableList();
 
-            void FixAlphaVantageSettings()
-            {
-                foreach (var (symbol, range) in minuteRanges)
-                {
-                    // Migrate settings in case symbol was marked as missing minutes due to empty old slice.
-                    if (range != default &&
-                        this.settings.AlphaVantage.SymbolsWithMissingMinutes.Contains(symbol))
-                    {
-                        this.settings.AlphaVantage.HasMinutes(symbol);
-                        this.settings.Save();
-                    }
-                }
-            }
-
             IEnumerable<SymbolDownloads> Create()
             {
+                var symbols = Database.ReadSymbols();
+                var dayRanges = Database.DayRanges(symbols);
+                var minuteRanges = Database.MinuteRanges(symbols);
+
+                FixAlphaVantageSettings();
+
                 foreach (var (symbol, dayRange) in dayRanges)
                 {
                     if (AlphaVantage.SymbolDownloads.TryCreate(symbol, dayRange, minuteRanges.GetValueOrDefault(symbol), this, this.settings.AlphaVantage) is { } symbolDownloads)
                     {
                         yield return symbolDownloads;
+                    }
+                }
+
+                void FixAlphaVantageSettings()
+                {
+                    foreach (var (symbol, range) in minuteRanges)
+                    {
+                        // Migrate settings in case symbol was marked as missing minutes due to empty old slice.
+                        if (range != default &&
+                            this.settings.AlphaVantage.SymbolsWithMissingMinutes.Contains(symbol))
+                        {
+                            this.settings.AlphaVantage.HasMinutes(symbol);
+                            this.settings.Save();
+                        }
                     }
                 }
             }
