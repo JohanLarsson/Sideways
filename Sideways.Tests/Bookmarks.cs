@@ -11,7 +11,7 @@ namespace Sideways.Tests
     using NUnit.Framework;
 
     [Explicit]
-    public static class BackTest
+    public static class Bookmarks
     {
         [Test]
         public static void EpisodicPivots()
@@ -28,7 +28,7 @@ namespace Sideways.Tests
                         RelativeClose() > 0 &&
                         RelativeVolume() > 0)
                     {
-                        bookmarks.Add(new Bookmark(symbol, candle.Time, ImmutableSortedSet<string>.Empty, null));
+                        bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candle.Time), ImmutableSortedSet<string>.Empty, null));
                     }
 
                     double Percent(float start, float end)
