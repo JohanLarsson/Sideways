@@ -6,6 +6,7 @@
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
+
     using Microsoft.Data.Sqlite;
 
     using Sideways.AlphaVantage;
@@ -60,6 +61,28 @@
             command.Parameters.AddWithValue("@to", to.ToUnixTimeSeconds());
             using var reader = command.ExecuteReader();
             return ReadCandles(reader);
+        }
+
+        public static ImmutableDictionary<string, TimeRange> DayRanges(FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT symbol, MIN(date), MAX(date) FROM days" +
+                " GROUP BY symbol",
+                connection);
+            using var reader = command.ExecuteReader();
+            var builder = ImmutableDictionary.CreateBuilder<string, TimeRange>();
+            while (reader.Read())
+            {
+                builder.Add(
+                    reader.GetString(0),
+                    new TimeRange(
+                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(1)),
+                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2))));
+            }
+
+            return builder.ToImmutable();
         }
 
         public static void WriteDays(string symbol, IEnumerable<AdjustedCandle> candles, FileInfo? file = null)
@@ -165,8 +188,24 @@
             connection.Open();
             using var command = new SqliteCommand(
                 "SELECT time FROM minutes" +
-                " WHERE symbol = @symbol" +
-                " ORDER BY time ASC" +
+                "  WHERE symbol = @symbol" +
+                "  ORDER BY time ASC" +
+                "  LIMIT 1",
+                connection);
+            command.Parameters.AddWithValue("@symbol", symbol);
+            return command.ExecuteScalar() is long s ?
+                DateTimeOffset.FromUnixTimeSeconds(s)
+                : null;
+        }
+
+        public static DateTimeOffset? LastMinute(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT time FROM minutes" +
+                "  WHERE symbol = @symbol" +
+                "  ORDER BY time DESC" +
                 "  LIMIT 1",
                 connection);
             command.Parameters.AddWithValue("@symbol", symbol);
@@ -203,6 +242,61 @@
             command.Parameters.AddWithValue("@to", to.ToUnixTimeSeconds());
             using var reader = command.ExecuteReader();
             return ReadCandles(reader);
+        }
+
+        public static TimeRange MinuteRange(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT MIN(time), MAX(time) FROM minutes" +
+                "  WHERE symbol = @symbol",
+                connection);
+            command.Parameters.AddWithValue("@symbol", symbol);
+            using var reader = command.ExecuteReader();
+
+            if (reader.Read() &&
+                !reader.IsDBNull(0))
+            {
+                return new TimeRange(
+                    DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(0)),
+                    DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(1)));
+            }
+
+            return default;
+        }
+
+        public static ImmutableDictionary<string, TimeRange> MinuteRanges(IEnumerable<string> symbols, FileInfo? file = null)
+        {
+            var builder = ImmutableDictionary.CreateBuilder<string, TimeRange>();
+            foreach (var symbol in symbols)
+            {
+                builder.Add(symbol, MinuteRange(symbol, file));
+            }
+
+            return builder.ToImmutable();
+        }
+
+        public static ImmutableDictionary<string, TimeRange> MinuteRanges(FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT symbol, MIN(time), MAX(time) FROM minutes" +
+                " GROUP BY symbol",
+                connection);
+            using var reader = command.ExecuteReader();
+            var builder = ImmutableDictionary.CreateBuilder<string, TimeRange>();
+            while (reader.Read())
+            {
+                builder.Add(
+                    reader.GetString(0),
+                    new TimeRange(
+                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(1)),
+                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2))));
+            }
+
+            return builder.ToImmutable();
         }
 
         public static void WriteMinutes(string symbol, IEnumerable<Candle> candles, FileInfo? file = null)
@@ -421,50 +515,6 @@
             }
 
             transaction.Commit();
-        }
-
-        public static ImmutableDictionary<string, TimeRange> DayRanges(FileInfo? file = null)
-        {
-            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
-            connection.Open();
-            using var command = new SqliteCommand(
-                "SELECT symbol, MIN(date), MAX(date) FROM days" +
-                " GROUP BY symbol",
-                connection);
-            using var reader = command.ExecuteReader();
-            var builder = ImmutableDictionary.CreateBuilder<string, TimeRange>();
-            while (reader.Read())
-            {
-                builder.Add(
-                    reader.GetString(0),
-                    new TimeRange(
-                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(1)),
-                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2))));
-            }
-
-            return builder.ToImmutable();
-        }
-
-        public static ImmutableDictionary<string, TimeRange> MinuteRanges(FileInfo? file = null)
-        {
-            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
-            connection.Open();
-            using var command = new SqliteCommand(
-                "SELECT symbol, MIN(time), MAX(time) FROM minutes" +
-                " GROUP BY symbol",
-                connection);
-            using var reader = command.ExecuteReader();
-            var builder = ImmutableDictionary.CreateBuilder<string, TimeRange>();
-            while (reader.Read())
-            {
-                builder.Add(
-                    reader.GetString(0),
-                    new TimeRange(
-                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(1)),
-                        DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2))));
-            }
-
-            return builder.ToImmutable();
         }
 
         public static long CountDays(string symbol, FileInfo? file = null)

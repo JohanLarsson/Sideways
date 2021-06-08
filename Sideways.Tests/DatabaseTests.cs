@@ -101,9 +101,19 @@
         public static void Timings()
         {
             var stopwatch = Stopwatch.StartNew();
+            var symbols = Database.ReadSymbols();
+            stopwatch.Stop();
+            Console.WriteLine($"Read {symbols.Length} symbols took {stopwatch.ElapsedMilliseconds} ms.");
+
+            stopwatch.Restart();
             var days = Database.ReadDays("TSLA");
             stopwatch.Stop();
             Console.WriteLine($"Read {days.Count} days took {stopwatch.ElapsedMilliseconds} ms.");
+
+            stopwatch.Restart();
+            var dayRanges = Database.DayRanges();
+            stopwatch.Stop();
+            Console.WriteLine($"Read {dayRanges.Count} day ranges took {stopwatch.ElapsedMilliseconds} ms.");
 
             stopwatch.Restart();
             var minutes = Database.ReadMinutes("TSLA");
@@ -131,17 +141,22 @@
             Console.WriteLine($"FirstMinute(TSLA) took {stopwatch.ElapsedMilliseconds} ms.");
 
             stopwatch.Restart();
-            var symbols = Database.ReadSymbols();
+            _ = Database.LastMinute("TSLA");
             stopwatch.Stop();
-            Console.WriteLine($"Read {symbols.Length} symbols took {stopwatch.ElapsedMilliseconds} ms.");
+            Console.WriteLine($"LastMinute(TSLA) took {stopwatch.ElapsedMilliseconds} ms.");
 
             stopwatch.Restart();
-            var dayRanges = Database.DayRanges();
+            _ = Database.MinuteRange("TSLA");
             stopwatch.Stop();
-            Console.WriteLine($"Read {dayRanges.Count} day ranges took {stopwatch.ElapsedMilliseconds} ms.");
+            Console.WriteLine($"MinuteRange(TSLA) took {stopwatch.ElapsedMilliseconds} ms.");
 
             stopwatch.Restart();
-            var minuteRanges = Database.MinuteRanges();
+            var minuteRanges = Database.MinuteRanges(symbols);
+            stopwatch.Stop();
+            Console.WriteLine($"Read {minuteRanges.Count} minute ranges took {stopwatch.ElapsedMilliseconds} ms.");
+
+            stopwatch.Restart();
+            minuteRanges = Database.MinuteRanges();
             stopwatch.Stop();
             Console.WriteLine($"Read {minuteRanges.Count} minute ranges took {stopwatch.ElapsedMilliseconds} ms.");
         }
