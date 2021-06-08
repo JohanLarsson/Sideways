@@ -111,7 +111,7 @@ namespace Sideways.Tests
                     var candles = Database.ReadDays(symbol, firstMinute.Date, DateTimeOffset.Now);
                     for (var i = 1; i < candles.Count; i++)
                     {
-                        if (candles[i].Open > candles[i - 1].High &&
+                        if ((candles[i].Open - candles[i - 1].High) / candles[i - 1].High > 0.01 &&
                             candles[i].Close * candles[i].Volume > 10_000_000)
                         {
                             bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
