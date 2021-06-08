@@ -66,9 +66,7 @@
             };
         }
 
-        public double Y(float value) => this.valueRange.Y(value, this.renderSize.Height);
-
-        public double? X(DateTimeOffset time, IReadOnlyList<Candle> candles)
+        public static double? X(DateTimeOffset time, IReadOnlyList<Candle> candles, double actualWidth, int candleWidth, CandleInterval interval)
         {
             if (candles.Count == 0 ||
                 time > candles[0].Time)
@@ -77,26 +75,37 @@
             }
 
             // ReSharper disable once PossibleLossOfFraction
-            var x = this.renderSize.Width + (this.candleWidth / 2);
+            var x = actualWidth - (candleWidth / 2);
             foreach (var candle in candles)
             {
-                if (candle.Time <= time)
+                switch (interval)
                 {
-                    return x;
+                    case CandleInterval.Week
+                        when time.IsSameWeek(candle.Time):
+                        return x;
+                    case CandleInterval.Day
+                        when time.IsSameDay(candle.Time):
+                        return x;
+                    case CandleInterval.Hour
+                        when Candle.ShouldMergeHour(time, candle.Time):
+                        return x;
+                    case CandleInterval.Minute
+                        when candle.Time <= time:
+                        return x;
                 }
 
-                if (candle.Time > time)
+                x -= candleWidth;
+                if (x < 0 ||
+                    candle.Time < time)
                 {
-                    x -= this.candleWidth;
-                    if (x < 0)
-                    {
-                        return null;
-                    }
+                    return null;
                 }
             }
 
             return null;
         }
+
+        public double Y(float value) => this.valueRange.Y(value, this.renderSize.Height);
 
         public CandlePosition ShiftLeft() => new(
             left: this.Left - this.candleWidth,

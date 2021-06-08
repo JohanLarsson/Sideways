@@ -27,6 +27,8 @@
 
         public static bool operator >=(TradingDay left, TradingDay right) => left.CompareTo(right) >= 0;
 
+        public static DateTimeOffset StartOfDay(DateTimeOffset t) => new(t.Year, t.Month, t.Day, 09, 30, 00, t.Offset);
+
         public static DateTimeOffset EndOfDay(DateTimeOffset t) => new(t.Year, t.Month, t.Day, 20, 00, 00, t.Offset);
 
         public static bool IsPreMarket(DateTimeOffset t) => t.TimeOfDay <= new TimeSpan(09, 30, 00);

@@ -22,7 +22,7 @@
         {
             var renderSize = this.RenderSize;
             var candles = this.Candles;
-
+            var candleWidth = this.CandleWidth;
             switch (this.CandleInterval)
             {
                 case CandleInterval.Hour or CandleInterval.Minute:
@@ -33,7 +33,7 @@
 
                     void DrawBetweenDays(SolidColorBrush brush)
                     {
-                        var position = CandlePosition.Create(renderSize, this.CandleWidth, default);
+                        var position = CandlePosition.Create(renderSize, candleWidth, default);
                         for (var i = 0; i < candles.Count - 1; i++)
                         {
                             if (candles[i].Time.Date != candles[i + 1].Time.Date &&
@@ -65,7 +65,7 @@
             }
 
             if (this.BookmarkTime is { } bookmarkTime &&
-                CandlePosition.Create(renderSize, this.CandleWidth, default).X(bookmarkTime, candles) is { } bookMarkX)
+                CandlePosition.X(bookmarkTime, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } bookMarkX)
             {
                 drawingContext.DrawRectangle(
                     Brushes.DarkGray,
@@ -77,7 +77,7 @@
 
             void DrawBand(Func<Candle, bool> func, SolidColorBrush brush)
             {
-                var position = CandlePosition.Create(renderSize, this.CandleWidth, default);
+                var position = CandlePosition.Create(renderSize, candleWidth, default);
                 for (var i = 0; i < candles.Count; i++)
                 {
                     if (func(candles[i]))
