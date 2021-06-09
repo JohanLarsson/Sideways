@@ -20,6 +20,17 @@
             CopyListings(source, target);
         }
 
+        public static void CopyAll(string symbol, FileInfo source, FileInfo target)
+        {
+            CopyDays(symbol, source, target);
+            CopySplits(symbol, source, target);
+            CopyDividends(symbol, source, target);
+            CopyMinutes(symbol, source, target);
+
+            CopyAnnualEarnings(symbol, source, target);
+            CopyQuarterlyEarnings(symbol, source, target);
+        }
+
         public static void CopyDays(FileInfo source, FileInfo target)
         {
             using var sourceConnection = Database.CreateConnection(source);
@@ -129,10 +140,10 @@
             using var connection = Database.CreateConnection(source);
             connection.Open();
 
-            using var command = new SqliteCommand(
+            using var select = new SqliteCommand(
                 "SELECT symbol, name, exchange, asset_type, ipo_date, delisting_date FROM listings",
                 connection);
-            using var reader = command.ExecuteReader();
+            using var reader = select.ExecuteReader();
             WriteListings(reader, target);
 
             static void WriteListings(SqliteDataReader reader, FileInfo target)
@@ -167,76 +178,52 @@
         {
             using var connection = Database.CreateConnection(source);
             connection.Open();
-
-            using var command = new SqliteCommand(
+            using var select = new SqliteCommand(
                 "SELECT symbol, fiscal_date_ending, reported_eps FROM annual_earnings" +
                 "  ORDER BY symbol, fiscal_date_ending ASC",
                 connection);
-            using var reader = command.ExecuteReader();
-            WriteEarnings(reader, target);
+            using var reader = select.ExecuteReader();
+            WriteAnnualEarnings(reader, target);
+        }
 
-            static void WriteEarnings(SqliteDataReader reader, FileInfo target)
-            {
-                using var targetConnection = Database.CreateConnection(target);
-                targetConnection.Open();
-
-                using var targetTransaction = targetConnection.BeginTransaction();
-                using var insert = targetConnection.CreateCommand();
-                insert.CommandText =
-                    "INSERT INTO annual_earnings (symbol, fiscal_date_ending, reported_eps) VALUES (@symbol, @fiscal_date_ending, @reported_eps)" +
-                    "  ON CONFLICT(symbol, fiscal_date_ending) DO NOTHING";
-                insert.Prepare();
-
-                while (reader.Read())
-                {
-                    insert.Parameters.Clear();
-                    insert.Parameters.AddWithValue("@symbol", reader.GetString(0).ToUpperInvariant());
-                    insert.Parameters.AddWithValue("@fiscal_date_ending", reader.GetInt64(1));
-                    insert.Parameters.AddWithValue("@reported_eps", reader.GetFloat(2));
-                    insert.ExecuteNonQuery();
-                }
-
-                targetTransaction.Commit();
-            }
+        public static void CopyAnnualEarnings(string symbol, FileInfo source, FileInfo target)
+        {
+            using var connection = Database.CreateConnection(source);
+            connection.Open();
+            using var select = new SqliteCommand(
+                "SELECT symbol, fiscal_date_ending, reported_eps FROM annual_earnings" +
+                " WHERE symbol = @symbol" +
+                "  ORDER BY fiscal_date_ending ASC",
+                connection);
+            select.Parameters.AddWithValue("@symbol", symbol);
+            using var reader = select.ExecuteReader();
+            WriteAnnualEarnings(reader, target);
         }
 
         public static void CopyQuarterlyEarnings(FileInfo source, FileInfo target)
         {
             using var connection = Database.CreateConnection(source);
             connection.Open();
-
             using var command = new SqliteCommand(
                 "SELECT symbol, fiscal_date_ending, reported_date, reported_eps, estimated_eps FROM quarterly_earnings" +
                 "  ORDER BY symbol, fiscal_date_ending ASC",
                 connection);
             using var reader = command.ExecuteReader();
-            WriteEarnings(reader, target);
+            WriteQuarterlyEarnings(reader, target);
+        }
 
-            static void WriteEarnings(SqliteDataReader reader, FileInfo target)
-            {
-                using var targetConnection = Database.CreateConnection(target);
-                targetConnection.Open();
-
-                using var targetTransaction = targetConnection.BeginTransaction();
-                using var insert = targetConnection.CreateCommand();
-                insert.CommandText =
-                    "INSERT INTO quarterly_earnings (symbol, fiscal_date_ending, reported_date, reported_eps, estimated_eps) VALUES (@symbol, @fiscal_date_ending, @reported_date, @reported_eps, @estimated_eps)" +
-                    "  ON CONFLICT(symbol, fiscal_date_ending) DO NOTHING";
-                insert.Prepare();
-
-                while (reader.Read())
-                {
-                    insert.Parameters.Clear();
-                    insert.Parameters.AddWithValue("@symbol", reader.GetString(0).ToUpperInvariant());
-                    insert.Parameters.AddWithValue("@fiscal_date_ending", reader.GetInt64(1));
-                    insert.Parameters.AddWithValue("@reported_date", reader.GetInt64(2));
-                    insert.Parameters.AddWithValue("@reported_eps", reader.GetFloat(3));
-                    insert.Parameters.AddWithValue("@estimated_eps", reader.IsDBNull(4) ? DBNull.Value : reader.GetFloat(4));
-                    insert.ExecuteNonQuery();
-                }
-
-                targetTransaction.Commit();
-            }
+        public static void CopyQuarterlyEarnings(string symbol, FileInfo source, FileInfo target)
+        {
+            using var connection = Database.CreateConnection(source);
+            connection.Open();
+            using var select = new SqliteCommand(
+                "SELECT symbol, fiscal_date_ending, reported_date, reported_eps, estimated_eps FROM quarterly_earnings" +
+                " WHERE symbol = @symbol" +
+                "  ORDER BY fiscal_date_ending ASC",
+                connection);
+            select.Parameters.AddWithValue("@symbol", symbol);
+            using var reader = select.ExecuteReader();
+            WriteQuarterlyEarnings(reader, target);
         }
 
         private static void WriteDays(SqliteDataReader reader, FileInfo target)
@@ -335,6 +322,56 @@
                 insert.Parameters.AddWithValue("@low", reader.GetValue(4));
                 insert.Parameters.AddWithValue("@close", reader.GetValue(5));
                 insert.Parameters.AddWithValue("@volume", reader.GetValue(6));
+                insert.ExecuteNonQuery();
+            }
+
+            targetTransaction.Commit();
+        }
+
+        private static void WriteAnnualEarnings(SqliteDataReader reader, FileInfo target)
+        {
+            using var targetConnection = Database.CreateConnection(target);
+            targetConnection.Open();
+
+            using var targetTransaction = targetConnection.BeginTransaction();
+            using var insert = targetConnection.CreateCommand();
+            insert.CommandText =
+                "INSERT INTO annual_earnings (symbol, fiscal_date_ending, reported_eps) VALUES (@symbol, @fiscal_date_ending, @reported_eps)" +
+                "  ON CONFLICT(symbol, fiscal_date_ending) DO NOTHING";
+            insert.Prepare();
+
+            while (reader.Read())
+            {
+                insert.Parameters.Clear();
+                insert.Parameters.AddWithValue("@symbol", reader.GetString(0).ToUpperInvariant());
+                insert.Parameters.AddWithValue("@fiscal_date_ending", reader.GetInt64(1));
+                insert.Parameters.AddWithValue("@reported_eps", reader.GetFloat(2));
+                insert.ExecuteNonQuery();
+            }
+
+            targetTransaction.Commit();
+        }
+
+        static void WriteQuarterlyEarnings(SqliteDataReader reader, FileInfo target)
+        {
+            using var targetConnection = Database.CreateConnection(target);
+            targetConnection.Open();
+
+            using var targetTransaction = targetConnection.BeginTransaction();
+            using var insert = targetConnection.CreateCommand();
+            insert.CommandText =
+                "INSERT INTO quarterly_earnings (symbol, fiscal_date_ending, reported_date, reported_eps, estimated_eps) VALUES (@symbol, @fiscal_date_ending, @reported_date, @reported_eps, @estimated_eps)" +
+                "  ON CONFLICT(symbol, fiscal_date_ending) DO NOTHING";
+            insert.Prepare();
+
+            while (reader.Read())
+            {
+                insert.Parameters.Clear();
+                insert.Parameters.AddWithValue("@symbol", reader.GetString(0).ToUpperInvariant());
+                insert.Parameters.AddWithValue("@fiscal_date_ending", reader.GetInt64(1));
+                insert.Parameters.AddWithValue("@reported_date", reader.GetInt64(2));
+                insert.Parameters.AddWithValue("@reported_eps", reader.GetFloat(3));
+                insert.Parameters.AddWithValue("@estimated_eps", reader.IsDBNull(4) ? DBNull.Value : reader.GetFloat(4));
                 insert.ExecuteNonQuery();
             }
 

@@ -54,13 +54,7 @@
         [TestCaseSource(nameof(AppSymbols))]
         public static void OneWayToFlash(string symbol)
         {
-            Sideways.Sync.CopyDays(symbol, Database.DbFile, FlashDrive);
-            Console.WriteLine("Copied days.");
-            Sideways.Sync.CopySplits(symbol, Database.DbFile, FlashDrive);
-            Console.WriteLine("Copied splits.");
-            Sideways.Sync.CopyDividends(symbol, Database.DbFile, FlashDrive);
-            Console.WriteLine("Copied dividends.");
-            Sideways.Sync.CopyMinutes(symbol, Database.DbFile, FlashDrive);
+            Sideways.Sync.CopyAll(symbol, Database.DbFile, FlashDrive);
         }
 
         [Test]
@@ -72,13 +66,7 @@
         [TestCaseSource(nameof(FlashSymbols))]
         public static void OneWayToApp(string symbol)
         {
-            Sideways.Sync.CopyDays(symbol, FlashDrive, Database.DbFile);
-            Console.WriteLine("Copied days.");
-            Sideways.Sync.CopySplits(symbol, FlashDrive, Database.DbFile);
-            Console.WriteLine("Copied splits.");
-            Sideways.Sync.CopyDividends(symbol, FlashDrive, Database.DbFile);
-            Console.WriteLine("Copied dividends.");
-            Sideways.Sync.CopyMinutes(symbol, FlashDrive, Database.DbFile);
+            Sideways.Sync.CopyAll(symbol, FlashDrive, Database.DbFile);
         }
 
         [Test]
@@ -105,6 +93,14 @@
                     CopyDays(diff.Symbol, diff.App, diff.Flash);
                     CopyDays(diff.Symbol, diff.Flash, diff.App);
                 }
+
+                static void CopyDays(string symbol, FileInfo source, FileInfo target)
+                {
+                    Console.WriteLine($"Copy days from {source} to {target}.");
+                    Sideways.Sync.CopyDays(symbol, source, target);
+                    Sideways.Sync.CopySplits(symbol, source, target);
+                    Sideways.Sync.CopyDividends(symbol, source, target);
+                }
             }
 
             if (diff.AppMinutes != diff.FlashMinutes)
@@ -125,14 +121,6 @@
             }
         }
 
-        private static void CopyDays(string symbol, FileInfo source, FileInfo target)
-        {
-            Console.WriteLine($"Copy days from {source} to {target}.");
-            Sideways.Sync.CopyDays(symbol, source, target);
-            Sideways.Sync.CopySplits(symbol, source, target);
-            Sideways.Sync.CopyDividends(symbol, source, target);
-        }
-
         private static IEnumerable<string> AppSymbols() => File.Exists(FlashDrive.FullName) ? Database.ReadSymbols() : Enumerable.Empty<string>();
 
         private static IEnumerable<string> FlashSymbols() => File.Exists(FlashDrive.FullName) ? Database.ReadSymbols(FlashDrive) : Enumerable.Empty<string>();
@@ -141,11 +129,11 @@
         {
             if (File.Exists(FlashDrive.FullName))
             {
-                var dbDays = Database.DayRanges(Database.DbFile);
-                var dbMinutes = Database.MinuteRanges(Database.DbFile);
+                var dbDays = Database.DayRanges(AppSymbols(), Database.DbFile);
+                var dbMinutes = Database.MinuteRanges(AppSymbols(), Database.DbFile);
 
-                var flashDays = Database.DayRanges(FlashDrive);
-                var flashMinutes = Database.MinuteRanges(FlashDrive);
+                var flashDays = Database.DayRanges(FlashSymbols(), FlashDrive);
+                var flashMinutes = Database.MinuteRanges(FlashSymbols(), FlashDrive);
 
                 foreach (var symbol in dbDays.Keys.Concat(flashDays.Keys).Distinct().OrderBy(x => x))
                 {
