@@ -259,7 +259,7 @@
                 },
                 Owner = this,
             };
-            window.Show();
+            window.ShowDialog();
             settings.Save();
         }
     }
