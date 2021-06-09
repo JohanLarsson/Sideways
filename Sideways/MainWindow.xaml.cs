@@ -196,7 +196,17 @@
 
                 if (dialog.ShowDialog() is true)
                 {
-                    mainViewModel.UpdateSimulation(JsonSerializer.Deserialize<Simulation>(File.ReadAllText(dialog.FileName)));
+                    try
+                    {
+                        mainViewModel.UpdateSimulation(JsonSerializer.Deserialize<Simulation>(File.ReadAllText(dialog.FileName)));
+                    }
+#pragma warning disable CA1031 // Do not catch general exception types
+                    catch (Exception exception)
+#pragma warning restore CA1031 // Do not catch general exception types
+                    {
+                        MessageBox.Show(this, exception.Message, "Invalid simulation file.");
+                    }
+
                     e.Handled = true;
                 }
             }
@@ -219,7 +229,17 @@
 
                 if (dialog.ShowDialog() is true)
                 {
-                    mainViewModel.Bookmarks = JsonSerializer.Deserialize<ImmutableList<Bookmark>>(File.ReadAllText(dialog.FileName));
+                    try
+                    {
+                        mainViewModel.Bookmarks = JsonSerializer.Deserialize<ImmutableList<Bookmark>>(File.ReadAllText(dialog.FileName));
+                    }
+#pragma warning disable CA1031 // Do not catch general exception types
+                    catch (Exception exception)
+#pragma warning restore CA1031 // Do not catch general exception types
+                    {
+                        MessageBox.Show(this, exception.Message, "Invalid bookmark file.");
+                    }
+
                     e.Handled = true;
                 }
             }
