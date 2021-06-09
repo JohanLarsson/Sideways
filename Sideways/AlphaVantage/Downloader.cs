@@ -28,16 +28,20 @@
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.RefreshSymbolsCommand = new RelayCommand(_ => this.RefreshSymbolDownloadsAsync());
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            this.DownloadAllSymbolsCommand = new RelayCommand(_ => DownloadAllTopUps(), _ => !this.symbolDownloads.IsEmpty);
+            this.DownloadAllSymbolsCommand = new RelayCommand(_ => DownloadAll(), _ => !this.symbolDownloads.IsEmpty);
 
-            async void DownloadAllTopUps()
+            async void DownloadAll()
             {
                 this.SymbolDownloadState.Start = DateTimeOffset.Now;
-                foreach (var topUp in this.symbolDownloads)
+                foreach (var symbolDownload in this.symbolDownloads)
                 {
-                    if (topUp.DownloadCommand.CanExecute(null))
+                    if (symbolDownload.DownloadCommand.CanExecute(null))
                     {
-                        await topUp.DownloadAsync().ConfigureAwait(false);
+                        await symbolDownload.DownloadAsync().ConfigureAwait(false);
+                        if (symbolDownload.State is { Exception: { Message: "Thank you for using AlphaVantage" } })
+                        {
+                            break;
+                        }
                     }
                 }
 
@@ -126,9 +130,8 @@
             this.SymbolDownloads = ImmutableList<SymbolDownloads>.Empty;
             this.SymbolDownloadState = new DownloadState();
             var downloads = await Task.Run(Create).ConfigureAwait(false);
-            this.SymbolDownloads = downloads
-                 .OrderBy(x => x, Comparer<SymbolDownloads>.Create((x, y) => Compare(x, y)))
-                 .ToImmutableList();
+            this.SymbolDownloads = downloads.OrderBy(x => x, Comparer<SymbolDownloads>.Create((x, y) => Compare(x, y)))
+                                            .ToImmutableList();
 
             IEnumerable<SymbolDownloads> Create()
             {
