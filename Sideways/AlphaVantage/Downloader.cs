@@ -37,7 +37,7 @@
                 while (this.symbolDownloads.FirstOrDefault(x => x is { State: { Status: DownloadStatus.Waiting } } && x.DownloadCommand.CanExecute(null)) is { } symbolDownload)
                 {
                     await symbolDownload.DownloadAsync().ConfigureAwait(false);
-                    if (symbolDownload.State is { Exception: { Message: {} message } } &&
+                    if (symbolDownload.State is { Exception: { Message: { } message } } &&
                         message.Contains("Our standard API call frequency is 5 calls per minute and 500 calls per day.", StringComparison.Ordinal))
                     {
                         break;

@@ -352,7 +352,7 @@
             targetTransaction.Commit();
         }
 
-        static void WriteQuarterlyEarnings(SqliteDataReader reader, FileInfo target)
+        private static void WriteQuarterlyEarnings(SqliteDataReader reader, FileInfo target)
         {
             using var targetConnection = Database.CreateConnection(target);
             targetConnection.Open();

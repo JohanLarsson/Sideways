@@ -1,28 +1,4 @@
 ﻿[*.cs]
 
-# Default severity for analyzer diagnostics with category 'StyleCop.CSharp.DocumentationRules'
-dotnet_analyzer_diagnostic.category-StyleCop.CSharp.DocumentationRules.severity = none
-# SA0001: XML comment analysis is disabled due to project configuration
-dotnet_diagnostic.SA0001.severity = none
-# SA1401: Fields should be private
-dotnet_diagnostic.SA1401.severity = none
-
-# CA1051: Do not declare visible instance fields
-dotnet_diagnostic.CA1051.severity = none
-# CA1062: Validate arguments of public methods
-dotnet_diagnostic.CA1062.severity = none
-# CA1716: Identifiers should not match keywords
-dotnet_diagnostic.CA1716.severity = none
-
-
-# CA2000: Dispose objects before losing scope
-dotnet_diagnostic.CA2000.severity = none
-
-# WPF0061: Accessor method for attached property should have standard documentation text.
-dotnet_diagnostic.WPF0061.severity = none
-
-# CA1003: Use generic event handler instances
-dotnet_diagnostic.CA1003.severity = none
-
-# CA2227: Collection properties should be read only
-dotnet_diagnostic.CA2227.severity = none
+# WPF0060: Backing member for DependencyProperty should have standard documentation text.
+dotnet_diagnostic.WPF0060.severity = none
