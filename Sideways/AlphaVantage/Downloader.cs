@@ -18,13 +18,14 @@
         private AlphaVantageClient? client;
 
         private ImmutableList<Download> downloads = ImmutableList<Download>.Empty;
-        private ImmutableList<SymbolDownloads> symbolDownloads = ImmutableList<SymbolDownloads>.Empty;
+        private ImmutableSortedSet<SymbolDownloads> symbolDownloads;
         private DownloadState symbolDownloadState = new();
         private bool disposed;
 
         public Downloader(Settings settings)
         {
             this.settings = settings;
+            this.symbolDownloads = ImmutableSortedSet.Create<SymbolDownloads>(new SymbolDownloadComparer(settings));
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.RefreshSymbolsCommand = new RelayCommand(_ => this.RefreshSymbolDownloadsAsync());
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -33,15 +34,13 @@
             async void DownloadAll()
             {
                 this.SymbolDownloadState.Start = DateTimeOffset.Now;
-                foreach (var symbolDownload in this.symbolDownloads)
+                while (this.symbolDownloads.FirstOrDefault(x => x is { State: { Status: DownloadStatus.Waiting } } && x.DownloadCommand.CanExecute(null)) is { } symbolDownload)
                 {
-                    if (symbolDownload.DownloadCommand.CanExecute(null))
+                    await symbolDownload.DownloadAsync().ConfigureAwait(false);
+                    if (symbolDownload.State is { Exception: { Message: {} message } } &&
+                        message.Contains("Our standard API call frequency is 5 calls per minute and 500 calls per day.", StringComparison.Ordinal))
                     {
-                        await symbolDownload.DownloadAsync().ConfigureAwait(false);
-                        if (symbolDownload.State is { Exception: { Message: "Thank you for using AlphaVantage" } })
-                        {
-                            break;
-                        }
+                        break;
                     }
                 }
 
@@ -95,7 +94,7 @@
             }
         }
 
-        public ImmutableList<SymbolDownloads> SymbolDownloads
+        public ImmutableSortedSet<SymbolDownloads> SymbolDownloads
         {
             get => this.symbolDownloads;
             private set
@@ -127,11 +126,9 @@
 
         public async Task RefreshSymbolDownloadsAsync()
         {
-            this.SymbolDownloads = ImmutableList<SymbolDownloads>.Empty;
+            this.SymbolDownloads = this.symbolDownloads.Clear();
             this.SymbolDownloadState = new DownloadState();
-            var downloads = await Task.Run(Create).ConfigureAwait(false);
-            this.SymbolDownloads = downloads.OrderBy(x => x, Comparer<SymbolDownloads>.Create((x, y) => Compare(x, y)))
-                                            .ToImmutableList();
+            this.SymbolDownloads = this.symbolDownloads.Union(await Task.Run(Create).ConfigureAwait(false));
 
             IEnumerable<SymbolDownloads> Create()
             {
@@ -163,8 +160,76 @@
                     }
                 }
             }
+        }
 
-            int Compare(SymbolDownloads? x, SymbolDownloads? y)
+        public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol)
+        {
+            var download = DaysDownload.Create(symbol, default, this);
+            await download.ExecuteAsync().ConfigureAwait(false);
+            this.NewSymbol?.Invoke(this, symbol);
+            if (AlphaVantage.SymbolDownloads.TryCreate(symbol, Database.DayRange(symbol), default, this, this.settings.AlphaVantage) is { } symbolDownload)
+            {
+                this.SymbolDownloads = this.symbolDownloads.Add(symbolDownload);
+            }
+
+            return new DaysAndSplits(
+                Database.ReadDays(symbol),
+                Database.ReadSplits(symbol));
+        }
+
+        public void Add(Download download)
+        {
+            this.Downloads = this.Downloads.Add(download);
+        }
+
+        public void Dispose()
+        {
+            if (this.disposed)
+            {
+                return;
+            }
+
+            this.disposed = true;
+            this.client?.Dispose();
+        }
+
+        public void Unlisted(string symbol)
+        {
+            this.settings.AlphaVantage.Unlisted(symbol);
+            this.settings.Save();
+        }
+
+        public void MissingMinutes(string symbol)
+        {
+            this.settings.AlphaVantage.MissingMinutes(symbol);
+            this.settings.Save();
+        }
+
+        public void FirstMinute(string symbol, DateTimeOffset first)
+        {
+            this.settings.AlphaVantage.FirstMinute(symbol, first);
+            this.settings.Save();
+        }
+
+        public void NotifyDownloadedDays(string symbol) => this.NewDays?.Invoke(this, symbol);
+
+        public void NotifyDownloadedMinutes(string symbol) => this.NewMinutes?.Invoke(this, symbol);
+
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private sealed class SymbolDownloadComparer : IComparer<SymbolDownloads>
+        {
+            private readonly Settings settings;
+
+            internal SymbolDownloadComparer(Settings settings)
+            {
+                this.settings = settings;
+            }
+
+            public int Compare(SymbolDownloads? x, SymbolDownloads? y)
             {
                 if (ReferenceEquals(x, y))
                 {
@@ -217,60 +282,6 @@
                     return TradingDay.From(x.ExistingDays.Max) != TradingDay.From(x.ExistingMinutes.Max) ? 0 : 1;
                 }
             }
-        }
-
-        public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol)
-        {
-            var download = DaysDownload.Create(symbol, default, this);
-            await download.ExecuteAsync().ConfigureAwait(false);
-            this.NewSymbol?.Invoke(this, symbol);
-
-            return new DaysAndSplits(
-                Database.ReadDays(symbol),
-                Database.ReadSplits(symbol));
-        }
-
-        public void Add(Download download)
-        {
-            this.Downloads = this.Downloads.Add(download);
-        }
-
-        public void Dispose()
-        {
-            if (this.disposed)
-            {
-                return;
-            }
-
-            this.disposed = true;
-            this.client?.Dispose();
-        }
-
-        public void Unlisted(string symbol)
-        {
-            this.settings.AlphaVantage.Unlisted(symbol);
-            this.settings.Save();
-        }
-
-        public void MissingMinutes(string symbol)
-        {
-            this.settings.AlphaVantage.MissingMinutes(symbol);
-            this.settings.Save();
-        }
-
-        public void FirstMinute(string symbol, DateTimeOffset first)
-        {
-            this.settings.AlphaVantage.FirstMinute(symbol, first);
-            this.settings.Save();
-        }
-
-        public void NotifyDownloadedDays(string symbol) => this.NewDays?.Invoke(this, symbol);
-
-        public void NotifyDownloadedMinutes(string symbol) => this.NewMinutes?.Invoke(this, symbol);
-
-        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

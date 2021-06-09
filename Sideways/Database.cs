@@ -63,6 +63,37 @@
             return ReadCandles(reader);
         }
 
+        public static TimeRange DayRange(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            var parameter = new SqliteParameter("@symbol", symbol);
+
+            if (Min() is long min &&
+                Max() is long max)
+            {
+                return new TimeRange(
+                    DateTimeOffset.FromUnixTimeSeconds(min),
+                    DateTimeOffset.FromUnixTimeSeconds(max));
+            }
+
+            return default;
+
+            object Min() => connection.ExecuteScalar(
+                "SELECT date FROM days" +
+                "  WHERE symbol = @symbol" +
+                "  ORDER BY date ASC" +
+                "  LIMIT 1",
+                parameter);
+
+            object Max() => connection.ExecuteScalar(
+                "SELECT date FROM days" +
+                "  WHERE symbol = @symbol" +
+                "  ORDER BY date DESC" +
+                "  LIMIT 1",
+                parameter);
+        }
+
         public static ImmutableDictionary<string, TimeRange> DayRanges(IEnumerable<string> symbols, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
