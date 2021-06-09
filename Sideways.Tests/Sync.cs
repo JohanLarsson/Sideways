@@ -18,24 +18,7 @@
         public static void Rebuild()
         {
             var rebuilt = new FileInfo(Database.DbFile.FullName + ".new");
-            var stopwatch = Stopwatch.StartNew();
-            Sideways.Sync.CopyDays(Database.DbFile, rebuilt);
-            Console.WriteLine($"Copied days {stopwatch.Elapsed.TotalSeconds} s.");
-            Sideways.Sync.CopySplits(Database.DbFile, rebuilt);
-            Console.WriteLine($"Copied splits {stopwatch.Elapsed.TotalSeconds} s.");
-            Sideways.Sync.CopyDividends(Database.DbFile, rebuilt);
-            Console.WriteLine($"Copied dividends {stopwatch.Elapsed.TotalSeconds} s.");
-
-            Sideways.Sync.CopyMinutes(Database.DbFile, rebuilt);
-            Console.WriteLine($"Copied minutes {stopwatch.Elapsed.TotalSeconds} s.");
-
-            Sideways.Sync.CopyAnnualEarnings(Database.DbFile, rebuilt);
-            Console.WriteLine($"Copied annual earnings {stopwatch.Elapsed.TotalSeconds} s.");
-            Sideways.Sync.CopyQuarterlyEarnings(Database.DbFile, rebuilt);
-            Console.WriteLine($"Copied quarterly earnings {stopwatch.Elapsed.TotalSeconds} s.");
-
-            Sideways.Sync.CopyListings(Database.DbFile, rebuilt);
-            Console.WriteLine($"Copied listings {stopwatch.Elapsed.TotalSeconds} s.");
+            Sideways.Sync.CopyAll(Database.DbFile, rebuilt);
         }
 
         [Test]
@@ -83,16 +66,7 @@
         [Test]
         public static void OneWayToFlash()
         {
-            Sideways.Sync.CopyDays(Database.DbFile, FlashDrive);
-            Console.WriteLine("Copied days.");
-            Sideways.Sync.CopySplits(Database.DbFile, FlashDrive);
-            Console.WriteLine("Copied splits.");
-            Sideways.Sync.CopyDividends(Database.DbFile, FlashDrive);
-            Console.WriteLine("Copied dividends.");
-            Sideways.Sync.CopyMinutes(Database.DbFile, FlashDrive);
-            Sideways.Sync.CopyAnnualEarnings(Database.DbFile, FlashDrive);
-            Sideways.Sync.CopyQuarterlyEarnings(Database.DbFile, FlashDrive);
-            Sideways.Sync.CopyListings(Database.DbFile, FlashDrive);
+            Sideways.Sync.CopyAll(Database.DbFile, FlashDrive);
         }
 
         [TestCaseSource(nameof(FlashSymbols))]
@@ -110,16 +84,7 @@
         [Test]
         public static void OneWayToApp()
         {
-            Sideways.Sync.CopyDays(FlashDrive, Database.DbFile);
-            Console.WriteLine("Copied days.");
-            Sideways.Sync.CopySplits(FlashDrive, Database.DbFile);
-            Console.WriteLine("Copied splits.");
-            Sideways.Sync.CopyDividends(FlashDrive, Database.DbFile);
-            Console.WriteLine("Copied dividends.");
-            Sideways.Sync.CopyMinutes(FlashDrive, Database.DbFile);
-            Sideways.Sync.CopyAnnualEarnings(FlashDrive, Database.DbFile);
-            Sideways.Sync.CopyQuarterlyEarnings(FlashDrive, Database.DbFile);
-            Sideways.Sync.CopyListings(FlashDrive, Database.DbFile);
+            Sideways.Sync.CopyAll(FlashDrive, Database.DbFile);
         }
 
         [TestCaseSource(nameof(Diffs))]

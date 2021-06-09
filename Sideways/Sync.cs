@@ -7,6 +7,19 @@
 
     public static class Sync
     {
+        public static void CopyAll(FileInfo source, FileInfo target)
+        {
+            CopyDays(source, target);
+            CopySplits(source, target);
+            CopyDividends(source, target);
+            CopyMinutes(source, target);
+
+            CopyAnnualEarnings(source, target);
+            CopyQuarterlyEarnings(source, target);
+
+            CopyListings(source, target);
+        }
+
         public static void CopyDays(FileInfo source, FileInfo target)
         {
             using var sourceConnection = Database.CreateConnection(source);
