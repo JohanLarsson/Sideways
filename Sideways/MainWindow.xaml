@@ -338,6 +338,7 @@
                     <TextBox MinWidth="30" Text="{Binding BookmarkOffset}" />
                 </StackPanel>
                 <ListBox Grid.Row="2"
+                         sideways:SelectorEx.Random="True"
                          ItemsSource="{Binding Bookmarks}"
                          SelectedItem="{Binding SelectedBookmark}">
                     <ListBox.ItemTemplate>

@@ -21,6 +21,8 @@ dotnet_diagnostic.CA1716.severity = none
 dotnet_diagnostic.CA2000.severity = none
 # CA2227: Collection properties should be read only
 dotnet_diagnostic.CA2227.severity = none
+# CA5394: Do not use insecure randomness
+dotnet_diagnostic.CA5394.severity = none
 
 # WPF0060: Backing member for DependencyProperty should have standard documentation text.
 dotnet_diagnostic.WPF0060.severity = none

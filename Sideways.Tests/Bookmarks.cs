@@ -101,6 +101,122 @@ namespace Sideways.Tests
         }
 
         [Test]
+        public static void UpThreeDays()
+        {
+            var bookmarks = new List<Bookmark>();
+            foreach (var symbol in Database.ReadSymbols())
+            {
+                if (Database.FirstMinute(symbol) is { } firstMinute)
+                {
+                    var candles = Database.ReadDays(symbol, firstMinute.Date, DateTimeOffset.Now);
+                    for (var i = 2; i < candles.Count - 2; i++)
+                    {
+                        var candle = candles[i];
+                        if (Change(candle) > 0.02 &&
+                            Change(candles[i + 1]) > 0.02 &&
+                            Change(candles[i + 2]) > 0.02 &&
+                            candle.Close * candle.Volume > 10_000_000)
+                        {
+                            bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candle.Time), ImmutableSortedSet<string>.Empty, null));
+                        }
+
+                        double Change(Candle c) => (c.Close - c.Open) / c.Open;
+                    }
+                }
+            }
+
+            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Up three days.bookmarks"));
+            if (!Directory.Exists(file.DirectoryName))
+            {
+                Directory.CreateDirectory(file.DirectoryName!);
+            }
+
+            File.WriteAllText(
+                file.FullName,
+                JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
+            Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
+        }
+
+        [Test]
+        public static void StraightUpTwoDays()
+        {
+            var bookmarks = new List<Bookmark>();
+            foreach (var symbol in Database.ReadSymbols())
+            {
+                if (Database.FirstMinute(symbol) is { } firstMinute)
+                {
+                    var candles = Database.ReadDays(symbol, firstMinute.Date, DateTimeOffset.Now);
+                    for (var i = 2; i < candles.Count - 2; i++)
+                    {
+                        var candle = candles[i];
+                        if (Change(candle) > 0.02 &&
+                            Change(candles[i + 1]) > 0.02 &&
+                            candles[i + 1].Open >= candle.Close &&
+                            candle.Close * candle.Volume > 10_000_000)
+                        {
+                            bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candle.Time), ImmutableSortedSet<string>.Empty, null));
+                        }
+
+                        double Change(Candle c) => (c.Close - c.Open) / c.Open;
+                    }
+                }
+            }
+
+            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Straight up two days.bookmarks"));
+            if (!Directory.Exists(file.DirectoryName))
+            {
+                Directory.CreateDirectory(file.DirectoryName!);
+            }
+
+            File.WriteAllText(
+                file.FullName,
+                JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
+            Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
+        }
+
+        [Test]
+        public static void UpThenOpenAbove()
+        {
+            var bookmarks = new List<Bookmark>();
+            foreach (var symbol in Database.ReadSymbols())
+            {
+                if (Database.FirstMinute(symbol) is { } firstMinute)
+                {
+                    var candles = Database.ReadDays(symbol, firstMinute.Date, DateTimeOffset.Now);
+                    for (var i = 2; i < candles.Count - 2; i++)
+                    {
+                        var candle = candles[i];
+                        if (Change(candle) > 0.03 &&
+                            RelativeClose() > 0.75 &&
+                            candles[i + 1].Open >= candle.Close &&
+                            candle.Close * candle.Volume > 10_000_000)
+                        {
+                            bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candle.Time), ImmutableSortedSet<string>.Empty, null));
+                        }
+
+                        double RelativeClose()
+                        {
+                            return (candle.Close - candle.Low) / (candle.High - candle.Low);
+                        }
+
+                        double Change(Candle c) => (c.Close - c.Open) / c.Open;
+                    }
+                }
+            }
+
+            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Up then open above.bookmarks"));
+            if (!Directory.Exists(file.DirectoryName))
+            {
+                Directory.CreateDirectory(file.DirectoryName!);
+            }
+
+            File.WriteAllText(
+                file.FullName,
+                JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
+            Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
+        }
+
+        [Test]
         public static void GapUps()
         {
             var bookmarks = new List<Bookmark>();
