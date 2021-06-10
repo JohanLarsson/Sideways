@@ -44,6 +44,8 @@
                     switch (e.Key)
                     {
                         case Key.Up or Key.Down:
+                        case Key.R
+                            when Keyboard.Modifiers == ModifierKeys.Control:
                             // We toggle focus so following keyboard input overwrites current text.
                             Keyboard.ClearFocus();
                             Keyboard.Focus(comboBox);
