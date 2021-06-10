@@ -120,7 +120,7 @@ namespace Sideways.Tests
                             bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candle.Time), ImmutableSortedSet<string>.Empty, null));
                         }
 
-                        double Change(Candle c) => (c.Close - c.Open) / c.Open;
+                        static double Change(Candle c) => (c.Close - c.Open) / c.Open;
                     }
                 }
             }
@@ -157,7 +157,7 @@ namespace Sideways.Tests
                             bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candle.Time), ImmutableSortedSet<string>.Empty, null));
                         }
 
-                        double Change(Candle c) => (c.Close - c.Open) / c.Open;
+                        static double Change(Candle c) => (c.Close - c.Open) / c.Open;
                     }
                 }
             }
