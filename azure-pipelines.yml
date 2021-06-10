@@ -16,3 +16,4 @@ steps:
   inputs:
     configuration: '$(buildConfiguration)'
     testAssemblyVer2: '*.Tests\bin\*.Tests.dll'
+    otherConsoleOptions: '/Framework:.NETCoreApp,Version=v5.0'
