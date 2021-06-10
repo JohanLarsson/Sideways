@@ -15,4 +15,4 @@ steps:
   displayName: Test
   inputs:
     configuration: '$(buildConfiguration)'
-    testAssemblyVer2: *.Tests\bin\*.Tests.dll
+    testAssemblyVer2: '*.Tests\bin\*.Tests.dll'
