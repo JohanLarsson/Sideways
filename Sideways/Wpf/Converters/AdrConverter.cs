@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Windows.Data;
 
     public sealed class AdrConverter : IMultiValueConverter
@@ -14,7 +13,7 @@
             if (values is { Length: > 1 } &&
                 values[0] is IReadOnlyList<Candle> { Count: > 20 } candles)
             {
-                return 100 * (candles.Take(20).Average(x => x.High / x.Low) - 1);
+                return candles.Adr();
             }
 
             return null;

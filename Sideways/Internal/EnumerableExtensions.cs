@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public static class EnumerableExtensions
     {
@@ -45,6 +46,8 @@
                 buffer[index] = x;
             }
         }
+
+        public static double Adr(this IEnumerable<Candle> candles, int n = 20) => 100 * (candles.Take(n).Average(x => x.High / x.Low) - 1);
 
         public static IEnumerable<Candle> MergeBy(this IEnumerable<Candle> candles, Func<Candle, Candle, bool> criteria)
         {
