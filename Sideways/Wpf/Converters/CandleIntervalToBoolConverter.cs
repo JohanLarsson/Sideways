@@ -7,6 +7,8 @@
     public sealed class CandleIntervalToBoolConverter : IValueConverter
     {
         public static CandleIntervalToBoolConverter Hour = new(CandleInterval.Hour);
+        public static CandleIntervalToBoolConverter FifteenMinutes = new(CandleInterval.FifteenMinutes);
+        public static CandleIntervalToBoolConverter FiveMinutes = new(CandleInterval.FiveMinutes);
         public static CandleIntervalToBoolConverter Minute = new(CandleInterval.Minute);
 
         private readonly object trueWhen;

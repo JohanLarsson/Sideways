@@ -6,6 +6,8 @@
         Week,
         Day,
         Hour,
+        FifteenMinutes,
+        FiveMinutes,
         Minute,
     }
 }

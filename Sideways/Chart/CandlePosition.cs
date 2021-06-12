@@ -89,6 +89,12 @@
                     case CandleInterval.Hour
                         when Candle.ShouldMergeHour(time, candle.Time):
                         return x;
+                    case CandleInterval.FifteenMinutes
+                        when Candle.ShouldMergeFifteenMinutes(time, candle.Time):
+                        return x;
+                    case CandleInterval.FiveMinutes
+                        when Candle.ShouldMergeFiveMinutes(time, candle.Time):
+                        return x;
                     case CandleInterval.Minute
                         when candle.Time <= time:
                         return x;

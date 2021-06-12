@@ -104,6 +104,9 @@
                         }
 
                         break;
+                    case CandleInterval.FifteenMinutes:
+                    case CandleInterval.FiveMinutes:
+                        break;
                     case CandleInterval.Minute:
                         foreach (var candle in this.Candles)
                         {

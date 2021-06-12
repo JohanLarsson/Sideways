@@ -245,6 +245,8 @@
                         </Style>
                     </StackPanel.Resources>
                     <RadioButton Content="h" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.Hour}}" />
+                    <RadioButton Content="15 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.FifteenMinutes}}"/>
+                    <RadioButton Content="5 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.FiveMinutes}}"/>
                     <RadioButton Content="1 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.Minute}}"/>
                 </StackPanel>
             </Grid>

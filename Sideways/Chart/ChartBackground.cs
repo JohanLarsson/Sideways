@@ -25,7 +25,7 @@
             var candleWidth = this.CandleWidth;
             switch (this.CandleInterval)
             {
-                case CandleInterval.Hour or CandleInterval.Minute:
+                case CandleInterval.Hour or CandleInterval.FifteenMinutes or CandleInterval.FiveMinutes or CandleInterval.Minute:
                     DrawBetweenDays(Brushes.PreMarket);
                     DrawBand(x => TradingDay.IsPreMarket(x.Time), Brushes.PreMarket);
                     DrawBand(x => TradingDay.IsPostMarket(x.Time), Brushes.PostMarket);

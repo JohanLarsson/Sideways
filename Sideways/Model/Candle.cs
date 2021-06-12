@@ -28,21 +28,21 @@
 
         public int Volume { get; }
 
-        public static bool operator ==(Candle left, Candle right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(Candle left, Candle right) => left.Equals(right);
 
-        public static bool operator !=(Candle left, Candle right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(Candle left, Candle right) => !left.Equals(right);
 
-        public static bool ShouldMergeHour(DateTimeOffset x, DateTimeOffset y)
-        {
-            return x.IsSameDay(y) &&
-                   HourAndMinute.EndOfHourCandle(x) == HourAndMinute.EndOfHourCandle(y);
-        }
+        public static bool ShouldMergeHour(DateTimeOffset x, DateTimeOffset y) =>
+            x.IsSameDay(y) &&
+            HourAndMinute.EndOfHourCandle(x) == HourAndMinute.EndOfHourCandle(y);
+
+        public static bool ShouldMergeFifteenMinutes(DateTimeOffset x, DateTimeOffset y) =>
+            x.IsSameDay(y) &&
+            HourAndMinute.EndOfFifteenMinutesCandle(x) == HourAndMinute.EndOfFifteenMinutesCandle(y);
+
+        public static bool ShouldMergeFiveMinutes(DateTimeOffset x, DateTimeOffset y) =>
+            x.IsSameDay(y) &&
+            HourAndMinute.EndOfFiveMinutesCandle(x) == HourAndMinute.EndOfFiveMinutesCandle(y);
 
         public Candle WithTime(HourAndMinute hourAndMinute) => new(
             time: this.Time.WithHourAndMinute(hourAndMinute),

@@ -58,6 +58,10 @@
 
         public IEnumerable<Candle> DescendingHours(DateTimeOffset end) => this.DescendingMinutes(end).MergeBy((x, y) => Candle.ShouldMergeHour(x.Time, y.Time));
 
+        public IEnumerable<Candle> DescendingFifteenMinutes(DateTimeOffset end) => this.DescendingMinutes(end).MergeBy((x, y) => Candle.ShouldMergeFifteenMinutes(x.Time, y.Time));
+
+        public IEnumerable<Candle> DescendingFiveMinutes(DateTimeOffset end) => this.DescendingMinutes(end).MergeBy((x, y) => Candle.ShouldMergeFiveMinutes(x.Time, y.Time));
+
         public IEnumerable<Candle> DescendingMinutes(DateTimeOffset end)
         {
             var index = this.minutes.IndexOf(end, this.minuteIndex);
@@ -80,8 +84,10 @@
                 CandleInterval.Week => this.DescendingWeeks(end),
                 CandleInterval.Day => this.DescendingDays(end),
                 CandleInterval.Hour => this.DescendingHours(end),
+                CandleInterval.FifteenMinutes => this.DescendingFifteenMinutes(end),
+                CandleInterval.FiveMinutes => this.DescendingFiveMinutes(end),
                 CandleInterval.Minute => this.DescendingMinutes(end),
-                _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, "Unhandled grouping."),
+                _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, "Unhandled interval."),
             };
         }
 
@@ -92,6 +98,8 @@
                 CandleInterval.Week => FindInterval(this.days, time, this.dayIndex, (x, y) => x.Time.IsSameWeek(y.Time), count, x => TradingDay.EndOfDay(x.Time)),
                 CandleInterval.Day => Find(this.days, time, this.dayIndex, count, x => TradingDay.EndOfDay(x.Time)),
                 CandleInterval.Hour => FindInterval(this.minutes, time, this.minuteIndex, (x, y) => Candle.ShouldMergeHour(x.Time, y.Time), count, x => x.Time.WithHourAndMinute(HourAndMinute.EndOfHourCandle(x.Time))),
+                CandleInterval.FifteenMinutes => FindInterval(this.minutes, time, this.minuteIndex, (x, y) => Candle.ShouldMergeFifteenMinutes(x.Time, y.Time), count, x => x.Time.WithHourAndMinute(HourAndMinute.EndOfFifteenMinutesCandle(x.Time))),
+                CandleInterval.FiveMinutes => FindInterval(this.minutes, time, this.minuteIndex, (x, y) => Candle.ShouldMergeFiveMinutes(x.Time, y.Time), count, x => x.Time.WithHourAndMinute(HourAndMinute.EndOfFiveMinutesCandle(x.Time))),
                 CandleInterval.Minute => Find(this.minutes, time, this.minuteIndex, count, x => x.Time),
                 _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, null),
             };
