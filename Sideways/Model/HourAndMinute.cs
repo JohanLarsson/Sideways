@@ -29,13 +29,13 @@
         public static HourAndMinute EndOfFifteenMinutesCandle(DateTimeOffset t) => t switch
         {
             { Minute: > 45 } => new(t.Hour + 1, 0),
-            _ => new(t.Hour, 15 * ((t.Minute / 15) + 1)),
+            _ => new(t.Hour, 15 * (t.Minute / 15)),
         };
 
         public static HourAndMinute EndOfFiveMinutesCandle(DateTimeOffset t) => t switch
         {
             { Minute: > 55 } => new(t.Hour + 1, 0),
-            _ => new(t.Hour, 5 * ((t.Minute / 5) + 1)),
+            _ => new(t.Hour, 5 * (t.Minute / 5)),
         };
 
         public bool Equals(HourAndMinute other) => this.Hour == other.Hour && this.Minute == other.Minute;
