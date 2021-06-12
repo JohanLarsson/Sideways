@@ -63,13 +63,28 @@
                 <Setter Property="Background" Value="{x:Static sideways:Brushes.Background}" />
             </Style>
 
+            <Style TargetType="{x:Type ContextMenu}">
+                <Setter Property="Background" Value="{x:Static sideways:Brushes.Background}" />
+            </Style>
+
+            <Style TargetType="{x:Type MenuItem}">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Text}" />
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.DisabledText}" />
+                        <Setter Property="FontStyle" Value="Oblique" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
             <Style x:Key="IconStyle" TargetType="{x:Type Shape}">
                 <Setter Property="SnapsToDevicePixels" Value="True" />
                 <Setter Property="Stretch" Value="Uniform" />
                 <Setter Property="Margin" Value="0" />
                 <Setter Property="Width" Value="10" />
                 <Setter Property="Height" Value="10" />
-                <Setter Property="Fill" Value="Black" />
+                <Setter Property="Fill" Value="{x:Static sideways:Brushes.EnabledText}" />
                 <Setter Property="StrokeThickness" Value="0" />
                 <Setter Property="Stroke" Value="{x:Null}" />
                 <Style.Triggers>

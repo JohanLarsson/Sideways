@@ -23,6 +23,27 @@
         </Grid.ColumnDefinitions>
 
         <Grid x:Name="Charts" sideways:Chart.BookmarkTime="{Binding SelectedBookmark.Time, FallbackValue={x:Null}}">
+            <Grid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Download" Command="Open">
+                        <MenuItem.Icon>
+                            <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource IconStyle}" />
+                        </MenuItem.Icon>
+                        <MenuItem.CommandBindings>
+                            <CommandBinding Command="Open" Executed="OnOpenDownloader" />
+                        </MenuItem.CommandBindings>
+                    </MenuItem>
+
+                    <MenuItem Header="Settings" Command="Open">
+                        <MenuItem.Icon>
+                            <Path Data="{StaticResource CogsGeometry}" Style="{StaticResource IconStyle}" />
+                        </MenuItem.Icon>
+                        <MenuItem.CommandBindings>
+                            <CommandBinding Command="Open" Executed="OnOpenSettings" />
+                        </MenuItem.CommandBindings>
+                    </MenuItem>
+                </ContextMenu>
+            </Grid.ContextMenu>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -327,20 +348,24 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0">
-                <Button VerticalAlignment="Top"
-                        Command="Open"
-                        Content="Downloader"
-                        Focusable="False">
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Command="Open"
+                        Focusable="False"
+                        ToolTip="Downloader">
+                    <Button.Content>
+                        <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource IconStyle}" />
+                    </Button.Content>
                     <Button.CommandBindings>
                         <CommandBinding Command="Open" Executed="OnOpenDownloader" />
                     </Button.CommandBindings>
                 </Button>
 
-                <Button VerticalAlignment="Top"
-                        Command="Open"
-                        Content="Settings"
+                <Button Command="Open"
+                        ToolTip="Settings"
                         Focusable="False">
+                    <Button.Content>
+                        <Path Data="{StaticResource CogsGeometry}" Style="{StaticResource IconStyle}" />
+                    </Button.Content>
                     <Button.CommandBindings>
                         <CommandBinding Command="Open" Executed="OnOpenSettings" />
                     </Button.CommandBindings>
