@@ -105,22 +105,49 @@
 
                         break;
                     case CandleInterval.FifteenMinutes:
+                        for (var i = 1; i < this.Candles.Count; i++)
+                        {
+                            var hourAndMinute = HourAndMinute.EndOfHourCandle(this.Candles[i].Time);
+                            if (hourAndMinute is { Hour: 9, Minute: 30 } or { Hour: 12, Minute: 0 } or { Hour: 16, Minute: 0 } &&
+                                hourAndMinute != HourAndMinute.EndOfHourCandle(candles[i - 1].Time))
+                            {
+                                DrawText($"{hourAndMinute.Hour}:{hourAndMinute.Minute:00}", position.Left);
+                            }
+
+                            position = position.ShiftLeft();
+                            if (position.Left < 0)
+                            {
+                                break;
+                            }
+                        }
+
+                        break;
                     case CandleInterval.FiveMinutes:
+                        for (var i = 1; i < this.Candles.Count; i++)
+                        {
+                            var hourAndMinute = HourAndMinute.EndOfHourCandle(this.Candles[i].Time);
+                            if (hourAndMinute.Hour != 20 &&
+                                hourAndMinute != HourAndMinute.EndOfHourCandle(candles[i - 1].Time))
+                            {
+                                DrawText($"{hourAndMinute.Hour}:{hourAndMinute.Minute:00}", position.Left);
+                            }
+
+                            position = position.ShiftLeft();
+                            if (position.Left < 0)
+                            {
+                                break;
+                            }
+                        }
+
                         break;
                     case CandleInterval.Minute:
-                        foreach (var candle in this.Candles)
+                        for (var i = 1; i < this.Candles.Count; i++)
                         {
-                            switch (candle.Time)
+                            var hourAndMinute = HourAndMinute.EndOfThirtyMinutesCandle(this.Candles[i].Time);
+                            if (hourAndMinute.Hour != 20 &&
+                                hourAndMinute != HourAndMinute.EndOfThirtyMinutesCandle(candles[i - 1].Time))
                             {
-                                case { Hour: 9, Minute: 31 }:
-                                    DrawText("09:30", position.Left);
-                                    break;
-                                case { Hour: 12 }:
-                                    DrawText("12:00", position.Left);
-                                    break;
-                                case { Hour: 15 }:
-                                    DrawText("15:00", position.Left);
-                                    break;
+                                DrawText($"{hourAndMinute.Hour}:{hourAndMinute.Minute:00}", position.Left);
                             }
 
                             position = position.ShiftLeft();
