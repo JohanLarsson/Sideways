@@ -4,12 +4,13 @@
     using System.Globalization;
     using System.Windows.Data;
 
+    [ValueConversion(typeof(object), typeof(bool))]
     public sealed class CandleIntervalToBoolConverter : IValueConverter
     {
-        public static CandleIntervalToBoolConverter Hour = new(CandleInterval.Hour);
-        public static CandleIntervalToBoolConverter FifteenMinutes = new(CandleInterval.FifteenMinutes);
-        public static CandleIntervalToBoolConverter FiveMinutes = new(CandleInterval.FiveMinutes);
-        public static CandleIntervalToBoolConverter Minute = new(CandleInterval.Minute);
+        public static readonly CandleIntervalToBoolConverter Hour = new(CandleInterval.Hour);
+        public static readonly CandleIntervalToBoolConverter FifteenMinutes = new(CandleInterval.FifteenMinutes);
+        public static readonly CandleIntervalToBoolConverter FiveMinutes = new(CandleInterval.FiveMinutes);
+        public static readonly CandleIntervalToBoolConverter Minute = new(CandleInterval.Minute);
 
         private readonly object trueWhen;
 
