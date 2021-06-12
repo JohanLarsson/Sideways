@@ -41,11 +41,10 @@
                 if (e.Source is ComboBox comboBox &&
                     GetIsSymbolSearch(comboBox))
                 {
-                    switch (e.Key)
+                    switch (e)
                     {
-                        case Key.Up or Key.Down:
-                        case Key.R
-                            when Keyboard.Modifiers == ModifierKeys.Control:
+                        case { Key: Key.Up or Key.Down }:
+                        case { SystemKey: Key.Left or Key.Right or Key.R }:
                             // We toggle focus so following keyboard input overwrites current text.
                             Keyboard.ClearFocus();
                             Keyboard.Focus(comboBox);

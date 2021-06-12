@@ -22,3 +22,6 @@ Scroll to change time.
 Arrow left and right moves time one day candle. Shift left and right one hour candle.
 Space starts animation.
 Ctrl + W adds current symbol to watchlist.
+
+Alt + R selects random item in current list, symbols or bookmarks.
+Alt + Left and Right moves back and forward in history.
