@@ -14,8 +14,8 @@
         <Style.Triggers>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
-                    <Condition Property="IsEnabled" Value="True"></Condition>
-                    <Condition Property="IsMouseOver" Value="True"></Condition>
+                    <Condition Property="IsEnabled" Value="True" />
+                    <Condition Property="IsMouseOver" Value="True" />
                 </MultiTrigger.Conditions>
                 <MultiTrigger.Setters>
                     <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedText}" />
@@ -25,8 +25,8 @@
 
             <MultiTrigger>
                 <MultiTrigger.Conditions>
-                    <Condition Property="IsEnabled" Value="True"></Condition>
-                    <Condition Property="IsPressed" Value="True"></Condition>
+                    <Condition Property="IsEnabled" Value="True" />
+                    <Condition Property="IsPressed" Value="True" />
                 </MultiTrigger.Conditions>
                 <MultiTrigger.Setters>
                     <Setter Property="Background" Value="{x:Static sideways:Brushes.Pressed}" />
@@ -63,7 +63,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type ButtonBase}}">
+    <Style BasedOn="{StaticResource {x:Type ButtonBase}}" TargetType="{x:Type ToggleButton}">
         <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Text}" />
         <Setter Property="Template">
             <Setter.Value>
@@ -90,4 +90,6 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style BasedOn="{StaticResource {x:Type ToggleButton}}" TargetType="{x:Type RadioButton}" />
 </ResourceDictionary>
