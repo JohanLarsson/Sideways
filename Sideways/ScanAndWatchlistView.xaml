@@ -12,7 +12,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock Text="Watchlist" />
+        <TextBlock Text="Watchlist" HorizontalAlignment="Center"/>
         <ListBox Grid.Row="1"
                  sideways:Sort.Direction="Ascending"
                  ItemsSource="{Binding WatchList}"

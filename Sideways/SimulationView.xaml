@@ -14,7 +14,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
-            <TextBlock Text="Simulation" />
+            <TextBlock HorizontalAlignment="Center" Text="Simulation" />
             <Button Command="New" Content="New">
                 <Button.CommandBindings>
                     <CommandBinding Command="New" Executed="OnNew" />

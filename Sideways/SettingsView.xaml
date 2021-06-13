@@ -14,7 +14,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <StackPanel>
-            <TextBlock Text="AlphaVantage" />
+            <TextBlock Text="AlphaVantage" HorizontalAlignment="Center" />
             <TextBlock Text="API key" />
             <TextBox Text="{Binding AlphaVantage.ClientSettings.ApiKey}" />
             <TextBlock Text="Max calls per minute" />

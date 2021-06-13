@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0">
-            <TextBlock Text="Bookmarks" />
+            <TextBlock Text="Bookmarks" HorizontalAlignment="Center"/>
             <Button Command="New" Content="New">
                 <Button.CommandBindings>
                     <CommandBinding Command="New" Executed="OnNew" />

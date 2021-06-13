@@ -188,7 +188,10 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <TextBlock Text="{Binding Downloads.Count, StringFormat='Count: {0}'}" ToolTip="All downloads this session" />
+            <StackPanel>
+                <TextBlock HorizontalAlignment="Center" Text="Downloads" />
+                <TextBlock Text="{Binding Downloads.Count, StringFormat='Count: {0}'}" ToolTip="All downloads this session" />
+            </StackPanel>
 
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Downloads}">
