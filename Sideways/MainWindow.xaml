@@ -25,6 +25,7 @@
             </Style.Triggers>
         </Style>
     </Window.Style>
+
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="24"
                       CornerRadius="0"

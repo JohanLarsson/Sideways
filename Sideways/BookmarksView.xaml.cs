@@ -8,11 +8,14 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
+
     using Microsoft.Win32;
 
     public partial class BookmarksView : UserControl
     {
-        private static readonly string BookmarksDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks");
+        private static readonly string Directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks");
+
+        private FileInfo? file;
 
         public BookmarksView()
         {
@@ -29,28 +32,28 @@
             return MessageBox.Show(messageBoxText, caption, button, messageBoxImage);
         }
 
-        private static void Save(ImmutableList<Bookmark> simulation, string? fileName = null)
+        private void Save(ImmutableList<Bookmark> simulation)
         {
-            if (!Directory.Exists(BookmarksDirectory))
+            if (!System.IO.Directory.Exists(Directory))
             {
-                Directory.CreateDirectory(BookmarksDirectory);
+                System.IO.Directory.CreateDirectory(Directory);
             }
 
-            if (File() is { } file)
+            if (File() is { FullName: { } fileName })
             {
-                System.IO.File.WriteAllText(file.FullName, JsonSerializer.Serialize(simulation));
+                System.IO.File.WriteAllText(fileName, JsonSerializer.Serialize(simulation));
             }
 
             FileInfo? File()
             {
-                if (fileName is { })
+                if (this.file is { } file)
                 {
-                    return new(fileName);
+                    return file;
                 }
 
                 var dialog = new SaveFileDialog
                 {
-                    InitialDirectory = BookmarksDirectory,
+                    InitialDirectory = Directory,
                     FileName = $"Bookmarks {DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}",
                     DefaultExt = ".bookmarks",
                     Filter = "Bookmark files|*.bookmarks",
@@ -58,6 +61,7 @@
 
                 if (dialog.ShowDialog() is true)
                 {
+                    this.file = new FileInfo(dialog.FileName);
                     return new(dialog.FileName);
                 }
 
@@ -65,12 +69,19 @@
             }
         }
 
-        private void AskAndSave()
+        private void AskSave()
         {
             if (this.DataContext is MainViewModel { Bookmarks: { } bookmarks } &&
+                IsDirty() &&
                 ShowMessageBox("Do you want to save current simulation first?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                Save(bookmarks);
+                this.Save(bookmarks);
+            }
+
+            bool IsDirty()
+            {
+                return this.file is { } &&
+                       JsonSerializer.Serialize(bookmarks) != File.ReadAllText(this.file.FullName);
             }
         }
 
@@ -78,7 +89,7 @@
         {
             if (this.DataContext is MainViewModel mainViewModel)
             {
-                this.AskAndSave();
+                this.AskSave();
                 mainViewModel.Bookmarks = ImmutableList<Bookmark>.Empty;
                 e.Handled = true;
             }
@@ -88,15 +99,15 @@
         {
             if (this.DataContext is MainViewModel mainViewModel)
             {
-                this.AskAndSave();
-                if (!Directory.Exists(BookmarksDirectory))
+                this.AskSave();
+                if (!System.IO.Directory.Exists(Directory))
                 {
-                    Directory.CreateDirectory(BookmarksDirectory);
+                    System.IO.Directory.CreateDirectory(Directory);
                 }
 
                 var dialog = new OpenFileDialog
                 {
-                    InitialDirectory = BookmarksDirectory,
+                    InitialDirectory = Directory,
                     Filter = "Bookmark files|*.bookmarks",
                 };
 
@@ -105,6 +116,7 @@
                     try
                     {
                         mainViewModel.Bookmarks = JsonSerializer.Deserialize<ImmutableList<Bookmark>>(File.ReadAllText(dialog.FileName));
+                        this.file = new FileInfo(dialog.FileName);
                     }
 #pragma warning disable CA1031 // Do not catch general exception types
                     catch (Exception exception)
@@ -122,8 +134,9 @@
         {
             if (this.DataContext is MainViewModel viewModel)
             {
-                this.AskAndSave();
+                this.AskSave();
                 viewModel.Bookmarks = null;
+                this.file = null;
                 e.Handled = true;
             }
         }
@@ -141,7 +154,7 @@
         {
             if (this.DataContext is MainViewModel { Bookmarks: { } bookmarks })
             {
-                Save(bookmarks);
+                this.Save(bookmarks);
                 e.Handled = true;
             }
         }

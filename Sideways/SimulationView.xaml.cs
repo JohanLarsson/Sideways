@@ -12,7 +12,9 @@
 
     public partial class SimulationView : UserControl
     {
-        private static readonly string SimulationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Simulations");
+        private static readonly string Directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Simulations");
+
+        private FileInfo? file;
 
         public SimulationView()
         {
@@ -29,29 +31,29 @@
             return MessageBox.Show(messageBoxText, caption, button, messageBoxImage);
         }
 
-        private static void Save(Simulation simulation, DateTimeOffset time, string? fileName = null)
+        private void Save(Simulation simulation, DateTimeOffset time)
         {
-            if (!Directory.Exists(SimulationDirectory))
+            if (!System.IO.Directory.Exists(Directory))
             {
-                Directory.CreateDirectory(SimulationDirectory);
+                System.IO.Directory.CreateDirectory(Directory);
             }
 
-            if (File() is { } file)
+            if (File() is { FullName: { } fullName })
             {
                 simulation.Time = time;
-                System.IO.File.WriteAllText(file.FullName, JsonSerializer.Serialize(simulation));
+                System.IO.File.WriteAllText(fullName, JsonSerializer.Serialize(simulation));
             }
 
             FileInfo? File()
             {
-                if (fileName is { })
+                if (this.file is { } file)
                 {
-                    return new(fileName);
+                    return file;
                 }
 
                 var dialog = new SaveFileDialog
                 {
-                    InitialDirectory = SimulationDirectory,
+                    InitialDirectory = Directory,
                     FileName = $"Simulation {DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}",
                     DefaultExt = ".simulation",
                     Filter = "Simulation files|*.simulation;*.sim",
@@ -59,6 +61,7 @@
 
                 if (dialog.ShowDialog() is true)
                 {
+                    this.file = new FileInfo(dialog.FileName);
                     return new(dialog.FileName);
                 }
 
@@ -66,12 +69,19 @@
             }
         }
 
-        private void AskAndSave()
+        private void AskSave()
         {
             if (this.DataContext is MainViewModel { Time: var time, Simulation: { } simulation } &&
+                IsDirty() &&
                 ShowMessageBox("Do you want to save current simulation first?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                Save(simulation, time);
+                this.Save(simulation, time);
+            }
+
+            bool IsDirty()
+            {
+                return this.file is { } &&
+                       JsonSerializer.Serialize(simulation) != File.ReadAllText(this.file.FullName);
             }
         }
 
@@ -79,7 +89,7 @@
         {
             if (this.DataContext is MainViewModel mainViewModel)
             {
-                this.AskAndSave();
+                this.AskSave();
                 mainViewModel.UpdateSimulation(Simulation.Create(mainViewModel.Time));
                 e.Handled = true;
             }
@@ -89,16 +99,16 @@
         {
             if (this.DataContext is MainViewModel mainViewModel)
             {
-                this.AskAndSave();
+                this.AskSave();
 
-                if (!Directory.Exists(SimulationDirectory))
+                if (!System.IO.Directory.Exists(Directory))
                 {
-                    Directory.CreateDirectory(SimulationDirectory);
+                    System.IO.Directory.CreateDirectory(Directory);
                 }
 
                 var dialog = new OpenFileDialog
                 {
-                    InitialDirectory = SimulationDirectory,
+                    InitialDirectory = Directory,
                     Filter = "Simulation files|*.simulation;*.sim",
                 };
 
@@ -107,6 +117,7 @@
                     try
                     {
                         mainViewModel.UpdateSimulation(JsonSerializer.Deserialize<Simulation>(File.ReadAllText(dialog.FileName)));
+                        this.file = new FileInfo(dialog.FileName);
                     }
 #pragma warning disable CA1031 // Do not catch general exception types
                     catch (Exception exception)
@@ -124,8 +135,9 @@
         {
             if (this.DataContext is MainViewModel { Simulation: { } } viewModel)
             {
-                this.AskAndSave();
+                this.AskSave();
                 viewModel.UpdateSimulation(null);
+                this.file = null;
                 e.Handled = true;
             }
         }
@@ -143,7 +155,7 @@
         {
             if (this.DataContext is MainViewModel { Time: var time, Simulation: { } simulation })
             {
-                Save(simulation, DateTimeOffsetExtensions.Max(time, simulation.Time));
+                this.Save(simulation, DateTimeOffsetExtensions.Max(time, simulation.Time));
                 e.Handled = true;
             }
         }
