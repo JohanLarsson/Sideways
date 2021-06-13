@@ -43,7 +43,7 @@
             <RowDefinition Height="24" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid>
+        <Grid x:Name="TitleBar">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -78,8 +78,9 @@
                              Style="{StaticResource NavigationButton}"
                              ToolTip="Simulation" />
 
-                <RadioButton Style="{StaticResource NavigationButton}" ToolTip="Downloader"
-                             x:Name="DownloadButton">
+                <RadioButton x:Name="DownloadButton"
+                             Style="{StaticResource NavigationButton}"
+                             ToolTip="Downloader">
                     <Path Data="{StaticResource ArrowDownGeometry}"
                           Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}},
                                          Path=Foreground}"
@@ -129,9 +130,10 @@
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid x:Name="Root" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
@@ -426,11 +428,23 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Column="1">
-                <sideways:SimulationView Visibility="{Binding ElementName=SimulationButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}"/>
-                <sideways:BookmarksView Visibility="{Binding ElementName=BookmarksButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
-                <sideways:DownloadView DataContext="{Binding Downloader}" Visibility="{Binding ElementName=DownloadButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}"/>
-                <sideways:SettingsView DataContext="{Binding Settings}" Visibility="{Binding ElementName=SettingsButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}"/>
+            <GridSplitter Grid.Column="1"
+                          Focusable="False"
+                          Style="{StaticResource VerticalAxisGridSplitter}" />
+
+            <Grid Grid.Column="2">
+                <sideways:SimulationView HorizontalAlignment="Right" Visibility="{Binding ElementName=SimulationButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+                <sideways:BookmarksView HorizontalAlignment="Right" Visibility="{Binding ElementName=BookmarksButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+                <sideways:DownloadView HorizontalAlignment="Right"
+                                       DataContext="{Binding Downloader}"
+                                       Visibility="{Binding ElementName=DownloadButton,
+                                                            Path=IsChecked,
+                                                            Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+                <sideways:SettingsView HorizontalAlignment="Right"
+                                       DataContext="{Binding Settings}"
+                                       Visibility="{Binding ElementName=SettingsButton,
+                                                            Path=IsChecked,
+                                                            Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
             </Grid>
         </Grid>
     </Grid>
