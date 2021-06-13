@@ -18,7 +18,7 @@
             <Setter Property="BorderThickness" Value="1" />
             <Style.Triggers>
                 <Trigger Property="WindowState" Value="Maximized">
-                    <!--Hack around WPF weirdness, bonds not correct when maximized-->
+                    <!--  Hack around WPF weirdness, bonds not correct when maximized  -->
                     <Setter Property="BorderThickness" Value="8" />
                     <Setter Property="BorderBrush" Value="Transparent" />
                 </Trigger>
@@ -54,33 +54,64 @@
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <StackPanel.Resources>
-                    <Style x:Key="WindowUtilityButton"
-                           BasedOn="{StaticResource {x:Type Button}}"
-                           TargetType="{x:Type Button}">
+                    <Style x:Key="NavigationButton"
+                           BasedOn="{StaticResource {x:Type RadioButton}}"
+                           TargetType="{x:Type RadioButton}">
                         <Setter Property="Width" Value="40" />
                         <Setter Property="Height" Value="24" />
                         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+                        <Setter Property="GroupName" Value="NavigationButtons" />
+                        <Setter Property="sideways:Navigate.Target" Value="{Binding ElementName=NavigationTarget}" />
                     </Style>
                 </StackPanel.Resources>
 
-                <Button Command="Open"
-                        Style="{StaticResource WindowUtilityButton}"
-                        ToolTip="Downloader">
-                    <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource IconStyle}" />
-                    <Button.CommandBindings>
-                        <CommandBinding Command="Open" Executed="OnOpenDownloader" />
-                    </Button.CommandBindings>
-                </Button>
+                <RadioButton Content="b"
+                             Style="{StaticResource NavigationButton}"
+                             ToolTip="Bookmarks">
+                    <sideways:Navigate.Template>
+                        <DataTemplate>
+                            <sideways:BookmarksView DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext}" />
+                        </DataTemplate>
+                    </sideways:Navigate.Template>
+                </RadioButton>
 
-                <Button Command="Open"
-                        Style="{StaticResource WindowUtilityButton}"
-                        ToolTip="Settings">
-                    <Path Data="{StaticResource CogsGeometry}" Style="{StaticResource IconStyle}" />
+                <RadioButton Content="s"
+                             Style="{StaticResource NavigationButton}"
+                             ToolTip="Simulation">
+                    <sideways:Navigate.Template>
+                        <DataTemplate>
+                            <sideways:SimulationView DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext}"/>
+                        </DataTemplate>
+                    </sideways:Navigate.Template>
+                </RadioButton>
 
-                    <Button.CommandBindings>
-                        <CommandBinding Command="Open" Executed="OnOpenSettings" />
-                    </Button.CommandBindings>
-                </Button>
+                <RadioButton Style="{StaticResource NavigationButton}" ToolTip="Downloader">
+                    <sideways:Navigate.Template>
+                        <DataTemplate>
+                            <sideways:DownloadView DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Downloader}" />
+                        </DataTemplate>
+                    </sideways:Navigate.Template>
+                    <RadioButton.Content>
+                        <Path Data="{StaticResource ArrowDownGeometry}"
+                              Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}},
+                                             Path=Foreground}"
+                              Style="{StaticResource IconStyle}" />
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Style="{StaticResource NavigationButton}" ToolTip="Settings">
+                    <sideways:Navigate.Template>
+                        <DataTemplate>
+                            <sideways:SettingsView DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Settings}" />
+                        </DataTemplate>
+                    </sideways:Navigate.Template>
+                    <RadioButton.Content>
+                        <Path Data="{StaticResource CogsGeometry}"
+                              Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}},
+                                             Path=Foreground}"
+                              Style="{StaticResource IconStyle}" />
+                    </RadioButton.Content>
+                </RadioButton>
             </StackPanel>
 
             <StackPanel x:Name="WindowButtons"
@@ -123,27 +154,6 @@
             </Grid.ColumnDefinitions>
 
             <Grid x:Name="Charts" sideways:Chart.BookmarkTime="{Binding SelectedBookmark.Time, FallbackValue={x:Null}}">
-                <Grid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Command="Open" Header="Download">
-                            <MenuItem.Icon>
-                                <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource IconStyle}" />
-                            </MenuItem.Icon>
-                            <MenuItem.CommandBindings>
-                                <CommandBinding Command="Open" Executed="OnOpenDownloader" />
-                            </MenuItem.CommandBindings>
-                        </MenuItem>
-
-                        <MenuItem Command="Open" Header="Settings">
-                            <MenuItem.Icon>
-                                <Path Data="{StaticResource CogsGeometry}" Style="{StaticResource IconStyle}" />
-                            </MenuItem.Icon>
-                            <MenuItem.CommandBindings>
-                                <CommandBinding Command="Open" Executed="OnOpenSettings" />
-                            </MenuItem.CommandBindings>
-                        </MenuItem>
-                    </ContextMenu>
-                </Grid.ContextMenu>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -434,7 +444,7 @@
                 </Grid>
             </Grid>
 
-            <ContentPresenter Grid.Column="1" />
+            <ContentPresenter x:Name="NavigationTarget" Grid.Column="1" />
         </Grid>
     </Grid>
 </Window>

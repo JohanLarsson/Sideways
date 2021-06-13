@@ -95,44 +95,6 @@
             e.Handled = true;
         }
 
-        private void OnOpenDownloader(object sender, ExecutedRoutedEventArgs e)
-        {
-            var window = new Window
-            {
-                Title = "Downloader",
-                SizeToContent = SizeToContent.Width,
-                Height = 500,
-                Content = new DownloadView
-                {
-#pragma warning disable IDISP003 // Dispose previous before re-assigning.
-                    DataContext = ((MainViewModel)this.DataContext).Downloader,
-#pragma warning restore IDISP003 // Dispose previous before re-assigning.
-                },
-                Owner = this,
-            };
-            window.Show();
-        }
-
-        private void OnOpenSettings(object sender, ExecutedRoutedEventArgs e)
-        {
-            var settings = ((MainViewModel)this.DataContext).Settings;
-            var window = new Window
-            {
-                Title = "Settings",
-                SizeToContent = SizeToContent.Width,
-                Height = 500,
-                Content = new SettingsView
-                {
-#pragma warning disable IDISP003 // Dispose previous before re-assigning.
-                    DataContext = settings,
-#pragma warning restore IDISP003 // Dispose previous before re-assigning.
-                },
-                Owner = this,
-            };
-            window.ShowDialog();
-            settings.Save();
-        }
-
         private void OnClickMinimize(object sender, RoutedEventArgs e) => this.SetCurrentValue(WindowStateProperty, WindowState.Minimized);
 
         private void OnClickMaximizeRestore(object sender, RoutedEventArgs e) => this.SetCurrentValue(WindowStateProperty, this.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized);
