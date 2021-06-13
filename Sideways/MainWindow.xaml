@@ -74,9 +74,13 @@
                 </RadioButton>
 
                 <RadioButton x:Name="SimulationButton"
-                             Content="s"
                              Style="{StaticResource NavigationButton}"
-                             ToolTip="Simulation" />
+                             ToolTip="Simulation" >
+                    <Path Data="{StaticResource CandleSticksGeometry}"
+                          Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}},
+                                         Path=Foreground}"
+                          Style="{StaticResource IconStyle}" />
+                </RadioButton>
 
                 <RadioButton x:Name="DownloadButton"
                              Style="{StaticResource NavigationButton}"
