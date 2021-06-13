@@ -73,15 +73,15 @@
         {
             if (this.DataContext is MainViewModel { Bookmarks: { } bookmarks } &&
                 IsDirty() &&
-                ShowMessageBox("Do you want to save current simulation first?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                ShowMessageBox("Do you want to save current bookmarks first?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 this.Save(bookmarks);
             }
 
             bool IsDirty()
             {
-                return this.file is { } &&
-                       JsonSerializer.Serialize(bookmarks) != File.ReadAllText(this.file.FullName);
+                return this.file is { FullName: { } fileName } &&
+                       JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }) != File.ReadAllText(fileName);
             }
         }
 

@@ -80,8 +80,8 @@
 
             bool IsDirty()
             {
-                return this.file is { } &&
-                       JsonSerializer.Serialize(simulation) != File.ReadAllText(this.file.FullName);
+                return this.file is { FullName: { } fileName } &&
+                       JsonSerializer.Serialize(simulation, new JsonSerializerOptions { WriteIndented = true }) != File.ReadAllText(fileName);
             }
         }
 
