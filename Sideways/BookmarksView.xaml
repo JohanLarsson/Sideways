@@ -17,7 +17,11 @@
 
         <StackPanel Grid.Row="0">
             <TextBlock Text="Bookmarks" />
-            <!--<Button Command="{Binding StartNewSimulationCommand}" Content="New" />-->
+            <Button Command="New" Content="New">
+                <Button.CommandBindings>
+                    <CommandBinding Command="New" Executed="OnNew" />
+                </Button.CommandBindings>
+            </Button>
 
             <Button Command="Open" Content="Open">
                 <Button.CommandBindings>

@@ -29,21 +29,6 @@
             return MessageBox.Show(messageBoxText, caption, button, messageBoxImage);
         }
 
-        private void OnNew(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (this.DataContext is MainViewModel mainViewModel)
-            {
-                if (mainViewModel is { Time: var time, Simulation: { } simulation } &&
-                    ShowMessageBox("Do you want to save current simulation first?", "Simulation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                {
-                    Save(simulation, time);
-                }
-
-                mainViewModel.UpdateSimulation(Simulation.Create(mainViewModel.Time));
-                e.Handled = true;
-            }
-        }
-
         private static void Save(Simulation simulation, DateTimeOffset time, string? fileName = null)
         {
             if (!Directory.Exists(SimulationDirectory))
@@ -81,20 +66,21 @@
             }
         }
 
-        private void OnCanSave(object sender, CanExecuteRoutedEventArgs e)
+        private void AskAndSave()
         {
-            if (this.DataContext is MainViewModel { Simulation: { } })
+            if (this.DataContext is MainViewModel { Time: var time, Simulation: { } simulation } &&
+                ShowMessageBox("Do you want to save current simulation first?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                e.CanExecute = true;
-                e.Handled = true;
+                Save(simulation, time);
             }
         }
 
-        private void OnSave(object sender, ExecutedRoutedEventArgs e)
+        private void OnNew(object sender, ExecutedRoutedEventArgs e)
         {
-            if (this.DataContext is MainViewModel { Time: var time, Simulation: { } simulation })
+            if (this.DataContext is MainViewModel mainViewModel)
             {
-                Save(simulation, DateTimeOffsetExtensions.Max(time, simulation.Time));
+                this.AskAndSave();
+                mainViewModel.UpdateSimulation(Simulation.Create(mainViewModel.Time));
                 e.Handled = true;
             }
         }
@@ -103,11 +89,7 @@
         {
             if (this.DataContext is MainViewModel mainViewModel)
             {
-                if (mainViewModel is { Time: var time, Simulation: { } simulation } &&
-                    ShowMessageBox("Do you want to save current simulation first?", "Simulation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                {
-                    Save(simulation, time);
-                }
+                this.AskAndSave();
 
                 if (!Directory.Exists(SimulationDirectory))
                 {
@@ -140,14 +122,28 @@
 
         private void OnClose(object sender, ExecutedRoutedEventArgs e)
         {
-            if (this.DataContext is MainViewModel { Time: var time, Simulation: { } simulation } viewModel)
+            if (this.DataContext is MainViewModel { Simulation: { } } viewModel)
             {
-                if (ShowMessageBox("Do you want to save current simulation first?", "Simulation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                {
-                    Save(simulation, DateTimeOffsetExtensions.Max(time, simulation.Time));
-                }
-
+                this.AskAndSave();
                 viewModel.UpdateSimulation(null);
+                e.Handled = true;
+            }
+        }
+
+        private void OnCanSave(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { Simulation: { } })
+            {
+                e.CanExecute = true;
+                e.Handled = true;
+            }
+        }
+
+        private void OnSave(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { Time: var time, Simulation: { } simulation })
+            {
+                Save(simulation, DateTimeOffsetExtensions.Max(time, simulation.Time));
                 e.Handled = true;
             }
         }

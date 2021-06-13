@@ -65,20 +65,21 @@
             }
         }
 
-        private void OnCanSave(object sender, CanExecuteRoutedEventArgs e)
+        private void AskAndSave()
         {
-            if (this.DataContext is MainViewModel { Bookmarks: { } })
+            if (this.DataContext is MainViewModel { Bookmarks: { } bookmarks } &&
+                ShowMessageBox("Do you want to save current simulation first?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                e.CanExecute = true;
-                e.Handled = true;
+                Save(bookmarks);
             }
         }
 
-        private void OnSave(object sender, ExecutedRoutedEventArgs e)
+        private void OnNew(object sender, ExecutedRoutedEventArgs e)
         {
-            if (this.DataContext is MainViewModel { Bookmarks: { } bookmarks })
+            if (this.DataContext is MainViewModel mainViewModel)
             {
-                Save(bookmarks);
+                this.AskAndSave();
+                mainViewModel.Bookmarks = ImmutableList<Bookmark>.Empty;
                 e.Handled = true;
             }
         }
@@ -87,6 +88,7 @@
         {
             if (this.DataContext is MainViewModel mainViewModel)
             {
+                this.AskAndSave();
                 if (!Directory.Exists(BookmarksDirectory))
                 {
                     Directory.CreateDirectory(BookmarksDirectory);
@@ -118,14 +120,28 @@
 
         private void OnClose(object sender, ExecutedRoutedEventArgs e)
         {
-            if (this.DataContext is MainViewModel { Bookmarks: { } bookmarks } viewModel)
+            if (this.DataContext is MainViewModel viewModel)
             {
-                if (ShowMessageBox("Do you want to save current bookmarks first?", "Bookmarks", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                {
-                    Save(bookmarks);
-                }
-
+                this.AskAndSave();
                 viewModel.Bookmarks = null;
+                e.Handled = true;
+            }
+        }
+
+        private void OnCanSave(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { Bookmarks: { } })
+            {
+                e.CanExecute = true;
+                e.Handled = true;
+            }
+        }
+
+        private void OnSave(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { Bookmarks: { } bookmarks })
+            {
+                Save(bookmarks);
                 e.Handled = true;
             }
         }
