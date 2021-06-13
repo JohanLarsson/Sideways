@@ -75,8 +75,6 @@
             <Button Command="{Binding SellHalfCommand}"
                     Content="Sell half"
                     Focusable="False" />
-
-
         </StackPanel>
     </Grid>
 </UserControl>
