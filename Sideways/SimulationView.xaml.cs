@@ -29,6 +29,21 @@
             return MessageBox.Show(messageBoxText, caption, button, messageBoxImage);
         }
 
+        private void OnNew(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel mainViewModel)
+            {
+                if (mainViewModel is { Time: var time, Simulation: { } simulation } &&
+                    ShowMessageBox("Do you want to save current simulation first?", "Simulation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    Save(simulation, time);
+                }
+
+                mainViewModel.UpdateSimulation(Simulation.Create(mainViewModel.Time));
+                e.Handled = true;
+            }
+        }
+
         private static void Save(Simulation simulation, DateTimeOffset time, string? fileName = null)
         {
             if (!Directory.Exists(SimulationDirectory))

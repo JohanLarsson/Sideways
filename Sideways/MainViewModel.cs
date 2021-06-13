@@ -62,7 +62,6 @@
                      this.currentSymbol is { Candles: { } } symbol &&
                      this.simulation.Positions.Any(x => x.Symbol == symbol.Symbol));
 
-            this.StartNewSimulationCommand = new RelayCommand(_ => this.Simulation = Simulation.Create(this.Time));
             void Buy()
             {
                 var price = this.currentSymbol!.Candles!.Get(this.time, CandleInterval.Day).First().Close;
@@ -92,8 +91,6 @@
         public ICommand SellHalfCommand { get; }
 
         public ICommand SellAllCommand { get; }
-
-        public ICommand StartNewSimulationCommand { get; }
 
         public Downloader Downloader { get; }
 
