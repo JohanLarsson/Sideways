@@ -19,14 +19,14 @@
             <Style.Triggers>
                 <Trigger Property="WindowState" Value="Maximized">
                     <!--Hack around WPF weirdness, bonds not correct when maximized-->
-                    <Setter Property="Margin" Value="8" />
+                    <Setter Property="BorderThickness" Value="8" />
                     <Setter Property="BorderBrush" Value="Transparent" />
                 </Trigger>
             </Style.Triggers>
         </Style>
     </Window.Style>
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="32"
+        <WindowChrome CaptionHeight="24"
                       CornerRadius="0"
                       GlassFrameThickness="0"
                       NonClientFrameEdges="None"
@@ -39,7 +39,7 @@
     </Window.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="32" />
+            <RowDefinition Height="24" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid>
@@ -57,7 +57,7 @@
                            BasedOn="{StaticResource {x:Type Button}}"
                            TargetType="{x:Type Button}">
                         <Setter Property="Width" Value="40" />
-                        <Setter Property="Height" Value="32" />
+                        <Setter Property="Height" Value="24" />
                         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
                     </Style>
                 </StackPanel.Resources>
@@ -90,7 +90,7 @@
                            BasedOn="{StaticResource {x:Type Button}}"
                            TargetType="{x:Type Button}">
                         <Setter Property="Width" Value="40" />
-                        <Setter Property="Height" Value="32" />
+                        <Setter Property="Height" Value="24" />
                         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
                     </Style>
                 </StackPanel.Resources>
@@ -434,24 +434,6 @@
             </Grid>
 
             <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Watchlist" />
-                    <ListBox Grid.Row="1"
-                             sideways:Sort.Direction="Ascending"
-                             ItemsSource="{Binding WatchList}"
-                             SelectedItem="{Binding CurrentSymbolText}" />
-                </Grid>
             </Grid>
         </Grid>
     </Grid>
