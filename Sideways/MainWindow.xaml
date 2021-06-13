@@ -61,56 +61,34 @@
                         <Setter Property="Height" Value="24" />
                         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
                         <Setter Property="GroupName" Value="NavigationButtons" />
-                        <Setter Property="sideways:Navigate.Target" Value="{Binding ElementName=NavigationTarget}" />
                     </Style>
                 </StackPanel.Resources>
 
-                <RadioButton Content="b"
+                <RadioButton x:Name="BookmarksButton"
+                             Content="b"
                              Style="{StaticResource NavigationButton}"
-                             ToolTip="Bookmarks">
-                    <sideways:Navigate.Template>
-                        <DataTemplate>
-                            <sideways:BookmarksView DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext}" />
-                        </DataTemplate>
-                    </sideways:Navigate.Template>
-                </RadioButton>
+                             ToolTip="Bookmarks" />
 
-                <RadioButton Content="s"
+                <RadioButton x:Name="SimulationButton"
+                             Content="s"
                              Style="{StaticResource NavigationButton}"
-                             ToolTip="Simulation">
-                    <sideways:Navigate.Template>
-                        <DataTemplate>
-                            <sideways:SimulationView DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext}"/>
-                        </DataTemplate>
-                    </sideways:Navigate.Template>
+                             ToolTip="Simulation" />
+
+                <RadioButton Style="{StaticResource NavigationButton}" ToolTip="Downloader"
+                             x:Name="DownloadButton">
+                    <Path Data="{StaticResource ArrowDownGeometry}"
+                          Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}},
+                                         Path=Foreground}"
+                          Style="{StaticResource IconStyle}" />
                 </RadioButton>
 
-                <RadioButton Style="{StaticResource NavigationButton}" ToolTip="Downloader">
-                    <sideways:Navigate.Template>
-                        <DataTemplate>
-                            <sideways:DownloadView DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Downloader}" />
-                        </DataTemplate>
-                    </sideways:Navigate.Template>
-                    <RadioButton.Content>
-                        <Path Data="{StaticResource ArrowDownGeometry}"
-                              Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}},
-                                             Path=Foreground}"
-                              Style="{StaticResource IconStyle}" />
-                    </RadioButton.Content>
-                </RadioButton>
-
-                <RadioButton Style="{StaticResource NavigationButton}" ToolTip="Settings">
-                    <sideways:Navigate.Template>
-                        <DataTemplate>
-                            <sideways:SettingsView DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Settings}" />
-                        </DataTemplate>
-                    </sideways:Navigate.Template>
-                    <RadioButton.Content>
-                        <Path Data="{StaticResource CogsGeometry}"
-                              Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}},
-                                             Path=Foreground}"
-                              Style="{StaticResource IconStyle}" />
-                    </RadioButton.Content>
+                <RadioButton x:Name="SettingsButton"
+                             Style="{StaticResource NavigationButton}"
+                             ToolTip="Settings">
+                    <Path Data="{StaticResource CogsGeometry}"
+                          Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}},
+                                         Path=Foreground}"
+                          Style="{StaticResource IconStyle}" />
                 </RadioButton>
             </StackPanel>
 
@@ -444,7 +422,12 @@
                 </Grid>
             </Grid>
 
-            <ContentPresenter x:Name="NavigationTarget" Grid.Column="1" />
+            <Grid Grid.Column="1">
+                <sideways:SimulationView Visibility="{Binding ElementName=SimulationButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}"/>
+                <sideways:BookmarksView Visibility="{Binding ElementName=BookmarksButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+                <sideways:DownloadView DataContext="{Binding Downloader}" Visibility="{Binding ElementName=DownloadButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}"/>
+                <sideways:SettingsView DataContext="{Binding Settings}" Visibility="{Binding ElementName=SettingsButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}"/>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
