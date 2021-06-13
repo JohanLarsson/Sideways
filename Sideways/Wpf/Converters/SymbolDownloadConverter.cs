@@ -13,9 +13,10 @@
 
         public object? Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values is { Length: 2 })
+            if (values is { Length: 2 } &&
+                values[0] is string symbol)
             {
-                return ((ImmutableSortedSet<SymbolDownloads>)values[1]).SingleOrDefault(x => x.Symbol == (string)values[0]);
+                return ((ImmutableSortedSet<SymbolDownloads>)values[1]).SingleOrDefault(x => x.Symbol == symbol);
             }
 
             return null;
