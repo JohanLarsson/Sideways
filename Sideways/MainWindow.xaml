@@ -50,50 +50,46 @@
 
             <TextBlock Grid.Column="0" Text="Sideways" />
 
-            <StackPanel Grid.Column="1"
-                        Orientation="Horizontal">
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <StackPanel.Resources>
-                    <Style x:Key="ToggleRadioButton"
-                           BasedOn="{StaticResource {x:Type RadioButton}}"
-                           TargetType="{x:Type RadioButton}">
+                    <Style x:Key="WindowUtilityButton"
+                           BasedOn="{StaticResource {x:Type Button}}"
+                           TargetType="{x:Type Button}">
                         <Setter Property="Width" Value="40" />
                         <Setter Property="Height" Value="32" />
-                        <Setter Property="Focusable" Value="False" />
                         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
                     </Style>
                 </StackPanel.Resources>
 
                 <Button Command="Open"
-                        Focusable="False"
+                        Style="{StaticResource WindowUtilityButton}"
                         ToolTip="Downloader">
-                    <Button.Content>
-                        <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource IconStyle}" />
-                    </Button.Content>
+                    <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource IconStyle}" />
                     <Button.CommandBindings>
                         <CommandBinding Command="Open" Executed="OnOpenDownloader" />
                     </Button.CommandBindings>
                 </Button>
 
                 <Button Command="Open"
-                        Focusable="False"
+                        Style="{StaticResource WindowUtilityButton}"
                         ToolTip="Settings">
-                    <Button.Content>
-                        <Path Data="{StaticResource CogsGeometry}" Style="{StaticResource IconStyle}" />
-                    </Button.Content>
+                    <Path Data="{StaticResource CogsGeometry}" Style="{StaticResource IconStyle}" />
+
                     <Button.CommandBindings>
                         <CommandBinding Command="Open" Executed="OnOpenSettings" />
                     </Button.CommandBindings>
                 </Button>
             </StackPanel>
 
-            <StackPanel x:Name="WindowButtons" Grid.Column="2" Orientation="Horizontal">
+            <StackPanel x:Name="WindowButtons"
+                        Grid.Column="2"
+                        Orientation="Horizontal">
                 <StackPanel.Resources>
                     <Style x:Key="WindowButton"
                            BasedOn="{StaticResource {x:Type Button}}"
                            TargetType="{x:Type Button}">
                         <Setter Property="Width" Value="40" />
                         <Setter Property="Height" Value="32" />
-                        <Setter Property="Focusable" Value="False" />
                         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
                     </Style>
                 </StackPanel.Resources>
@@ -101,25 +97,19 @@
                 <Button x:Name="WindowMinimizeButton"
                         Click="OnClickMinimize"
                         Style="{StaticResource WindowButton}">
-                    <Button.Content>
-                        <Path Data="{StaticResource WindowMinimizeGeometry}" Style="{StaticResource IconStyle}" />
-                    </Button.Content>
+                    <Path Data="{StaticResource WindowMinimizeGeometry}" Style="{StaticResource IconStyle}" />
                 </Button>
 
                 <Button x:Name="WindowMaximizeRestoreButton"
                         Click="OnClickMaximizeRestore"
                         Style="{StaticResource WindowButton}">
-                    <Button.Content>
-                        <Path Data="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=WindowState, Converter={sideways:WindowStateToGeometryConverter MaximizeGeometry={StaticResource WindowMaximizeGeometry}, RestoreGeometry={StaticResource WindowRestoreGeometry}}}" Style="{StaticResource IconStyle}" />
-                    </Button.Content>
+                    <Path Data="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=WindowState, Converter={sideways:WindowStateToGeometryConverter MaximizeGeometry={StaticResource WindowMaximizeGeometry}, RestoreGeometry={StaticResource WindowRestoreGeometry}}}" Style="{StaticResource IconStyle}" />
                 </Button>
 
                 <Button x:Name="WindowCloseButton"
                         Click="OnClickClose"
                         Style="{StaticResource WindowButton}">
-                    <Button.Content>
-                        <Path Data="{StaticResource WindowCloseGeometry}" Style="{StaticResource IconStyle}" />
-                    </Button.Content>
+                    <Path Data="{StaticResource WindowCloseGeometry}" Style="{StaticResource IconStyle}" />
                 </Button>
             </StackPanel>
         </Grid>
@@ -266,12 +256,14 @@
                                       IsEditable="True"
                                       ItemsSource="{Binding Symbols}"
                                       SelectedItem="{Binding CurrentSymbolText}"
-                                      Text="{Binding CurrentSymbolText, UpdateSourceTrigger=Explicit}" />
+                                      Text="{Binding CurrentSymbolText,
+                                                     UpdateSourceTrigger=Explicit}" />
                             <Button d:DataContext="{d:DesignInstance Type=alphaVantage:SymbolDownloads}"
                                     Command="{Binding DownloadCommand}"
                                     Content="{Binding State.Status}"
                                     Focusable="False"
-                                    Visibility="{Binding ., Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+                                    Visibility="{Binding .,
+                                                         Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
                                 <Button.ContentTemplateSelector>
                                     <sideways:DownloadStatusTemplateSelector>
                                         <sideways:DownloadStatusTemplateSelector.Unknown>
@@ -416,14 +408,16 @@
                                 VerticalAlignment="Top"
                                 Orientation="Horizontal">
                         <StackPanel.Resources>
-                            <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type RadioButton}}">
+                            <Style BasedOn="{StaticResource {x:Type RadioButton}}" TargetType="{x:Type RadioButton}">
                                 <Setter Property="GroupName" Value="RightIntervals" />
                                 <Setter Property="MinWidth" Value="32" />
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type RadioButton}">
                                             <Border Background="{TemplateBinding Background}">
-                                                <TextBlock HorizontalAlignment="Center" Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" />
+                                                <TextBlock HorizontalAlignment="Center"
+                                                           Foreground="{TemplateBinding Foreground}"
+                                                           Text="{TemplateBinding Content}" />
                                             </Border>
                                         </ControlTemplate>
                                     </Setter.Value>

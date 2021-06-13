@@ -1,5 +1,5 @@
 {
-    "AttributesTolerance": 1,
+    "AttributesTolerance": 2,
     "KeepFirstAttributeOnSameLine": true,
     "MaxAttributeCharactersPerLine": 0,
     "MaxAttributesPerLine": 1,
@@ -31,9 +31,9 @@
     "ReorderVSM": 2,
     "ReorderGridChildren": true,
     "ReorderCanvasChildren": false,
-    "ReorderSetters": 0,
+    "ReorderSetters": 2,
     "FormatMarkupExtension": true,
-    "NoNewLineMarkupExtensions": "x:Bind, Binding",
+    "NoNewLineMarkupExtensions": "x:Bind",
     "ThicknessSeparator": 2,
     "ThicknessAttributes": "Margin, Padding, BorderThickness, ThumbnailClipMargin",
     "FormatOnSave": false,
