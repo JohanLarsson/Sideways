@@ -65,9 +65,13 @@
                 </StackPanel.Resources>
 
                 <RadioButton x:Name="BookmarksButton"
-                             Content="b"
                              Style="{StaticResource NavigationButton}"
-                             ToolTip="Bookmarks" />
+                             ToolTip="Bookmarks">
+                    <Path Data="{StaticResource BookmarkGeometry}"
+                          Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}},
+                                         Path=Foreground}"
+                          Style="{StaticResource IconStyle}" />
+                </RadioButton>
 
                 <RadioButton x:Name="SimulationButton"
                              Content="s"
