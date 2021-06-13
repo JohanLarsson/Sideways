@@ -18,8 +18,9 @@
             <Setter Property="BorderThickness" Value="1" />
             <Style.Triggers>
                 <Trigger Property="WindowState" Value="Maximized">
-                    <Setter Property="BorderThickness" Value="8" />
-                    <Setter Property="BorderBrush" Value="HotPink" />
+                    <!--Hack around WPF weirdness, bonds not correct when maximized-->
+                    <Setter Property="Margin" Value="8" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -450,71 +451,6 @@
                              sideways:Sort.Direction="Ascending"
                              ItemsSource="{Binding WatchList}"
                              SelectedItem="{Binding CurrentSymbolText}" />
-                </Grid>
-
-                <Grid Grid.Row="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Simulation" />
-                    <ListBox Grid.Row="1"
-                             ItemsSource="{Binding Simulation.Positions}"
-                             SelectedItem="{Binding SelectedPosition}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate DataType="{x:Type sideways:Position}">
-                                <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-
-                    <StackPanel Grid.Row="2" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.VisibleWhenNullElseCollapsed}}">
-                        <Button Command="{Binding StartNewSimulationCommand}"
-                                Content="New"
-                                Focusable="False" />
-
-                        <Button Command="Open"
-                                Content="Open"
-                                Focusable="False">
-                            <Button.CommandBindings>
-                                <CommandBinding Command="Open" Executed="OnOpenSimulation" />
-                            </Button.CommandBindings>
-                        </Button>
-                    </StackPanel>
-
-                    <StackPanel Grid.Row="2" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
-                        <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Simulation.Balance, StringFormat='#,#'}" />
-
-                        <Button Command="{Binding BuyCommand}"
-                                Content="Buy"
-                                Focusable="False" />
-
-                        <Button Command="{Binding SellAllCommand}"
-                                Content="Sell all"
-                                Focusable="False" />
-
-                        <Button Command="{Binding SellHalfCommand}"
-                                Content="Sell half"
-                                Focusable="False" />
-
-                        <Button Command="Save"
-                                Content="Save"
-                                Focusable="False">
-                            <Button.CommandBindings>
-                                <CommandBinding CanExecute="OnCanSaveSimulation"
-                                                Command="Save"
-                                                Executed="OnSaveSimulation" />
-                            </Button.CommandBindings>
-                        </Button>
-                        <Button Command="Close"
-                                Content="Close"
-                                Focusable="False">
-                            <Button.CommandBindings>
-                                <CommandBinding Command="Close" Executed="OnCloseSimulation" />
-                            </Button.CommandBindings>
-                        </Button>
-                    </StackPanel>
                 </Grid>
 
                 <Grid Grid.Row="3">
