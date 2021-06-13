@@ -45,12 +45,48 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0" Text="Sideways" />
 
-            <!--  Window buttons  -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style x:Key="ToggleRadioButton"
+                           BasedOn="{StaticResource {x:Type RadioButton}}"
+                           TargetType="{x:Type RadioButton}">
+                        <Setter Property="Width" Value="40" />
+                        <Setter Property="Height" Value="32" />
+                        <Setter Property="Focusable" Value="False" />
+                        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+                    </Style>
+                </StackPanel.Resources>
+
+                <Button Command="Open"
+                        Focusable="False"
+                        ToolTip="Downloader">
+                    <Button.Content>
+                        <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource IconStyle}" />
+                    </Button.Content>
+                    <Button.CommandBindings>
+                        <CommandBinding Command="Open" Executed="OnOpenDownloader" />
+                    </Button.CommandBindings>
+                </Button>
+
+                <Button Command="Open"
+                        Focusable="False"
+                        ToolTip="Settings">
+                    <Button.Content>
+                        <Path Data="{StaticResource CogsGeometry}" Style="{StaticResource IconStyle}" />
+                    </Button.Content>
+                    <Button.CommandBindings>
+                        <CommandBinding Command="Open" Executed="OnOpenSettings" />
+                    </Button.CommandBindings>
+                </Button>
+            </StackPanel>
+
+            <StackPanel x:Name="WindowButtons" Grid.Column="2" Orientation="Horizontal">
                 <StackPanel.Resources>
                     <Style x:Key="WindowButton"
                            BasedOn="{StaticResource {x:Type Button}}"
@@ -380,28 +416,18 @@
                                 VerticalAlignment="Top"
                                 Orientation="Horizontal">
                         <StackPanel.Resources>
-                            <Style TargetType="{x:Type RadioButton}">
+                            <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type RadioButton}}">
                                 <Setter Property="GroupName" Value="RightIntervals" />
-                                <Setter Property="Background" Value="Transparent" />
-                                <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Text}" />
                                 <Setter Property="MinWidth" Value="32" />
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type RadioButton}">
                                             <Border Background="{TemplateBinding Background}">
-                                                <TextBlock HorizontalAlignment="Center" Text="{TemplateBinding Content}" />
+                                                <TextBlock HorizontalAlignment="Center" Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" />
                                             </Border>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.EnabledText}" />
-                                    </Trigger>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedBackground}" />
-                                    </Trigger>
-                                </Style.Triggers>
                             </Style>
                         </StackPanel.Resources>
                         <RadioButton Content="h" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.Hour}}" />
@@ -419,32 +445,6 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-
-                <StackPanel Grid.Row="0"
-                            HorizontalAlignment="Right"
-                            Orientation="Horizontal">
-                    <Button Command="Open"
-                            Focusable="False"
-                            ToolTip="Downloader">
-                        <Button.Content>
-                            <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource IconStyle}" />
-                        </Button.Content>
-                        <Button.CommandBindings>
-                            <CommandBinding Command="Open" Executed="OnOpenDownloader" />
-                        </Button.CommandBindings>
-                    </Button>
-
-                    <Button Command="Open"
-                            Focusable="False"
-                            ToolTip="Settings">
-                        <Button.Content>
-                            <Path Data="{StaticResource CogsGeometry}" Style="{StaticResource IconStyle}" />
-                        </Button.Content>
-                        <Button.CommandBindings>
-                            <CommandBinding Command="Open" Executed="OnOpenSettings" />
-                        </Button.CommandBindings>
-                    </Button>
-                </StackPanel>
 
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>

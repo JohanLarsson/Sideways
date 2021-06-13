@@ -8,6 +8,7 @@
     using System.Windows.Media;
 
     [ValueConversion(typeof(WindowState), typeof(Geometry))]
+    [MarkupExtensionReturnType(typeof(WindowStateToGeometryConverterExtension))]
     public class WindowStateToGeometryConverterExtension : MarkupExtension, IValueConverter
     {
         public Geometry? MaximizeGeometry { get; set; }

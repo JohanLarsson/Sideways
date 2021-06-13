@@ -2,14 +2,46 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sideways="clr-namespace:Sideways">
     <Style TargetType="{x:Type ButtonBase}">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="{x:Null}" />
-        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.EnabledText}" />
+        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Text}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Padding" Value="1" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsEnabled" Value="True"></Condition>
+                    <Condition Property="IsMouseOver" Value="True"></Condition>
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedText}" />
+                    <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedBackground}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsEnabled" Value="True"></Condition>
+                    <Condition Property="IsPressed" Value="True"></Condition>
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="Background" Value="{x:Static sideways:Brushes.Pressed}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.DisabledText}" />
+                <Setter Property="TextElement.FontStyle" Value="Oblique" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style BasedOn="{StaticResource {x:Type ButtonBase}}" TargetType="{x:Type Button}">
+        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.EnabledText}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -26,22 +58,36 @@
                                           RecognizesAccessKey="True"
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="{x:Static sideways:Brushes.SelectedBackground}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="{x:Static sideways:Brushes.Pressed}" />
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.DisabledText}" />
-                            <Setter TargetName="contentPresenter" Property="TextElement.FontStyle" Value="Oblique" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <Style BasedOn="{StaticResource {x:Type ButtonBase}}" TargetType="{x:Type Button}" />
+    <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type ButtonBase}}">
+        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Text}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="true">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Focusable="False"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="{x:Static sideways:Brushes.SelectedText}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>
