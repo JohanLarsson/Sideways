@@ -6,7 +6,6 @@
              xmlns:sideways="clr-namespace:Sideways"
              d:DataContext="{d:DesignInstance sideways:MainViewModel}"
              d:DesignHeight="450"
-             d:DesignWidth="50"
              mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
