@@ -15,8 +15,6 @@
 
     public partial class MainWindow : Window
     {
-        private static readonly string BookmarksDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks");
-
         private DispatcherTimer? timer;
 
         public MainWindow()
@@ -100,39 +98,6 @@
             bmp.Render(this);
             Clipboard.SetImage(bmp);
             e.Handled = true;
-        }
-
-        private void OnOpenBookmarks(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (this.DataContext is MainViewModel mainViewModel)
-            {
-                if (!Directory.Exists(BookmarksDirectory))
-                {
-                    Directory.CreateDirectory(BookmarksDirectory);
-                }
-
-                var dialog = new OpenFileDialog
-                {
-                    InitialDirectory = BookmarksDirectory,
-                    Filter = "Bookmark files|*.bookmarks",
-                };
-
-                if (dialog.ShowDialog() is true)
-                {
-                    try
-                    {
-                        mainViewModel.Bookmarks = JsonSerializer.Deserialize<ImmutableList<Bookmark>>(File.ReadAllText(dialog.FileName));
-                    }
-#pragma warning disable CA1031 // Do not catch general exception types
-                    catch (Exception exception)
-#pragma warning restore CA1031 // Do not catch general exception types
-                    {
-                        MessageBox.Show(this, exception.Message, "Invalid bookmark file.");
-                    }
-
-                    e.Handled = true;
-                }
-            }
         }
 
         private void OnOpenDownloader(object sender, ExecutedRoutedEventArgs e)

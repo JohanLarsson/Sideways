@@ -66,7 +66,7 @@
             return MessageBox.Show(messageBoxText, caption, button, messageBoxImage);
         }
 
-        private void OnCanSaveSimulation(object sender, CanExecuteRoutedEventArgs e)
+        private void OnCanSave(object sender, CanExecuteRoutedEventArgs e)
         {
             if (this.DataContext is MainViewModel { Simulation: { } })
             {
@@ -75,7 +75,7 @@
             }
         }
 
-        private void OnSaveSimulation(object sender, ExecutedRoutedEventArgs e)
+        private void OnSave(object sender, ExecutedRoutedEventArgs e)
         {
             if (this.DataContext is MainViewModel { Time: var time, Simulation: { } simulation })
             {
@@ -84,21 +84,7 @@
             }
         }
 
-        private void OnCloseSimulation(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (this.DataContext is MainViewModel { Time: var time, Simulation: { } simulation } viewModel)
-            {
-                if (ShowMessageBox("Do you want to save current simulation first?", "Simulation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                {
-                    Save(simulation, DateTimeOffsetExtensions.Max(time, simulation.Time));
-                }
-
-                viewModel.UpdateSimulation(null);
-                e.Handled = true;
-            }
-        }
-
-        private void OnOpenSimulation(object sender, ExecutedRoutedEventArgs e)
+        private void OnOpen(object sender, ExecutedRoutedEventArgs e)
         {
             if (this.DataContext is MainViewModel mainViewModel)
             {
@@ -134,6 +120,20 @@
 
                     e.Handled = true;
                 }
+            }
+        }
+
+        private void OnClose(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { Time: var time, Simulation: { } simulation } viewModel)
+            {
+                if (ShowMessageBox("Do you want to save current simulation first?", "Simulation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    Save(simulation, DateTimeOffsetExtensions.Max(time, simulation.Time));
+                }
+
+                viewModel.UpdateSimulation(null);
+                e.Handled = true;
             }
         }
     }

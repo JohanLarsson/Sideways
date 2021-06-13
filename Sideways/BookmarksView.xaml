@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="Sideways.SimulationView"
+﻿<UserControl x:Class="Sideways.BookmarksView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sideways="clr-namespace:Sideways"
              d:DataContext="{d:DesignInstance sideways:MainViewModel}"
-             d:DesignHeight="400"
+             d:DesignHeight="450"
              d:DesignWidth="50"
              mc:Ignorable="d">
     <Grid>
@@ -14,9 +14,10 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
         <StackPanel Grid.Row="0">
-            <TextBlock Text="Simulation" />
-            <Button Command="{Binding StartNewSimulationCommand}" Content="New" />
+            <TextBlock Text="Bookmarks" />
+            <!--<Button Command="{Binding StartNewSimulationCommand}" Content="New" />-->
 
             <Button Command="Open" Content="Open">
                 <Button.CommandBindings>
@@ -24,55 +25,46 @@
                 </Button.CommandBindings>
             </Button>
 
-            <Button Command="Save"
+            <!--<Button Command="Save"
                     Content="Save"
-                    Visibility="{Binding Simulation,
+                    Visibility="{Binding Bookmarks,
                                          Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
                 <Button.CommandBindings>
-                    <CommandBinding CanExecute="OnCanSave"
+                    <CommandBinding CanExecute="OnCanSaveSimulation"
                                     Command="Save"
-                                    Executed="OnSave" />
+                                    Executed="OnSaveSimulation" />
                 </Button.CommandBindings>
             </Button>
 
             <Button Command="Close"
                     Content="Close"
-                    Visibility="{Binding Simulation,
+                    Visibility="{Binding Bookmarks,
                                          Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
                 <Button.CommandBindings>
-                    <CommandBinding Command="Close" Executed="OnClose" />
+                    <CommandBinding Command="Close" Executed="OnCloseSimulation" />
                 </Button.CommandBindings>
-            </Button>
+            </Button>-->
         </StackPanel>
 
-        <ListBox Grid.Row="1"
-                 ItemsSource="{Binding Simulation.Positions}"
-                 SelectedItem="{Binding SelectedPosition}"
-                 Visibility="{Binding Simulation,
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    Visibility="{Binding Bookmarks,
+                                         Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+            <TextBlock Text="Offset:" />
+            <TextBox MinWidth="30" Text="{Binding BookmarkOffset}" />
+        </StackPanel>
+
+        <ListBox Grid.Row="2"
+                 sideways:SelectorEx.Random="True"
+                 ItemsSource="{Binding Bookmarks}"
+                 SelectedItem="{Binding SelectedBookmark}"
+                 Visibility="{Binding Bookmarks,
                                       Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
             <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type sideways:Position}">
+                <DataTemplate DataType="{x:Type sideways:Bookmark}">
                     <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
-        <StackPanel Grid.Row="2" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
-            <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Simulation.Balance, StringFormat='#,#'}" />
-
-            <Button Command="{Binding BuyCommand}"
-                    Content="Buy"
-                    Focusable="False" />
-
-            <Button Command="{Binding SellAllCommand}"
-                    Content="Sell all"
-                    Focusable="False" />
-
-            <Button Command="{Binding SellHalfCommand}"
-                    Content="Sell half"
-                    Focusable="False" />
-
-
-        </StackPanel>
     </Grid>
 </UserControl>

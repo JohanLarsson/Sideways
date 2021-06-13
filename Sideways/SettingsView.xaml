@@ -10,30 +10,28 @@
              d:DesignWidth="800"
              mc:Ignorable="d">
     <Grid>
-        <GroupBox Header="AlphaVantage">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0"
-                           Grid.Column="0"
-                           Text="API key" />
-                <TextBox Grid.Row="0"
-                         Grid.Column="1"
-                         Text="{Binding AlphaVantage.ClientSettings.ApiKey}" />
-                <TextBlock Grid.Row="1"
-                           Grid.Column="0"
-                           Text="Max calls per minute" />
-                <TextBox Grid.Row="1"
-                         Grid.Column="1"
-                         Text="{Binding AlphaVantage.ClientSettings.MaxCallsPerMinute}" />
-            </Grid>
-        </GroupBox>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="AlphaVantage"></TextBlock>
+        <TextBlock Grid.Row="1"
+                   Grid.Column="0"
+                   Text="API key" />
+        <TextBox Grid.Row="1"
+                 Grid.Column="1"
+                 Text="{Binding AlphaVantage.ClientSettings.ApiKey}" />
+        <TextBlock Grid.Row="2"
+                   Grid.Column="0"
+                   Text="Max calls per minute" />
+        <TextBox Grid.Row="2"
+                 Grid.Column="1"
+                 Text="{Binding AlphaVantage.ClientSettings.MaxCallsPerMinute}" />
     </Grid>
 </UserControl>
