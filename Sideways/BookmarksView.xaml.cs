@@ -141,7 +141,7 @@
             }
         }
 
-        private void OnCanSave(object sender, CanExecuteRoutedEventArgs e)
+        private void OnCanSaveOrClose(object sender, CanExecuteRoutedEventArgs e)
         {
             if (this.DataContext is MainViewModel { Bookmarks: { } })
             {

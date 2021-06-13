@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0">
-            <TextBlock Text="Bookmarks" HorizontalAlignment="Center"/>
+            <TextBlock HorizontalAlignment="Center" Text="Bookmarks" />
             <Button Command="New" Content="New">
                 <Button.CommandBindings>
                     <CommandBinding Command="New" Executed="OnNew" />
@@ -29,23 +29,19 @@
                 </Button.CommandBindings>
             </Button>
 
-            <Button Command="Save"
-                    Content="Save"
-                    Visibility="{Binding Bookmarks,
-                                         Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+            <Button Command="Save" Content="Save">
                 <Button.CommandBindings>
-                    <CommandBinding CanExecute="OnCanSave"
+                    <CommandBinding CanExecute="OnCanSaveOrClose"
                                     Command="Save"
                                     Executed="OnSave" />
                 </Button.CommandBindings>
             </Button>
 
-            <Button Command="Close"
-                    Content="Close"
-                    Visibility="{Binding Bookmarks,
-                                         Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+            <Button Command="Close" Content="Close">
                 <Button.CommandBindings>
-                    <CommandBinding Command="Close" Executed="OnClose" />
+                    <CommandBinding CanExecute="OnCanSaveOrClose"
+                                    Command="Close"
+                                    Executed="OnClose" />
                 </Button.CommandBindings>
             </Button>
         </StackPanel>

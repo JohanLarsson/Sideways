@@ -27,23 +27,17 @@
                 </Button.CommandBindings>
             </Button>
 
-            <Button Command="Save"
-                    Content="Save"
-                    Visibility="{Binding Simulation,
-                                         Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+            <Button Command="Save" Content="Save">
                 <Button.CommandBindings>
-                    <CommandBinding CanExecute="OnCanSave"
+                    <CommandBinding CanExecute="OnCanSaveOrClose"
                                     Command="Save"
                                     Executed="OnSave" />
                 </Button.CommandBindings>
             </Button>
 
-            <Button Command="Close"
-                    Content="Close"
-                    Visibility="{Binding Simulation,
-                                         Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+            <Button Command="Close" Content="Close">
                 <Button.CommandBindings>
-                    <CommandBinding Command="Close" Executed="OnClose" />
+                    <CommandBinding Command="Close" CanExecute="OnCanSaveOrClose" Executed="OnClose" />
                 </Button.CommandBindings>
             </Button>
         </StackPanel>
