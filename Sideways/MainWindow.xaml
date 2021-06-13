@@ -434,8 +434,7 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Column="1">
-            </Grid>
+            <ContentPresenter Grid.Column="1" />
         </Grid>
     </Grid>
 </Window>
