@@ -13,474 +13,549 @@
         TextElement.Foreground="{x:Static sideways:Brushes.Text}"
         WindowState="Maximized"
         mc:Ignorable="d">
+    <Window.Style>
+        <Style TargetType="{x:Type Window}">
+            <Setter Property="BorderThickness" Value="1" />
+            <Style.Triggers>
+                <Trigger Property="WindowState" Value="Maximized">
+                    <Setter Property="BorderThickness" Value="8" />
+                    <Setter Property="BorderBrush" Value="HotPink" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      CornerRadius="0"
+                      GlassFrameThickness="0"
+                      NonClientFrameEdges="None"
+                      ResizeBorderThickness="4"
+                      UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
     <Window.CommandBindings>
         <CommandBinding Command="Copy" Executed="OnCopy" />
     </Window.CommandBindings>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-
-        <Grid x:Name="Charts" sideways:Chart.BookmarkTime="{Binding SelectedBookmark.Time, FallbackValue={x:Null}}">
-            <Grid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Download" Command="Open">
-                        <MenuItem.Icon>
-                            <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource IconStyle}" />
-                        </MenuItem.Icon>
-                        <MenuItem.CommandBindings>
-                            <CommandBinding Command="Open" Executed="OnOpenDownloader" />
-                        </MenuItem.CommandBindings>
-                    </MenuItem>
-
-                    <MenuItem Header="Settings" Command="Open">
-                        <MenuItem.Icon>
-                            <Path Data="{StaticResource CogsGeometry}" Style="{StaticResource IconStyle}" />
-                        </MenuItem.Icon>
-                        <MenuItem.CommandBindings>
-                            <CommandBinding Command="Open" Executed="OnOpenSettings" />
-                        </MenuItem.CommandBindings>
-                    </MenuItem>
-                </ContextMenu>
-            </Grid.ContextMenu>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Grid x:Name="LeftPane" Grid.Column="0">
-                <TextBlock HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
-                           Foreground="{x:Static sideways:Brushes.Gray}"
-                           Text="W" />
-                <sideways:Chart x:Name="LeftChart"
-                                CandleInterval="Week"
-                                ExtraCandles="20"
-                                ItemsSource="{Binding CurrentSymbol.Candles}"
-                                Time="{Binding Time}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="5*" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Sideways" />
 
-                        <sideways:ChartBackground Grid.Row="0"
-                                                  Grid.RowSpan="3"
-                                                  Grid.Column="0" />
+            <!--  Window buttons  -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style x:Key="WindowButton"
+                           BasedOn="{StaticResource {x:Type Button}}"
+                           TargetType="{x:Type Button}">
+                        <Setter Property="Width" Value="40" />
+                        <Setter Property="Height" Value="32" />
+                        <Setter Property="Focusable" Value="False" />
+                        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+                    </Style>
+                </StackPanel.Resources>
 
-                        <Grid Grid.Row="0" Grid.Column="0">
+                <Button x:Name="WindowMinimizeButton"
+                        Click="OnClickMinimize"
+                        Style="{StaticResource WindowButton}">
+                    <Button.Content>
+                        <Path Data="{StaticResource WindowMinimizeGeometry}" Style="{StaticResource IconStyle}" />
+                    </Button.Content>
+                </Button>
 
-                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
+                <Button x:Name="WindowMaximizeRestoreButton"
+                        Click="OnClickMaximizeRestore"
+                        Style="{StaticResource WindowButton}">
+                    <Button.Content>
+                        <Path Data="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=WindowState, Converter={sideways:WindowStateToGeometryConverter MaximizeGeometry={StaticResource WindowMaximizeGeometry}, RestoreGeometry={StaticResource WindowRestoreGeometry}}}" Style="{StaticResource IconStyle}" />
+                    </Button.Content>
+                </Button>
 
-                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
+                <Button x:Name="WindowCloseButton"
+                        Click="OnClickClose"
+                        Style="{StaticResource WindowButton}">
+                    <Button.Content>
+                        <Path Data="{StaticResource WindowCloseGeometry}" Style="{StaticResource IconStyle}" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
 
-                            <sideways:CandleSticks />
-                            <sideways:CrossHair />
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="Charts" sideways:Chart.BookmarkTime="{Binding SelectedBookmark.Time, FallbackValue={x:Null}}">
+                <Grid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Open" Header="Download">
+                            <MenuItem.Icon>
+                                <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource IconStyle}" />
+                            </MenuItem.Icon>
+                            <MenuItem.CommandBindings>
+                                <CommandBinding Command="Open" Executed="OnOpenDownloader" />
+                            </MenuItem.CommandBindings>
+                        </MenuItem>
+
+                        <MenuItem Command="Open" Header="Settings">
+                            <MenuItem.Icon>
+                                <Path Data="{StaticResource CogsGeometry}" Style="{StaticResource IconStyle}" />
+                            </MenuItem.Icon>
+                            <MenuItem.CommandBindings>
+                                <CommandBinding Command="Open" Executed="OnOpenSettings" />
+                            </MenuItem.CommandBindings>
+                        </MenuItem>
+                    </ContextMenu>
+                </Grid.ContextMenu>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid x:Name="LeftPane" Grid.Column="0">
+                    <TextBlock HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               Foreground="{x:Static sideways:Brushes.Gray}"
+                               Text="W" />
+                    <sideways:Chart x:Name="LeftChart"
+                                    CandleInterval="Week"
+                                    ExtraCandles="20"
+                                    ItemsSource="{Binding CurrentSymbol.Candles}"
+                                    Time="{Binding Time}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <sideways:ChartBackground Grid.Row="0"
+                                                      Grid.RowSpan="3"
+                                                      Grid.Column="0" />
+
+                            <Grid Grid.Row="0" Grid.Column="0">
+
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
+
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
+
+                                <sideways:CandleSticks />
+                                <sideways:CrossHair />
+                            </Grid>
+
+                            <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+
+                            <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+
+                            <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
                         </Grid>
+                    </sideways:Chart>
+                </Grid>
 
-                        <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+                <GridSplitter Grid.Column="1"
+                              Focusable="False"
+                              Style="{StaticResource VerticalAxisGridSplitter}" />
 
-                        <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+                <Grid x:Name="MiddlePane" Grid.Column="2">
+                    <sideways:Chart x:Name="MiddleChart"
+                                    CandleInterval="Day"
+                                    ExtraCandles="200"
+                                    ItemsSource="{Binding CurrentSymbol.Candles}"
+                                    Time="{Binding Time}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                        <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
-                    </Grid>
-                </sideways:Chart>
-            </Grid>
+                            <sideways:ChartBackground Grid.Row="0"
+                                                      Grid.RowSpan="3"
+                                                      Grid.Column="0" />
 
-            <GridSplitter Grid.Column="1"
-                          Focusable="False"
-                          Style="{StaticResource VerticalAxisGridSplitter}" />
+                            <Grid Grid.Row="0" Grid.Column="0">
 
-            <Grid x:Name="MiddlePane" Grid.Column="2">
-                <sideways:Chart x:Name="MiddleChart"
-                                CandleInterval="Day"
-                                ExtraCandles="200"
-                                ItemsSource="{Binding CurrentSymbol.Candles}"
-                                Time="{Binding Time}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="5*" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
 
-                        <sideways:ChartBackground Grid.Row="0"
-                                                  Grid.RowSpan="3"
-                                                  Grid.Column="0" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
 
-                        <Grid Grid.Row="0" Grid.Column="0">
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Red}" Period="50" />
 
-                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Orange}" Period="100" />
 
-                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
+                                <sideways:MovingAverage Brush="CadetBlue" Period="150" />
 
-                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Red}" Period="50" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Green}" Period="200" />
 
-                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Orange}" Period="100" />
+                                <sideways:CandleSticks />
+                                <sideways:CrossHair />
+                            </Grid>
 
-                            <sideways:MovingAverage Brush="CadetBlue" Period="150" />
+                            <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
 
-                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Green}" Period="200" />
+                            <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
 
-                            <sideways:CandleSticks />
-                            <sideways:CrossHair />
+                            <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
                         </Grid>
+                    </sideways:Chart>
 
-                        <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+                    <StackPanel Margin="10,10">
+                        <StackPanel Orientation="Horizontal">
+                            <ComboBox x:Name="SymbolComboBox"
+                                      HorizontalAlignment="Left"
+                                      sideways:ComboBoxEx.IsSymbolSearch="True"
+                                      sideways:SelectorEx.Random="True"
+                                      FontSize="24"
+                                      Foreground="{x:Static sideways:Brushes.Gray}"
+                                      IsEditable="True"
+                                      ItemsSource="{Binding Symbols}"
+                                      SelectedItem="{Binding CurrentSymbolText}"
+                                      Text="{Binding CurrentSymbolText, UpdateSourceTrigger=Explicit}" />
+                            <Button d:DataContext="{d:DesignInstance Type=alphaVantage:SymbolDownloads}"
+                                    Command="{Binding DownloadCommand}"
+                                    Content="{Binding State.Status}"
+                                    Focusable="False"
+                                    Visibility="{Binding ., Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+                                <Button.ContentTemplateSelector>
+                                    <sideways:DownloadStatusTemplateSelector>
+                                        <sideways:DownloadStatusTemplateSelector.Unknown>
+                                            <DataTemplate>
+                                                <Path Data="{StaticResource QuestionGeometry}"
+                                                      Fill="{x:Static sideways:Brushes.DisabledText}"
+                                                      Style="{StaticResource IconStyle}" />
+                                            </DataTemplate>
+                                        </sideways:DownloadStatusTemplateSelector.Unknown>
 
-                        <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
-
-                        <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
-                    </Grid>
-                </sideways:Chart>
-
-                <StackPanel Margin="10,10">
-                    <StackPanel Orientation="Horizontal">
-                        <ComboBox x:Name="SymbolComboBox"
-                                  HorizontalAlignment="Left"
-                                  sideways:ComboBoxEx.IsSymbolSearch="True"
-                                  sideways:SelectorEx.Random="True"
-                                  FontSize="24"
-                                  Foreground="{x:Static sideways:Brushes.Gray}"
-                                  IsEditable="True"
-                                  ItemsSource="{Binding Symbols}"
-                                  SelectedItem="{Binding CurrentSymbolText}"
-                                  Text="{Binding CurrentSymbolText, UpdateSourceTrigger=Explicit}" />
-                        <Button d:DataContext="{d:DesignInstance Type=alphaVantage:SymbolDownloads}"
-                                Command="{Binding DownloadCommand}"
-                                Content="{Binding State.Status}"
-                                Focusable="False"
-                                Visibility="{Binding ., Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
-                            <Button.ContentTemplateSelector>
-                                <sideways:DownloadStatusTemplateSelector>
-                                    <sideways:DownloadStatusTemplateSelector.Unknown>
-                                        <DataTemplate>
-                                            <Path Data="{StaticResource QuestionGeometry}"
-                                                  Fill="{x:Static sideways:Brushes.DisabledText}"
-                                                  Style="{StaticResource IconStyle}" />
-                                        </DataTemplate>
-                                    </sideways:DownloadStatusTemplateSelector.Unknown>
-
-                                    <sideways:DownloadStatusTemplateSelector.Waiting>
-                                        <DataTemplate>
-                                            <Path Data="{StaticResource ArrowDownGeometry}"
-                                                  Fill="{x:Static sideways:Brushes.Pressed}"
-                                                  Style="{StaticResource IconStyle}" />
-                                        </DataTemplate>
-                                    </sideways:DownloadStatusTemplateSelector.Waiting>
-
-                                    <sideways:DownloadStatusTemplateSelector.Running>
-                                        <DataTemplate>
-                                            <Grid>
+                                        <sideways:DownloadStatusTemplateSelector.Waiting>
+                                            <DataTemplate>
                                                 <Path Data="{StaticResource ArrowDownGeometry}"
                                                       Fill="{x:Static sideways:Brushes.Pressed}"
                                                       Style="{StaticResource IconStyle}" />
+                                            </DataTemplate>
+                                        </sideways:DownloadStatusTemplateSelector.Waiting>
 
-                                                <Rectangle Width="3"
-                                                           Height="3"
-                                                           sideways:Icon.IsPulsing="True"
-                                                           Fill="{x:Static sideways:Brushes.DarkGray}"
-                                                           Style="{StaticResource IconStyle}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </sideways:DownloadStatusTemplateSelector.Running>
+                                        <sideways:DownloadStatusTemplateSelector.Running>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Path Data="{StaticResource ArrowDownGeometry}"
+                                                          Fill="{x:Static sideways:Brushes.Pressed}"
+                                                          Style="{StaticResource IconStyle}" />
 
-                                    <sideways:DownloadStatusTemplateSelector.Completed>
-                                        <DataTemplate>
-                                            <Path Data="{StaticResource CheckGeometry}"
-                                                  Fill="{x:Static sideways:Brushes.Green}"
-                                                  Style="{StaticResource IconStyle}" />
-                                        </DataTemplate>
-                                    </sideways:DownloadStatusTemplateSelector.Completed>
+                                                    <Rectangle Width="3"
+                                                               Height="3"
+                                                               sideways:Icon.IsPulsing="True"
+                                                               Fill="{x:Static sideways:Brushes.DarkGray}"
+                                                               Style="{StaticResource IconStyle}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </sideways:DownloadStatusTemplateSelector.Running>
 
-                                    <sideways:DownloadStatusTemplateSelector.Error>
-                                        <DataTemplate>
-                                            <Path Margin="1"
-                                                  Data="{StaticResource CrossGeometry}"
-                                                  Fill="{x:Static sideways:Brushes.Red}"
-                                                  Style="{StaticResource IconStyle}" />
-                                        </DataTemplate>
-                                    </sideways:DownloadStatusTemplateSelector.Error>
-                                </sideways:DownloadStatusTemplateSelector>
-                            </Button.ContentTemplateSelector>
-                            <Button.DataContext>
-                                <MultiBinding Converter="{x:Static sideways:SymbolDownloadConverter.Default}">
-                                    <Binding Path="CurrentSymbol.Symbol" />
-                                    <Binding Path="Downloader.SymbolDownloads" />
+                                        <sideways:DownloadStatusTemplateSelector.Completed>
+                                            <DataTemplate>
+                                                <Path Data="{StaticResource CheckGeometry}"
+                                                      Fill="{x:Static sideways:Brushes.Green}"
+                                                      Style="{StaticResource IconStyle}" />
+                                            </DataTemplate>
+                                        </sideways:DownloadStatusTemplateSelector.Completed>
+
+                                        <sideways:DownloadStatusTemplateSelector.Error>
+                                            <DataTemplate>
+                                                <Path Margin="1"
+                                                      Data="{StaticResource CrossGeometry}"
+                                                      Fill="{x:Static sideways:Brushes.Red}"
+                                                      Style="{StaticResource IconStyle}" />
+                                            </DataTemplate>
+                                        </sideways:DownloadStatusTemplateSelector.Error>
+                                    </sideways:DownloadStatusTemplateSelector>
+                                </Button.ContentTemplateSelector>
+                                <Button.DataContext>
+                                    <MultiBinding Converter="{x:Static sideways:SymbolDownloadConverter.Default}">
+                                        <Binding Path="CurrentSymbol.Symbol" />
+                                        <Binding Path="Downloader.SymbolDownloads" />
+                                    </MultiBinding>
+                                </Button.DataContext>
+                            </Button>
+                        </StackPanel>
+
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{x:Static sideways:AdrConverter.Default}" StringFormat="ADR {0:F1}%">
+                                    <Binding ElementName="MiddleChart" Path="Candles" />
+                                    <Binding ElementName="MiddleChart" Path="Time" />
+                                    <Binding ElementName="MiddleChart" Path="PriceRange" />
                                 </MultiBinding>
-                            </Button.DataContext>
+                            </TextBlock.Text>
+                        </TextBlock>
+
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{x:Static sideways:AtrConverter.Default}" StringFormat="ATR {0:F1}$">
+                                    <Binding ElementName="MiddleChart" Path="Candles" />
+                                    <Binding ElementName="MiddleChart" Path="Time" />
+                                    <Binding ElementName="MiddleChart" Path="PriceRange" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{x:Static sideways:AverageDollarVolumeConverter.Default}" StringFormat="A$V {0:##,#0} M">
+                                    <Binding ElementName="MiddleChart" Path="Candles" />
+                                    <Binding ElementName="MiddleChart" Path="Time" />
+                                    <Binding ElementName="MiddleChart" Path="PriceRange" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+
+                        <TextBlock Text="{Binding Time, StringFormat='f'}" />
+                        <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding CurrentSymbol.Exception.Message, FallbackValue=''}" />
+                    </StackPanel>
+                </Grid>
+
+                <GridSplitter Grid.Column="3"
+                              Focusable="False"
+                              Style="{StaticResource VerticalAxisGridSplitter}" />
+
+                <Grid x:Name="RightPane" Grid.Column="4">
+                    <sideways:Chart x:Name="RightChart"
+                                    CandleInterval="Hour"
+                                    ExtraCandles="20"
+                                    ItemsSource="{Binding CurrentSymbol.Candles}"
+                                    Time="{Binding Time}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <sideways:ChartBackground Grid.Row="0"
+                                                      Grid.RowSpan="3"
+                                                      Grid.Column="0" />
+
+                            <Grid Grid.Row="0" Grid.Column="0">
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
+
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
+
+                                <sideways:CandleSticks />
+
+                                <sideways:CrossHair />
+                            </Grid>
+
+                            <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+
+                            <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+
+                            <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
+                        </Grid>
+                    </sideways:Chart>
+                    <StackPanel x:Name="IntradayIntervals"
+                                Margin="12,12"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Style TargetType="{x:Type RadioButton}">
+                                <Setter Property="GroupName" Value="RightIntervals" />
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Text}" />
+                                <Setter Property="MinWidth" Value="32" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type RadioButton}">
+                                            <Border Background="{TemplateBinding Background}">
+                                                <TextBlock HorizontalAlignment="Center" Text="{TemplateBinding Content}" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.EnabledText}" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedBackground}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Resources>
+                        <RadioButton Content="h" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.Hour}}" />
+                        <RadioButton Content="15 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.FifteenMinutes}}" />
+                        <RadioButton Content="5 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.FiveMinutes}}" />
+                        <RadioButton Content="1 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.Minute}}" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                    <Button Command="Open"
+                            Focusable="False"
+                            ToolTip="Downloader">
+                        <Button.Content>
+                            <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource IconStyle}" />
+                        </Button.Content>
+                        <Button.CommandBindings>
+                            <CommandBinding Command="Open" Executed="OnOpenDownloader" />
+                        </Button.CommandBindings>
+                    </Button>
+
+                    <Button Command="Open"
+                            Focusable="False"
+                            ToolTip="Settings">
+                        <Button.Content>
+                            <Path Data="{StaticResource CogsGeometry}" Style="{StaticResource IconStyle}" />
+                        </Button.Content>
+                        <Button.CommandBindings>
+                            <CommandBinding Command="Open" Executed="OnOpenSettings" />
+                        </Button.CommandBindings>
+                    </Button>
+                </StackPanel>
+
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Watchlist" />
+                    <ListBox Grid.Row="1"
+                             sideways:Sort.Direction="Ascending"
+                             ItemsSource="{Binding WatchList}"
+                             SelectedItem="{Binding CurrentSymbolText}" />
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Simulation" />
+                    <ListBox Grid.Row="1"
+                             ItemsSource="{Binding Simulation.Positions}"
+                             SelectedItem="{Binding SelectedPosition}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type sideways:Position}">
+                                <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel Grid.Row="2" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.VisibleWhenNullElseCollapsed}}">
+                        <Button Command="{Binding StartNewSimulationCommand}"
+                                Content="New"
+                                Focusable="False" />
+
+                        <Button Command="Open"
+                                Content="Open"
+                                Focusable="False">
+                            <Button.CommandBindings>
+                                <CommandBinding Command="Open" Executed="OnOpenSimulation" />
+                            </Button.CommandBindings>
                         </Button>
                     </StackPanel>
 
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding Converter="{x:Static sideways:AdrConverter.Default}" StringFormat="ADR {0:F1}%">
-                                <Binding ElementName="MiddleChart" Path="Candles" />
-                                <Binding ElementName="MiddleChart" Path="Time" />
-                                <Binding ElementName="MiddleChart" Path="PriceRange" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
+                    <StackPanel Grid.Row="2" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+                        <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Simulation.Balance, StringFormat='#,#'}" />
 
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding Converter="{x:Static sideways:AtrConverter.Default}" StringFormat="ATR {0:F1}$">
-                                <Binding ElementName="MiddleChart" Path="Candles" />
-                                <Binding ElementName="MiddleChart" Path="Time" />
-                                <Binding ElementName="MiddleChart" Path="PriceRange" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
+                        <Button Command="{Binding BuyCommand}"
+                                Content="Buy"
+                                Focusable="False" />
 
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding Converter="{x:Static sideways:AverageDollarVolumeConverter.Default}" StringFormat="A$V {0:##,#0} M">
-                                <Binding ElementName="MiddleChart" Path="Candles" />
-                                <Binding ElementName="MiddleChart" Path="Time" />
-                                <Binding ElementName="MiddleChart" Path="PriceRange" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
+                        <Button Command="{Binding SellAllCommand}"
+                                Content="Sell all"
+                                Focusable="False" />
 
-                    <TextBlock Text="{Binding Time, StringFormat='f'}" />
-                    <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding CurrentSymbol.Exception.Message, FallbackValue=''}" />
-                </StackPanel>
-            </Grid>
+                        <Button Command="{Binding SellHalfCommand}"
+                                Content="Sell half"
+                                Focusable="False" />
 
-            <GridSplitter Grid.Column="3"
-                          Focusable="False"
-                          Style="{StaticResource VerticalAxisGridSplitter}" />
+                        <Button Command="Save"
+                                Content="Save"
+                                Focusable="False">
+                            <Button.CommandBindings>
+                                <CommandBinding CanExecute="OnCanSaveSimulation"
+                                                Command="Save"
+                                                Executed="OnSaveSimulation" />
+                            </Button.CommandBindings>
+                        </Button>
+                        <Button Command="Close"
+                                Content="Close"
+                                Focusable="False">
+                            <Button.CommandBindings>
+                                <CommandBinding Command="Close" Executed="OnCloseSimulation" />
+                            </Button.CommandBindings>
+                        </Button>
+                    </StackPanel>
+                </Grid>
 
-            <Grid x:Name="RightPane" Grid.Column="4">
-                <sideways:Chart x:Name="RightChart"
-                                CandleInterval="Hour"
-                                ExtraCandles="20"
-                                ItemsSource="{Binding CurrentSymbol.Candles}"
-                                Time="{Binding Time}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="5*" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                <Grid Grid.Row="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Bookmarks" />
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <TextBlock Text="Offset:" />
+                        <TextBox MinWidth="30" Text="{Binding BookmarkOffset}" />
+                    </StackPanel>
+                    <ListBox Grid.Row="2"
+                             sideways:SelectorEx.Random="True"
+                             ItemsSource="{Binding Bookmarks}"
+                             SelectedItem="{Binding SelectedBookmark}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type sideways:Bookmark}">
+                                <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
 
-                        <sideways:ChartBackground Grid.Row="0"
-                                                  Grid.RowSpan="3"
-                                                  Grid.Column="0" />
-
-                        <Grid Grid.Row="0" Grid.Column="0">
-                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
-
-                            <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
-
-                            <sideways:CandleSticks />
-
-                            <sideways:CrossHair />
-                        </Grid>
-
-                        <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
-
-                        <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
-
-                        <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
-                    </Grid>
-                </sideways:Chart>
-                <StackPanel x:Name="IntradayIntervals"
-                            Margin="12,12"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Orientation="Horizontal">
-                    <StackPanel.Resources>
-                        <Style TargetType="{x:Type RadioButton}">
-                            <Setter Property="GroupName" Value="RightIntervals" />
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Text}" />
-                            <Setter Property="MinWidth" Value="32" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type RadioButton}">
-                                        <Border Background="{TemplateBinding Background}">
-                                            <TextBlock HorizontalAlignment="Center" Text="{TemplateBinding Content}" />
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <Trigger Property="IsChecked" Value="True">
-                                    <Setter Property="Foreground" Value="{x:Static sideways:Brushes.EnabledText}" />
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedBackground}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </StackPanel.Resources>
-                    <RadioButton Content="h" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.Hour}}" />
-                    <RadioButton Content="15 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.FifteenMinutes}}" />
-                    <RadioButton Content="5 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.FiveMinutes}}" />
-                    <RadioButton Content="1 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.Minute}}" />
-                </StackPanel>
-            </Grid>
-        </Grid>
-
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Command="Open"
-                        Focusable="False"
-                        ToolTip="Downloader">
-                    <Button.Content>
-                        <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource IconStyle}" />
-                    </Button.Content>
-                    <Button.CommandBindings>
-                        <CommandBinding Command="Open" Executed="OnOpenDownloader" />
-                    </Button.CommandBindings>
-                </Button>
-
-                <Button Command="Open"
-                        ToolTip="Settings"
-                        Focusable="False">
-                    <Button.Content>
-                        <Path Data="{StaticResource CogsGeometry}" Style="{StaticResource IconStyle}" />
-                    </Button.Content>
-                    <Button.CommandBindings>
-                        <CommandBinding Command="Open" Executed="OnOpenSettings" />
-                    </Button.CommandBindings>
-                </Button>
-            </StackPanel>
-
-            <Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <TextBlock Text="Watchlist" />
-                <ListBox Grid.Row="1"
-                         sideways:Sort.Direction="Ascending"
-                         ItemsSource="{Binding WatchList}"
-                         SelectedItem="{Binding CurrentSymbolText}" />
-            </Grid>
-
-            <Grid Grid.Row="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <TextBlock Text="Simulation" />
-                <ListBox Grid.Row="1"
-                         ItemsSource="{Binding Simulation.Positions}"
-                         SelectedItem="{Binding SelectedPosition}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type sideways:Position}">
-                            <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-
-                <StackPanel Grid.Row="2" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.VisibleWhenNullElseCollapsed}}">
-                    <Button Command="{Binding StartNewSimulationCommand}"
-                            Content="New"
-                            Focusable="False" />
-
-                    <Button Command="Open"
-                            Content="Open"
-                            Focusable="False">
-                        <Button.CommandBindings>
-                            <CommandBinding Command="Open" Executed="OnOpenSimulation" />
-                        </Button.CommandBindings>
-                    </Button>
-                </StackPanel>
-
-                <StackPanel Grid.Row="2" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
-                    <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Simulation.Balance, StringFormat='#,#'}" />
-
-                    <Button Command="{Binding BuyCommand}"
-                            Content="Buy"
-                            Focusable="False" />
-
-                    <Button Command="{Binding SellAllCommand}"
-                            Content="Sell all"
-                            Focusable="False" />
-
-                    <Button Command="{Binding SellHalfCommand}"
-                            Content="Sell half"
-                            Focusable="False" />
-
-                    <Button Command="Save"
-                            Content="Save"
-                            Focusable="False">
-                        <Button.CommandBindings>
-                            <CommandBinding CanExecute="OnCanSaveSimulation"
-                                            Command="Save"
-                                            Executed="OnSaveSimulation" />
-                        </Button.CommandBindings>
-                    </Button>
-                    <Button Command="Close"
-                            Content="Close"
-                            Focusable="False">
-                        <Button.CommandBindings>
-                            <CommandBinding Command="Close" Executed="OnCloseSimulation" />
-                        </Button.CommandBindings>
-                    </Button>
-                </StackPanel>
-            </Grid>
-
-            <Grid Grid.Row="3">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <TextBlock Text="Bookmarks" />
-                <StackPanel Grid.Row="1" Orientation="Horizontal">
-                    <TextBlock Text="Offset:" />
-                    <TextBox MinWidth="30" Text="{Binding BookmarkOffset}" />
-                </StackPanel>
-                <ListBox Grid.Row="2"
-                         sideways:SelectorEx.Random="True"
-                         ItemsSource="{Binding Bookmarks}"
-                         SelectedItem="{Binding SelectedBookmark}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type sideways:Bookmark}">
-                            <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-
-                <StackPanel Grid.Row="3" Visibility="{Binding Bookmarks, Converter={x:Static sideways:NullToVisibilityConverter.VisibleWhenNullElseCollapsed}}">
-                    <Button Command="Open"
-                            Content="Open"
-                            Focusable="False">
-                        <Button.CommandBindings>
-                            <CommandBinding Command="Open" Executed="OnOpenBookmarks" />
-                        </Button.CommandBindings>
-                    </Button>
-                </StackPanel>
+                    <StackPanel Grid.Row="3" Visibility="{Binding Bookmarks, Converter={x:Static sideways:NullToVisibilityConverter.VisibleWhenNullElseCollapsed}}">
+                        <Button Command="Open"
+                                Content="Open"
+                                Focusable="False">
+                            <Button.CommandBindings>
+                                <CommandBinding Command="Open" Executed="OnOpenBookmarks" />
+                            </Button.CommandBindings>
+                        </Button>
+                    </StackPanel>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>
