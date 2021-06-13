@@ -12,6 +12,7 @@
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <AnalysisLevel>latest</AnalysisLevel>
+    <ApplicationIcon>sideways.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
