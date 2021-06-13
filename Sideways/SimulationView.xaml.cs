@@ -19,6 +19,16 @@
             this.InitializeComponent();
         }
 
+        private static MessageBoxResult ShowMessageBox(string messageBoxText, string caption, MessageBoxButton button, MessageBoxImage messageBoxImage = MessageBoxImage.None)
+        {
+            if (Application.Current.MainWindow is { } window)
+            {
+                return MessageBox.Show(window, messageBoxText, caption, button, messageBoxImage);
+            }
+
+            return MessageBox.Show(messageBoxText, caption, button, messageBoxImage);
+        }
+
         private static void Save(Simulation simulation, DateTimeOffset time, string? fileName = null)
         {
             if (!Directory.Exists(SimulationDirectory))
@@ -54,16 +64,6 @@
 
                 return null;
             }
-        }
-
-        private static MessageBoxResult ShowMessageBox(string messageBoxText, string caption, MessageBoxButton button, MessageBoxImage messageBoxImage = MessageBoxImage.None)
-        {
-            if (Application.Current.MainWindow is { } window)
-            {
-                return MessageBox.Show(window, messageBoxText, caption, button, messageBoxImage);
-            }
-
-            return MessageBox.Show(messageBoxText, caption, button, messageBoxImage);
         }
 
         private void OnCanSave(object sender, CanExecuteRoutedEventArgs e)

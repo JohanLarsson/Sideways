@@ -25,14 +25,14 @@
                 </Button.CommandBindings>
             </Button>
 
-            <!--<Button Command="Save"
+            <Button Command="Save"
                     Content="Save"
                     Visibility="{Binding Bookmarks,
                                          Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
                 <Button.CommandBindings>
-                    <CommandBinding CanExecute="OnCanSaveSimulation"
+                    <CommandBinding CanExecute="OnCanSave"
                                     Command="Save"
-                                    Executed="OnSaveSimulation" />
+                                    Executed="OnSave" />
                 </Button.CommandBindings>
             </Button>
 
@@ -41,9 +41,9 @@
                     Visibility="{Binding Bookmarks,
                                          Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
                 <Button.CommandBindings>
-                    <CommandBinding Command="Close" Executed="OnCloseSimulation" />
+                    <CommandBinding Command="Close" Executed="OnClose" />
                 </Button.CommandBindings>
-            </Button>-->
+            </Button>
         </StackPanel>
 
         <StackPanel Grid.Row="1"

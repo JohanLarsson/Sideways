@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Immutable;
+    using System.Globalization;
     using System.IO;
     using System.Text.Json;
     using System.Windows;
@@ -26,6 +27,60 @@
             }
 
             return MessageBox.Show(messageBoxText, caption, button, messageBoxImage);
+        }
+
+        private static void Save(ImmutableList<Bookmark> simulation, string? fileName = null)
+        {
+            if (!Directory.Exists(BookmarksDirectory))
+            {
+                Directory.CreateDirectory(BookmarksDirectory);
+            }
+
+            if (File() is { } file)
+            {
+                System.IO.File.WriteAllText(file.FullName, JsonSerializer.Serialize(simulation));
+            }
+
+            FileInfo? File()
+            {
+                if (fileName is { })
+                {
+                    return new(fileName);
+                }
+
+                var dialog = new SaveFileDialog
+                {
+                    InitialDirectory = BookmarksDirectory,
+                    FileName = $"Bookmarks {DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}",
+                    DefaultExt = ".bookmarks",
+                    Filter = "Bookmark files|*.bookmarks",
+                };
+
+                if (dialog.ShowDialog() is true)
+                {
+                    return new(dialog.FileName);
+                }
+
+                return null;
+            }
+        }
+
+        private void OnCanSave(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { Bookmarks: { } })
+            {
+                e.CanExecute = true;
+                e.Handled = true;
+            }
+        }
+
+        private void OnSave(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { Bookmarks: { } bookmarks })
+            {
+                Save(bookmarks);
+                e.Handled = true;
+            }
         }
 
         private void OnOpen(object sender, ExecutedRoutedEventArgs e)
@@ -58,6 +113,20 @@
 
                     e.Handled = true;
                 }
+            }
+        }
+
+        private void OnClose(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { Bookmarks: { } bookmarks } viewModel)
+            {
+                if (ShowMessageBox("Do you want to save current bookmarks first?", "Bookmarks", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    Save(bookmarks);
+                }
+
+                viewModel.Bookmarks = null;
+                e.Handled = true;
             }
         }
     }
