@@ -46,6 +46,8 @@
                     {
                         listBox.ScrollIntoView(listBox.SelectedItem);
                     }
+
+                    e.Handled = true;
                 }
             }
 
