@@ -35,13 +35,13 @@
         public static HourAndMinute EndOfFifteenMinutesCandle(DateTimeOffset t) => t switch
         {
             { Minute: > 45 } => new(t.Hour + 1, 0),
-            _ => new(t.Hour, 15 * (t.Minute / 15)),
+            _ => new(t.Hour, RoundUp(t.Minute, 15)),
         };
 
         public static HourAndMinute EndOfFiveMinutesCandle(DateTimeOffset t) => t switch
         {
             { Minute: > 55 } => new(t.Hour + 1, 0),
-            _ => new(t.Hour, 5 * (t.Minute / 5)),
+            _ => new(t.Hour, RoundUp(t.Minute, 5)),
         };
 
         public bool Equals(HourAndMinute other) => this.Hour == other.Hour && this.Minute == other.Minute;
@@ -49,5 +49,14 @@
         public override bool Equals(object? obj) => obj is HourAndMinute other && this.Equals(other);
 
         public override int GetHashCode() => HashCode.Combine(this.Hour, this.Minute);
+
+        public override string ToString() => $"{this.Hour:00}:{this.Minute:00}";
+
+        private static int RoundUp(int x, int interval)
+        {
+            return x % interval == 0
+                ? x
+                : x + interval - (x % interval);
+        }
     }
 }
