@@ -31,16 +31,22 @@
             Assert.AreEqual(expected, candles.Skip(time, CandleInterval.Minute, count));
         }
 
-        [TestCaseSource(nameof(HoursSource))]
-        public static void Hours(Candles candles, DateTimeOffset time, Candle[] expected)
+        [TestCaseSource(nameof(DescendingHoursSource))]
+        public static void DescendingHours(Candles candles, DateTimeOffset time, Candle[] expected)
         {
             CollectionAssert.AreEqual(expected, candles.DescendingHours(time));
         }
 
-        [TestCaseSource(nameof(DaysSource))]
+        [TestCaseSource(nameof(DescendingDaysSource))]
         public static void DescendingDays(Candles candles, DateTimeOffset time, Candle[] expected)
         {
             CollectionAssert.AreEqual(expected, candles.DescendingDays(time));
+        }
+
+        [TestCaseSource(nameof(DescendingVWapsSource))]
+        public static void DescendingVWaps(Candles candles, DateTimeOffset time, CandleInterval interval, float[] expected)
+        {
+            CollectionAssert.AreEqual(expected, candles.DescendingVWaps(time, interval));
         }
 
         private static IEnumerable<TestCaseData> SkipWeeksSource()
@@ -329,7 +335,7 @@
             TestCaseData Identity(DateTimeOffset time, int count) => new(candles, time, count, time);
         }
 
-        private static IEnumerable<TestCaseData> HoursSource()
+        private static IEnumerable<TestCaseData> DescendingHoursSource()
         {
             var candles = new Candles(
                 default,
@@ -445,7 +451,7 @@
             yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 22, 11, 00, 00, 0, TimeSpan.Zero), expected);
         }
 
-        private static IEnumerable<TestCaseData> DaysSource()
+        private static IEnumerable<TestCaseData> DescendingDaysSource()
         {
             var day1 = new Candle(new DateTimeOffset(2021, 05, 20, 00, 00, 00, 0, TimeSpan.Zero), open: 20.3f, high: 20.4f, low: 20.1f, close: 20.2f, volume: 20);
             var day2 = new Candle(new DateTimeOffset(2021, 05, 21, 00, 00, 00, 0, TimeSpan.Zero), open: 21.3f, high: 21.4f, low: 21.1f, close: 21.2f, volume: 21);
@@ -519,6 +525,87 @@
             yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 21, 15, 59, 00, 0, TimeSpan.Zero), new[] { new Candle(new DateTimeOffset(2021, 05, 21, 15, 59, 00, 0, TimeSpan.Zero), open: 2.3f, high: 6.4f, low: 2.1f, close: 6.2f, volume: 20), day1 });
             yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 21, 16, 00, 00, 0, TimeSpan.Zero), new[] { new Candle(new DateTimeOffset(2021, 05, 21, 16, 00, 00, 0, TimeSpan.Zero), open: 2.3f, high: 7.4f, low: 2.1f, close: 7.2f, volume: 27), day1 });
             yield return new TestCaseData(candles, new DateTimeOffset(2021, 05, 21, 16, 01, 00, 0, TimeSpan.Zero), new[] { day2, day1 });
+        }
+
+        private static IEnumerable<TestCaseData> DescendingVWapsSource()
+        {
+            var candles = new Candles(
+                default,
+                SortedCandles.Create(
+                    new Candle(
+                        new DateTimeOffset(2021, 06, 14, 09, 29, 00, 0, TimeSpan.Zero),
+                        open: 1.3f,
+                        high: 1.4f,
+                        low: 1.1f,
+                        close: 1.2f,
+                        volume: 1),
+                    new Candle(
+                        new DateTimeOffset(2021, 06, 14, 09, 30, 00, 0, TimeSpan.Zero),
+                        open: 2.3f,
+                        high: 2.4f,
+                        low: 2.1f,
+                        close: 2.2f,
+                        volume: 2),
+                    new Candle(
+                        new DateTimeOffset(2021, 06, 14, 09, 31, 00, 0, TimeSpan.Zero),
+                        open: 3.3f,
+                        high: 3.4f,
+                        low: 3.1f,
+                        close: 3.2f,
+                        volume: 3),
+                    new Candle(
+                        new DateTimeOffset(2021, 06, 14, 09, 32, 00, 0, TimeSpan.Zero),
+                        open: 4.3f,
+                        high: 4.4f,
+                        low: 4.1f,
+                        close: 4.2f,
+                        volume: 4),
+                    new Candle(
+                        new DateTimeOffset(2021, 06, 14, 10, 00, 00, 0, TimeSpan.Zero),
+                        open: 5.3f,
+                        high: 5.4f,
+                        low: 5.1f,
+                        close: 5.2f,
+                        volume: 5),
+                    new Candle(
+                        new DateTimeOffset(2021, 06, 14, 10, 01, 00, 0, TimeSpan.Zero),
+                        open: 6.3f,
+                        high: 6.4f,
+                        low: 6.1f,
+                        close: 6.2f,
+                        volume: 6),
+                    new Candle(
+                        new DateTimeOffset(2021, 06, 14, 11, 00, 00, 0, TimeSpan.Zero),
+                        open: 7.3f,
+                        high: 7.4f,
+                        low: 7.1f,
+                        close: 7.2f,
+                        volume: 7)));
+
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 28, 00, 0, TimeSpan.Zero), CandleInterval.Minute, Array.Empty<float>());
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 28, 00, 0, TimeSpan.Zero), CandleInterval.FiveMinutes, Array.Empty<float>());
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 28, 00, 0, TimeSpan.Zero), CandleInterval.FifteenMinutes, Array.Empty<float>());
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 28, 00, 0, TimeSpan.Zero), CandleInterval.Hour, Array.Empty<float>());
+
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 29, 00, 0, TimeSpan.Zero), CandleInterval.Minute, new[] { 1.25f });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 29, 00, 0, TimeSpan.Zero), CandleInterval.FiveMinutes, new[] { 1.25f });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 29, 00, 0, TimeSpan.Zero), CandleInterval.FifteenMinutes, new[] { 1.25f });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 29, 00, 0, TimeSpan.Zero), CandleInterval.Hour, new[] { 1.25f });
+
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 30, 00, 0, TimeSpan.Zero), CandleInterval.Minute, new[] { 1.91666663f, 1.25f });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 30, 00, 0, TimeSpan.Zero), CandleInterval.FiveMinutes, new[] { 1.91666663f });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 30, 00, 0, TimeSpan.Zero), CandleInterval.FifteenMinutes, new[] { 1.91666663f });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 30, 00, 0, TimeSpan.Zero), CandleInterval.Hour, new[] { 1.91666663f });
+
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 31, 00, 0, TimeSpan.Zero), CandleInterval.Minute, new[] { 2.58333325f, 1.91666663f, 1.25f });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 31, 00, 0, TimeSpan.Zero), CandleInterval.FiveMinutes, new[] { 2.58333325f, 1.91666663f });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 31, 00, 0, TimeSpan.Zero), CandleInterval.FifteenMinutes, new[] { 2.58333325f, 1.91666663f });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 31, 00, 0, TimeSpan.Zero), CandleInterval.Hour, new[] { 2.58333325f, 1.91666663f });
+
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 32, 00, 0, TimeSpan.Zero), CandleInterval.Minute, new[] { 3.25f, 2.58333325f, 1.91666663f, 1.25f });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 32, 00, 0, TimeSpan.Zero), CandleInterval.FiveMinutes, new[] { 3.25f, 1.91666663f });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 32, 00, 0, TimeSpan.Zero), CandleInterval.FifteenMinutes, new[] { 3.25f, 1.91666663f });
+            yield return new TestCaseData(candles, new DateTimeOffset(2021, 06, 14, 09, 32, 00, 0, TimeSpan.Zero), CandleInterval.Hour, new[] { 3.25f, 1.91666663f });
         }
     }
 }

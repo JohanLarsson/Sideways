@@ -390,6 +390,8 @@
 
                                 <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
 
+                                <sideways:VWap Brush="{x:Static sideways:Brushes.LightGray}" />
+
                                 <sideways:CandleSticks />
 
                                 <sideways:CrossHair />

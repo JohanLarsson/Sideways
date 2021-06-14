@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
 
     public class Candles
@@ -74,6 +75,71 @@
             for (var i = index; i >= 0; i--)
             {
                 yield return this.minutes[i];
+            }
+        }
+
+        public IEnumerable<float> DescendingVWaps(DateTimeOffset end, CandleInterval interval)
+        {
+            var ascending = new List<float>();
+            foreach (var (firstMinuteIndex, lastMinuteIndex) in Indices())
+            {
+                ascending.Clear();
+                var dollarVolume = 0f;
+                var volume = 0;
+                for (var i = firstMinuteIndex; i <= lastMinuteIndex; i++)
+                {
+                    var minute = this.minutes[i];
+                    dollarVolume += Estimate(minute);
+                    volume += minute.Volume;
+
+                    if (i == lastMinuteIndex ||
+                        !IsSameInterval(minute, this.minutes[i + 1]))
+                    {
+                        ascending.Add(dollarVolume / volume);
+                    }
+
+                    static float Estimate(Candle minute) => minute.Volume * 0.25f * (minute.Open + minute.High + minute.Low + minute.Close);
+
+                    bool IsSameInterval(Candle x, Candle y)
+                    {
+                        return interval switch
+                        {
+                            CandleInterval.None => throw new InvalidEnumArgumentException(nameof(interval), (int)interval, typeof(CandleInterval)),
+                            CandleInterval.Week => throw new NotSupportedException("Not supporting VWAP for weeks yet."),
+                            CandleInterval.Day => throw new NotSupportedException("Not supporting VWAP for weeks yet."),
+                            CandleInterval.Hour => Candle.ShouldMergeHour(x.Time, y.Time),
+                            CandleInterval.FifteenMinutes => Candle.ShouldMergeFifteenMinutes(x.Time, y.Time),
+                            CandleInterval.FiveMinutes => Candle.ShouldMergeFiveMinutes(x.Time, y.Time),
+                            CandleInterval.Minute => false,
+                            _ => throw new InvalidEnumArgumentException(nameof(interval), (int)interval, typeof(CandleInterval)),
+                        };
+                    }
+                }
+
+                for (var i = ascending.Count - 1; i >= 0; i--)
+                {
+                    yield return ascending[i];
+                }
+            }
+
+            IEnumerable<(int, int)> Indices()
+            {
+                var start = this.minutes.IndexOf(end, this.minuteIndex);
+                if (start < 0)
+                {
+                    yield break;
+                }
+
+                for (var i = start; i >= 1; i--)
+                {
+                    if (!this.minutes[i].Time.IsSameDay(this.minutes[i - 1].Time))
+                    {
+                        yield return (i, start);
+                        start = i;
+                    }
+                }
+
+                yield return (0, start);
             }
         }
 
