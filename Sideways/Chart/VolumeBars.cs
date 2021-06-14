@@ -45,7 +45,7 @@
             if (this.Candles is { Count: > 0 } candles &&
                 this.MaxVolume is { } maxVolume)
             {
-                var position = CandlePosition.CreatePadded(this.RenderSize, candleWidth, new FloatRange(0, maxVolume));
+                var position = CandlePosition.RightToLeftPadded(this.RenderSize, candleWidth, new FloatRange(0, maxVolume));
                 foreach (var candle in candles)
                 {
                     var brush = Brushes.Get(candle);

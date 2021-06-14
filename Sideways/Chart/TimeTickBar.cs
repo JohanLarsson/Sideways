@@ -43,7 +43,7 @@
                     TextElement.GetFontStretch(this));
                 var fontSize = TextElement.GetFontSize(this);
                 var fill = this.Fill;
-                var position = CandlePosition.Create(this.RenderSize, this.CandleWidth, default);
+                var position = CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, default);
 
                 switch (this.CandleInterval)
                 {

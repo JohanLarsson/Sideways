@@ -33,7 +33,7 @@
 
                     void DrawBetweenDays(SolidColorBrush brush)
                     {
-                        var position = CandlePosition.Create(renderSize, candleWidth, default);
+                        var position = CandlePosition.RightToLeft(renderSize, candleWidth, default);
                         for (var i = 0; i < candles.Count - 1; i++)
                         {
                             if (candles[i].Time.Date != candles[i + 1].Time.Date &&
@@ -77,7 +77,7 @@
 
             void DrawBand(Func<Candle, bool> func, SolidColorBrush brush)
             {
-                var position = CandlePosition.Create(renderSize, candleWidth, default);
+                var position = CandlePosition.RightToLeft(renderSize, candleWidth, default);
                 for (var i = 0; i < candles.Count; i++)
                 {
                     if (func(candles[i]))

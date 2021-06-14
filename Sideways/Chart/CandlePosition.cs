@@ -35,7 +35,7 @@
             return !left.Equals(right);
         }
 
-        public static CandlePosition Create(Size renderSize, int candleWidth, FloatRange valueRange, int leftPad = 0, int rightPad = 0)
+        public static CandlePosition RightToLeft(Size renderSize, int candleWidth, FloatRange valueRange, int leftPad = 0, int rightPad = 0)
         {
             var right = renderSize.Width - rightPad;
             var left = right - candleWidth + rightPad + leftPad;
@@ -51,18 +51,18 @@
                 valueRange: valueRange);
         }
 
-        public static CandlePosition CreatePadded(Size renderSize, int candleWidth, FloatRange valueRange)
+        public static CandlePosition RightToLeftPadded(Size renderSize, int candleWidth, FloatRange valueRange)
         {
             return candleWidth switch
             {
-                < 2 => Create(renderSize, candleWidth, valueRange, 0, 0),
-                3 => Create(renderSize, candleWidth, valueRange, 0, 1),
-                4 => Create(renderSize, candleWidth, valueRange, 1, 1),
-                5 => Create(renderSize, candleWidth, valueRange, 1, 1),
-                < 8 => Create(renderSize, candleWidth, valueRange, 1, 1),
-                < 12 => Create(renderSize, candleWidth, valueRange, 2, 2),
-                < 24 => Create(renderSize, candleWidth, valueRange, 3, 3),
-                _ => Create(renderSize, candleWidth, valueRange, 4, 4),
+                < 2 => RightToLeft(renderSize, candleWidth, valueRange, 0, 0),
+                3 => RightToLeft(renderSize, candleWidth, valueRange, 0, 1),
+                4 => RightToLeft(renderSize, candleWidth, valueRange, 1, 1),
+                5 => RightToLeft(renderSize, candleWidth, valueRange, 1, 1),
+                < 8 => RightToLeft(renderSize, candleWidth, valueRange, 1, 1),
+                < 12 => RightToLeft(renderSize, candleWidth, valueRange, 2, 2),
+                < 24 => RightToLeft(renderSize, candleWidth, valueRange, 3, 3),
+                _ => RightToLeft(renderSize, candleWidth, valueRange, 4, 4),
             };
         }
 

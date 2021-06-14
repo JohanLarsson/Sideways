@@ -71,7 +71,7 @@
                 this.PriceRange is { } priceRange)
             {
                 Point? previous = null;
-                var position = CandlePosition.Create(this.RenderSize, this.CandleWidth, priceRange);
+                var position = CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, priceRange);
                 foreach (var a in this.Candles.MovingAverage(this.Period, c => c.Close))
                 {
                     var p2 = new Point(position.CenterLeft, position.Y(a));

@@ -78,7 +78,7 @@
                 var format = StringFormat(step);
                 var value = range.Min + step - (range.Min % step);
                 var halfTextHeight = fontSize * fontFamily.LineSpacing / 2;
-                var position = CandlePosition.Create(this.RenderSize, default, range);
+                var position = CandlePosition.RightToLeft(this.RenderSize, default, range);
                 while (value < range.Max)
                 {
 #pragma warning disable CA1305 // Specify IFormatProvider
