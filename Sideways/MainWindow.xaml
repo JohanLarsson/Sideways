@@ -440,7 +440,11 @@
 
             <Grid Grid.Column="2">
                 <sideways:SimulationView HorizontalAlignment="Right" Visibility="{Binding ElementName=SimulationButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
-                <sideways:BookmarksView HorizontalAlignment="Right" Visibility="{Binding ElementName=BookmarksButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+                <sideways:BookmarksView HorizontalAlignment="Right"
+                                        DataContext="{Binding Bookmarks}"
+                                        Visibility="{Binding ElementName=BookmarksButton,
+                                                             Path=IsChecked,
+                                                             Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
                 <sideways:DownloadView HorizontalAlignment="Right"
                                        DataContext="{Binding Downloader}"
                                        Visibility="{Binding ElementName=DownloadButton,

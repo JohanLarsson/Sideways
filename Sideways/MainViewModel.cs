@@ -10,6 +10,8 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
 
+    using Accessibility;
+
     using Sideways.AlphaVantage;
 
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
@@ -18,9 +20,6 @@
         private ImmutableSortedSet<string> symbols;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
-        private ImmutableList<Bookmark>? bookmarks;
-        private Bookmark? selectedBookmark;
-        private int bookmarkOffset;
         private Simulation? simulation;
         private bool disposed;
 
@@ -36,6 +35,17 @@
             this.Downloader.NewSymbol += (_, symbol) => this.Symbols = this.symbols.Add(symbol);
             this.Downloader.NewDays += (_, symbol) => this.symbolViewModelCache.Update(symbol);
             this.Downloader.NewMinutes += (_, symbol) => this.symbolViewModelCache.Update(symbol);
+            this.Bookmarks.PropertyChanged += (_, e) =>
+            {
+                if (e is { PropertyName: nameof(BookmarksViewModel.SelectedBookmark) } &&
+                    this.Bookmarks.SelectedBookmark is { } bookmark)
+                {
+                    this.CurrentSymbol = this.symbolViewModelCache.Get(bookmark.Symbol);
+                    this.Time = this.currentSymbol?.Candles is { } candles
+                        ? candles.Skip(bookmark.Time, CandleInterval.Day, this.Bookmarks.Offset)
+                        : bookmark.Time.AddDays(this.Bookmarks.Offset);
+                }
+            };
             this.WatchList.CollectionChanged += (_, _) =>
             {
                 foreach (var symbol in this.WatchList)
@@ -167,57 +177,7 @@
 
         public ObservableCollection<string> WatchList { get; } = new();
 
-        public ImmutableList<Bookmark>? Bookmarks
-        {
-            get => this.bookmarks;
-            set
-            {
-                if (value == this.bookmarks)
-                {
-                    return;
-                }
-
-                this.bookmarks = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public Bookmark? SelectedBookmark
-        {
-            get => this.selectedBookmark;
-            set
-            {
-                if (ReferenceEquals(value, this.selectedBookmark))
-                {
-                    return;
-                }
-
-                this.selectedBookmark = value;
-                this.OnPropertyChanged();
-                if (value is { })
-                {
-                    this.CurrentSymbol = this.symbolViewModelCache.Get(value.Symbol);
-                    this.Time = this.currentSymbol?.Candles is { } candles
-                        ? candles.Skip(value.Time, CandleInterval.Day, this.bookmarkOffset)
-                        : value.Time.AddDays(this.bookmarkOffset);
-                }
-            }
-        }
-
-        public int BookmarkOffset
-        {
-            get => this.bookmarkOffset;
-            set
-            {
-                if (value == this.bookmarkOffset)
-                {
-                    return;
-                }
-
-                this.bookmarkOffset = value;
-                this.OnPropertyChanged();
-            }
-        }
+        public BookmarksViewModel Bookmarks { get; } = new();
 
         public Simulation? Simulation
         {
@@ -272,8 +232,7 @@
 
         private sealed class SymbolViewModelCache
         {
-            private readonly ConcurrentDictionary<string, SymbolViewModel> symbolViewModels =
-                new(StringComparer.OrdinalIgnoreCase);
+            private readonly ConcurrentDictionary<string, SymbolViewModel> symbolViewModels = new(StringComparer.OrdinalIgnoreCase);
 
             private readonly Downloader downloader;
 

@@ -4,7 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sideways="clr-namespace:Sideways"
-             d:DataContext="{d:DesignInstance sideways:MainViewModel}"
+             d:DataContext="{d:DesignInstance sideways:BookmarksViewModel}"
              d:DesignHeight="450"
              d:DesignWidth="50"
              mc:Ignorable="d">
@@ -17,6 +17,20 @@
 
         <StackPanel Grid.Row="0">
             <TextBlock HorizontalAlignment="Center" Text="Bookmarks" />
+
+            <ListBox x:Name="FilesListBox"
+                     MaxHeight="120"
+                     ItemsSource="{Binding BookmarkFiles}"
+                     SelectedItem="{Binding SelectedBookmarkFile}"
+                     Visibility="{Binding BookmarkFiles,
+                                          Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type sideways:BookmarksFile}">
+                        <TextBlock Text="{Binding Name, Mode=OneTime}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
             <Button Command="New" Content="New">
                 <Button.CommandBindings>
                     <CommandBinding Command="New" Executed="OnNew" />
@@ -48,22 +62,21 @@
 
         <StackPanel Grid.Row="1"
                     Orientation="Horizontal"
-                    Visibility="{Binding Bookmarks,
+                    Visibility="{Binding ElementName=FilesListBox,
+                                         Path=HasItems,
                                          Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
-            <TextBlock Text="Offset:" />
-            <TextBox MinWidth="30" Text="{Binding BookmarkOffset}" />
+            <TextBlock Text="Offset: " />
+            <TextBox MinWidth="30" Text="{Binding Offset}" />
         </StackPanel>
 
-        <ListBox Grid.Row="2"
-                 ItemsSource="{Binding Bookmarks}"
-                 SelectedItem="{Binding SelectedBookmark}"
-                 Visibility="{Binding Bookmarks,
-                                      Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type sideways:Bookmark}">
-                    <TextBlock Text="{Binding Symbol, Mode=OneTime}" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <DataGrid Grid.Row="2"
+                  AutoGenerateColumns="False"
+                  ItemsSource="{Binding SelectedBookmarkFile.Bookmarks}"
+                  SelectedItem="{Binding SelectedBookmark}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Symbol}" Header="Symbol" />
+                <DataGridTextColumn Binding="{Binding Time, StringFormat='yyyy-MM-dd'}" Header="Time" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

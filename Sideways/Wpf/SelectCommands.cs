@@ -66,11 +66,7 @@
                     GetIsEnabled(selector))
                 {
                     selector.SelectedIndex = RandomIndex.Next(0, selector.Items.Count - 1);
-                    if (selector is ListBox listBox)
-                    {
-                        listBox.ScrollIntoView(listBox.SelectedItem);
-                    }
-
+                    ScrollIntoView(selector);
                     e.Handled = true;
                 }
             }
@@ -90,11 +86,7 @@
                     forward.Push(selector.SelectedItem);
                     selector.SelectedItem = item;
                     _ = back.Pop();
-                    if (selector is ListBox listBox)
-                    {
-                        listBox.ScrollIntoView(listBox.SelectedItem);
-                    }
-
+                    ScrollIntoView(selector);
                     e.Handled = true;
                 }
             }
@@ -112,12 +104,21 @@
                 {
                     var item = forward.Pop();
                     selector.SelectedItem = item;
-                    if (selector is ListBox listBox)
-                    {
-                        listBox.ScrollIntoView(listBox.SelectedItem);
-                    }
-
+                    ScrollIntoView(selector);
                     e.Handled = true;
+                }
+            }
+
+            static void ScrollIntoView(Selector selector)
+            {
+                switch (selector)
+                {
+                    case ListBox listBox:
+                        listBox.ScrollIntoView(listBox.SelectedItem);
+                        break;
+                    case DataGrid listBox:
+                        listBox.ScrollIntoView(listBox.SelectedItem);
+                        break;
                 }
             }
         }
