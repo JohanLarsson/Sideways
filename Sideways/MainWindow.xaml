@@ -250,7 +250,7 @@
                             <ComboBox x:Name="SymbolComboBox"
                                       HorizontalAlignment="Left"
                                       sideways:ComboBoxEx.IsSymbolSearch="True"
-                                      sideways:SelectorEx.Random="True"
+                                      sideways:Select.Random="True"
                                       FontSize="24"
                                       Foreground="{x:Static sideways:Brushes.Gray}"
                                       IsEditable="True"

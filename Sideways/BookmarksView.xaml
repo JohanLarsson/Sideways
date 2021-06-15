@@ -55,7 +55,7 @@
         </StackPanel>
 
         <ListBox Grid.Row="2"
-                 sideways:SelectorEx.Random="True"
+                 sideways:Select.Random="True"
                  ItemsSource="{Binding Bookmarks}"
                  SelectedItem="{Binding SelectedBookmark}"
                  Visibility="{Binding Bookmarks,
