@@ -8,6 +8,7 @@
         Title="Sideways"
         d:DataContext="{d:DesignInstance sideways:MainViewModel,
                                          IsDesignTimeCreatable=False}"
+        sideways:SelectCommands.IsEnabled="True"
         Background="{x:Static sideways:Brushes.Background}"
         Loaded="OnLoaded"
         TextElement.Foreground="{x:Static sideways:Brushes.Text}"
@@ -75,7 +76,7 @@
 
                 <RadioButton x:Name="SimulationButton"
                              Style="{StaticResource NavigationButton}"
-                             ToolTip="Simulation" >
+                             ToolTip="Simulation">
                     <Path Data="{StaticResource CandleSticksGeometry}"
                           Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}},
                                          Path=Foreground}"
@@ -250,7 +251,6 @@
                             <ComboBox x:Name="SymbolComboBox"
                                       HorizontalAlignment="Left"
                                       sideways:ComboBoxEx.IsSymbolSearch="True"
-                                      sideways:Select.Random="True"
                                       FontSize="24"
                                       Foreground="{x:Static sideways:Brushes.Gray}"
                                       IsEditable="True"
