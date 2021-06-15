@@ -39,7 +39,7 @@
                     break;
                 case Key.B
                     when Keyboard.Modifiers == ModifierKeys.Control:
-                    MessageBox.Show(this, "No bookmark added.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(this, "No bookmark added, select a symbol and a bookmarks file.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case Key.W
                     when Keyboard.Modifiers == ModifierKeys.Control &&
@@ -118,9 +118,13 @@
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            if (this.DataContext is MainViewModel { Settings: { } settings })
+            if (this.DataContext is MainViewModel { } mainViewModel)
             {
-                settings.Save();
+                mainViewModel.Settings.Save();
+                foreach (var bookmarkFile in mainViewModel.Bookmarks.BookmarkFiles)
+                {
+                    bookmarkFile.AskSave();
+                }
             }
 
             base.OnClosing(e);
