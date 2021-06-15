@@ -10,8 +10,6 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
 
-    using Accessibility;
-
     using Sideways.AlphaVantage;
 
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
@@ -58,7 +56,7 @@
             this.BuyCommand = new RelayCommand(
                 _ => Buy(),
                 _ => this.Simulation is { Balance: > 1_000 } &&
-                             this.currentSymbol is { Candles: { } });
+                     this.currentSymbol is { Candles: { } });
 
             this.SellHalfCommand = new RelayCommand(
                 _ => Sell(0.5),

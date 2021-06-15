@@ -16,6 +16,7 @@
 
         private FileInfo? file;
         private ImmutableList<Bookmark> bookmarks;
+        private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
         public BookmarksFile(FileInfo? file, ImmutableList<Bookmark> bookmarks)
         {
@@ -56,7 +57,7 @@
 
             if (File() is { FullName: { } fileName })
             {
-                System.IO.File.WriteAllText(fileName, JsonSerializer.Serialize(this.bookmarks));
+                System.IO.File.WriteAllText(fileName, JsonSerializer.Serialize(this.bookmarks, JsonSerializerOptions));
             }
 
             FileInfo? File()
@@ -93,7 +94,7 @@
             }
 
             return this.file is { FullName: { } fileName } &&
-                   JsonSerializer.Serialize(this.bookmarks, new JsonSerializerOptions { WriteIndented = true }) != File.ReadAllText(fileName);
+                   JsonSerializer.Serialize(this.bookmarks, JsonSerializerOptions) != File.ReadAllText(fileName);
         }
 
         public void AskSave()
