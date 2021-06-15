@@ -142,7 +142,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Grid x:Name="Charts" sideways:Chart.BookmarkTime="{Binding SelectedBookmark.Time, FallbackValue={x:Null}}">
+            <Grid x:Name="Charts" sideways:Chart.BookmarkTime="{Binding Bookmarks.SelectedBookmark.Time, FallbackValue={x:Null}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
