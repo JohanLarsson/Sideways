@@ -42,6 +42,11 @@
             }
         }
 
+        public void Add(Bookmark bookmark)
+        {
+            this.Bookmarks = this.bookmarks.Add(bookmark);
+        }
+
         public void Save()
         {
             if (!System.IO.Directory.Exists(Directory))

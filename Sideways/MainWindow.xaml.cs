@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.Immutable;
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Input;
@@ -30,9 +31,15 @@
                     ApplicationCommands.Copy.Execute(null, this);
                     e.Handled = true;
                     break;
+                case Key.B
+                    when Keyboard.Modifiers == ModifierKeys.Control &&
+                         this.DataContext is MainViewModel { CurrentSymbol: { Symbol: { } symbol }, Time: { } time, Bookmarks: { SelectedBookmarkFile: { } bookmarkFile } }:
+                    bookmarkFile.Add(new Bookmark(symbol, time, ImmutableSortedSet<string>.Empty, null));
+                    e.Handled = true;
+                    break;
                 case Key.W
                     when Keyboard.Modifiers == ModifierKeys.Control &&
-                         this.DataContext is MainViewModel { CurrentSymbolText: { } symbol } vm:
+                         this.DataContext is MainViewModel { CurrentSymbol: { Symbol: { } symbol } } vm:
                     vm.WatchList.Add(symbol);
                     e.Handled = true;
                     break;
