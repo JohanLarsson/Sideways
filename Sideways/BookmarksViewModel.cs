@@ -76,6 +76,10 @@
         public void Remove(BookmarksFile bookmarksFile)
         {
             this.BookmarkFiles = this.bookmarkFiles.Remove(bookmarksFile);
+            if (ReferenceEquals(this.selectedBookmarkFile, bookmarksFile))
+            {
+                this.SelectedBookmarkFile = null;
+            }
         }
 
         public void Add(BookmarksFile bookmarksFile)
