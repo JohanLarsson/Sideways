@@ -20,7 +20,7 @@
                 default(bool),
                 FrameworkPropertyMetadataOptions.Inherits));
 
-        private static readonly DependencyProperty JournalProperty = DependencyProperty.RegisterAttached("Journal", typeof(Journal), typeof(Journal));
+        private static readonly DependencyProperty JournalProperty = DependencyProperty.RegisterAttached("Journal", typeof(Journal), typeof(SelectCommands));
 
         private static readonly Random RandomIndex = new(DateTimeOffset.Now.Millisecond);
 
