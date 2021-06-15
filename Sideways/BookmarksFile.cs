@@ -72,7 +72,7 @@
                 var dialog = new SaveFileDialog
                 {
                     InitialDirectory = Directory,
-                    FileName = $"Bookmarks {DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}",
+                    FileName = $"{DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}",
                     DefaultExt = ".bookmarks",
                     Filter = "Bookmark files|*.bookmarks",
                 };
