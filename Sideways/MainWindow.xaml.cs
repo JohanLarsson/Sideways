@@ -97,6 +97,20 @@
             }
         }
 
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (this.DataContext is MainViewModel mainViewModel)
+            {
+                mainViewModel.Settings.Save();
+                foreach (var bookmarkFile in mainViewModel.Bookmarks.BookmarkFiles)
+                {
+                    bookmarkFile.AskSave();
+                }
+            }
+
+            base.OnClosing(e);
+        }
+
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             Keyboard.Focus(this.SymbolComboBox);
@@ -115,19 +129,5 @@
         private void OnClickMaximizeRestore(object sender, RoutedEventArgs e) => this.SetCurrentValue(WindowStateProperty, this.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized);
 
         private void OnClickClose(object sender, RoutedEventArgs e) => this.Close();
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            if (this.DataContext is MainViewModel mainViewModel)
-            {
-                mainViewModel.Settings.Save();
-                foreach (var bookmarkFile in mainViewModel.Bookmarks.BookmarkFiles)
-                {
-                    bookmarkFile.AskSave();
-                }
-            }
-
-            base.OnClosing(e);
-        }
     }
 }

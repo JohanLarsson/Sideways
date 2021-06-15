@@ -8,15 +8,17 @@
     using System.Runtime.CompilerServices;
     using System.Text.Json;
     using System.Windows;
+
     using Microsoft.Win32;
 
     public sealed class BookmarksFile : INotifyPropertyChanged
     {
         public static readonly string Directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks");
 
+        private static readonly JsonSerializerOptions JsonSerializerOptions = new() { WriteIndented = true };
+
         private FileInfo? file;
         private ImmutableList<Bookmark> bookmarks;
-        private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
         public BookmarksFile(FileInfo? file, ImmutableList<Bookmark> bookmarks)
         {

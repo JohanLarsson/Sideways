@@ -84,7 +84,7 @@
 
         private void OnCanSaveOrClose(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (this.DataContext is BookmarksViewModel { SelectedBookmarkFile: { } } )
+            if (this.DataContext is BookmarksViewModel { SelectedBookmarkFile: { } })
             {
                 e.CanExecute = true;
                 e.Handled = true;
