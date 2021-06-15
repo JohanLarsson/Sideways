@@ -37,11 +37,19 @@
                     bookmarkFile.Add(new Bookmark(symbol, time, ImmutableSortedSet<string>.Empty, null));
                     e.Handled = true;
                     break;
+                case Key.B
+                    when Keyboard.Modifiers == ModifierKeys.Control:
+                    MessageBox.Show(this, "No bookmark added.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
                 case Key.W
                     when Keyboard.Modifiers == ModifierKeys.Control &&
                          this.DataContext is MainViewModel { CurrentSymbol: { Symbol: { } symbol } } vm:
                     vm.WatchList.Add(symbol);
                     e.Handled = true;
+                    break;
+                case Key.W
+                    when Keyboard.Modifiers == ModifierKeys.Control:
+                    MessageBox.Show(this, "No watchlist added.", "Watchlist", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case Key.Left
                     when Keyboard.Modifiers == ModifierKeys.Shift:
