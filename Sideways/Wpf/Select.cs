@@ -6,12 +6,12 @@
     using System.Windows.Controls.Primitives;
     using System.Windows.Input;
 
-    public static class SelectorEx
+    public static class Select
     {
         public static readonly DependencyProperty RandomProperty = DependencyProperty.RegisterAttached(
             "Random",
             typeof(bool),
-            typeof(SelectorEx),
+            typeof(Select),
             new PropertyMetadata(
                 default(bool),
                 OnRandomChanged));
@@ -19,18 +19,18 @@
         private static readonly DependencyProperty BackProperty = DependencyProperty.RegisterAttached(
             "Back",
             typeof(Stack),
-            typeof(SelectorEx),
+            typeof(Select),
             new PropertyMetadata(default(Stack)));
 
         private static readonly DependencyProperty ForwardProperty = DependencyProperty.RegisterAttached(
             "Forward",
             typeof(Stack),
-            typeof(SelectorEx),
+            typeof(Select),
             new PropertyMetadata(default(Stack)));
 
         private static readonly Random Random = new(DateTimeOffset.Now.Millisecond);
 
-        static SelectorEx()
+        static Select()
         {
             EventManager.RegisterClassHandler(typeof(Selector), UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown));
             EventManager.RegisterClassHandler(typeof(Selector), Selector.SelectionChangedEvent, new SelectionChangedEventHandler(OnSelectionChanged));
