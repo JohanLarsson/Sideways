@@ -118,7 +118,7 @@
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            if (this.DataContext is MainViewModel { } mainViewModel)
+            if (this.DataContext is MainViewModel mainViewModel)
             {
                 mainViewModel.Settings.Save();
                 foreach (var bookmarkFile in mainViewModel.Bookmarks.BookmarkFiles)
