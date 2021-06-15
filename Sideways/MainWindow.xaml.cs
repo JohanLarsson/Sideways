@@ -100,5 +100,15 @@
         private void OnClickMaximizeRestore(object sender, RoutedEventArgs e) => this.SetCurrentValue(WindowStateProperty, this.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized);
 
         private void OnClickClose(object sender, RoutedEventArgs e) => this.Close();
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (this.DataContext is MainViewModel { Settings: { } settings })
+            {
+                settings.Save();
+            }
+
+            base.OnClosing(e);
+        }
     }
 }
