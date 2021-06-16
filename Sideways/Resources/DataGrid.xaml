@@ -26,6 +26,7 @@
                     </Setter>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.SelectedText}" />
                             <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedBackground}" />
                         </Trigger>
                     </Style.Triggers>
