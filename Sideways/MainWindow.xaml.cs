@@ -106,6 +106,8 @@
                 {
                     bookmarkFile.AskSave();
                 }
+
+                mainViewModel.Simulation.AskSave();
             }
 
             base.OnClosing(e);
