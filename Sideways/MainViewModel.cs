@@ -1,20 +1,17 @@
 ﻿namespace Sideways
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Immutable;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
     using System.Windows.Input;
 
     using Sideways.AlphaVantage;
 
     public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
-        private readonly SymbolViewModelCache symbolViewModelCache;
         private ImmutableSortedSet<string> symbols;
         private DateTimeOffset time = DateTimeOffset.Now;
         private SymbolViewModel? currentSymbol;
@@ -25,20 +22,19 @@
         {
             this.Settings = Settings.FromFile();
             this.Downloader = new(this.Settings);
-            this.symbolViewModelCache = new(this.Downloader);
             this.symbols = ImmutableSortedSet.CreateRange(Database.ReadSymbols());
 
             _ = this.Downloader.RefreshSymbolDownloadsAsync();
 
             this.Downloader.NewSymbol += (_, symbol) => this.Symbols = this.symbols.Add(symbol);
-            this.Downloader.NewDays += (_, symbol) => this.symbolViewModelCache.Update(symbol);
-            this.Downloader.NewMinutes += (_, symbol) => this.symbolViewModelCache.Update(symbol);
+            this.Downloader.NewDays += (_, symbol) => SymbolViewModel.Update(symbol);
+            this.Downloader.NewMinutes += (_, symbol) => SymbolViewModel.Update(symbol);
             this.Bookmarks.PropertyChanged += (_, e) =>
             {
                 if (e is { PropertyName: nameof(BookmarksViewModel.SelectedBookmark) } &&
                     this.Bookmarks.SelectedBookmark is { } bookmark)
                 {
-                    this.CurrentSymbol = this.symbolViewModelCache.Get(bookmark.Symbol);
+                    this.CurrentSymbol = SymbolViewModel.GetOrCreate(bookmark.Symbol, this.Downloader);
                     this.Time = this.currentSymbol?.Candles is { } candles
                         ? candles.Skip(bookmark.Time, CandleInterval.Day, this.Bookmarks.Offset)
                         : bookmark.Time.AddDays(this.Bookmarks.Offset);
@@ -48,11 +44,11 @@
             {
                 foreach (var symbol in this.WatchList)
                 {
-                    _ = this.symbolViewModelCache.Get(symbol);
+                    _ = SymbolViewModel.GetOrCreate(symbol, this.Downloader);
                 }
             };
 
-            this.currentSymbol = this.symbolViewModelCache.Get("TSLA");
+            this.currentSymbol = SymbolViewModel.GetOrCreate("TSLA", this.Downloader);
             this.BuyCommand = new RelayCommand(
                 _ => Buy(),
                 _ => this.Simulation is { Balance: > 1_000 } &&
@@ -156,7 +152,7 @@
             get => this.currentSymbol?.Symbol;
             set
             {
-                this.CurrentSymbol = this.symbolViewModelCache.Get(value);
+                this.CurrentSymbol = SymbolViewModel.GetOrCreate(value, this.Downloader);
                 this.OnPropertyChanged();
             }
         }
@@ -168,7 +164,7 @@
             {
                 if (value is { })
                 {
-                    this.CurrentSymbol = this.symbolViewModelCache.Get(value.Symbol);
+                    this.CurrentSymbol = SymbolViewModel.GetOrCreate(value.Symbol, this.Downloader);
                 }
             }
         }
@@ -200,12 +196,12 @@
             {
                 foreach (var position in fresh.Positions)
                 {
-                    _ = this.symbolViewModelCache.Get(position.Symbol);
+                    _ = SymbolViewModel.GetOrCreate(position.Symbol, this.Downloader);
                 }
 
                 foreach (var position in fresh.Trades)
                 {
-                    _ = this.symbolViewModelCache.Get(position.Symbol);
+                    _ = SymbolViewModel.GetOrCreate(position.Symbol, this.Downloader);
                 }
 
                 this.Time = fresh.Time;
@@ -226,82 +222,6 @@
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private sealed class SymbolViewModelCache
-        {
-            private readonly ConcurrentDictionary<string, SymbolViewModel> symbolViewModels = new(StringComparer.OrdinalIgnoreCase);
-
-            private readonly Downloader downloader;
-
-            internal SymbolViewModelCache(Downloader downloader)
-            {
-                this.downloader = downloader;
-            }
-
-            internal SymbolViewModel? Get(string? symbol)
-            {
-                if (string.IsNullOrWhiteSpace(symbol))
-                {
-                    return null;
-                }
-
-                return this.symbolViewModels.GetOrAdd(symbol, _ => Create());
-
-                SymbolViewModel Create()
-                {
-                    var vm = new SymbolViewModel(symbol.ToUpperInvariant());
-                    Load(vm);
-                    return vm;
-                }
-
-                async void Load(SymbolViewModel vm)
-                {
-                    if (string.IsNullOrWhiteSpace(vm.Symbol))
-                    {
-                        return;
-                    }
-
-                    try
-                    {
-                        var splits = Database.ReadSplits(vm.Symbol);
-                        var days = Database.ReadDays(vm.Symbol);
-                        if (days.Count == 0)
-                        {
-                            var download = await this.downloader.DaysAndSplitsAsync(vm.Symbol).ConfigureAwait(true);
-                            splits = download.Splits;
-                            days = download.Candles;
-                            vm.Candles = Candles.Adjusted(splits, days, default);
-                        }
-                        else
-                        {
-                            vm.Candles = Candles.Adjusted(splits, days, default);
-                        }
-
-                        // Update minutes.
-                        var minutes = await Task.Run(() => Database.ReadMinutes(vm.Symbol)).ConfigureAwait(false);
-                        vm.Candles = Candles.Adjusted(splits, days, minutes);
-                    }
-#pragma warning disable CA1031 // Do not catch general exception types
-                    catch (Exception e)
-#pragma warning restore CA1031 // Do not catch general exception types
-                    {
-                        vm.Exception = e;
-                    }
-                }
-            }
-
-            internal void Update(string? symbol)
-            {
-                if (!string.IsNullOrWhiteSpace(symbol) &&
-                    this.symbolViewModels.TryGetValue(symbol, out var vm))
-                {
-                    var splits = Database.ReadSplits(symbol);
-                    var days = Database.ReadDays(symbol);
-                    var minutes = Database.ReadMinutes(symbol);
-                    vm.Candles = Candles.Adjusted(splits, days, minutes);
-                }
-            }
         }
     }
 }

@@ -55,7 +55,13 @@
                     <Setter Property="Padding" Value="3,0" />
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.SelectedBackground}" />
+                            <Setter Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.SelectedText}" />
+                            <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedBackground}" />
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.SelectedText}" />
+                            <Setter Property="Background" Value="{x:Static sideways:Brushes.Pressed}" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
