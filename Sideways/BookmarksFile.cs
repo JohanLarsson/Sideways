@@ -49,9 +49,11 @@
         public static BookmarksFile Create(FileInfo? file, IEnumerable<Bookmark> bookmarks) =>
             new(file, ImmutableSortedSet.CreateRange(BookMarkComparer.Default, bookmarks));
 
-        public void Add(Bookmark bookmark)
+        public bool Add(Bookmark bookmark)
         {
+            var before = this.bookmarks.Count;
             this.Bookmarks = this.bookmarks.Add(bookmark);
+            return this.bookmarks.Count > before;
         }
 
         public void Save()
@@ -106,20 +108,10 @@
         public void AskSave()
         {
             if (this.IsDirty() &&
-                ShowMessageBox("Do you want to save bookmarks?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                MessageBox.Show("Do you want to save bookmarks?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 this.Save();
             }
-        }
-
-        private static MessageBoxResult ShowMessageBox(string messageBoxText, string caption, MessageBoxButton button, MessageBoxImage messageBoxImage = MessageBoxImage.None)
-        {
-            if (Application.Current.MainWindow is { } window)
-            {
-                return MessageBox.Show(window, messageBoxText, caption, button, messageBoxImage);
-            }
-
-            return MessageBox.Show(messageBoxText, caption, button, messageBoxImage);
         }
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)

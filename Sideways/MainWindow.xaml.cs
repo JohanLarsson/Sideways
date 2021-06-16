@@ -31,26 +31,6 @@
                     ApplicationCommands.Copy.Execute(null, this);
                     e.Handled = true;
                     break;
-                case Key.B
-                    when Keyboard.Modifiers == ModifierKeys.Control:
-                    switch (this.DataContext)
-                    {
-                        case MainViewModel { CurrentSymbol: { Symbol: { } symbol }, Time: { } time, Bookmarks: { SelectedBookmarkFile: { } bookmarkFile } }:
-                            bookmarkFile.Add(new Bookmark(symbol, time, ImmutableSortedSet<string>.Empty, null));
-                            break;
-                        case MainViewModel { Bookmarks: { SelectedBookmarkFile: null } }:
-                            MessageBox.Show(this, "No bookmark added, a bookmarks file must be selected.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
-                            break;
-                        case MainViewModel { CurrentSymbol: { Candles: { } } }:
-                            MessageBox.Show(this, "No bookmark added, a symbol with candles must be open.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
-                            break;
-                        default:
-                            MessageBox.Show(this, "No bookmark added.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
-                            break;
-                    }
-
-                    e.Handled = true;
-                    break;
                 case Key.W
                     when Keyboard.Modifiers == ModifierKeys.Control:
                     switch (this.DataContext)
@@ -59,10 +39,10 @@
                             watchList.Add(symbol);
                             break;
                         case MainViewModel { WatchList: null }:
-                            MessageBox.Show(this, "No watchlist entry added, a watchlist must be open.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
+                            System.Windows.MessageBox.Show(this, "No watchlist entry added, a watchlist must be open.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
                             break;
                         default:
-                            MessageBox.Show(this, "No watchlist entry added.", "Watchlist", MessageBoxButton.OK, MessageBoxImage.Error);
+                            System.Windows.MessageBox.Show(this, "No watchlist entry added.", "Watchlist", MessageBoxButton.OK, MessageBoxImage.Error);
                             break;
                     }
 

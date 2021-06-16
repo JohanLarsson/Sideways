@@ -39,6 +39,11 @@
     <Window.CommandBindings>
         <CommandBinding Command="Copy" Executed="OnCopy" />
     </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="B"
+                    Command="{Binding AddBookmarkCommand}"
+                    Modifiers="Control" />
+    </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="24" />

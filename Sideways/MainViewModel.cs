@@ -4,8 +4,8 @@
     using System.Collections.Immutable;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Windows;
     using System.Windows.Input;
 
     using Sideways.AlphaVantage;
@@ -23,6 +23,28 @@
             this.Downloader = new(this.Settings);
             this.Simulation = new SimulationViewModel(this);
             this.symbols = ImmutableSortedSet.CreateRange(Database.ReadSymbols());
+            this.AddBookmarkCommand = new RelayCommand(_ =>
+            {
+                switch (this)
+                {
+                    case { CurrentSymbol: { Symbol: { } symbol }, Time: { } time, Bookmarks: { SelectedBookmarkFile: { } bookmarkFile } }:
+                        if (!bookmarkFile.Add(new Bookmark(symbol, time, ImmutableSortedSet<string>.Empty, null)))
+                        {
+                            _ = MessageBox.Show("Bookmark already exists.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+
+                        break;
+                    case { Bookmarks: { SelectedBookmarkFile: null } }:
+                        MessageBox.Show("No bookmark added, a bookmarks file must be selected.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    case { CurrentSymbol: { Candles: { } } }:
+                        MessageBox.Show("No bookmark added, a symbol with candles must be open.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    default:
+                        MessageBox.Show("No bookmark added.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                }
+            });
 
             _ = this.Downloader.RefreshSymbolDownloadsAsync();
 
@@ -58,6 +80,8 @@
         public Settings Settings { get; }
 
         public BookmarksViewModel Bookmarks { get; } = new();
+
+        public ICommand AddBookmarkCommand { get; }
 
         public SimulationViewModel Simulation { get; }
 

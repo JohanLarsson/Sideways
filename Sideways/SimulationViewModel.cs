@@ -16,10 +16,12 @@
     {
         public static readonly string Directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Simulations");
 
+        private static readonly JsonSerializerOptions JsonSerializerOptions = new() { WriteIndented = true };
+
         private readonly MainViewModel main;
+
         private Simulation? current;
         private FileInfo? file;
-        private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
         public SimulationViewModel(MainViewModel main)
         {
@@ -64,7 +66,7 @@
                 }
                 else
                 {
-                    _ = ShowMessageBox("Cannot buy symbol.", "Simulation", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _ = MessageBox.Show("Cannot buy symbol.", "Simulation", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
 
@@ -82,9 +84,8 @@
                 }
                 else
                 {
-                    _ = ShowMessageBox("Cannot sell symbol.", "Simulation", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _ = MessageBox.Show("Cannot sell symbol.", "Simulation", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-
             }
         }
 
@@ -148,7 +149,7 @@
         {
             if (this.current is { } simulation &&
                 IsDirty() &&
-                ShowMessageBox("Do you want to save current simulation first?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                MessageBox.Show("Do you want to save current simulation first?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 this.Save();
             }
@@ -223,16 +224,6 @@
 
                 this.main.Time = simulation.Time;
             }
-        }
-
-        private static MessageBoxResult ShowMessageBox(string messageBoxText, string caption, MessageBoxButton button, MessageBoxImage messageBoxImage = MessageBoxImage.None)
-        {
-            if (Application.Current.MainWindow is { } window)
-            {
-                return MessageBox.Show(window, messageBoxText, caption, button, messageBoxImage);
-            }
-
-            return MessageBox.Show(messageBoxText, caption, button, messageBoxImage);
         }
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
