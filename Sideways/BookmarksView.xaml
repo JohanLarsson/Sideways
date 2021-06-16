@@ -74,8 +74,8 @@
                   ItemsSource="{Binding SelectedBookmarkFile.Bookmarks}"
                   SelectedItem="{Binding SelectedBookmark}">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Symbol}" Header="Symbol" />
-                <DataGridTextColumn Binding="{Binding Time, StringFormat='yyyy-MM-dd'}" Header="Time" />
+                <DataGridTextColumn Binding="{Binding Symbol, Mode=OneTime}" Header="Symbol" />
+                <DataGridTextColumn Binding="{Binding Time, Mode=OneTime, StringFormat='yyyy-MM-dd'}" Header="Time" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
