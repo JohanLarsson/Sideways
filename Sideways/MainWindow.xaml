@@ -47,6 +47,28 @@
         <KeyBinding Key="W"
                     Command="{Binding AddToWatchlistCommand}"
                     Modifiers="Control" />
+
+        <KeyBinding Key="Left"
+                    Command="{Binding SkipLeftCommand}"
+                    CommandParameter="{x:Static sideways:CandleInterval.Day}" />
+
+        <KeyBinding Key="Left"
+                    Command="{Binding SkipLeftCommand}"
+                    Modifiers="Shift"
+                    CommandParameter="{x:Static sideways:CandleInterval.Hour}" />
+
+        <KeyBinding Key="Right"
+                    Command="{Binding SkipRightCommand}"
+                    CommandParameter="{x:Static sideways:CandleInterval.Day}" />
+
+        <KeyBinding Key="Right"
+                    Command="{Binding SkipRightCommand}"
+                    Modifiers="Shift"
+                    CommandParameter="{x:Static sideways:CandleInterval.Hour}" />
+
+        <KeyBinding Key="Space"
+                    Command="{Binding Animation.ToggleCommand}"
+                    />
     </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>

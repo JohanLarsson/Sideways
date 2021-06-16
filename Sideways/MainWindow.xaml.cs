@@ -1,18 +1,13 @@
 ﻿namespace Sideways
 {
-    using System;
-    using System.Collections.Immutable;
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
-    using System.Windows.Threading;
 
     public partial class MainWindow : Window
     {
-        private DispatcherTimer? timer;
-
         public MainWindow()
         {
             this.InitializeComponent();
@@ -32,49 +27,35 @@
                     e.Handled = true;
                     break;
                 case Key.Left
-                    when Keyboard.Modifiers == ModifierKeys.Shift:
-                    Skip(CandleInterval.Hour, this.timer is null ? -1 : -2);
+                    when Keyboard.Modifiers == ModifierKeys.Shift &&
+                         this.DataContext is MainViewModel vm:
+                    vm.SkipLeftCommand.Execute(CandleInterval.Hour);
                     e.Handled = true;
                     break;
-                case Key.Left:
-                    Skip(CandleInterval.Day, this.timer is null ? -1 : -2);
+                case Key.Left
+                    when this.DataContext is MainViewModel vm:
+                    vm.SkipLeftCommand.Execute(CandleInterval.Day);
                     e.Handled = true;
                     break;
                 case Key.Right
-                    when Keyboard.Modifiers == ModifierKeys.Shift:
-                    Skip(CandleInterval.Hour, 1);
+                    when Keyboard.Modifiers == ModifierKeys.Shift &&
+                         this.DataContext is MainViewModel vm:
+                    vm.SkipRightCommand.Execute(CandleInterval.Hour);
                     e.Handled = true;
                     break;
-                case Key.Right:
-                    Skip(CandleInterval.Day, 1);
+                case Key.Right
+                    when this.DataContext is MainViewModel vm:
+                    vm.SkipRightCommand.Execute(CandleInterval.Day);
                     e.Handled = true;
                     break;
                 case Key.Space
-                    when this.timer is null:
-                    this.timer = new DispatcherTimer
-                    {
-                        Interval = TimeSpan.FromMilliseconds(50),
-                    };
-                    this.timer.Tick += (_, _) => Skip(CandleInterval.Minute, 1);
-                    this.timer.Start();
-                    e.Handled = true;
-                    break;
-                case Key.Space:
-                    this.timer.Stop();
-                    this.timer = null;
+                    when this.DataContext is MainViewModel vm:
+                    vm.Animation.ToggleCommand.Execute(null);
                     e.Handled = true;
                     break;
             }
 
             base.OnPreviewKeyDown(e);
-
-            void Skip(CandleInterval interval, int count)
-            {
-                if (this.DataContext is MainViewModel { CurrentSymbol: { Candles: { } candles } } vm)
-                {
-                    vm.Time = candles.Skip(vm.Time, interval, count);
-                }
-            }
         }
 
         protected override void OnClosing(CancelEventArgs e)

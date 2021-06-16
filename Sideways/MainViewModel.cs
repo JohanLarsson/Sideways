@@ -22,6 +22,7 @@
             this.Settings = Settings.FromFile();
             this.Downloader = new(this.Settings);
             this.Simulation = new SimulationViewModel(this);
+            this.Animation = new AnimationViewModel(this);
             this.symbols = ImmutableSortedSet.CreateRange(Database.ReadSymbols());
             this.AddBookmarkCommand = new RelayCommand(_ =>
             {
@@ -62,6 +63,24 @@
                 }
             });
 
+            this.SkipLeftCommand = new RelayCommand(o =>
+            {
+                if (this is { currentSymbol: { Candles: { } candles } } &&
+                    o is CandleInterval interval)
+                {
+                    this.Time = candles.Skip(this.Time, interval, this.Animation.IsRunning ? -2 : -1);
+                }
+            });
+
+            this.SkipRightCommand = new RelayCommand(o =>
+            {
+                if (this is { currentSymbol: { Candles: { } candles } } &&
+                    o is CandleInterval interval)
+                {
+                    this.Time = candles.Skip(this.Time, interval, 1);
+                }
+            });
+
             _ = this.Downloader.RefreshSymbolDownloadsAsync();
 
             this.Downloader.NewSymbol += (_, symbol) => this.Symbols = this.symbols.Add(symbol);
@@ -99,9 +118,15 @@
 
         public SimulationViewModel Simulation { get; }
 
+        public AnimationViewModel Animation { get; }
+
         public ICommand AddBookmarkCommand { get; }
 
         public ICommand AddToWatchlistCommand { get; }
+
+        public ICommand SkipLeftCommand { get; }
+
+        public ICommand SkipRightCommand { get; }
 
         public ImmutableSortedSet<string> Symbols
         {
@@ -170,6 +195,7 @@
 
             this.disposed = true;
             this.Downloader.Dispose();
+            this.Animation.Dispose();
         }
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
