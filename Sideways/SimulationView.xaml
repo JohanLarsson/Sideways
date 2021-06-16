@@ -4,7 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sideways="clr-namespace:Sideways"
-             d:DataContext="{d:DesignInstance sideways:MainViewModel}"
+             d:DataContext="{d:DesignInstance sideways:SimulationViewModel}"
              d:DesignHeight="400"
              mc:Ignorable="d">
     <Grid>
@@ -43,9 +43,9 @@
         </StackPanel>
 
         <ListBox Grid.Row="1"
-                 ItemsSource="{Binding Simulation.Positions}"
+                 ItemsSource="{Binding Current.Positions}"
                  SelectedItem="{Binding SelectedPosition}"
-                 Visibility="{Binding Simulation,
+                 Visibility="{Binding Current,
                                       Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type sideways:Position}">
@@ -54,8 +54,8 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <StackPanel Grid.Row="2" Visibility="{Binding Simulation, Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
-            <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Simulation.Balance, StringFormat='#,#'}" />
+        <StackPanel Grid.Row="2" Visibility="{Binding Current, Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+            <TextBlock Foreground="{x:Static sideways:Brushes.Gray}" Text="{Binding Current.Balance, StringFormat='#,#'}" />
 
             <Button Command="{Binding BuyCommand}"
                     Content="Buy"

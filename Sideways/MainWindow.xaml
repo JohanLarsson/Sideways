@@ -439,7 +439,11 @@
                           Style="{StaticResource VerticalAxisGridSplitter}" />
 
             <Grid Grid.Column="2">
-                <sideways:SimulationView HorizontalAlignment="Right" Visibility="{Binding ElementName=SimulationButton, Path=IsChecked, Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+                <sideways:SimulationView HorizontalAlignment="Right"
+                                         DataContext="{Binding Simulation}"
+                                         Visibility="{Binding ElementName=SimulationButton,
+                                                              Path=IsChecked,
+                                                              Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
                 <sideways:BookmarksView HorizontalAlignment="Right"
                                         DataContext="{Binding Bookmarks}"
                                         Visibility="{Binding ElementName=BookmarksButton,
