@@ -31,7 +31,7 @@
         {
             if (this.DataContext is BookmarksViewModel viewModel)
             {
-                viewModel.Add(new BookmarksFile(null, ImmutableList<Bookmark>.Empty));
+                viewModel.Add(BookmarksFile.Create(null, ImmutableList<Bookmark>.Empty));
                 e.Handled = true;
             }
         }
@@ -56,7 +56,7 @@
                     try
                     {
                         viewModel.Add(
-                            new BookmarksFile(
+                            BookmarksFile.Create(
                                 new FileInfo(dialog.FileName),
                                 JsonSerializer.Deserialize<ImmutableList<Bookmark>>(File.ReadAllText(dialog.FileName)) ?? ImmutableList<Bookmark>.Empty));
                     }

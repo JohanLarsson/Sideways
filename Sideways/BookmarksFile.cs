@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.ComponentModel;
     using System.Globalization;
@@ -18,9 +19,9 @@
         private static readonly JsonSerializerOptions JsonSerializerOptions = new() { WriteIndented = true };
 
         private FileInfo? file;
-        private ImmutableList<Bookmark> bookmarks;
+        private ImmutableSortedSet<Bookmark> bookmarks;
 
-        public BookmarksFile(FileInfo? file, ImmutableList<Bookmark> bookmarks)
+        private BookmarksFile(FileInfo? file, ImmutableSortedSet<Bookmark> bookmarks)
         {
             this.file = file;
             this.bookmarks = bookmarks;
@@ -30,7 +31,7 @@
 
         public string Name => this.file is { FullName: { } fullName } ? Path.GetFileNameWithoutExtension(fullName) : "Not saved";
 
-        public ImmutableList<Bookmark> Bookmarks
+        public ImmutableSortedSet<Bookmark> Bookmarks
         {
             get => this.bookmarks;
             private set
@@ -44,6 +45,9 @@
                 this.OnPropertyChanged();
             }
         }
+
+        public static BookmarksFile Create(FileInfo? file, IEnumerable<Bookmark> bookmarks) =>
+            new(file, ImmutableSortedSet.CreateRange(BookMarkComparer.Default, bookmarks));
 
         public void Add(Bookmark bookmark)
         {
@@ -121,6 +125,43 @@
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private sealed class BookMarkComparer : IComparer<Bookmark>
+        {
+            internal static readonly BookMarkComparer Default = new();
+
+            public int Compare(Bookmark? x, Bookmark? y)
+            {
+                if (ReferenceEquals(x, y))
+                {
+                    return 0;
+                }
+
+                if (y is null)
+                {
+                    return 1;
+                }
+
+                if (x is null)
+                {
+                    return -1;
+                }
+
+                var state = string.Compare(x.Symbol, y.Symbol, StringComparison.Ordinal);
+                if (state != 0)
+                {
+                    return state;
+                }
+
+                state = x.Time.CompareTo(y.Time);
+                if (state != 0)
+                {
+                    return state;
+                }
+
+                return string.Compare(x.Comment, y.Comment, StringComparison.Ordinal);
+            }
         }
     }
 }
