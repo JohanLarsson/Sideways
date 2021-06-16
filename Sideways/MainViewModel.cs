@@ -46,6 +46,22 @@
                 }
             });
 
+            this.AddToWatchlistCommand = new RelayCommand(_ =>
+            {
+                switch (this)
+                {
+                    case { CurrentSymbol: { Symbol: { } symbol, Candles: { } }, WatchList: { } watchList }:
+                        watchList.Add(symbol);
+                        break;
+                    case { WatchList: null }:
+                        MessageBox.Show("No watchlist entry added, a watchlist must be open.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    default:
+                        MessageBox.Show("No watchlist entry added.", "Watchlist", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                }
+            });
+
             _ = this.Downloader.RefreshSymbolDownloadsAsync();
 
             this.Downloader.NewSymbol += (_, symbol) => this.Symbols = this.symbols.Add(symbol);
@@ -81,9 +97,11 @@
 
         public BookmarksViewModel Bookmarks { get; } = new();
 
+        public SimulationViewModel Simulation { get; }
+
         public ICommand AddBookmarkCommand { get; }
 
-        public SimulationViewModel Simulation { get; }
+        public ICommand AddToWatchlistCommand { get; }
 
         public ImmutableSortedSet<string> Symbols
         {

@@ -31,23 +31,6 @@
                     ApplicationCommands.Copy.Execute(null, this);
                     e.Handled = true;
                     break;
-                case Key.W
-                    when Keyboard.Modifiers == ModifierKeys.Control:
-                    switch (this.DataContext)
-                    {
-                        case MainViewModel { CurrentSymbol: { Symbol: { } symbol, Candles: { } }, WatchList: { } watchList }:
-                            watchList.Add(symbol);
-                            break;
-                        case MainViewModel { WatchList: null }:
-                            System.Windows.MessageBox.Show(this, "No watchlist entry added, a watchlist must be open.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
-                            break;
-                        default:
-                            System.Windows.MessageBox.Show(this, "No watchlist entry added.", "Watchlist", MessageBoxButton.OK, MessageBoxImage.Error);
-                            break;
-                    }
-
-                    e.Handled = true;
-                    break;
                 case Key.Left
                     when Keyboard.Modifiers == ModifierKeys.Shift:
                     Skip(CandleInterval.Hour, this.timer is null ? -1 : -2);

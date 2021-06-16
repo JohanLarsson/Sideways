@@ -43,6 +43,10 @@
         <KeyBinding Key="B"
                     Command="{Binding AddBookmarkCommand}"
                     Modifiers="Control" />
+
+        <KeyBinding Key="W"
+                    Command="{Binding AddToWatchlistCommand}"
+                    Modifiers="Control" />
     </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
