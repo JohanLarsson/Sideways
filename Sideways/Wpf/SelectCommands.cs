@@ -27,7 +27,7 @@
         static SelectCommands()
         {
             CommandManager.RegisterClassCommandBinding(typeof(Selector), new CommandBinding(Random, OnSelectRandom, OnCanSelectRandom));
-            CommandManager.RegisterClassInputBinding(typeof(Selector), new InputBinding(Random, new KeyGesture(Key.R, ModifierKeys.Alt)));
+            CommandManager.RegisterClassInputBinding(typeof(Selector), new InputBinding(Random, new KeyGesture(Key.Down, ModifierKeys.Alt)));
 
             CommandManager.RegisterClassCommandBinding(typeof(Selector), new CommandBinding(Back, OnSelectBack, OnCanSelectBack));
             CommandManager.RegisterClassInputBinding(typeof(Selector), new InputBinding(Back, new KeyGesture(Key.Left, ModifierKeys.Alt)));
