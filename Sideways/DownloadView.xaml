@@ -133,8 +133,9 @@
                                                 Orientation="Horizontal"
                                                 ToolTipService.ShowOnDisabled="True">
                                         <StackPanel.ToolTip>
-                                            <ToolTip d:DataContext="{d:DesignInstance alphaVantage:SymbolDownloads, IsDesignTimeCreatable=False}" DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
+                                            <ToolTip d:DataContext="{d:DesignInstance alphaVantage:DaysDownload, IsDesignTimeCreatable=False}" DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
                                                 <StackPanel>
+                                                    <TextBlock Text="{Binding Info}" />
                                                     <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
                                                     <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
                                                     <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
@@ -159,8 +160,9 @@
                                                 Orientation="Horizontal"
                                                 ToolTipService.ShowOnDisabled="True">
                                         <StackPanel.ToolTip>
-                                            <ToolTip d:DataContext="{d:DesignInstance alphaVantage:SymbolDownloads, IsDesignTimeCreatable=False}" DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
+                                            <ToolTip d:DataContext="{d:DesignInstance alphaVantage:MinutesDownload, IsDesignTimeCreatable=False}" DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
                                                 <StackPanel>
+                                                    <TextBlock Text="{Binding Info}" />
                                                     <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
                                                     <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
                                                     <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />

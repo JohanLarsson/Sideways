@@ -26,7 +26,7 @@
 
         public ICommand DownloadCommand { get; }
 
-        public override string Info => $"Days from {this.ExistingDays.Max:d}";
+        public override string Info => this.ExistingDays == default ? "All days" : $"Days from {this.ExistingDays.Max:d}";
 
         public static DaysDownload? TryCreate(string symbol, TimeRange dayRange, Downloader downloader, AlphaVantageSettings settings)
         {
