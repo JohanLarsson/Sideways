@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
@@ -34,10 +33,10 @@
         /// <summary>Identifies the <see cref="Candles"/> dependency property.</summary>
         public static readonly DependencyProperty CandlesProperty = DependencyProperty.RegisterAttached(
             nameof(Candles),
-            typeof(IReadOnlyList<Candle>),
+            typeof(DescendingCandles),
             typeof(Chart),
             new FrameworkPropertyMetadata(
-                default(IReadOnlyList<Candle>),
+                default(DescendingCandles),
                 FrameworkPropertyMetadataOptions.Inherits));
 
         /// <summary>Identifies the <see cref="ExtraCandles"/> dependency property.</summary>
@@ -100,12 +99,10 @@
                 default(DateTimeOffset?),
                 FrameworkPropertyMetadataOptions.Inherits));
 
-        private readonly List<Candle> candles = new();
-
         public Chart()
         {
             this.Children = new UIElementCollection(this, this);
-            this.Candles = this.candles;
+            this.Candles = new DescendingCandles();
         }
 
         public DateTimeOffset Time
@@ -121,10 +118,10 @@
         }
 
 #pragma warning disable WPF0012 // CLR property type should match registered type.
-        public IReadOnlyList<Candle> Candles
+        public DescendingCandles Candles
 #pragma warning restore WPF0012 // CLR property type should match registered type.
         {
-            get => (IReadOnlyList<Candle>)this.GetValue(CandlesProperty);
+            get => (DescendingCandles)this.GetValue(CandlesProperty);
             set => this.SetValue(CandlesProperty, value);
         }
 
@@ -189,7 +186,8 @@
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            this.candles.Clear();
+            var candles = this.Candles;
+            candles.Clear();
             if (finalSize.Width > 0 &&
                 finalSize.Height > 0 &&
                 this.ItemsSource is { } itemsSource)
@@ -201,14 +199,14 @@
                 foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval)
                                                   .Take(visible + this.ExtraCandles))
                 {
-                    if (this.candles.Count <= visible)
+                    if (candles.Count <= visible)
                     {
                         min = Math.Min(min, candle.Low);
                         max = Math.Max(max, candle.High);
                         maxVolume = Math.Max(maxVolume, candle.Volume);
                     }
 
-                    this.candles.Add(candle);
+                    candles.Add(candle);
                 }
 
                 this.SetCurrentValue(PriceRangeProperty, new FloatRange(min, max));
