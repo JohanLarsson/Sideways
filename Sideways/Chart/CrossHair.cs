@@ -81,10 +81,10 @@
         }
 
 #pragma warning disable WPF0012 // CLR property type should match registered type.
-        public IReadOnlyList<Candle> Candles
+        public DescendingCandles Candles
 #pragma warning restore WPF0012 // CLR property type should match registered type.
         {
-            get => (IReadOnlyList<Candle>)this.GetValue(CandlesProperty);
+            get => (DescendingCandles)this.GetValue(CandlesProperty);
             set => this.SetValue(CandlesProperty, value);
         }
 
