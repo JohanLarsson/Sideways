@@ -164,11 +164,14 @@
 
         public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol)
         {
-            var download = DaysDownload.Create(symbol, default, this);
-            await download.ExecuteAsync().ConfigureAwait(false);
+            var temp = new SymbolDownloads(symbol, default, DaysDownload.Create(symbol, default, this), default, ImmutableArray<MinutesDownload>.Empty);
+            //// Adding so that the button shows status.
+            this.SymbolDownloads = this.symbolDownloads.Add(temp);
+            await temp.DownloadAsync().ConfigureAwait(false);
             this.NewSymbol?.Invoke(this, symbol);
             if (AlphaVantage.SymbolDownloads.TryCreate(symbol, Database.DayRange(symbol), default, this, this.settings.AlphaVantage) is { } symbolDownload)
             {
+                this.SymbolDownloads = this.symbolDownloads.Remove(temp);
                 this.SymbolDownloads = this.symbolDownloads.Add(symbolDownload);
             }
 
