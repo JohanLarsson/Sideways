@@ -55,8 +55,8 @@
 
         <KeyBinding Key="Left"
                     Command="{Binding SkipLeftCommand}"
-                    Modifiers="Shift"
-                    CommandParameter="{x:Static sideways:CandleInterval.Hour}" />
+                    CommandParameter="{x:Static sideways:CandleInterval.Hour}"
+                    Modifiers="Shift" />
 
         <KeyBinding Key="Right"
                     Command="{Binding SkipRightCommand}"
@@ -64,12 +64,10 @@
 
         <KeyBinding Key="Right"
                     Command="{Binding SkipRightCommand}"
-                    Modifiers="Shift"
-                    CommandParameter="{x:Static sideways:CandleInterval.Hour}" />
+                    CommandParameter="{x:Static sideways:CandleInterval.Hour}"
+                    Modifiers="Shift" />
 
-        <KeyBinding Key="Space"
-                    Command="{Binding Animation.ToggleCommand}"
-                    />
+        <KeyBinding Key="Space" Command="{Binding Animation.ToggleCommand}" />
     </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
@@ -290,64 +288,39 @@
                                       SelectedItem="{Binding CurrentSymbolText}"
                                       Text="{Binding CurrentSymbolText,
                                                      UpdateSourceTrigger=Explicit}" />
-                            <Button d:DataContext="{d:DesignInstance Type=alphaVantage:SymbolDownloads}"
+
+                            <Button Padding="2,0"
+                                    d:DataContext="{d:DesignInstance Type=alphaVantage:SymbolDownloads}"
                                     Command="{Binding DownloadCommand}"
                                     Content="{Binding State.Status}"
+                                    ToolTipService.ShowOnDisabled="True"
+                                    ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}"
                                     Focusable="False"
                                     Visibility="{Binding .,
                                                          Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
-                                <Button.ContentTemplateSelector>
-                                    <sideways:DownloadStatusTemplateSelector>
-                                        <sideways:DownloadStatusTemplateSelector.Unknown>
-                                            <DataTemplate>
-                                                <Path Data="{StaticResource QuestionGeometry}"
-                                                      Fill="{x:Static sideways:Brushes.DisabledText}"
-                                                      Style="{StaticResource IconStyle}" />
-                                            </DataTemplate>
-                                        </sideways:DownloadStatusTemplateSelector.Unknown>
-
-                                        <sideways:DownloadStatusTemplateSelector.Waiting>
-                                            <DataTemplate>
-                                                <Path Data="{StaticResource ArrowDownGeometry}"
-                                                      Fill="{x:Static sideways:Brushes.Pressed}"
-                                                      Style="{StaticResource IconStyle}" />
-                                            </DataTemplate>
-                                        </sideways:DownloadStatusTemplateSelector.Waiting>
-
-                                        <sideways:DownloadStatusTemplateSelector.Running>
-                                            <DataTemplate>
-                                                <Grid>
-                                                    <Path Data="{StaticResource ArrowDownGeometry}"
-                                                          Fill="{x:Static sideways:Brushes.Pressed}"
-                                                          Style="{StaticResource IconStyle}" />
-
-                                                    <Rectangle Width="3"
-                                                               Height="3"
-                                                               sideways:Icon.IsPulsing="True"
-                                                               Fill="{x:Static sideways:Brushes.DarkGray}"
-                                                               Style="{StaticResource IconStyle}" />
-                                                </Grid>
-                                            </DataTemplate>
-                                        </sideways:DownloadStatusTemplateSelector.Running>
-
-                                        <sideways:DownloadStatusTemplateSelector.Completed>
-                                            <DataTemplate>
-                                                <Path Data="{StaticResource CheckGeometry}"
-                                                      Fill="{x:Static sideways:Brushes.Green}"
-                                                      Style="{StaticResource IconStyle}" />
-                                            </DataTemplate>
-                                        </sideways:DownloadStatusTemplateSelector.Completed>
-
-                                        <sideways:DownloadStatusTemplateSelector.Error>
-                                            <DataTemplate>
-                                                <Path Margin="1"
-                                                      Data="{StaticResource CrossGeometry}"
-                                                      Fill="{x:Static sideways:Brushes.Red}"
-                                                      Style="{StaticResource IconStyle}" />
-                                            </DataTemplate>
-                                        </sideways:DownloadStatusTemplateSelector.Error>
-                                    </sideways:DownloadStatusTemplateSelector>
-                                </Button.ContentTemplateSelector>
+                                <Button.ToolTip>
+                                    <ToolTip d:DataContext="{d:DesignInstance Type=alphaVantage:SymbolDownloads}" DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Symbol, StringFormat='Download missing data for: {0}'}" />
+                                            <TextBlock Text="{Binding DayText}" />
+                                            <TextBlock Text="{Binding MinutesText}" />
+                                            <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
+                                            <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
+                                            <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
+                                            <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
+                                            <ItemsControl ItemsSource="{Binding AllDownloads}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type alphaVantage:Download}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <ContentPresenter Content="{Binding State.Status}" ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}" />
+                                                            <TextBlock Text="{Binding Info}" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </Button.ToolTip>
                                 <Button.DataContext>
                                     <MultiBinding Converter="{x:Static sideways:SymbolDownloadConverter.Default}">
                                         <Binding Path="CurrentSymbol.Symbol" />
@@ -481,9 +454,9 @@
                                         Visibility="{Binding ElementName=BookmarksButton,
                                                              Path=IsChecked,
                                                              Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
-                <sideways:DownloadView HorizontalAlignment="Right"
+                <sideways:DownloadView Margin="6,0,0,0"
+                                       HorizontalAlignment="Right"
                                        DataContext="{Binding Downloader}"
-                                       Margin="6,0,0,0"
                                        Visibility="{Binding ElementName=DownloadButton,
                                                             Path=IsChecked,
                                                             Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />

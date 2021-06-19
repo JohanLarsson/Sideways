@@ -9,59 +9,6 @@
                                               IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
              mc:Ignorable="d">
-    <UserControl.Resources>
-        <sideways:DownloadStatusTemplateSelector x:Key="DownloadStatusTemplateSelector">
-            <sideways:DownloadStatusTemplateSelector.Unknown>
-                <DataTemplate>
-                    <Path Data="{StaticResource QuestionGeometry}"
-                          Fill="{x:Static sideways:Brushes.DisabledText}"
-                          Style="{StaticResource IconStyle}" />
-                </DataTemplate>
-            </sideways:DownloadStatusTemplateSelector.Unknown>
-
-            <sideways:DownloadStatusTemplateSelector.Waiting>
-                <DataTemplate>
-                    <Path Data="{StaticResource ArrowDownGeometry}"
-                          Fill="{x:Static sideways:Brushes.DisabledText}"
-                          Style="{StaticResource IconStyle}" />
-                </DataTemplate>
-            </sideways:DownloadStatusTemplateSelector.Waiting>
-
-            <sideways:DownloadStatusTemplateSelector.Running>
-                <DataTemplate>
-                    <Grid>
-                        <Path Data="{StaticResource ArrowDownGeometry}"
-                              Fill="{x:Static sideways:Brushes.Pressed}"
-                              Style="{StaticResource IconStyle}" />
-
-                        <Rectangle Width="3"
-                                   Height="3"
-                                   sideways:Icon.IsPulsing="True"
-                                   Fill="{x:Static sideways:Brushes.DarkGray}"
-                                   Style="{StaticResource IconStyle}" />
-                    </Grid>
-                </DataTemplate>
-            </sideways:DownloadStatusTemplateSelector.Running>
-
-            <sideways:DownloadStatusTemplateSelector.Completed>
-                <DataTemplate>
-                    <Path Data="{StaticResource CheckGeometry}"
-                          Fill="{x:Static sideways:Brushes.Green}"
-                          Style="{StaticResource IconStyle}" />
-                </DataTemplate>
-            </sideways:DownloadStatusTemplateSelector.Completed>
-
-            <sideways:DownloadStatusTemplateSelector.Error>
-                <DataTemplate>
-                    <Path Margin="1"
-                          Data="{StaticResource CrossGeometry}"
-                          Fill="{x:Static sideways:Brushes.Red}"
-                          Style="{StaticResource IconStyle}" />
-                </DataTemplate>
-            </sideways:DownloadStatusTemplateSelector.Error>
-        </sideways:DownloadStatusTemplateSelector>
-    </UserControl.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="4*" />
@@ -82,7 +29,7 @@
                         <StackPanel Orientation="Horizontal">
                             <ContentPresenter Margin="2,0"
                                               Content="{Binding SymbolDownloadState.Status}"
-                                              ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
+                                              ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}" />
 
                             <TextBlock Text="Download All" />
                         </StackPanel>
@@ -119,7 +66,7 @@
 
                                         <ContentPresenter Margin="2,0"
                                                           Content="{Binding State.Status}"
-                                                          ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
+                                                          ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}" />
                                         <TextBlock Text="{Binding Symbol}" />
                                     </StackPanel>
                                 </Button>
@@ -146,7 +93,7 @@
 
                                         <ContentPresenter Margin="2,0"
                                                           Content="{Binding State.Status}"
-                                                          ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
+                                                          ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}" />
                                         <TextBlock Text="days" />
                                     </StackPanel>
                                 </Button>
@@ -173,7 +120,7 @@
 
                                         <ContentPresenter Margin="2,0"
                                                           Content="{Binding State.Status}"
-                                                          ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
+                                                          ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}" />
                                         <TextBlock Text="minutes" />
                                     </StackPanel>
                                 </Button>
@@ -232,7 +179,7 @@
 
                                 <ContentPresenter Margin="2,0"
                                                   Content="{Binding State.Status}"
-                                                  ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
+                                                  ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}" />
                                 <TextBlock ToolTip="{Binding Info, Mode=OneTime}">
                                     <TextBlock.Inlines>
                                         <Run Text="{Binding Symbol, Mode=OneTime}" />

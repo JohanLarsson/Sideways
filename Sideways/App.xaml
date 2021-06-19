@@ -149,6 +149,57 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+
+            <sideways:DownloadStatusTemplateSelector x:Key="DownloadStatusIconSelector">
+                <sideways:DownloadStatusTemplateSelector.Unknown>
+                    <DataTemplate>
+                        <Path Data="{StaticResource QuestionGeometry}"
+                          Fill="{x:Static sideways:Brushes.DisabledText}"
+                          Style="{StaticResource IconStyle}" />
+                    </DataTemplate>
+                </sideways:DownloadStatusTemplateSelector.Unknown>
+
+                <sideways:DownloadStatusTemplateSelector.Waiting>
+                    <DataTemplate>
+                        <Path Data="{StaticResource ArrowDownGeometry}"
+                          Fill="{x:Static sideways:Brushes.DisabledText}"
+                          Style="{StaticResource IconStyle}" />
+                    </DataTemplate>
+                </sideways:DownloadStatusTemplateSelector.Waiting>
+
+                <sideways:DownloadStatusTemplateSelector.Running>
+                    <DataTemplate>
+                        <Grid>
+                            <Path Data="{StaticResource ArrowDownGeometry}"
+                              Fill="{x:Static sideways:Brushes.Pressed}"
+                              Style="{StaticResource IconStyle}" />
+
+                            <Rectangle Width="3"
+                                   Height="3"
+                                   sideways:Icon.IsPulsing="True"
+                                   Fill="{x:Static sideways:Brushes.DarkGray}"
+                                   Style="{StaticResource IconStyle}" />
+                        </Grid>
+                    </DataTemplate>
+                </sideways:DownloadStatusTemplateSelector.Running>
+
+                <sideways:DownloadStatusTemplateSelector.Completed>
+                    <DataTemplate>
+                        <Path Data="{StaticResource CheckGeometry}"
+                          Fill="{x:Static sideways:Brushes.Green}"
+                          Style="{StaticResource IconStyle}" />
+                    </DataTemplate>
+                </sideways:DownloadStatusTemplateSelector.Completed>
+
+                <sideways:DownloadStatusTemplateSelector.Error>
+                    <DataTemplate>
+                        <Path Margin="1"
+                          Data="{StaticResource CrossGeometry}"
+                          Fill="{x:Static sideways:Brushes.Red}"
+                          Style="{StaticResource IconStyle}" />
+                    </DataTemplate>
+                </sideways:DownloadStatusTemplateSelector.Error>
+            </sideways:DownloadStatusTemplateSelector>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
