@@ -77,6 +77,12 @@
             ? this.drawing
             : throw new ArgumentOutOfRangeException(nameof(index));
 
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            this.Candles.ExtraCandles = Math.Max(this.Candles.ExtraCandles, this.Period);
+            return base.MeasureOverride(availableSize);
+        }
+
         protected override void OnRender(DrawingContext drawingContext)
         {
             using var context = this.drawing.RenderOpen();

@@ -191,7 +191,6 @@
                                Text="W" />
                     <sideways:Chart x:Name="LeftChart"
                                     CandleInterval="Week"
-                                    ExtraCandles="20"
                                     ItemsSource="{Binding CurrentSymbol.Candles}"
                                     Time="{Binding Time}">
                         <Grid>
@@ -235,7 +234,6 @@
                 <Grid x:Name="MiddlePane" Grid.Column="2">
                     <sideways:Chart x:Name="MiddleChart"
                                     CandleInterval="Day"
-                                    ExtraCandles="200"
                                     ItemsSource="{Binding CurrentSymbol.Candles}"
                                     Time="{Binding Time}">
                         <Grid>
@@ -375,7 +373,6 @@
                 <Grid x:Name="RightPane" Grid.Column="4">
                     <sideways:Chart x:Name="RightChart"
                                     CandleInterval="Hour"
-                                    ExtraCandles="20"
                                     ItemsSource="{Binding CurrentSymbol.Candles}"
                                     Time="{Binding Time}">
                         <Grid>

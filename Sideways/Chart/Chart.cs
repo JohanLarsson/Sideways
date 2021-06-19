@@ -39,13 +39,6 @@
                 default(DescendingCandles),
                 FrameworkPropertyMetadataOptions.Inherits));
 
-        /// <summary>Identifies the <see cref="ExtraCandles"/> dependency property.</summary>
-        public static readonly DependencyProperty ExtraCandlesProperty = DependencyProperty.Register(
-            nameof(ExtraCandles),
-            typeof(int),
-            typeof(Chart),
-            new PropertyMetadata(default(int)));
-
         /// <summary>Identifies the <see cref="CandleInterval"/> dependency property.</summary>
         public static readonly DependencyProperty CandleIntervalProperty = DependencyProperty.RegisterAttached(
             nameof(CandleInterval),
@@ -125,12 +118,6 @@
             set => this.SetValue(CandlesProperty, value);
         }
 
-        public int ExtraCandles
-        {
-            get => (int)this.GetValue(ExtraCandlesProperty);
-            set => this.SetValue(ExtraCandlesProperty, value);
-        }
-
         public CandleInterval CandleInterval
         {
             get => (CandleInterval)this.GetValue(CandleIntervalProperty);
@@ -176,6 +163,7 @@
 
         protected override Size MeasureOverride(Size availableSize)
         {
+            this.Candles.ExtraCandles = 0;
             foreach (UIElement child in this.Children)
             {
                 child.Measure(availableSize);
@@ -197,7 +185,7 @@
                 var maxVolume = 0;
                 var visible = (int)Math.Ceiling(finalSize.Width / this.CandleWidth);
                 foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval)
-                                                  .Take(visible + this.ExtraCandles))
+                                                  .Take(visible + candles.ExtraCandles))
                 {
                     if (candles.Count <= visible)
                     {
