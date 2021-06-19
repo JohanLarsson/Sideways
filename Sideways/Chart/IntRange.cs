@@ -14,30 +14,15 @@
             this.Max = max;
         }
 
-        public static bool operator ==(IntRange left, IntRange right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(IntRange left, IntRange right) => left.Equals(right);
 
-        public static bool operator !=(IntRange left, IntRange right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(IntRange left, IntRange right) => !left.Equals(right);
 
-        public bool Equals(IntRange other)
-        {
-            return this.Min.Equals(other.Min) && this.Max.Equals(other.Max);
-        }
+        public bool Equals(IntRange other) => this.Min.Equals(other.Min) && this.Max.Equals(other.Max);
 
-        public override bool Equals(object? obj)
-        {
-            return obj is IntRange other && this.Equals(other);
-        }
+        public override bool Equals(object? obj) => obj is IntRange other && this.Equals(other);
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Min, this.Max);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.Min, this.Max);
 
         public bool Contains(int value) => value >= this.Min && value <= this.Max;
 

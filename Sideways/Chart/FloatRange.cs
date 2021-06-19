@@ -14,30 +14,15 @@
             this.Max = max;
         }
 
-        public static bool operator ==(FloatRange left, FloatRange right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(FloatRange left, FloatRange right) => left.Equals(right);
 
-        public static bool operator !=(FloatRange left, FloatRange right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(FloatRange left, FloatRange right) => !left.Equals(right);
 
-        public bool Equals(FloatRange other)
-        {
-            return this.Min.Equals(other.Min) && this.Max.Equals(other.Max);
-        }
+        public bool Equals(FloatRange other) => this.Min.Equals(other.Min) && this.Max.Equals(other.Max);
 
-        public override bool Equals(object? obj)
-        {
-            return obj is FloatRange other && this.Equals(other);
-        }
+        public override bool Equals(object? obj) => obj is FloatRange other && this.Equals(other);
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Min, this.Max);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.Min, this.Max);
 
         public double Y(float price, double height) => Sideways.Interpolate.Map(this, price, new DoubleRange(height, 0));
 
