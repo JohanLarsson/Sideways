@@ -172,7 +172,10 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Grid x:Name="Charts" sideways:Chart.BookmarkTime="{Binding Bookmarks.SelectedBookmark.Time, FallbackValue={x:Null}}">
+            <Grid x:Name="Charts"
+                  sideways:Chart.BookmarkTime="{Binding Bookmarks.SelectedBookmark.Time,
+                                                        FallbackValue={x:Null}}"
+                  FocusManager.FocusedElement="{Binding ElementName=SymbolComboBox}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -293,9 +296,9 @@
                                     d:DataContext="{d:DesignInstance Type=alphaVantage:SymbolDownloads}"
                                     Command="{Binding DownloadCommand}"
                                     Content="{Binding State.Status}"
-                                    ToolTipService.ShowOnDisabled="True"
                                     ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}"
                                     Focusable="False"
+                                    ToolTipService.ShowOnDisabled="True"
                                     Visibility="{Binding .,
                                                          Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
                                 <Button.ToolTip>
