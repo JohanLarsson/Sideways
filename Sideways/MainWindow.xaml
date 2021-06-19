@@ -12,6 +12,7 @@
         Background="{x:Static sideways:Brushes.Background}"
         Loaded="OnLoaded"
         TextElement.Foreground="{x:Static sideways:Brushes.Text}"
+        FocusManager.FocusedElement="{Binding ElementName=SymbolComboBox}"
         WindowState="Maximized"
         mc:Ignorable="d">
     <Window.Style>
@@ -174,8 +175,7 @@
 
             <Grid x:Name="Charts"
                   sideways:Chart.BookmarkTime="{Binding Bookmarks.SelectedBookmark.Time,
-                                                        FallbackValue={x:Null}}"
-                  FocusManager.FocusedElement="{Binding ElementName=SymbolComboBox}">
+                                                        FallbackValue={x:Null}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
