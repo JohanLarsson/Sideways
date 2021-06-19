@@ -39,6 +39,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="Copy" Executed="OnCopy" />
     </Window.CommandBindings>
+
     <Window.InputBindings>
         <KeyBinding Key="B"
                     Command="{Binding AddBookmarkCommand}"
@@ -482,6 +483,7 @@
                                                              Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
                 <sideways:DownloadView HorizontalAlignment="Right"
                                        DataContext="{Binding Downloader}"
+                                       Margin="6,0,0,0"
                                        Visibility="{Binding ElementName=DownloadButton,
                                                             Path=IsChecked,
                                                             Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />

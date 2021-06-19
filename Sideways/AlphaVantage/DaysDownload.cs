@@ -16,7 +16,7 @@
             this.ExistingDays = existingDays;
             this.OutputSize = outputSize;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            this.DownloadCommand = new RelayCommand(_ => this.ExecuteAsync(), _ => this.State.Start is null);
+            this.DownloadCommand = new RelayCommand(_ => this.ExecuteAsync(), _ => this.State is { Status: DownloadStatus.Waiting or DownloadStatus.Error });
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
@@ -60,6 +60,7 @@
         {
             this.downloader.Add(this);
             this.State.Start = DateTimeOffset.Now;
+            this.State.Exception = null;
 
             try
             {

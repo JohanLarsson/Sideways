@@ -146,7 +146,7 @@
                                         <ContentPresenter Margin="2,0"
                                                           Content="{Binding State.Status}"
                                                           ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
-                                        <TextBlock Text="{Binding Info}" />
+                                        <TextBlock Text="days" />
                                     </StackPanel>
                                 </Button>
                             </DataTemplate>
@@ -172,7 +172,7 @@
                                         <ContentPresenter Margin="2,0"
                                                           Content="{Binding State.Status}"
                                                           ContentTemplateSelector="{StaticResource DownloadStatusTemplateSelector}" />
-                                        <TextBlock Text="{Binding Info}" />
+                                        <TextBlock Text="minutes" />
                                     </StackPanel>
                                 </Button>
                             </DataTemplate>

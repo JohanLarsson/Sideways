@@ -24,7 +24,7 @@
             {
                 return this switch
                 {
-                    { DaysDownload: { State: { Start: { } } } } => false,
+                    { DaysDownload: { State: { Status: DownloadStatus.Waiting or DownloadStatus.Error } } } => false,
                     { MinutesDownloads: { Length: > 0 } minutesDownloads } => minutesDownloads.All(x => x is { State: { Start: null } }),
                     _ => true,
                 };
