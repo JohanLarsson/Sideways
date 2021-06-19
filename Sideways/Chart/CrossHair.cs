@@ -171,7 +171,7 @@
                 i >= 0 &&
                 this.PriceRange is { } range)
             {
-                this.SetCurrentValue(PositionProperty, new CrossHairPosition(this.Candles[i].Time, new ValueRange(range, Scale.Arithmetic).ValueFromY(pos.Y, size.Height), this.CandleInterval));
+                this.SetCurrentValue(PositionProperty, new CrossHairPosition(this.Candles[i].Time, new ValueRange(range, this.PriceScale).ValueFromY(pos.Y, size.Height), this.CandleInterval));
             }
             else
             {
