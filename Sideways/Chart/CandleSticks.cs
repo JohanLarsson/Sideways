@@ -51,6 +51,12 @@
             ? this.drawing
             : throw new ArgumentOutOfRangeException(nameof(index));
 
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            this.Candles.VisibleCandles = (int)Math.Ceiling(finalSize.Width / this.CandleWidth);
+            return base.ArrangeOverride(finalSize);
+        }
+
         protected override void OnRender(DrawingContext drawingContext)
         {
             var candleWidth = this.CandleWidth;

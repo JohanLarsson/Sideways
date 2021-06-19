@@ -190,7 +190,7 @@
                                VerticalAlignment="Top"
                                Foreground="{x:Static sideways:Brushes.Gray}"
                                Text="W" />
-                    <sideways:Chart x:Name="LeftChart"
+                    <!--<sideways:Chart x:Name="LeftChart"
                                     CandleInterval="Week"
                                     ItemsSource="{Binding CurrentSymbol.Candles}"
                                     Time="{Binding Time}">
@@ -225,7 +225,7 @@
 
                             <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
                         </Grid>
-                    </sideways:Chart>
+                    </sideways:Chart>-->
                 </Grid>
 
                 <GridSplitter Grid.Column="1"
@@ -380,7 +380,7 @@
                               Style="{StaticResource VerticalAxisGridSplitter}" />
 
                 <Grid x:Name="RightPane" Grid.Column="4">
-                    <sideways:Chart x:Name="RightChart"
+                    <!--<sideways:Chart x:Name="RightChart"
                                     CandleInterval="Hour"
                                     ItemsSource="{Binding CurrentSymbol.Candles}"
                                     Time="{Binding Time}">
@@ -417,7 +417,7 @@
 
                             <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
                         </Grid>
-                    </sideways:Chart>
+                    </sideways:Chart>-->
                     <StackPanel x:Name="IntradayIntervals"
                                 Margin="12,12"
                                 HorizontalAlignment="Left"

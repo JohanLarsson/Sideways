@@ -175,7 +175,13 @@
         protected override Size ArrangeOverride(Size finalSize)
         {
             var candles = this.Candles;
-            candles.Clear();
+            candles.VisibleCandles = 0;
+            candles.ExtraCandles = 0;
+            foreach (UIElement child in this.Children)
+            {
+                child.Arrange(new Rect(finalSize));
+            }
+
             if (finalSize.Width > 0 &&
                 finalSize.Height > 0 &&
                 this.ItemsSource is { } itemsSource)
@@ -183,11 +189,10 @@
                 var min = float.MaxValue;
                 var max = float.MinValue;
                 var maxVolume = 0;
-                var visible = (int)Math.Ceiling(finalSize.Width / this.CandleWidth);
                 foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval)
-                                                  .Take(visible + candles.ExtraCandles))
+                                                  .Take(candles.VisibleCandles + candles.ExtraCandles))
                 {
-                    if (candles.Count <= visible)
+                    if (candles.Count <= candles.VisibleCandles)
                     {
                         min = Math.Min(min, candle.Low);
                         max = Math.Max(max, candle.High);
@@ -203,11 +208,6 @@
             else
             {
                 this.SetCurrentValue(PriceRangeProperty, null);
-            }
-
-            foreach (UIElement child in this.Children)
-            {
-                child.Arrange(new Rect(finalSize));
             }
 
             return base.ArrangeOverride(finalSize);

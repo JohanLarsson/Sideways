@@ -14,6 +14,8 @@
 
         public int Count => this.candles.Count;
 
+        public int VisibleCandles { get; set; }
+
         public int ExtraCandles
         {
             get => this.extraCandles;
