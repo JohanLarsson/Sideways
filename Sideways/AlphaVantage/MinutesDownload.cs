@@ -106,13 +106,23 @@
                 }
 
                 if (candles.IsDefaultOrEmpty &&
-                    this.Slice is null or AlphaVantage.Slice.Year1Month1)
+                    IsMostRecentSlice())
                 {
                     this.downloader.MissingMinutes(this.Symbol);
                     throw new InvalidOperationException("Downloaded empty slice, maybe missing data on AlphaVantage. Adding symbol to SymbolsWithMissingMinutes in %APPDATA%\\Sideways\\Sideways.cfg");
                 }
 
                 return candles.Length;
+
+                bool IsMostRecentSlice()
+                {
+                    return this.Slice switch
+                    {
+                        AlphaVantage.Slice.Year1Month1 => true,
+                        { } slice => TimeRange.FromSlice(slice).Contains(Database.DayRange(this.Symbol).Max),
+                        null => true,
+                    };
+                }
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
