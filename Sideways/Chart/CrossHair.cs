@@ -142,7 +142,7 @@
                 }
                 else
                 {
-                    var y = priceRange.Y(price, size.Height);
+                    var y = new ValueRange(priceRange, Scale.Arithmetic).Y(price, size.Height);
                     context.DrawLine(this.pen, new Point(0, y), new Point(size.Width, y));
                     //// context.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, size.Height));
                 }
@@ -158,7 +158,7 @@
                 i >= 0 &&
                 this.PriceRange is { } range)
             {
-                this.SetCurrentValue(PositionProperty, new CrossHairPosition(this.Candles[i].Time, range.ValueFromY(pos.Y, size.Height), this.CandleInterval));
+                this.SetCurrentValue(PositionProperty, new CrossHairPosition(this.Candles[i].Time, new ValueRange(range, Scale.Arithmetic).ValueFromY(pos.Y, size.Height), this.CandleInterval));
             }
             else
             {

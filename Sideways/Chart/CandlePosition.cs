@@ -12,9 +12,9 @@
         internal readonly double CenterRight;
         private readonly int candleWidth;
         private readonly Size renderSize;
-        private readonly FloatRange valueRange;
+        private readonly ValueRange valueRange;
 
-        private CandlePosition(double left, double right, double centerLeft, double centerRight, int candleWidth, Size renderSize, FloatRange valueRange)
+        private CandlePosition(double left, double right, double centerLeft, double centerRight, int candleWidth, Size renderSize, ValueRange valueRange)
         {
             this.Left = left;
             this.Right = right;
@@ -35,7 +35,7 @@
             return !left.Equals(right);
         }
 
-        public static CandlePosition RightToLeft(Size renderSize, int candleWidth, FloatRange valueRange, int leftPad = 0, int rightPad = 0)
+        public static CandlePosition RightToLeft(Size renderSize, int candleWidth, ValueRange valueRange, int leftPad = 0, int rightPad = 0)
         {
             var right = renderSize.Width - rightPad;
             var left = right - candleWidth + rightPad + leftPad;
@@ -51,7 +51,7 @@
                 valueRange: valueRange);
         }
 
-        public static CandlePosition RightToLeftPadded(Size renderSize, int candleWidth, FloatRange valueRange)
+        public static CandlePosition RightToLeftPadded(Size renderSize, int candleWidth, ValueRange valueRange)
         {
             return candleWidth switch
             {

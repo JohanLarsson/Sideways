@@ -24,10 +24,6 @@
 
         public override int GetHashCode() => HashCode.Combine(this.Min, this.Max);
 
-        public double Y(float price, double height) => Sideways.Interpolate.Map(this, price, new DoubleRange(height, 0));
-
-        public float ValueFromY(double y, double height) => Sideways.Interpolate.Map(new DoubleRange(height, 0), y, this);
-
         public bool Contains(float value) => value >= this.Min && value <= this.Max;
 
         public double Interpolate(float value)

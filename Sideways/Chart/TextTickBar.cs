@@ -73,12 +73,12 @@
                     TextElement.GetFontStretch(this));
                 var fontSize = TextElement.GetFontSize(this);
                 var fill = this.Fill;
-
+                var valueRange = new ValueRange(range, Scale.Arithmetic);
                 var step = Step(range, this.ActualHeight);
                 var format = StringFormat(step);
                 var value = range.Min + step - (range.Min % step);
                 var halfTextHeight = fontSize * fontFamily.LineSpacing / 2;
-                var position = CandlePosition.RightToLeft(this.RenderSize, default, range);
+                var position = CandlePosition.RightToLeft(this.RenderSize, default, valueRange);
                 while (value < range.Max)
                 {
 #pragma warning disable CA1305 // Specify IFormatProvider
@@ -128,7 +128,7 @@
 
             return step;
 
-            double Pixels() => range.Y(range.Max - step, height);
+            double Pixels() => new ValueRange(range, Scale.Arithmetic).Y(range.Max - step, height);
         }
 
         private static string StringFormat(float step)
