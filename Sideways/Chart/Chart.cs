@@ -74,6 +74,15 @@
                 null,
                 FrameworkPropertyMetadataOptions.Inherits));
 
+        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
+        public static readonly DependencyProperty PriceScaleProperty = DependencyProperty.RegisterAttached(
+            nameof(PriceScale),
+            typeof(Scale),
+            typeof(Chart),
+            new FrameworkPropertyMetadata(
+                Scale.Logarithmic,
+                FrameworkPropertyMetadataOptions.Inherits));
+
         /// <summary>Identifies the <see cref="MaxVolume"/> dependency property.</summary>
         public static readonly DependencyProperty MaxVolumeProperty = DependencyProperty.RegisterAttached(
             nameof(MaxVolume),
@@ -141,6 +150,12 @@
         {
             get => (FloatRange?)this.GetValue(PriceRangeProperty);
             protected set => this.SetValue(PriceRangeProperty, value);
+        }
+
+        public Scale PriceScale
+        {
+            get => (Scale)this.GetValue(PriceScaleProperty);
+            set => this.SetValue(PriceScaleProperty, value);
         }
 
         public int? MaxVolume

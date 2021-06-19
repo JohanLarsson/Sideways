@@ -19,7 +19,15 @@
 
         public double Y(float price, double height) => Interpolate.Map(this.range, this.scale == Scale.Logarithmic ? Log(price) : price, new DoubleRange(height, 0));
 
-        public float ValueFromY(double y, double height) => Sideways.Interpolate.Map(new DoubleRange(height, 0), y, this.range);
+        public float ValueFromY(double y, double height)
+        {
+            var raw = Interpolate.Map(new DoubleRange(height, 0), y, this.range);
+            return this.scale switch
+            {
+                Scale.Logarithmic => (float)Math.Exp(raw),
+                Scale.Arithmetic => raw,
+            };
+        }
 
         private static float Log(float value) => (float)(value == 0 ? float.MinValue : Math.Log(value));
     }

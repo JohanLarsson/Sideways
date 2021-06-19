@@ -25,6 +25,13 @@
                 null,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+        /// <summary>Identifies the <see cref="PriceScale"/> dependency property.</summary>
+        public static readonly DependencyProperty PriceScaleProperty = Chart.PriceScaleProperty.AddOwner(
+            typeof(CrossHair),
+            new FrameworkPropertyMetadata(
+                Scale.Logarithmic,
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         /// <summary>Identifies the <see cref="Candles"/> dependency property.</summary>
         public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(typeof(CrossHair));
 
@@ -99,6 +106,12 @@
             set => this.SetValue(PriceRangeProperty, value);
         }
 
+        public Scale PriceScale
+        {
+            get => (Scale)this.GetValue(PriceScaleProperty);
+            set => this.SetValue(PriceScaleProperty, value);
+        }
+
         public CrossHairPosition? Position
         {
             get => (CrossHairPosition?)this.GetValue(PositionProperty);
@@ -142,7 +155,7 @@
                 }
                 else
                 {
-                    var y = new ValueRange(priceRange, Scale.Arithmetic).Y(price, size.Height);
+                    var y = new ValueRange(priceRange, this.PriceScale).Y(price, size.Height);
                     context.DrawLine(this.pen, new Point(0, y), new Point(size.Width, y));
                     //// context.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, size.Height));
                 }

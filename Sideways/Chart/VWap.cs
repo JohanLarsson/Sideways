@@ -13,6 +13,13 @@
                 null,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+        /// <summary>Identifies the <see cref="PriceScale"/> dependency property.</summary>
+        public static readonly DependencyProperty PriceScaleProperty = Chart.PriceScaleProperty.AddOwner(
+            typeof(VWap),
+            new FrameworkPropertyMetadata(
+                Scale.Logarithmic,
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         /// <summary>Identifies the <see cref="Brush"/> dependency property.</summary>
         public static readonly DependencyProperty BrushProperty = DependencyProperty.Register(
             nameof(Brush),
@@ -39,6 +46,12 @@
             set => this.SetValue(PriceRangeProperty, value);
         }
 
+        public Scale PriceScale
+        {
+            get => (Scale)this.GetValue(PriceScaleProperty);
+            set => this.SetValue(PriceScaleProperty, value);
+        }
+
         public SolidColorBrush? Brush
         {
             get => (SolidColorBrush?)this.GetValue(BrushProperty);
@@ -59,7 +72,7 @@
                 this.PriceRange is { } priceRange)
             {
                 Point? previous = null;
-                var position = CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, Scale.Arithmetic));
+                var position = CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale));
                 foreach (var a in candles.DescendingVWaps(this.Time, this.CandleInterval))
                 {
                     var p2 = new Point(position.CenterLeft, position.Y(a));

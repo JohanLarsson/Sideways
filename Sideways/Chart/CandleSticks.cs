@@ -15,6 +15,13 @@
                 null,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+        /// <summary>Identifies the <see cref="PriceScale"/> dependency property.</summary>
+        public static readonly DependencyProperty PriceScaleProperty = Chart.PriceScaleProperty.AddOwner(
+            typeof(CandleSticks),
+            new FrameworkPropertyMetadata(
+                Scale.Logarithmic,
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         static CandleSticks()
         {
             RenderOptions.EdgeModeProperty.OverrideMetadata(typeof(CandleSticks), new UIPropertyMetadata(EdgeMode.Aliased));
@@ -32,6 +39,12 @@
             set => this.SetValue(PriceRangeProperty, value);
         }
 
+        public Scale PriceScale
+        {
+            get => (Scale)this.GetValue(PriceScaleProperty);
+            set => this.SetValue(PriceScaleProperty, value);
+        }
+
         protected override int VisualChildrenCount => 1;
 
         protected override Visual GetVisualChild(int index) => index == 0
@@ -45,7 +58,7 @@
             if (this.PriceRange is { } range)
             {
                 var candles = this.Candles;
-                var position = CandlePosition.RightToLeftPadded(this.RenderSize, candleWidth, new ValueRange(range, Scale.Arithmetic));
+                var position = CandlePosition.RightToLeftPadded(this.RenderSize, candleWidth, new ValueRange(range, this.PriceScale));
                 foreach (var candle in candles)
                 {
                     var brush = Brushes.Get(candle);

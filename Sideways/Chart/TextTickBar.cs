@@ -23,6 +23,13 @@
                 null,
                 FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsParentMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
 
+        /// <summary>Identifies the <see cref="PriceScale"/> dependency property.</summary>
+        public static readonly DependencyProperty PriceScaleProperty = Chart.PriceScaleProperty.AddOwner(
+            typeof(TextTickBar),
+            new FrameworkPropertyMetadata(
+                Scale.Logarithmic,
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         /// <summary>
         /// Fill property
         /// </summary>
@@ -36,6 +43,12 @@
         {
             get => (FloatRange?)this.GetValue(PriceRangeProperty);
             set => this.SetValue(PriceRangeProperty, value);
+        }
+
+        public Scale PriceScale
+        {
+            get => (Scale)this.GetValue(PriceScaleProperty);
+            set => this.SetValue(PriceScaleProperty, value);
         }
 
         protected override Size MeasureOverride(Size availableSize)
@@ -73,7 +86,7 @@
                     TextElement.GetFontStretch(this));
                 var fontSize = TextElement.GetFontSize(this);
                 var fill = this.Fill;
-                var valueRange = new ValueRange(range, Scale.Arithmetic);
+                var valueRange = new ValueRange(range, this.PriceScale);
                 var step = Step(range, this.ActualHeight);
                 var format = StringFormat(step);
                 var value = range.Min + step - (range.Min % step);
