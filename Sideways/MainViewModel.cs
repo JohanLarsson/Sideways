@@ -92,9 +92,11 @@
                     this.Bookmarks.SelectedBookmark is { } bookmark)
                 {
                     this.CurrentSymbol = SymbolViewModel.GetOrCreate(bookmark.Symbol, this.Downloader);
-                    this.Time = this.currentSymbol?.Candles is { } candles
-                        ? candles.Skip(bookmark.Time, CandleInterval.Day, this.Bookmarks.Offset)
-                        : bookmark.Time.AddDays(this.Bookmarks.Offset);
+                    this.Time = this.Bookmarks.Offset == 0
+                        ? bookmark.Time
+                        : this.currentSymbol?.Candles is { } candles
+                            ? candles.Skip(bookmark.Time, CandleInterval.Day, this.Bookmarks.Offset)
+                            : bookmark.Time.AddDays(this.Bookmarks.Offset);
                 }
             };
             this.WatchList.CollectionChanged += (_, _) =>
