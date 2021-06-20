@@ -5,6 +5,7 @@
     public static class Brushes
     {
         public static readonly SolidColorBrush Background = Create(Color.FromArgb(byte.MaxValue, 5, 5, 15));
+        public static readonly SolidColorBrush SemiTransparentBackground = Create(Color.FromArgb(100, 5, 5, 15));
         public static readonly SolidColorBrush Increasing = Create(Color.FromArgb(byte.MaxValue, 66, 154, 66));
         public static readonly SolidColorBrush Decreasing = Create(Color.FromArgb(byte.MaxValue, 154, 66, 66));
         public static readonly SolidColorBrush PreMarket = Create(Color.FromArgb(10, 255, 255, 20));

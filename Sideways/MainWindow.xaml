@@ -275,7 +275,10 @@
                         </Grid>
                     </sideways:Chart>
 
-                    <StackPanel Margin="10,10" HorizontalAlignment="Left">
+                    <StackPanel Margin="10,10"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Background="{x:Static sideways:Brushes.SemiTransparentBackground}">
                         <StackPanel Orientation="Horizontal">
                             <ComboBox x:Name="SymbolComboBox"
                                       HorizontalAlignment="Left"
@@ -329,7 +332,7 @@
                             </Button>
                         </StackPanel>
 
-                        <TextBlock IsHitTestVisible="False">
+                        <TextBlock>
                             <TextBlock.Text>
                                 <MultiBinding Converter="{x:Static sideways:AdrConverter.Default}" StringFormat="ADR {0:F1}%">
                                     <Binding ElementName="MiddleChart" Path="Candles" />
@@ -339,7 +342,7 @@
                             </TextBlock.Text>
                         </TextBlock>
 
-                        <TextBlock IsHitTestVisible="False">
+                        <TextBlock>
                             <TextBlock.Text>
                                 <MultiBinding Converter="{x:Static sideways:AtrConverter.Default}" StringFormat="ATR {0:F1}$">
                                     <Binding ElementName="MiddleChart" Path="Candles" />
@@ -349,7 +352,7 @@
                             </TextBlock.Text>
                         </TextBlock>
 
-                        <TextBlock IsHitTestVisible="False">
+                        <TextBlock>
                             <TextBlock.Text>
                                 <MultiBinding Converter="{x:Static sideways:AverageDollarVolumeConverter.Default}" StringFormat="A$V {0:##,#0} M">
                                     <Binding ElementName="MiddleChart" Path="Candles" />
