@@ -72,8 +72,8 @@
                     Brushes.DarkGray,
                     null,
                     new Rect(
-                        new Point(bookMarkX, 0),
-                        new Point(bookMarkX + 1, renderSize.Height)));
+                        new Point(bookMarkX - 1, 0),
+                        new Point(bookMarkX, renderSize.Height)));
             }
 
             void DrawBand(Func<Candle, bool> func, SolidColorBrush brush)
