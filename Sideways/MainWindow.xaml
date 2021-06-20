@@ -173,7 +173,10 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Grid x:Name="Charts" sideways:Chart.BookmarkTime="{Binding Bookmarks.SelectedBookmark.Time, FallbackValue={x:Null}}">
+            <Grid x:Name="Charts"
+                  Panel.ZIndex="101"
+                  sideways:Chart.BookmarkTime="{Binding Bookmarks.SelectedBookmark.Time,
+                                                        FallbackValue={x:Null}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -226,6 +229,7 @@
                 </Grid>
 
                 <GridSplitter Grid.Column="1"
+                              Panel.ZIndex="103"
                               Focusable="False"
                               Style="{StaticResource VerticalAxisGridSplitter}" />
 
@@ -368,6 +372,7 @@
                 </Grid>
 
                 <GridSplitter Grid.Column="3"
+                              Panel.ZIndex="102"
                               Focusable="False"
                               Style="{StaticResource VerticalAxisGridSplitter}" />
 
@@ -441,10 +446,11 @@
             </Grid>
 
             <GridSplitter Grid.Column="1"
+                          Panel.ZIndex="100"
                           Focusable="False"
                           Style="{StaticResource VerticalAxisGridSplitter}" />
 
-            <Grid Grid.Column="2">
+            <Grid x:Name="ContextPane" Grid.Column="2">
                 <sideways:SimulationView HorizontalAlignment="Right"
                                          DataContext="{Binding Simulation}"
                                          Visibility="{Binding ElementName=SimulationButton,
