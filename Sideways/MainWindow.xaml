@@ -10,9 +10,9 @@
                                          IsDesignTimeCreatable=False}"
         sideways:SelectCommands.IsEnabled="True"
         Background="{x:Static sideways:Brushes.Background}"
+        FocusManager.FocusedElement="{Binding ElementName=SymbolComboBox}"
         Loaded="OnLoaded"
         TextElement.Foreground="{x:Static sideways:Brushes.Text}"
-        FocusManager.FocusedElement="{Binding ElementName=SymbolComboBox}"
         WindowState="Maximized"
         mc:Ignorable="d">
     <Window.Style>
@@ -173,9 +173,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Grid x:Name="Charts"
-                  sideways:Chart.BookmarkTime="{Binding Bookmarks.SelectedBookmark.Time,
-                                                        FallbackValue={x:Null}}">
+            <Grid x:Name="Charts" sideways:Chart.BookmarkTime="{Binding Bookmarks.SelectedBookmark.Time, FallbackValue={x:Null}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -277,7 +275,7 @@
                         </Grid>
                     </sideways:Chart>
 
-                    <StackPanel Margin="10,10">
+                    <StackPanel Margin="10,10" HorizontalAlignment="Left">
                         <StackPanel Orientation="Horizontal">
                             <ComboBox x:Name="SymbolComboBox"
                                       HorizontalAlignment="Left"
@@ -331,7 +329,7 @@
                             </Button>
                         </StackPanel>
 
-                        <TextBlock>
+                        <TextBlock IsHitTestVisible="False">
                             <TextBlock.Text>
                                 <MultiBinding Converter="{x:Static sideways:AdrConverter.Default}" StringFormat="ADR {0:F1}%">
                                     <Binding ElementName="MiddleChart" Path="Candles" />
@@ -341,7 +339,7 @@
                             </TextBlock.Text>
                         </TextBlock>
 
-                        <TextBlock>
+                        <TextBlock IsHitTestVisible="False">
                             <TextBlock.Text>
                                 <MultiBinding Converter="{x:Static sideways:AtrConverter.Default}" StringFormat="ATR {0:F1}$">
                                     <Binding ElementName="MiddleChart" Path="Candles" />
@@ -351,7 +349,7 @@
                             </TextBlock.Text>
                         </TextBlock>
 
-                        <TextBlock>
+                        <TextBlock IsHitTestVisible="False">
                             <TextBlock.Text>
                                 <MultiBinding Converter="{x:Static sideways:AverageDollarVolumeConverter.Default}" StringFormat="A$V {0:##,#0} M">
                                     <Binding ElementName="MiddleChart" Path="Candles" />
