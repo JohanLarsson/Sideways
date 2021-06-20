@@ -65,7 +65,8 @@
             }
 
             if (this.BookmarkTime is { } bookmarkTime &&
-                CandlePosition.X(bookmarkTime, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } bookMarkX)
+                CandlePosition.X(bookmarkTime, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } bookMarkX &&
+                bookMarkX < renderSize.Width - this.CandleWidth)
             {
                 drawingContext.DrawRectangle(
                     Brushes.DarkGray,
