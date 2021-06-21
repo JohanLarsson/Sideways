@@ -1,6 +1,5 @@
 ﻿namespace Sideways
 {
-    using System;
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media;
@@ -123,10 +122,6 @@
         protected override void OnRender(DrawingContext drawingContext)
         {
             var renderSize = this.RenderSize;
-            drawingContext.DrawRectangle(
-                Brushes.Transparent,
-                null,
-                new Rect(renderSize));
             if (this.pen is { } &&
                 this.PriceRange is { } priceRange &&
                 this.Position is { Price: var price })
@@ -144,6 +139,11 @@
                     //// context.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, size.Height));
                 }
             }
+        }
+
+        protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)
+        {
+            return new PointHitTestResult(this, hitTestParameters.HitPoint);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
