@@ -163,14 +163,10 @@
 
         protected override void OnPreviewMouseMove(MouseEventArgs e)
         {
-            var size = this.RenderSize;
-            var pos = e.GetPosition(this);
-            var i = (int)Math.Round((size.Width - pos.X) / this.CandleWidth);
-            if (this.Candles.Count > i &&
-                i >= 0 &&
-                this.PriceRange is { } range)
+            if (this.PriceRange is { } priceRange &&
+                CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale)).TimeAndPrice(e.GetPosition(this), this.Candles) is { Time: var time, Price: var price })
             {
-                this.SetCurrentValue(PositionProperty, new CrossHairPosition(this.Candles[i].Time, new ValueRange(range, this.PriceScale).ValueFromY(pos.Y, size.Height), this.CandleInterval));
+                this.SetCurrentValue(PositionProperty, new CrossHairPosition(time, price, this.CandleInterval));
             }
             else
             {

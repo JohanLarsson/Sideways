@@ -113,6 +113,17 @@
 
         public double Y(float value) => this.valueRange.Y(value, this.renderSize.Height);
 
+        public TimeAndPrice? TimeAndPrice(Point position, DescendingCandles candles)
+        {
+            var i = (int)Math.Round((this.renderSize.Width - position.X) / this.candleWidth);
+            if (i >= 0 && i < candles.Count)
+            {
+                return new TimeAndPrice(candles[i].Time, this.valueRange.ValueFromY(position.Y, this.renderSize.Height));
+            }
+
+            return null;
+        }
+
         public CandlePosition ShiftLeft() => new(
             left: this.Left - this.candleWidth,
             right: this.Right - this.candleWidth,
