@@ -146,12 +146,7 @@
                 if (candlePosition.Point(measurement.Start, this.Candles, this.CandleInterval) is { } p1 &&
                     candlePosition.Point(end, this.Candles, this.CandleInterval) is { } p2)
                 {
-                    drawingContext.DrawRectangle(
-                        background,
-                        null,
-                        new Rect(
-                            p1,
-                            p2));
+                    drawingContext.DrawRectangle(background, null, new Rect(p1, p2));
                 }
             }
         }
@@ -189,12 +184,6 @@
                     this.Current = new Measurement(timeAndPrice, null);
                 }
             }
-        }
-
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            this.Current = null;
-            base.OnMouseLeave(e);
         }
     }
 }
