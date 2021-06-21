@@ -8,7 +8,7 @@
     using System.Windows.Markup;
     using System.Windows.Media;
 
-    [ContentProperty("Child")]
+    [ContentProperty(nameof(Child))]
     public class MeasureDecorator : CandleSeries
     {
         /// <summary>Identifies the <see cref="Background"/> dependency property.</summary>
@@ -45,14 +45,16 @@
         /// <summary>Identifies the <see cref="Current"/> dependency property.</summary>
         public static readonly DependencyProperty CurrentProperty = CurrentPropertyKey.DependencyProperty;
 
-        private CandleSticks child;
+        private CandleSticks? child;
 
         static MeasureDecorator()
         {
             ClipToBoundsProperty.OverrideMetadata(typeof(MeasureDecorator), new PropertyMetadata(true));
         }
 
+#pragma warning disable WPF0012 // CLR property type should match registered type.
         public SolidColorBrush? Background
+#pragma warning restore WPF0012 // CLR property type should match registered type.
         {
             get => (SolidColorBrush?)this.GetValue(BackgroundProperty);
             set => this.SetValue(BackgroundProperty, value);
@@ -77,7 +79,7 @@
         }
 
         [DefaultValue(null)]
-        public virtual CandleSticks Child
+        public virtual CandleSticks? Child
         {
             get => this.child;
             set
@@ -193,19 +195,6 @@
         {
             this.Current = null;
             base.OnMouseLeave(e);
-        }
-
-        public class Measurement
-        {
-            public Measurement(TimeAndPrice start, TimeAndPrice? end)
-            {
-                this.Start = start;
-                this.End = end;
-            }
-
-            public TimeAndPrice Start { get; }
-
-            public TimeAndPrice? End { get; }
         }
     }
 }

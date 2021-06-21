@@ -3,7 +3,7 @@
     using System;
     using System.Collections;
 
-    internal class EmptyEnumerator : IEnumerator
+    internal sealed class EmptyEnumerator : IEnumerator
     {
         internal static readonly IEnumerator Instance = new EmptyEnumerator();
 
