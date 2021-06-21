@@ -15,15 +15,11 @@
             this.Max = max;
         }
 
-        public static bool operator ==(TimeRange left, TimeRange right)
-        {
-            return left.Equals(right);
-        }
+        public TimeSpan Span => this.Max - this.Min;
 
-        public static bool operator !=(TimeRange left, TimeRange right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator ==(TimeRange left, TimeRange right) => left.Equals(right);
+
+        public static bool operator !=(TimeRange left, TimeRange right) => !left.Equals(right);
 
         public static TimeRange FromSlice(Slice slice)
         {
@@ -60,20 +56,11 @@
             };
         }
 
-        public bool Equals(TimeRange other)
-        {
-            return this.Min.Equals(other.Min) && this.Max.Equals(other.Max);
-        }
+        public bool Equals(TimeRange other) => this.Min.Equals(other.Min) && this.Max.Equals(other.Max);
 
-        public override bool Equals(object? obj)
-        {
-            return obj is TimeRange other && this.Equals(other);
-        }
+        public override bool Equals(object? obj) => obj is TimeRange other && this.Equals(other);
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Min, this.Max);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.Min, this.Max);
 
         public bool Contains(DateTimeOffset value) => value >= this.Min && value <= this.Max;
 
