@@ -46,6 +46,7 @@
         public static readonly DependencyProperty CurrentProperty = CurrentPropertyKey.DependencyProperty;
 
         private CandleSticks? child;
+        private MeasureAdorner? adorner;
 
         static MeasureDecorator()
         {
@@ -147,7 +148,20 @@
                     candlePosition.Point(end, this.Candles, this.CandleInterval) is { } p2)
                 {
                     drawingContext.DrawRectangle(background, null, new Rect(p1, p2));
+                    if (this.adorner is null)
+                    {
+                        this.adorner = MeasureAdorner.Show(this, measurement, p2);
+                    }
+                    else
+                    {
+                        this.adorner.Update(measurement, p2);
+                    }
                 }
+            }
+            else if (this.adorner is { } adorner)
+            {
+                AdornerService.Remove(adorner);
+                this.adorner = null;
             }
         }
 
