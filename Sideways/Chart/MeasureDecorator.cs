@@ -102,9 +102,6 @@
 
         protected override int VisualChildrenCount => this.child is null ? 0 : 1;
 
-        /// <summary>
-        /// Returns the child at the specified index.
-        /// </summary>
         protected override Visual GetVisualChild(int index)
         {
             if ((this.child is null) || (index != 0))
@@ -126,11 +123,6 @@
             return default;
         }
 
-        /// <summary>
-        /// Decorator computes the position of its single child inside child's Margin and calls Arrange
-        /// on the child.
-        /// </summary>
-        /// <param name="finalSize">Size the Decorator will assume.</param>
         protected override Size ArrangeOverride(Size finalSize)
         {
             if (this.child is { } child)
