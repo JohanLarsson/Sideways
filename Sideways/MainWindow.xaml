@@ -263,7 +263,7 @@
 
                                 <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Orange}" Period="100" />
 
-                                <sideways:MovingAverage Brush="CadetBlue" Period="150" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Blue}" Period="150" />
 
                                 <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Green}" Period="200" />
 

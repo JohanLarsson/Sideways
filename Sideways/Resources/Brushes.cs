@@ -16,7 +16,8 @@
         public static readonly SolidColorBrush Yellow = Create(Color.FromArgb(byte.MaxValue, 143, 139, 61));
         public static readonly SolidColorBrush Orange = Create(Color.FromArgb(byte.MaxValue, 143, 113, 61));
         public static readonly SolidColorBrush Red = Create(Color.FromArgb(byte.MaxValue, 143, 61, 61));
-        public static readonly SolidColorBrush Green = Create(Color.FromArgb(byte.MaxValue, 68, 143, 61));
+        public static readonly SolidColorBrush Green = Create(Color.FromArgb(byte.MaxValue, 61, 143, 61));
+        public static readonly SolidColorBrush Blue = Create(Color.FromArgb(byte.MaxValue, 95, 158, 160));
         public static readonly SolidColorBrush Even = Create(Color.FromArgb(10, 80, 80, 80));
         public static readonly SolidColorBrush LightGray = Create(Color.FromArgb(byte.MaxValue, 160, 160, 160));
         public static readonly SolidColorBrush Gray = Create(Color.FromArgb(byte.MaxValue, 128, 128, 128));
