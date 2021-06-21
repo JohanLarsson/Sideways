@@ -267,9 +267,11 @@
 
                                 <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Green}" Period="200" />
 
-                                <sideways:CandleSticks />
+                                <sideways:MeasureDecorator>
+                                    <sideways:CandleSticks />
+                                </sideways:MeasureDecorator>
                                 
-                                <sideways:CrossHair />
+                                <!--<sideways:CrossHair />-->
                             </Grid>
 
                             <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
