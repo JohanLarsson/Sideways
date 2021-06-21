@@ -57,20 +57,12 @@
                 default(CrossHairPosition?),
                 FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        private readonly DrawingVisual drawing;
-
         private Pen? pen;
 
         static CrossHair()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CrossHair), new FrameworkPropertyMetadata(typeof(CrossHair)));
             ClipToBoundsProperty.OverrideMetadata(typeof(CrossHair), new PropertyMetadata(true));
-        }
-
-        public CrossHair()
-        {
-            this.drawing = new DrawingVisual();
-            this.AddVisualChild(this.drawing);
         }
 
         public SolidColorBrush? Brush
@@ -117,8 +109,6 @@
             set => this.SetValue(PositionProperty, value);
         }
 
-        protected override int VisualChildrenCount => 1;
-
         /// <summary>Helper for getting <see cref="PositionProperty"/> from <paramref name="e"/>.</summary>
         /// <param name="e"><see cref="UIElement"/> to read <see cref="PositionProperty"/> from.</param>
         /// <returns>Position property value.</returns>
@@ -130,18 +120,13 @@
         /// <param name="position">Position property value.</param>
         public static void SetPosition(UIElement e, CrossHairPosition? position) => e.SetValue(PositionProperty, position);
 
-        protected override Visual GetVisualChild(int index) => index == 0
-            ? this.drawing
-            : throw new ArgumentOutOfRangeException(nameof(index));
-
         protected override void OnRender(DrawingContext drawingContext)
         {
-            var size = this.RenderSize;
-            using var context = this.drawing.RenderOpen();
-            context.DrawRectangle(
+            var renderSize = this.RenderSize;
+            drawingContext.DrawRectangle(
                 Brushes.Transparent,
                 null,
-                new Rect(this.RenderSize));
+                new Rect(renderSize));
             if (this.pen is { } &&
                 this.PriceRange is { } priceRange &&
                 this.Position is { Price: var price })
@@ -149,19 +134,19 @@
                 if (this.IsMouseOver)
                 {
                     var p = Mouse.GetPosition(this);
-                    context.DrawLine(this.pen, new Point(0, p.Y), new Point(size.Width, p.Y));
-                    context.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, size.Height));
+                    drawingContext.DrawLine(this.pen, new Point(0, p.Y), new Point(renderSize.Width, p.Y));
+                    drawingContext.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, renderSize.Height));
                 }
                 else
                 {
-                    var y = new ValueRange(priceRange, this.PriceScale).Y(price, size.Height);
-                    context.DrawLine(this.pen, new Point(0, y), new Point(size.Width, y));
+                    var y = new ValueRange(priceRange, this.PriceScale).Y(price, renderSize.Height);
+                    drawingContext.DrawLine(this.pen, new Point(0, y), new Point(renderSize.Width, y));
                     //// context.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, size.Height));
                 }
             }
         }
 
-        protected override void OnPreviewMouseMove(MouseEventArgs e)
+        protected override void OnMouseMove(MouseEventArgs e)
         {
             if (this.PriceRange is { } priceRange &&
                 CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale)).TimeAndPrice(e.GetPosition(this), this.Candles) is { Time: var time, Price: var price })
@@ -172,14 +157,11 @@
             {
                 this.SetCurrentValue(PositionProperty, null);
             }
-
-            base.OnPreviewMouseMove(e);
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)
         {
             this.SetCurrentValue(PositionProperty, null);
-            base.OnMouseLeave(e);
         }
 
         private static Pen? CreatePen(SolidColorBrush? brush)

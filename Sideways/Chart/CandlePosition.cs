@@ -1,7 +1,6 @@
 ﻿namespace Sideways
 {
     using System;
-    using System.Collections.Generic;
     using System.Windows;
 
     public readonly struct CandlePosition : IEquatable<CandlePosition>
@@ -66,7 +65,7 @@
             };
         }
 
-        public static double? X(DateTimeOffset time, IReadOnlyList<Candle> candles, double actualWidth, int candleWidth, CandleInterval interval)
+        public static double? X(DateTimeOffset time, DescendingCandles candles, double actualWidth, int candleWidth, CandleInterval interval)
         {
             if (candles.Count == 0 ||
                 time > candles[0].Time)
@@ -112,6 +111,18 @@
         }
 
         public double Y(float value) => this.valueRange.Y(value, this.renderSize.Height);
+
+        public Point? Point(TimeAndPrice start, DescendingCandles candles, CandleInterval interval)
+        {
+            if (X(start.Time, candles, this.renderSize.Width, this.candleWidth, interval) is { } x)
+            {
+                return new Point(
+                    x,
+                    this.Y(start.Price));
+            }
+
+            return null;
+        }
 
         public TimeAndPrice? TimeAndPrice(Point position, DescendingCandles candles)
         {
