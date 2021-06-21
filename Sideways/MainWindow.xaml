@@ -268,6 +268,7 @@
                                 <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Green}" Period="200" />
 
                                 <sideways:CandleSticks />
+                                
                                 <sideways:CrossHair />
                             </Grid>
 
