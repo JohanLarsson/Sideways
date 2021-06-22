@@ -9,13 +9,14 @@
 
     public class SymbolDownloads
     {
-        public SymbolDownloads(string symbol, TimeRange existingDays, DaysDownload? daysDownload, TimeRange existingMinutes, ImmutableArray<MinutesDownload> minutesDownloads)
+        public SymbolDownloads(string symbol, TimeRange existingDays, DaysDownload? daysDownload, TimeRange existingMinutes, ImmutableArray<MinutesDownload> minutesDownloads, EarningsDownload? earningsDownload)
         {
             this.Symbol = symbol;
             this.ExistingDays = existingDays;
             this.ExistingMinutes = existingMinutes;
             this.DaysDownload = daysDownload;
             this.MinutesDownloads = minutesDownloads;
+            this.EarningsDownload = earningsDownload;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.DownloadCommand = new RelayCommand(_ => this.DownloadAsync(), _ => CanDownload());
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -26,7 +27,8 @@
                 {
                     { DaysDownload: { State: { Status: DownloadStatus.Waiting or DownloadStatus.Error } } } => true,
                     { MinutesDownloads: { Length: > 0 } minutesDownloads } => minutesDownloads.All(x => x is { State: { Start: null } }),
-                    _ => true,
+                    { EarningsDownload: { State: { Status: DownloadStatus.Waiting or DownloadStatus.Error } } } => true,
+                    _ => false,
                 };
             }
         }
@@ -40,6 +42,8 @@
         public DaysDownload? DaysDownload { get; }
 
         public ImmutableArray<MinutesDownload> MinutesDownloads { get; }
+
+        public EarningsDownload? EarningsDownload { get; }
 
         public IEnumerable<Download> AllDownloads
         {
@@ -95,13 +99,15 @@
         {
             var daysDownload = DaysDownload.TryCreate(symbol, dayRange, downloader, settings);
             var minutesDownload = MinutesDownload.Create(symbol, dayRange, minuteRange, downloader, settings);
-
-            if (daysDownload is null && minutesDownload.IsDefaultOrEmpty)
+            var earningsDownload = EarningsDownload.TryCreate(symbol, downloader, settings);
+            if (daysDownload is null &&
+                minutesDownload.IsDefaultOrEmpty &&
+                earningsDownload is null)
             {
                 return null;
             }
 
-            return new SymbolDownloads(symbol, dayRange, daysDownload, minuteRange, minutesDownload);
+            return new SymbolDownloads(symbol, dayRange, daysDownload, minuteRange, minutesDownload, earningsDownload);
         }
 
         public async Task DownloadAsync()

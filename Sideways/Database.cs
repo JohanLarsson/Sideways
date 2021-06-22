@@ -616,6 +616,20 @@
             transaction.Commit();
         }
 
+        public static DateTimeOffset? LastEarnings(string symbol, FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            return connection.ExecuteScalar(
+                "SELECT reported_date FROM quarterly_earnings" +
+                "  WHERE symbol = @symbol" +
+                "  ORDER BY reported_date DESC" +
+                "  LIMIT 1",
+                new SqliteParameter("@symbol", symbol)) is long s
+                ? DateTimeOffset.FromUnixTimeSeconds(s)
+                : null;
+        }
+
         public static long CountDays(string symbol, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");

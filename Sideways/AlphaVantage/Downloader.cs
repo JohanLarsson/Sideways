@@ -57,6 +57,8 @@
 
         public event EventHandler<string>? NewMinutes;
 
+        public event EventHandler<string>? NewEarnings;
+
         public ICommand RefreshSymbolsCommand { get; }
 
         public ICommand DownloadAllSymbolsCommand { get; }
@@ -164,7 +166,7 @@
 
         public async Task<DaysAndSplits> DaysAndSplitsAsync(string symbol)
         {
-            var daysDownload = new SymbolDownloads(symbol, default, DaysDownload.Create(symbol, default, this), default, ImmutableArray<MinutesDownload>.Empty);
+            var daysDownload = new SymbolDownloads(symbol, default, DaysDownload.Create(symbol, default, this), default, ImmutableArray<MinutesDownload>.Empty, null);
             //// Adding so that the button shows status.
             this.SymbolDownloads = this.symbolDownloads.Add(daysDownload);
             await daysDownload.DownloadAsync().ConfigureAwait(false);
@@ -217,6 +219,8 @@
         public void NotifyDownloadedDays(string symbol) => this.NewDays?.Invoke(this, symbol);
 
         public void NotifyDownloadedMinutes(string symbol) => this.NewMinutes?.Invoke(this, symbol);
+
+        public void NotifyDownloadedEarnings(string symbol) => this.NewEarnings?.Invoke(this, symbol);
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
