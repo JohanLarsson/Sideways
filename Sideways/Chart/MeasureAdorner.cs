@@ -32,12 +32,16 @@
 
             this.child = new Border
             {
-                Child = new ContentPresenter(),
-                Background = Brushes.SemiTransparentBackground,
+                Child = new ContentPresenter
+                {
+                    Margin = new Thickness(2),
+                },
+                Background = Brushes.Background,
             };
             this.child.SetValue(TextElement.ForegroundProperty, Brushes.EnabledText);
             this.AddLogicalChild(this.child);
             this.AddVisualChild(this.child);
+            this.IsHitTestVisible = false;
         }
 
         public Measurement Measurement
@@ -97,14 +101,25 @@
         protected override Size ArrangeOverride(Size finalSize)
         {
             var desiredSize = this.child.DesiredSize;
-            this.child.Arrange(new Rect(new Point(this.Position.X - desiredSize.Width, this.Position.Y + OffsetY()), desiredSize));
+            this.child.Arrange(new Rect(new Point(this.Position.X + OffsetX(), this.Position.Y + OffsetY()), desiredSize));
             return finalSize;
+
+            double OffsetX()
+            {
+                return this.Measurement switch
+                {
+                    { From: { Time: var s }, To: { Time: var e } }
+                        when s <= e
+                        => -desiredSize.Width,
+                    _ => 0,
+                };
+            }
 
             double OffsetY()
             {
                 return this.Measurement switch
                 {
-                    { Start: { Price: var s }, End: { Price: var e } }
+                    { From: { Price: var s }, To: { Price: var e } }
                         when s <= e
                         => -desiredSize.Height,
                     _ => 0,
