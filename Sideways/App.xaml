@@ -196,21 +196,41 @@
             </sideways:DownloadStatusTemplateSelector>
 
             <DataTemplate DataType="{x:Type sideways:Measurement}">
-                <StackPanel>
-                    <TextBlock HorizontalAlignment="Right">
-                        <TextBlock.Inlines>
-                            <Run Text="{Binding Candles, StringFormat='{}{0} bars', Mode=OneTime}" />
-                            <Run Text="{Binding PercentChange, StringFormat='{}{0:F1}%', Mode=OneTime}" />
-                        </TextBlock.Inlines>
-                    </TextBlock>
-
-                    <TextBlock HorizontalAlignment="Right">
-                        <TextBlock.Inlines>
-                            <Run Text="{Binding DollarChange, StringFormat='${0:F1}', Mode=OneTime}" />
-                            <Run Text="{Binding TimeChange, Mode=OneTime}" />
-                        </TextBlock.Inlines>
-                    </TextBlock>
-                </StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="0"
+                               HorizontalAlignment="Left"
+                               Text="{Binding TimeChange,
+                                              Mode=OneTime}" />
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="1"
+                               Margin="4,0,0,0"
+                               HorizontalAlignment="Right"
+                               Text="{Binding Candles,
+                                              StringFormat='{}{0} bars',
+                                              Mode=OneTime}" />
+                    <TextBlock Grid.Row="1"
+                               Grid.Column="0"
+                               HorizontalAlignment="Left"
+                               Text="{Binding DollarChange,
+                                              StringFormat='${0:F1}',
+                                              Mode=OneTime}" />
+                    <TextBlock Grid.Row="1"
+                               Grid.Column="1"
+                               Margin="4,0,0,0"
+                               HorizontalAlignment="Right"
+                               Text="{Binding PercentChange,
+                                              StringFormat='{}{0:F1}%',
+                                              Mode=OneTime}" />
+                </Grid>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
