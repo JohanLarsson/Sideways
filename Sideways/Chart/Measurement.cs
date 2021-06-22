@@ -1,7 +1,5 @@
 ﻿namespace Sideways
 {
-    using System.Globalization;
-
     public class Measurement
     {
         private Measurement(TimeAndPrice @from, TimeAndPrice? to, int? candles)
@@ -25,7 +23,9 @@
         {
             { TotalHours: < 1, Minutes: var minutes } => $"{minutes} m",
             { TotalDays: < 1, Hours: var hours, Minutes: var minutes } => $"{hours} h {minutes} m",
-            { TotalDays: var days } => $"{days} d",
+            { Days: var days, Hours: var hours, Minutes: var minutes }
+                when hours > 0 || minutes > 0 => $"{days} d {hours} h {minutes} m",
+            { Days: var days } => $"{days} d",
         };
 
         public static Measurement Start(TimeAndPrice timeAndPrice) => new(timeAndPrice, null, null);
