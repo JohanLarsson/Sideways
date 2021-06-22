@@ -31,11 +31,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <Button Command="New" Content="New">
-                <Button.CommandBindings>
-                    <CommandBinding Command="New" Executed="OnNew" />
-                </Button.CommandBindings>
-            </Button>
+            <Button Command="{Binding NewCommand}" Content="New" />
 
             <Button Command="Open" Content="Open">
                 <Button.CommandBindings>

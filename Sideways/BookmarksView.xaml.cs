@@ -17,15 +17,6 @@
             this.InitializeComponent();
         }
 
-        private void OnNew(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (this.DataContext is BookmarksViewModel viewModel)
-            {
-                viewModel.Add(BookmarksFile.Create(null, ImmutableList<Bookmark>.Empty));
-                e.Handled = true;
-            }
-        }
-
         private void OnOpen(object sender, ExecutedRoutedEventArgs e)
         {
             if (this.DataContext is BookmarksViewModel viewModel)

@@ -3,6 +3,7 @@
     using System.Collections.Immutable;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using System.Windows.Input;
 
     public sealed class BookmarksViewModel : INotifyPropertyChanged
     {
@@ -11,7 +12,14 @@
         private Bookmark? selectedBookmark;
         private int offset;
 
+        public BookmarksViewModel()
+        {
+            this.NewCommand = new RelayCommand(_ => this.Add(BookmarksFile.Create(null, ImmutableList<Bookmark>.Empty)));
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public ICommand NewCommand { get; }
 
         public ImmutableList<BookmarksFile> BookmarkFiles
         {
