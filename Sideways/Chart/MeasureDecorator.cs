@@ -46,6 +46,7 @@
         public static readonly DependencyProperty CurrentProperty = CurrentPropertyKey.DependencyProperty;
 
         private CandleSticks? child;
+        private MeasureAdorner? adorner;
 
         static MeasureDecorator()
         {
@@ -140,14 +141,27 @@
             var renderSize = this.RenderSize;
             if (this.Background is { } background &&
                 this.PriceRange is { } priceRange &&
-                this.Current is { End: { } end } measurement)
+                this.Current is { To: { } end } measurement)
             {
                 var candlePosition = CandlePosition.RightToLeft(renderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale));
-                if (candlePosition.Point(measurement.Start, this.Candles, this.CandleInterval) is { } p1 &&
+                if (candlePosition.Point(measurement.From, this.Candles, this.CandleInterval) is { } p1 &&
                     candlePosition.Point(end, this.Candles, this.CandleInterval) is { } p2)
                 {
                     drawingContext.DrawRectangle(background, null, new Rect(p1, p2));
+                    if (this.adorner is null)
+                    {
+                        this.adorner = MeasureAdorner.Show(this, measurement, p2);
+                    }
+                    else
+                    {
+                        this.adorner.Update(measurement, p2);
+                    }
                 }
+            }
+            else if (this.adorner is { } adorner)
+            {
+                AdornerService.Remove(adorner);
+                this.adorner = null;
             }
         }
 
@@ -159,9 +173,9 @@
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             if (this.PriceRange is { } priceRange &&
-                CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale)).TimeAndPrice(e.GetPosition(this), this.Candles) is { } start)
+                CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale)).TimeAndPrice(e.GetPosition(this), this.Candles) is { } timeAndPrice)
             {
-                this.Current = new Measurement(start, null);
+                this.Current = Measurement.Start(timeAndPrice);
             }
             else
             {
@@ -177,11 +191,30 @@
             {
                 if (this.Current is { } measurement)
                 {
-                    this.Current = new Measurement(measurement.Start, timeAndPrice);
+                    this.Current = measurement.WithEnd(timeAndPrice, Candles());
+
+                    int Candles()
+                    {
+                        var candles = this.Candles;
+                        return Math.Abs(IndexOf(measurement.From.Time) - IndexOf(timeAndPrice.Time));
+
+                        int IndexOf(DateTimeOffset time)
+                        {
+                            for (var i = 0; i < candles.Count; i++)
+                            {
+                                if (candles[i].Time == time)
+                                {
+                                    return i;
+                                }
+                            }
+
+                            return -1;
+                        }
+                    }
                 }
                 else
                 {
-                    this.Current = new Measurement(timeAndPrice, null);
+                    this.Current = Measurement.Start(timeAndPrice);
                 }
             }
         }
