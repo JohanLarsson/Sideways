@@ -194,38 +194,40 @@
                                     CandleInterval="Week"
                                     ItemsSource="{Binding CurrentSymbol.Candles}"
                                     Time="{Binding Time}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="5*" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                        <sideways:CrossHairDecorator>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="5*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <sideways:ChartBackground Grid.Row="0"
-                                                      Grid.RowSpan="3"
-                                                      Grid.Column="0" />
+                                <sideways:ChartBackground Grid.Row="0"
+                                                          Grid.RowSpan="3"
+                                                          Grid.Column="0" />
 
-                            <Grid Grid.Row="0" Grid.Column="0">
+                                <Grid Grid.Row="0" Grid.Column="0">
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
+                                    <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
+                                    <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
 
-                                <sideways:MeasureDecorator>
-                                    <sideways:CandleSticks />
-                                </sideways:MeasureDecorator>
+                                    <sideways:MeasureDecorator>
+                                        <sideways:CandleSticks />
+                                    </sideways:MeasureDecorator>
+                                </Grid>
+
+                                <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+
+                                <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+
+                                <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
                             </Grid>
-
-                            <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
-
-                            <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
-
-                            <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
-                        </Grid>
+                        </sideways:CrossHairDecorator>
                     </sideways:Chart>
                 </Grid>
 
@@ -239,46 +241,48 @@
                                     CandleInterval="Day"
                                     ItemsSource="{Binding CurrentSymbol.Candles}"
                                     Time="{Binding Time}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="5*" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                        <sideways:CrossHairDecorator >
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="5*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <sideways:ChartBackground Grid.Row="0"
+                                <sideways:ChartBackground Grid.Row="0"
                                                       Grid.RowSpan="3"
                                                       Grid.Column="0" />
 
-                            <Grid Grid.Row="0" Grid.Column="0">
+                                <Grid Grid.Row="0" Grid.Column="0">
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
+                                    <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
+                                    <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Red}" Period="50" />
+                                    <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Red}" Period="50" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Orange}" Period="100" />
+                                    <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Orange}" Period="100" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Blue}" Period="150" />
+                                    <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Blue}" Period="150" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Green}" Period="200" />
+                                    <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Green}" Period="200" />
 
-                                <sideways:MeasureDecorator>
-                                    <sideways:CandleSticks />
-                                </sideways:MeasureDecorator>
+                                    <sideways:MeasureDecorator>
+                                        <sideways:CandleSticks />
+                                    </sideways:MeasureDecorator>
+                                </Grid>
+
+                                <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+
+                                <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+
+                                <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
                             </Grid>
-
-                            <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
-
-                            <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
-
-                            <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
-                        </Grid>
+                        </sideways:CrossHairDecorator>
                     </sideways:Chart>
 
                     <StackPanel Margin="10,10"
@@ -383,39 +387,41 @@
                                     CandleInterval="Hour"
                                     ItemsSource="{Binding CurrentSymbol.Candles}"
                                     Time="{Binding Time}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="5*" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                        <sideways:CrossHairDecorator>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="5*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <sideways:ChartBackground Grid.Row="0"
-                                                      Grid.RowSpan="3"
-                                                      Grid.Column="0" />
+                                <sideways:ChartBackground Grid.Row="0"
+                                                          Grid.RowSpan="3"
+                                                          Grid.Column="0" />
 
-                            <Grid Grid.Row="0" Grid.Column="0">
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
+                                <Grid Grid.Row="0" Grid.Column="0">
+                                    <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
+                                    <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
 
-                                <sideways:VWap Brush="{x:Static sideways:Brushes.LightGray}" />
+                                    <sideways:VWap Brush="{x:Static sideways:Brushes.LightGray}" />
 
-                                <sideways:MeasureDecorator>
-                                    <sideways:CandleSticks />
-                                </sideways:MeasureDecorator>
+                                    <sideways:MeasureDecorator>
+                                        <sideways:CandleSticks />
+                                    </sideways:MeasureDecorator>
+                                </Grid>
+
+                                <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+
+                                <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+
+                                <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
                             </Grid>
-
-                            <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
-
-                            <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
-
-                            <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
-                        </Grid>
+                        </sideways:CrossHairDecorator>
                     </sideways:Chart>
                     <StackPanel x:Name="IntradayIntervals"
                                 Margin="12,12"

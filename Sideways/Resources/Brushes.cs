@@ -22,6 +22,7 @@
         public static readonly SolidColorBrush LightGray = Create(Color.FromArgb(byte.MaxValue, 160, 160, 160));
         public static readonly SolidColorBrush Gray = Create(Color.FromArgb(byte.MaxValue, 128, 128, 128));
         public static readonly SolidColorBrush DarkGray = Create(Color.FromArgb(byte.MaxValue, 40, 40, 40));
+        public static readonly SolidColorBrush CrossHair = Create(Color.FromArgb(160, byte.MaxValue, byte.MaxValue, byte.MaxValue));
 
         public static readonly SolidColorBrush Transparent = System.Windows.Media.Brushes.Transparent;
         public static readonly SolidColorBrush Accent = Create(Color.FromArgb(byte.MaxValue, 100, 149, 237));

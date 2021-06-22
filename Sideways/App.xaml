@@ -37,12 +37,6 @@
                 </Setter>
             </Style>
 
-            <Style TargetType="{x:Type sideways:CrossHair}">
-                <Setter Property="Brush" Value="White" />
-                <Setter Property="Opacity" Value="0.5" />
-                <Setter Property="Position" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=(sideways:CrossHair.Position)}" />
-            </Style>
-
             <Style TargetType="{x:Type ListBox}">
                 <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Gray}" />
                 <Setter Property="Background" Value="Transparent" />
