@@ -199,7 +199,7 @@
                 <StackPanel>
                     <TextBlock HorizontalAlignment="Right">
                         <TextBlock.Inlines>
-                            <Run Text="{Binding Candles, StringFormat='{}{0} candles', Mode=OneTime}" />
+                            <Run Text="{Binding Candles, StringFormat='{}{0} bars', Mode=OneTime}" />
                             <Run Text="{Binding PercentChange, StringFormat='{}{0:F1}%', Mode=OneTime}" />
                         </TextBlock.Inlines>
                     </TextBlock>
