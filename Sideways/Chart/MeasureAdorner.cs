@@ -101,7 +101,7 @@
         protected override Size ArrangeOverride(Size finalSize)
         {
             var desiredSize = this.child.DesiredSize;
-            this.child.Arrange(new Rect(new Point(this.Position.X + OffsetX(), this.Position.Y + OffsetY()), desiredSize));
+            this.child.Arrange(new Rect(new Point(this.Position.X + OffsetX(), Y()), desiredSize));
             return finalSize;
 
             double OffsetX()
@@ -115,14 +115,14 @@
                 };
             }
 
-            double OffsetY()
+            double Y()
             {
                 return this.Measurement switch
                 {
                     { From: { Price: var s }, To: { Price: var e } }
                         when s <= e
-                        => -desiredSize.Height,
-                    _ => 0,
+                        => Math.Max(-22, this.Position.Y - desiredSize.Height),
+                    _ => this.Position.Y,
                 };
             }
         }
