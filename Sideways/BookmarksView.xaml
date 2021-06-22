@@ -71,6 +71,7 @@
 
         <DataGrid Grid.Row="2"
                   AutoGenerateColumns="False"
+                  CanUserAddRows="False"
                   ItemsSource="{Binding SelectedBookmarkFile.Bookmarks}"
                   SelectedItem="{Binding SelectedBookmark}">
             <DataGrid.Columns>

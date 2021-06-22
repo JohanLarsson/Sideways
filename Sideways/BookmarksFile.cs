@@ -19,42 +19,23 @@
         private static readonly JsonSerializerOptions JsonSerializerOptions = new() { WriteIndented = true };
 
         private FileInfo? file;
-        private ImmutableSortedSet<Bookmark> bookmarks;
 
         private BookmarksFile(FileInfo? file, ImmutableSortedSet<Bookmark> bookmarks)
         {
             this.file = file;
-            this.bookmarks = bookmarks;
+            this.Bookmarks = new(bookmarks);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public string Name => this.file is { FullName: { } fullName } ? Path.GetFileNameWithoutExtension(fullName) : "Not saved";
 
-        public ImmutableSortedSet<Bookmark> Bookmarks
-        {
-            get => this.bookmarks;
-            private set
-            {
-                if (ReferenceEquals(value, this.bookmarks))
-                {
-                    return;
-                }
-
-                this.bookmarks = value;
-                this.OnPropertyChanged();
-            }
-        }
+        public ObservableSortedSet<Bookmark> Bookmarks { get; }
 
         public static BookmarksFile Create(FileInfo? file, IEnumerable<Bookmark> bookmarks) =>
             new(file, ImmutableSortedSet.CreateRange(BookMarkComparer.Default, bookmarks));
 
-        public bool Add(Bookmark bookmark)
-        {
-            var before = this.bookmarks.Count;
-            this.Bookmarks = this.bookmarks.Add(bookmark);
-            return this.bookmarks.Count > before;
-        }
+        public bool Add(Bookmark bookmark) => this.Bookmarks.Add(bookmark);
 
         public void Save()
         {
@@ -65,7 +46,7 @@
 
             if (File() is { FullName: { } fileName })
             {
-                System.IO.File.WriteAllText(fileName, JsonSerializer.Serialize(this.bookmarks, JsonSerializerOptions));
+                System.IO.File.WriteAllText(fileName, JsonSerializer.Serialize(this.Bookmarks, JsonSerializerOptions));
             }
 
             FileInfo? File()
@@ -102,7 +83,7 @@
             }
 
             return this.file is { FullName: { } fileName } &&
-                   JsonSerializer.Serialize(this.bookmarks, JsonSerializerOptions) != File.ReadAllText(fileName);
+                   JsonSerializer.Serialize(this.Bookmarks, JsonSerializerOptions) != File.ReadAllText(fileName);
         }
 
         public void AskSave()
