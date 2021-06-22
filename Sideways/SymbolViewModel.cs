@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Immutable;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
@@ -12,6 +13,7 @@
         private static readonly ConcurrentDictionary<string, SymbolViewModel> Cache = new(StringComparer.OrdinalIgnoreCase);
 
         private Candles? candles;
+        private ImmutableArray<QuarterlyEarning> quarterlyEarnings;
         private Exception? exception;
 
         private SymbolViewModel(string symbol)
@@ -34,6 +36,21 @@
                 }
 
                 this.candles = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public ImmutableArray<QuarterlyEarning> QuarterlyEarnings
+        {
+            get => this.quarterlyEarnings;
+            set
+            {
+                if (value == this.quarterlyEarnings)
+                {
+                    return;
+                }
+
+                this.quarterlyEarnings = value;
                 this.OnPropertyChanged();
             }
         }
@@ -95,6 +112,7 @@
                     // Update minutes.
                     var minutes = await Task.Run(() => Database.ReadMinutes(vm.Symbol)).ConfigureAwait(false);
                     vm.Candles = Candles.Adjusted(splits, days, minutes);
+                    vm.QuarterlyEarnings = Database.ReadQuarterlyEarnings(symbol);
                 }
 #pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception e)
@@ -114,6 +132,7 @@
                 var days = Database.ReadDays(symbol);
                 var minutes = Database.ReadMinutes(symbol);
                 vm.Candles = Candles.Adjusted(splits, days, minutes);
+                vm.QuarterlyEarnings = Database.ReadQuarterlyEarnings(symbol);
             }
         }
 

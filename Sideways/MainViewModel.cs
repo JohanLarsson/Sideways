@@ -86,6 +86,7 @@
             this.Downloader.NewSymbol += (_, symbol) => this.Symbols = this.symbols.Add(symbol);
             this.Downloader.NewDays += (_, symbol) => SymbolViewModel.Update(symbol);
             this.Downloader.NewMinutes += (_, symbol) => SymbolViewModel.Update(symbol);
+            this.Downloader.NewEarnings += (_, symbol) => SymbolViewModel.Update(symbol);
             this.Bookmarks.PropertyChanged += (_, e) =>
             {
                 if (e is { PropertyName: nameof(BookmarksViewModel.SelectedBookmark) } &&
