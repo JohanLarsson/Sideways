@@ -21,6 +21,7 @@
         }
 
         [TestCase("TSLA")]
+        [TestCase("FSLY")]
         public static async Task Earnings(string symbol)
         {
             using var client = new AlphaVantageClient(new HttpClientHandler(), ClientSettings.ApiKey!, ClientSettings.MaxCallsPerMinute);

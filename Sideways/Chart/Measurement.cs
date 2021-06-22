@@ -27,6 +27,7 @@
                 when hours > 0 || minutes > 0
                 => $"{days} d {hours} h {minutes} m",
             { Days: var days } => $"{days} d",
+            _ => string.Empty,
         };
 
         public static Measurement Start(TimeAndPrice timeAndPrice) => new(timeAndPrice, null, null);

@@ -38,7 +38,9 @@
             ClipToBoundsProperty.OverrideMetadata(typeof(CrossHairDecorator), new PropertyMetadata(true));
         }
 
+#pragma warning disable WPF0012 // CLR property type should match registered type.
         public SolidColorBrush? Brush
+#pragma warning restore WPF0012 // CLR property type should match registered type.
         {
             get => (SolidColorBrush?)this.GetValue(BrushProperty);
             set => this.SetValue(BrushProperty, value);

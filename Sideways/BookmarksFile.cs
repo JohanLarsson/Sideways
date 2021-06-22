@@ -69,6 +69,7 @@
                 if (dialog.ShowDialog() is true)
                 {
                     this.file = new FileInfo(dialog.FileName);
+                    this.OnPropertyChanged(nameof(this.FileName));
                     this.OnPropertyChanged(nameof(this.Name));
                     return new(dialog.FileName);
                 }
