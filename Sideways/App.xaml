@@ -197,10 +197,19 @@
 
             <DataTemplate DataType="{x:Type sideways:Measurement}">
                 <StackPanel>
-                    <TextBlock Text="{Binding PercentChange, StringFormat='{}{0:F1}%'}" />
-                    <TextBlock Text="{Binding DollarChange, StringFormat='${0:F1}'}" />
-                    <TextBlock Text="{Binding TimeChange}" />
-                    <TextBlock Text="{Binding Candles, StringFormat='{}{0} bars'}" />
+                    <TextBlock HorizontalAlignment="Right">
+                        <TextBlock.Inlines>
+                            <Run Text="{Binding DollarChange, StringFormat='${0:F1}', Mode=OneTime}" />
+                            <Run Text="{Binding PercentChange, StringFormat='{}{0:F1}%', Mode=OneTime}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
+
+                    <TextBlock HorizontalAlignment="Right">
+                        <TextBlock.Inlines>
+                            <Run Text="{Binding TimeChange, Mode=OneTime}" />
+                            <Run Text="{Binding Candles, StringFormat='{}{0} candles', Mode=OneTime}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
                 </StackPanel>
             </DataTemplate>
         </ResourceDictionary>
