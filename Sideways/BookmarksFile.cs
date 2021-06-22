@@ -28,6 +28,8 @@
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        public string? FileName => this.file?.FullName;
+
         public string Name => this.file is { FullName: { } fullName } ? Path.GetFileNameWithoutExtension(fullName) : "Not saved";
 
         public ObservableSortedSet<Bookmark> Bookmarks { get; }

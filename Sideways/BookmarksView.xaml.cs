@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Immutable;
     using System.IO;
+    using System.Linq;
     using System.Text.Json;
     using System.Windows;
     using System.Windows.Controls;
@@ -34,6 +35,12 @@
 
                 if (dialog.ShowDialog() is true)
                 {
+                    if (viewModel.BookmarkFiles.Any(x => x.FileName == dialog.FileName))
+                    {
+                        _ = MessageBox.Show("Bookmark file already open.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Information);
+                        return;
+                    }
+
                     try
                     {
                         viewModel.Add(
