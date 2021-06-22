@@ -33,7 +33,7 @@
                       CornerRadius="0"
                       GlassFrameThickness="0"
                       NonClientFrameEdges="None"
-                      ResizeBorderThickness="4"
+                      ResizeBorderThickness="2"
                       UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
 
