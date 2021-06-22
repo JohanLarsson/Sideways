@@ -203,6 +203,7 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="4" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0"
@@ -211,9 +212,8 @@
                                Text="{Binding TimeChange,
                                               Mode=OneTime}" />
                     <TextBlock Grid.Row="0"
-                               Grid.Column="1"
-                               Margin="4,0,0,0"
-                               HorizontalAlignment="Right"
+                               Grid.Column="2"
+                               HorizontalAlignment="Left"
                                Text="{Binding Candles,
                                               StringFormat='{}{0} bars',
                                               Mode=OneTime}" />
@@ -224,9 +224,8 @@
                                               StringFormat='${0:F1}',
                                               Mode=OneTime}" />
                     <TextBlock Grid.Row="1"
-                               Grid.Column="1"
-                               Margin="4,0,0,0"
-                               HorizontalAlignment="Right"
+                               Grid.Column="2"
+                               HorizontalAlignment="Left"
                                Text="{Binding PercentChange,
                                               StringFormat='{}{0:F1}%',
                                               Mode=OneTime}" />
