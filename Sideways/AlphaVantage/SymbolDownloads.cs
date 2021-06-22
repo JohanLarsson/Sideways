@@ -137,8 +137,14 @@
                 }
             }
 
+            if (this.EarningsDownload is { State: { Start: null } } earningsDownload)
+            {
+                await earningsDownload.ExecuteAsync().ConfigureAwait(false);
+            }
+
             this.State.Exception = this.DaysDownload?.State.Exception ??
-                                   this.MinutesDownloads.FirstOrDefault(x => x.State.Exception is { })?.State.Exception;
+                                   this.MinutesDownloads.FirstOrDefault(x => x.State.Exception is { })?.State.Exception ??
+                                   this.EarningsDownload?.State.Exception;
             this.State.End = DateTimeOffset.Now;
         }
 
