@@ -58,6 +58,11 @@
                 {
                     yield return minutesDownload;
                 }
+
+                if (this.EarningsDownload is { } earningsDownload)
+                {
+                    yield return earningsDownload;
+                }
             }
         }
 
