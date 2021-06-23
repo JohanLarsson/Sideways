@@ -6,6 +6,7 @@
     using System.Windows.Markup;
 
     [ValueConversion(typeof(float), typeof(Visibility))]
+    [MarkupExtensionReturnType(typeof(VisibleWhenGreaterThanExtension))]
     public sealed class VisibleWhenGreaterThanExtension : MarkupExtension, IValueConverter
     {
         private readonly double minimum;
