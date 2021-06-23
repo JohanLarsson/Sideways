@@ -1,5 +1,6 @@
 ﻿namespace Sideways
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -28,6 +29,8 @@
                 this.OnPropertyChanged();
             }
         }
+
+        public Candle? LastVisible => this.candles.Count == 0 ? null : this.candles[0];
 
         public Candle this[int index] => this.candles[index];
 
