@@ -1,0 +1,90 @@
+﻿namespace Sideways
+{
+    using System;
+    using System.Collections.Immutable;
+    using System.Windows;
+    using System.Windows.Media;
+
+    public class EarningsChart : FrameworkElement
+    {
+        /// <summary>Identifies the <see cref="Earnings"/> dependency property.</summary>
+        public static readonly DependencyProperty EarningsProperty = EarningsBar.EarningsProperty.AddOwner(
+            typeof(EarningsChart),
+            new FrameworkPropertyMetadata(
+                default(ImmutableArray<QuarterlyEarning>),
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
+        /// <summary>Identifies the <see cref="BarWidth"/> dependency property.</summary>
+        public static readonly DependencyProperty BarWidthProperty = DependencyProperty.Register(
+            nameof(BarWidth),
+            typeof(int),
+            typeof(EarningsChart),
+            new FrameworkPropertyMetadata(
+                5,
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
+
+        /// <summary>Identifies the <see cref="Bars"/> dependency property.</summary>
+        public static readonly DependencyProperty BarsProperty = DependencyProperty.Register(
+            nameof(Bars),
+            typeof(int),
+            typeof(EarningsChart),
+            new FrameworkPropertyMetadata(
+                10,
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
+
+        public ImmutableArray<QuarterlyEarning> Earnings
+        {
+            get => (ImmutableArray<QuarterlyEarning>)this.GetValue(EarningsProperty);
+            set => this.SetValue(EarningsProperty, value);
+        }
+
+        public int BarWidth
+        {
+            get => (int)this.GetValue(BarWidthProperty);
+            set => this.SetValue(BarWidthProperty, value);
+        }
+
+        public int Bars
+        {
+            get => (int)this.GetValue(BarsProperty);
+            set => this.SetValue(BarsProperty, value);
+        }
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            return new(this.Bars * this.BarWidth, this.Height);
+        }
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            var renderSize = this.RenderSize;
+            if (renderSize is { Width: > 0, Height: > 0 } &&
+                this.Earnings is { IsDefaultOrEmpty: false } earnings)
+            {
+                var max = float.MinValue;
+                var min = float.MaxValue;
+                for (var i = 0; i < Math.Min(this.Bars + 1, earnings.Length); i++)
+                {
+                    max = Math.Max(max, earnings[i].ReportedEps);
+                    min = Math.Min(min, earnings[i].ReportedEps);
+                }
+
+                var position = CandlePosition.RightToLeft(renderSize, this.BarWidth, new ValueRange(new FloatRange(min, max), Scale.Arithmetic), 1, 1);
+                foreach (var earning in earnings)
+                {
+                    drawingContext.DrawRectangle(
+                        Brushes.LightGray,
+                        null,
+                        new Rect(
+                            new Point(position.Left, position.Y(0)),
+                            new Point(position.Right, position.Y(earning.ReportedEps))));
+                    position = position.ShiftLeft();
+                    if (position.Left < 0)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}

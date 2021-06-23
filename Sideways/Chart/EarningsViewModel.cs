@@ -12,6 +12,16 @@
         {
             this.earnings = earnings;
             this.index = index;
+            if (index > 0)
+            {
+                var builder = ImmutableArray.CreateBuilder<QuarterlyEarning>(index);
+                for (var i = index - 1; i >= 0; i--)
+                {
+                    builder.Add(this.earnings[i]);
+                }
+
+                this.PreviousEarnings = builder.MoveToImmutable();
+            }
         }
 
         public double Eps => this.earnings[this.index].ReportedEps;
@@ -31,6 +41,8 @@
         public float? YoY => this.index < 4
             ? null
             : PercentChange(this.earnings[this.index - 4].ReportedEps, this.earnings[this.index].ReportedEps);
+
+        public ImmutableArray<QuarterlyEarning> PreviousEarnings { get; }
 
         private static float PercentChange(float from, float to) => 100 * (to - from) / from;
     }

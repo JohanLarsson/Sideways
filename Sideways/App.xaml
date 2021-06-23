@@ -237,11 +237,12 @@
                     <Grid.ToolTip>
                         <StackPanel>
                             <TextBlock Text="{Binding Eps, StringFormat='EPS: {0:F2}'}" />
-                            <TextBlock Text="{Binding YoY, StringFormat='YoY: {0:F0}%'}" />
-                            <TextBlock Text="{Binding QoQ, StringFormat='QoQ: {0:F0}%'}" />
                             <TextBlock Text="{Binding Estimate, StringFormat='Estimate: {0:F2}%'}" />
                             <TextBlock Text="{Binding Surprise, StringFormat='Surprise: {0:F2}%'}" />
                             <TextBlock Text="{Binding SurprisePercentage, StringFormat='Surprise: {0:F1}%'}" />
+                            <sideways:EarningsChart Height="50" Earnings="{Binding PreviousEarnings}" />
+                            <TextBlock Text="{Binding YoY, StringFormat='YoY: {0:F0}%'}" />
+                            <TextBlock Text="{Binding QoQ, StringFormat='QoQ: {0:F0}%'}" />
                         </StackPanel>
                     </Grid.ToolTip>
                     <Grid.ColumnDefinitions>
