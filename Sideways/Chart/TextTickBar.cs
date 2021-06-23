@@ -7,7 +7,6 @@
 
     public class TextTickBar : FrameworkElement
     {
-        /// <summary>Identifies the <see cref="Fill"/> dependency property.</summary>
         public static readonly DependencyProperty FillProperty = DependencyProperty.Register(
             nameof(Fill),
             typeof(SolidColorBrush),
@@ -16,23 +15,18 @@
                 Brushes.Gray,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
         public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
             typeof(TextTickBar),
             new FrameworkPropertyMetadata(
                 null,
                 FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsParentMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="PriceScale"/> dependency property.</summary>
         public static readonly DependencyProperty PriceScaleProperty = Chart.PriceScaleProperty.AddOwner(
             typeof(TextTickBar),
             new FrameworkPropertyMetadata(
                 Scale.Logarithmic,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>
-        /// Fill property
-        /// </summary>
         public SolidColorBrush Fill
         {
             get => (SolidColorBrush)this.GetValue(FillProperty);
@@ -53,8 +47,7 @@
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (this.PriceRange is { Max: var max } range &&
-                availableSize.Height is > 0 and < double.PositiveInfinity)
+            if (this.PriceRange is { Max: var max } range)
             {
                 var text = new FormattedText(
                     max.ToString(StringFormat(Step(range, availableSize.Height)), DateTimeFormatInfo.InvariantInfo),

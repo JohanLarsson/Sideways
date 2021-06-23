@@ -177,8 +177,7 @@
         {
             var candles = this.Candles;
             candles.Clear();
-            if (finalSize.Width > 0 &&
-                finalSize.Height > 0 &&
+            if (finalSize is { Width: > 0, Height: > 0 } &&
                 this.ItemsSource is { } itemsSource)
             {
                 var min = float.MaxValue;
@@ -197,12 +196,21 @@
                     candles.Add(candle);
                 }
 
-                this.SetCurrentValue(PriceRangeProperty, new FloatRange(min, max));
-                this.SetCurrentValue(MaxVolumeProperty, maxVolume);
+                if (candles.Count > 0)
+                {
+                    this.SetCurrentValue(PriceRangeProperty, new FloatRange(min, max));
+                    this.SetCurrentValue(MaxVolumeProperty, maxVolume);
+                }
+                else
+                {
+                    this.SetCurrentValue(PriceRangeProperty, null);
+                    this.SetCurrentValue(MaxVolumeProperty, 0);
+                }
             }
             else
             {
                 this.SetCurrentValue(PriceRangeProperty, null);
+                this.SetCurrentValue(MaxVolumeProperty, 0);
             }
 
             foreach (UIElement child in this.Children)
