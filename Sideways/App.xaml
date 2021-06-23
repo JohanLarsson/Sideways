@@ -233,11 +233,15 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type sideways:EarningsViewModel}">
-                <Grid Background="{x:Static sideways:Brushes.SemiTransparentBackground}">
+                <Grid Background="{x:Static sideways:Brushes.SemiTransparentBackground}" ToolTipService.Placement="Top">
                     <Grid.ToolTip>
                         <StackPanel>
+                            <TextBlock Text="{Binding Eps, StringFormat='EPS: {0:F2}'}" />
                             <TextBlock Text="{Binding YoY, StringFormat='YoY: {0:F0}%'}" />
                             <TextBlock Text="{Binding QoQ, StringFormat='QoQ: {0:F0}%'}" />
+                            <TextBlock Text="{Binding Estimate, StringFormat='Estimate: {0:F2}%'}" />
+                            <TextBlock Text="{Binding Surprise, StringFormat='Surprise: {0:F2}%'}" />
+                            <TextBlock Text="{Binding SurprisePercentage, StringFormat='Surprise: {0:F1}%'}" />
                         </StackPanel>
                     </Grid.ToolTip>
                     <Grid.ColumnDefinitions>
@@ -254,7 +258,7 @@
                     <TextBlock Grid.Row="0"
                                Grid.Column="2"
                                HorizontalAlignment="Left"
-                               Text="{Binding Surprise,
+                               Text="{Binding SurprisePercentage,
                                               StringFormat='{}{0:F0}%',
                                               Mode=OneTime}" />
                 </Grid>

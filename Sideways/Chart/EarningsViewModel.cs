@@ -18,7 +18,11 @@
 
         public DateTimeOffset Date => this.earnings[this.index].ReportedDate;
 
-        public float? Surprise => this.earnings[this.index].SurprisePercentage;
+        public float? Estimate => this.earnings[this.index].Surprise;
+
+        public float? Surprise => this.earnings[this.index].Surprise;
+
+        public float? SurprisePercentage => this.earnings[this.index].SurprisePercentage;
 
         public float? QoQ => this.index < 1
             ? null
