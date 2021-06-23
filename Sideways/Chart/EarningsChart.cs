@@ -63,13 +63,13 @@
             {
                 var max = float.MinValue;
                 var min = float.MaxValue;
-                for (var i = 0; i < Math.Min(this.Bars + 1, earnings.Length); i++)
+                for (var i = 0; i < Math.Min(this.Bars, earnings.Length); i++)
                 {
                     max = Math.Max(max, earnings[i].ReportedEps);
                     min = Math.Min(min, earnings[i].ReportedEps);
                 }
 
-                var position = CandlePosition.RightToLeft(renderSize, this.BarWidth, new ValueRange(new FloatRange(min, max), Scale.Arithmetic), 1, 1);
+                var position = CandlePosition.RightToLeft(renderSize, this.BarWidth, new ValueRange(new FloatRange(Math.Min(0, min), Math.Max(0, max)), Scale.Arithmetic), 1, 1);
                 foreach (var earning in earnings)
                 {
                     drawingContext.DrawRectangle(
