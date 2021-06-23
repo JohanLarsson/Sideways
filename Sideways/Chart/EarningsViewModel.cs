@@ -19,5 +19,15 @@
         public DateTimeOffset Date => this.earnings[this.index].ReportedDate;
 
         public float? Surprise => this.earnings[this.index].SurprisePercentage;
+
+        public float? QoQ => this.index < 1
+            ? null
+            : PercentChange(this.earnings[this.index - 1].ReportedEps, this.earnings[this.index].ReportedEps);
+
+        public float? YoY => this.index < 4
+            ? null
+            : PercentChange(this.earnings[this.index - 4].ReportedEps, this.earnings[this.index].ReportedEps);
+
+        private static float PercentChange(float from, float to) => 100 * (to - from) / from;
     }
 }

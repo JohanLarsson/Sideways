@@ -234,6 +234,12 @@
 
             <DataTemplate DataType="{x:Type sideways:EarningsViewModel}">
                 <Grid Background="{x:Static sideways:Brushes.SemiTransparentBackground}">
+                    <Grid.ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{Binding YoY, StringFormat='YoY: {0:F0}%'}" />
+                            <TextBlock Text="{Binding QoQ, StringFormat='QoQ: {0:F0}%'}" />
+                        </StackPanel>
+                    </Grid.ToolTip>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="6" />
