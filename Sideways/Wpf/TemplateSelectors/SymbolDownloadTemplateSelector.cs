@@ -12,6 +12,8 @@
 
         public DataTemplate? Minutes { get; set; }
 
+        public DataTemplate? Earnings { get; set; }
+
         public override DataTemplate? SelectTemplate(object? item, DependencyObject container)
         {
             return item switch
@@ -19,6 +21,7 @@
                 SymbolDownloads => this.Symbol,
                 DaysDownload => this.Days,
                 MinutesDownload => this.Minutes,
+                EarningsDownload => this.Earnings,
                 _ => base.SelectTemplate(item, container),
             };
         }
