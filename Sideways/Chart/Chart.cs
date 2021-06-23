@@ -163,13 +163,14 @@
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            this.Candles.ExtraCandles = 0;
+            var rect = Rect.Empty;
             foreach (UIElement child in this.Children)
             {
                 child.Measure(availableSize);
+                rect.Union(new Rect(child.DesiredSize));
             }
 
-            return base.MeasureOverride(availableSize);
+            return rect.Size;
         }
 
         protected override Size ArrangeOverride(Size finalSize)

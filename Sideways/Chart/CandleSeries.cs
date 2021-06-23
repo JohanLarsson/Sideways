@@ -47,14 +47,6 @@
             set => this.SetValue(ItemsSourceProperty, value);
         }
 
-#pragma warning disable WPF0012 // CLR property type should match registered type.
-        public DescendingCandles Candles
-#pragma warning restore WPF0012 // CLR property type should match registered type.
-        {
-            get => (DescendingCandles)this.GetValue(CandlesProperty);
-            set => this.SetValue(CandlesProperty, value);
-        }
-
         public DateTimeOffset Time
         {
             get => (DateTimeOffset)this.GetValue(TimeProperty);
@@ -71,6 +63,14 @@
         {
             get => (int)this.GetValue(CandleWidthProperty);
             set => this.SetValue(CandleWidthProperty, value);
+        }
+
+#pragma warning disable WPF0012 // CLR property type should match registered type.
+        public DescendingCandles Candles
+#pragma warning restore WPF0012 // CLR property type should match registered type.
+        {
+            get => (DescendingCandles)this.GetValue(CandlesProperty);
+            set => this.SetValue(CandlesProperty, value);
         }
     }
 }
