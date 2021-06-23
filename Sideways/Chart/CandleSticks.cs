@@ -47,6 +47,12 @@
 
         protected override int VisualChildrenCount => 1;
 
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            this.Candles.VisibleCount = (int)Math.Ceiling(sizeInfo.NewSize.Width / this.CandleWidth);
+            base.OnRenderSizeChanged(sizeInfo);
+        }
+
         protected override Visual GetVisualChild(int index) => index == 0
             ? this.drawing
             : throw new ArgumentOutOfRangeException(nameof(index));

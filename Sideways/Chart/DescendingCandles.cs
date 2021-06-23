@@ -1,5 +1,6 @@
 ﻿namespace Sideways
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -8,28 +9,48 @@
     public class DescendingCandles : IReadOnlyList<Candle>, INotifyPropertyChanged
     {
         private readonly List<Candle> candles = new();
-        private int extraCandles;
+
+        private int visibleCount;
+        private int extraCount;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public int Count => this.candles.Count;
 
-        public int ExtraCandles
+        public Candle? FirstVisible => this.candles.Count == 0 ? null : this.candles[Math.Min(this.candles.Count - 1, this.VisibleCount)];
+
+        public Candle? LastVisible => this.candles.Count == 0 ? null : this.candles[0];
+
+        public int VisibleCount
         {
-            get => this.extraCandles;
+            get => this.visibleCount;
             set
             {
-                if (value == this.extraCandles)
+                if (value == this.visibleCount)
                 {
                     return;
                 }
 
-                this.extraCandles = value;
+                this.visibleCount = value;
                 this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.FirstVisible));
             }
         }
 
-        public Candle? LastVisible => this.candles.Count == 0 ? null : this.candles[0];
+        public int ExtraCount
+        {
+            get => this.extraCount;
+            set
+            {
+                if (value == this.extraCount)
+                {
+                    return;
+                }
+
+                this.extraCount = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public Candle this[int index] => this.candles[index];
 

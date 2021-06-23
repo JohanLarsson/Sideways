@@ -23,21 +23,21 @@
             typeof(EarningsBar),
             new FrameworkPropertyMetadata(
                 DateTimeOffset.Now,
-                FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         /// <summary>Identifies the <see cref="CandleInterval"/> dependency property.</summary>
         public static readonly DependencyProperty CandleIntervalProperty = Chart.CandleIntervalProperty.AddOwner(
             typeof(EarningsBar),
             new FrameworkPropertyMetadata(
                 CandleInterval.None,
-                FrameworkPropertyMetadataOptions.AffectsArrange));
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         /// <summary>Identifies the <see cref="CandleWidth"/> dependency property.</summary>
         public static readonly DependencyProperty CandleWidthProperty = Chart.CandleWidthProperty.AddOwner(
             typeof(EarningsBar),
             new FrameworkPropertyMetadata(
                 5,
-                FrameworkPropertyMetadataOptions.AffectsArrange));
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         /// <summary>Identifies the <see cref="Candles"/> dependency property.</summary>
         public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(typeof(EarningsBar));
@@ -89,37 +89,47 @@
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            var rect = Rect.Empty;
-            foreach (ContentPresenter child in this.children)
+            if (this.Candles is { Count: > 0 } candles)
             {
-                child.Measure(availableSize);
-                rect.Union(new Rect(child.DesiredSize));
+                var rect = Rect.Empty;
+                var time = this.Time;
+                foreach (ContentPresenter child in this.children)
+                {
+                    if (child is { Content: EarningsViewModel { Date: var date } })
+                    {
+                        if (date > candles.FirstVisible?.Time &&
+                            date <= time)
+                        {
+                            child.Visibility = Visibility.Visible;
+                            child.Measure(availableSize);
+                            rect.Union(new Rect(child.DesiredSize));
+                        }
+                        else
+                        {
+                            child.Visibility = Visibility.Collapsed;
+                        }
+                    }
+                }
+
+                return rect.Size;
             }
 
-            return rect.Size;
+            return default;
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
             var candles = this.Candles;
-            var renderSize = this.RenderSize;
             var candleWidth = this.CandleWidth;
             var candleInterval = this.CandleInterval;
 
             foreach (ContentPresenter child in this.children)
             {
-                if (child is { Content: EarningsViewModel { Date: { } date } })
+                if (child is { Content: EarningsViewModel { Date: var date }, Visibility: not Visibility.Collapsed } &&
+                    CandlePosition.X(date, candles, finalSize.Width, candleWidth, candleInterval) is { } x)
                 {
-                    if (CandlePosition.X(date, candles, renderSize.Width, candleWidth, candleInterval) is { } x)
-                    {
-                        child.Visibility = Visibility.Visible;
-                        var childDesiredSize = child.DesiredSize;
-                        child.Arrange(new Rect(new Point(x - (childDesiredSize.Width / 2), renderSize.Height - childDesiredSize.Height), childDesiredSize));
-                    }
-                    else
-                    {
-                        child.Visibility = Visibility.Collapsed;
-                    }
+                    var childDesiredSize = child.DesiredSize;
+                    child.Arrange(new Rect(new Point(x - (childDesiredSize.Width / 2), finalSize.Height - childDesiredSize.Height), childDesiredSize));
                 }
             }
 

@@ -184,11 +184,10 @@
                 var min = float.MaxValue;
                 var max = float.MinValue;
                 var maxVolume = 0;
-                var visible = (int)Math.Ceiling(finalSize.Width / this.CandleWidth);
                 foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval)
-                                                  .Take(visible + candles.ExtraCandles))
+                                                  .Take(candles.VisibleCount + candles.ExtraCount))
                 {
-                    if (candles.Count <= visible)
+                    if (candles.Count <= candles.VisibleCount)
                     {
                         min = Math.Min(min, candle.Low);
                         max = Math.Max(max, candle.High);

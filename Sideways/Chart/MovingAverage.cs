@@ -79,7 +79,7 @@
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            this.Candles.ExtraCandles = Math.Max(this.Candles.ExtraCandles, this.Period);
+            this.Candles.ExtraCount = Math.Max(this.Candles.ExtraCount, this.Period);
             return base.MeasureOverride(availableSize);
         }
 
