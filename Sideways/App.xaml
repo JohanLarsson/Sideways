@@ -233,16 +233,10 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type sideways:EarningsViewModel}">
-                <TextBlock Background="{x:Static sideways:Brushes.SemiTransparentBackground}"
-                           ToolTipService.Placement="Top"
-                           ToolTipService.ShowDuration="60000">
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{}{0:F0}/{1:F0}">
-                            <Binding Path="QoQ" />
-                            <Binding Path="YoY" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                    <TextBlock.ToolTip>
+                <StackPanel Background="{x:Static sideways:Brushes.SemiTransparentBackground}"
+                            ToolTipService.Placement="Top"
+                            ToolTipService.ShowDuration="60000">
+                    <StackPanel.ToolTip>
                         <StackPanel>
                             <TextBlock Text="{Binding QoQ, StringFormat='QoQ: {0:F0}%'}" />
                             <TextBlock Text="{Binding YoY, StringFormat='YoY: {0:F0}%'}" />
@@ -252,8 +246,22 @@
                             <TextBlock Text="{Binding Surprise, StringFormat='Surprise: {0:F2}'}" />
                             <TextBlock Text="{Binding SurprisePercentage, StringFormat='Surprise: {0:F1}%'}" />
                         </StackPanel>
-                    </TextBlock.ToolTip>
-                </TextBlock>
+                    </StackPanel.ToolTip>
+                    <TextBlock HorizontalAlignment="Center"
+                               Text="{Binding SurprisePercentage,
+                                              StringFormat='{}{0:F0}%'}"
+                               Visibility="{Binding SurprisePercentage,
+                                                    Converter={sideways:VisibleWhenGreaterThan 25}}" />
+
+                    <TextBlock HorizontalAlignment="Center">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0:F0}/{1:F0}">
+                                <Binding Path="QoQ" />
+                                <Binding Path="YoY" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

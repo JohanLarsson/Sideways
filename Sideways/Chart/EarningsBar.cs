@@ -114,7 +114,7 @@
                     {
                         child.Visibility = Visibility.Visible;
                         var childDesiredSize = child.DesiredSize;
-                        child.Arrange(new Rect(new Point(x - (childDesiredSize.Width / 2), 0), childDesiredSize));
+                        child.Arrange(new Rect(new Point(x - (childDesiredSize.Width / 2), renderSize.Height - childDesiredSize.Height), childDesiredSize));
                     }
                     else
                     {
