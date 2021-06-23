@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.Immutable;
     using System.Windows;
     using System.Windows.Media;
 
@@ -12,10 +13,23 @@
                 default(DateTimeOffset?),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+        /// <summary>Identifies the <see cref="Earnings"/> dependency property.</summary>
+        public static readonly DependencyProperty EarningsProperty = EarningsBar.EarningsProperty.AddOwner(
+            typeof(ChartBackground),
+            new FrameworkPropertyMetadata(
+                default(ImmutableArray<QuarterlyEarning>),
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         public DateTimeOffset? BookmarkTime
         {
             get => (DateTimeOffset?)this.GetValue(BookmarkTimeProperty);
             set => this.SetValue(BookmarkTimeProperty, value);
+        }
+
+        public ImmutableArray<QuarterlyEarning> Earnings
+        {
+            get => (ImmutableArray<QuarterlyEarning>)this.GetValue(EarningsProperty);
+            set => this.SetValue(EarningsProperty, value);
         }
 
         protected override void OnRender(DrawingContext drawingContext)
@@ -74,6 +88,23 @@
                     new Rect(
                         new Point(bookMarkX - 1, 0),
                         new Point(bookMarkX, renderSize.Height)));
+            }
+
+            if (this.Earnings is { IsDefaultOrEmpty: false } earnings)
+            {
+                foreach (var earning in earnings)
+                {
+                    if (CandlePosition.X(earning.ReportedDate, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } earningX &&
+                        earningX < renderSize.Width - this.CandleWidth)
+                    {
+                        drawingContext.DrawRectangle(
+                            Brushes.DarkGray,
+                            null,
+                            new Rect(
+                                new Point(earningX - 1, 0),
+                                new Point(earningX, renderSize.Height)));
+                    }
+                }
             }
 
             void DrawBand(Func<Candle, bool> func, SolidColorBrush brush)

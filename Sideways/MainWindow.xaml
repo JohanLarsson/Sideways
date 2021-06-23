@@ -255,7 +255,8 @@
 
                                 <sideways:ChartBackground Grid.Row="0"
                                                           Grid.RowSpan="3"
-                                                          Grid.Column="0" />
+                                                          Grid.Column="0"
+                                                          Earnings="{Binding CurrentSymbol.QuarterlyEarnings}" />
 
                                 <Grid Grid.Row="0" Grid.Column="0">
 
@@ -275,8 +276,7 @@
                                         <sideways:CandleSticks />
                                     </sideways:MeasureDecorator>
 
-                                    <sideways:EarningsBar VerticalAlignment="Bottom"
-                                                          Earnings="{Binding CurrentSymbol.QuarterlyEarnings}" />
+                                    <sideways:EarningsBar VerticalAlignment="Bottom" Earnings="{Binding CurrentSymbol.QuarterlyEarnings}" />
                                 </Grid>
 
                                 <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />

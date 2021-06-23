@@ -233,7 +233,7 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type sideways:EarningsViewModel}">
-                <Grid>
+                <Grid Background="{x:Static sideways:Brushes.SemiTransparentBackground}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="6" />
