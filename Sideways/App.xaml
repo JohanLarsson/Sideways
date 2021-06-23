@@ -233,10 +233,13 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type sideways:EarningsViewModel}">
-                <Grid Background="{x:Static sideways:Brushes.SemiTransparentBackground}"
-                      ToolTipService.Placement="Top"
-                      ToolTipService.ShowDuration="60000">
-                    <Grid.ToolTip>
+                <TextBlock Background="{x:Static sideways:Brushes.SemiTransparentBackground}"
+                           Text="{Binding QoQ,
+                                          StringFormat='{}{0:F0}%',
+                                          Mode=OneTime}"
+                           ToolTipService.Placement="Top"
+                           ToolTipService.ShowDuration="60000">
+                    <TextBlock.ToolTip>
                         <StackPanel>
                             <TextBlock Text="{Binding QoQ, StringFormat='QoQ: {0:F0}%'}" />
                             <TextBlock Text="{Binding YoY, StringFormat='YoY: {0:F0}%'}" />
@@ -246,19 +249,8 @@
                             <TextBlock Text="{Binding Surprise, StringFormat='Surprise: {0:F2}'}" />
                             <TextBlock Text="{Binding SurprisePercentage, StringFormat='Surprise: {0:F1}%'}" />
                         </StackPanel>
-                    </Grid.ToolTip>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="6" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0"
-                               Grid.Column="0"
-                               HorizontalAlignment="Left"
-                               Text="{Binding QoQ,
-                                              StringFormat='{}{0:F0}%',
-                                              Mode=OneTime}" />
-                </Grid>
+                    </TextBlock.ToolTip>
+                </TextBlock>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
