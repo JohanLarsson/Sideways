@@ -241,7 +241,7 @@
                                     CandleInterval="Day"
                                     ItemsSource="{Binding CurrentSymbol.Candles}"
                                     Time="{Binding Time}">
-                        <sideways:CrossHairDecorator >
+                        <sideways:CrossHairDecorator>
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="5*" />
@@ -254,8 +254,8 @@
                                 </Grid.ColumnDefinitions>
 
                                 <sideways:ChartBackground Grid.Row="0"
-                                                      Grid.RowSpan="3"
-                                                      Grid.Column="0" />
+                                                          Grid.RowSpan="3"
+                                                          Grid.Column="0" />
 
                                 <Grid Grid.Row="0" Grid.Column="0">
 
@@ -274,6 +274,9 @@
                                     <sideways:MeasureDecorator>
                                         <sideways:CandleSticks />
                                     </sideways:MeasureDecorator>
+
+                                    <sideways:EarningsBar VerticalAlignment="Bottom"
+                                                          Earnings="{Binding CurrentSymbol.QuarterlyEarnings}" />
                                 </Grid>
 
                                 <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />

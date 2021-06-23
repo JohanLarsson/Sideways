@@ -1486,7 +1486,7 @@ AAPL,Apple Inc,NASDAQ,Stock,1980-12-12,null,Active";
             Assert.AreEqual(0.55, earnings.QuarterlyEarnings[^1].ReportedEps, 0.001f);
             Assert.AreEqual(0.6f, earnings.QuarterlyEarnings[^1].EstimatedEps, 0.001f);
             Assert.AreEqual(-0.05f, earnings.QuarterlyEarnings[^1].Surprise, 0.001f);
-            Assert.AreEqual(-0.083333f, earnings.QuarterlyEarnings[^1].SurprisePercentage, 0.001f);
+            Assert.AreEqual(-8.3333f, earnings.QuarterlyEarnings[^1].SurprisePercentage, 0.001f);
 #pragma warning restore CS0618 // Type or member is obsolete
         }
 

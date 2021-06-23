@@ -231,6 +231,28 @@
                                               Mode=OneTime}" />
                 </Grid>
             </DataTemplate>
+
+            <DataTemplate DataType="{x:Type sideways:EarningsViewModel}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="6" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="0"
+                               HorizontalAlignment="Left"
+                               Text="{Binding Eps,
+                                              StringFormat='F2',
+                                              Mode=OneTime}" />
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="2"
+                               HorizontalAlignment="Left"
+                               Text="{Binding Surprise,
+                                              StringFormat='{}{0:F0}%',
+                                              Mode=OneTime}" />
+                </Grid>
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
