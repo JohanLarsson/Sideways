@@ -62,9 +62,8 @@
             using var context = this.drawing.RenderOpen();
             if (this.PriceRange is { } range)
             {
-                var candles = this.Candles;
                 var position = CandlePosition.RightToLeftPadded(this.RenderSize, this.CandleWidth, new ValueRange(range, this.PriceScale));
-                foreach (var candle in candles)
+                foreach (var candle in this.Candles)
                 {
                     var brush = Brushes.Get(candle);
                     context.DrawRectangle(
