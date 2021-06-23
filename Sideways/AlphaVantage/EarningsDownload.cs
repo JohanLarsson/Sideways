@@ -66,7 +66,7 @@
                     this.downloader.NotifyDownloadedEarnings(this.Symbol);
                 }
 
-                return earnings.QuarterlyEarnings.Length;
+                return earnings.QuarterlyEarnings.IsDefaultOrEmpty ? 0 : earnings.QuarterlyEarnings.Length;
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
