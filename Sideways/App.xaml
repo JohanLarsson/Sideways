@@ -233,7 +233,9 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type sideways:EarningsViewModel}">
-                <Grid Background="{x:Static sideways:Brushes.SemiTransparentBackground}" ToolTipService.Placement="Top">
+                <Grid Background="{x:Static sideways:Brushes.SemiTransparentBackground}"
+                      ToolTipService.Placement="Top"
+                      ToolTipService.ShowDuration="60000">
                     <Grid.ToolTip>
                         <StackPanel>
                             <TextBlock Text="{Binding Eps, StringFormat='EPS: {0:F2}'}" />
