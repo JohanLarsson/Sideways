@@ -233,23 +233,27 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type sideways:EarningsViewModel}">
-                <StackPanel Background="{x:Static sideways:Brushes.SemiTransparentBackground}"
-                            ToolTipService.Placement="Top"
-                            ToolTipService.ShowDuration="60000">
-                    <StackPanel.ToolTip>
+                <TextBlock Background="{x:Static sideways:Brushes.SemiTransparentBackground}"
+                           ToolTipService.Placement="Top"
+                           ToolTipService.ShowDuration="60000">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0:F0}/{1:F0}">
+                            <Binding Path="YoY" />
+                            <Binding Path="QoQ" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                    <TextBlock.ToolTip>
                         <StackPanel>
-                            <TextBlock Text="{Binding QoQ, StringFormat='QoQ: {0:F0}%'}" />
                             <TextBlock Text="{Binding YoY, StringFormat='YoY: {0:F0}%'}" />
+                            <TextBlock Text="{Binding QoQ, StringFormat='QoQ: {0:F0}%'}" />
                             <sideways:EarningsChart Height="50" Earnings="{Binding PreviousEarnings}" />
                             <TextBlock Text="{Binding Eps, StringFormat='EPS: {0:F2}'}" />
                             <TextBlock Text="{Binding Estimate, StringFormat='Estimate: {0:F2}%'}" />
                             <TextBlock Text="{Binding Surprise, StringFormat='Surprise: {0:F2}'}" />
                             <TextBlock Text="{Binding SurprisePercentage, StringFormat='Surprise: {0:F1}%'}" />
                         </StackPanel>
-                    </StackPanel.ToolTip>
-                    <TextBlock Text="{Binding YoY, StringFormat='{}{0:F0}%', Mode=OneTime}" />
-                    <TextBlock Text="{Binding QoQ, StringFormat='{}{0:F0}%', Mode=OneTime}" />
-                </StackPanel>
+                    </TextBlock.ToolTip>
+                </TextBlock>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
