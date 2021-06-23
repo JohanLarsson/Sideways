@@ -94,8 +94,7 @@
             {
                 foreach (var earning in earnings)
                 {
-                    if (CandlePosition.X(earning.ReportedDate, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } earningX &&
-                        earningX < renderSize.Width - this.CandleWidth)
+                    if (CandlePosition.X(earning.ReportedDate, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } earningX)
                     {
                         drawingContext.DrawRectangle(
                             Brushes.DarkGray,
