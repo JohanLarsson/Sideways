@@ -47,10 +47,10 @@
 
         protected override int VisualChildrenCount => 1;
 
-        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        protected override Size MeasureOverride(Size availableSize)
         {
-            this.Candles.VisibleCount = (int)Math.Ceiling(sizeInfo.NewSize.Width / this.CandleWidth);
-            base.OnRenderSizeChanged(sizeInfo);
+            this.Candles.VisibleCount = (int)Math.Ceiling(availableSize.Width / this.CandleWidth);
+            return base.MeasureOverride(availableSize);
         }
 
         protected override Visual GetVisualChild(int index) => index == 0
@@ -59,16 +59,14 @@
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            var candleWidth = this.CandleWidth;
             using var context = this.drawing.RenderOpen();
             if (this.PriceRange is { } range)
             {
                 var candles = this.Candles;
-                var position = CandlePosition.RightToLeftPadded(this.RenderSize, candleWidth, new ValueRange(range, this.PriceScale));
+                var position = CandlePosition.RightToLeftPadded(this.RenderSize, this.CandleWidth, new ValueRange(range, this.PriceScale));
                 foreach (var candle in candles)
                 {
                     var brush = Brushes.Get(candle);
-
                     context.DrawRectangle(
                         brush,
                         null,
