@@ -29,7 +29,7 @@
             typeof(int),
             typeof(EarningsChart),
             new FrameworkPropertyMetadata(
-                10,
+                16,
                 FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
 
         public ImmutableArray<QuarterlyEarning> Earnings
@@ -70,14 +70,14 @@
                 }
 
                 var position = CandlePosition.RightToLeft(renderSize, this.BarWidth, new ValueRange(new FloatRange(Math.Min(0, min), Math.Max(0, max)), Scale.Arithmetic), 1, 1);
-                foreach (var earning in earnings)
+                for (var i = 0; i < Math.Min(this.Bars, earnings.Length); i++)
                 {
                     drawingContext.DrawRectangle(
                         Brushes.LightGray,
                         null,
                         new Rect(
                             new Point(position.Left, position.Y(0)),
-                            new Point(position.Right, position.Y(earning.ReportedEps))));
+                            new Point(position.Right, position.Y(earnings[i].ReportedEps))));
                     position = position.ShiftLeft();
                     if (position.Left < 0)
                     {
