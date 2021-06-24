@@ -14,8 +14,8 @@
             this.index = index;
             if (index > 0)
             {
-                var builder = ImmutableArray.CreateBuilder<QuarterlyEarning>(index);
-                for (var i = index - 1; i >= 0; i--)
+                var builder = ImmutableArray.CreateBuilder<QuarterlyEarning>(index + 1);
+                for (var i = index; i >= 0; i--)
                 {
                     builder.Add(this.earnings[i]);
                 }
