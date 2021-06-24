@@ -44,6 +44,6 @@
 
         public ImmutableArray<QuarterlyEarning> PreviousEarnings { get; }
 
-        private static float PercentChange(float from, float to) => 100 * (to - from) / from;
+        private static float PercentChange(float from, float to) => 100 * (to - from) / Math.Abs(from);
     }
 }
