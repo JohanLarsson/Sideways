@@ -114,14 +114,14 @@
 
                 <TextBlock Grid.Row="6"
                            Grid.Column="0"
-                           Text="Has minutes" />
+                           Text="Start" />
                 <DatePicker Grid.Row="6"
                             Grid.Column="1"
                             SelectedDate="{Binding Scan.StartDate}" />
 
                 <TextBlock Grid.Row="7"
                            Grid.Column="0"
-                           Text="Has minutes" />
+                           Text="End" />
                 <DatePicker Grid.Row="7"
                             Grid.Column="1"
                             SelectedDate="{Binding Scan.EndDate}" />
