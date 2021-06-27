@@ -217,6 +217,35 @@ namespace Sideways.Tests
         }
 
         [Test]
+        public static void EightPercentThreeDays()
+        {
+            var bookmarks = new List<Bookmark>();
+            foreach (var symbol in Database.ReadSymbols())
+            {
+                var candles = Database.ReadDays(symbol);
+                for (var i = 3; i < candles.Count; i++)
+                {
+                    if (candles[i].Close / candles[i - 3].Open > 1.08 &&
+                        candles[i].Close * candles[i].Volume > 10_000_000)
+                    {
+                        bookmarks.Add(new Bookmark(symbol, TradingDay.StartOfDay(candles[i - 3].Time), ImmutableSortedSet<string>.Empty, null));
+                    }
+                }
+            }
+
+            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Eight percent three days.bookmarks"));
+            if (!Directory.Exists(file.DirectoryName))
+            {
+                Directory.CreateDirectory(file.DirectoryName!);
+            }
+
+            File.WriteAllText(
+                file.FullName,
+                JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
+            Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
+        }
+
+        [Test]
         public static void GapUps()
         {
             var bookmarks = new List<Bookmark>();
