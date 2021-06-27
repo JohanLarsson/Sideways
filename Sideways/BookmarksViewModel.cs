@@ -1,8 +1,12 @@
 ﻿namespace Sideways
 {
+    using System;
     using System.Collections.Immutable;
     using System.ComponentModel;
+    using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
+    using System.Windows;
     using System.Windows.Input;
 
     public sealed class BookmarksViewModel : INotifyPropertyChanged
@@ -15,11 +19,31 @@
         public BookmarksViewModel()
         {
             this.NewCommand = new RelayCommand(_ => this.Add(BookmarksFile.Create(null, ImmutableList<Bookmark>.Empty)));
+            this.ScanCommand = new RelayCommand(_ => RunScan());
+
+            async void RunScan()
+            {
+                try
+                {
+                    var bookmarks = await Task.Run(() => this.Scan.Run().ToArray()).ConfigureAwait(false);
+                    this.Add(BookmarksFile.Create(null, bookmarks));
+                }
+#pragma warning disable CA1031 // Do not catch general exception types
+                catch (Exception e)
+#pragma warning restore CA1031 // Do not catch general exception types
+                {
+                    _ = MessageBox.Show(e.Message, "Scan", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public ICommand NewCommand { get; }
+
+        public ICommand ScanCommand { get; }
+
+        public Scan Scan { get; } = new();
 
         public ImmutableList<BookmarksFile> BookmarkFiles
         {

@@ -54,6 +54,82 @@
                                     Executed="OnClose" />
                 </Button.CommandBindings>
             </Button>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0"
+                           Grid.Column="0"
+                           Text="Days" />
+                <TextBox Grid.Row="0"
+                         Grid.Column="1"
+                         Text="{Binding Scan.Days}" />
+
+                <TextBlock Grid.Row="1"
+                           Grid.Column="0"
+                           Text="Yield" />
+                <TextBox Grid.Row="1"
+                         Grid.Column="1"
+                         Text="{Binding Scan.MinYield}" />
+
+                <TextBlock Grid.Row="2"
+                           Grid.Column="0"
+                           Text="Min ADR" />
+                <TextBox Grid.Row="2"
+                         Grid.Column="1"
+                         Text="{Binding Scan.MinAdr}" />
+
+                <TextBlock Grid.Row="3"
+                           Grid.Column="0"
+                           Text="Min vol" />
+                <TextBox Grid.Row="3"
+                         Grid.Column="1"
+                         Text="{Binding Scan.MinAverageVolume}" />
+
+                <TextBlock Grid.Row="4"
+                           Grid.Column="0"
+                           Text="Min $ vol" />
+                <TextBox Grid.Row="4"
+                         Grid.Column="1"
+                         Text="{Binding Scan.MinAverageDollarVolume}" />
+
+                <TextBlock Grid.Row="5"
+                           Grid.Column="0"
+                           Text="Has minutes" />
+                <CheckBox Grid.Row="5"
+                          Grid.Column="1"
+                          IsChecked="{Binding Scan.HasMinutes}" />
+
+                <TextBlock Grid.Row="6"
+                           Grid.Column="0"
+                           Text="Has minutes" />
+                <DatePicker Grid.Row="6"
+                            Grid.Column="1"
+                            SelectedDate="{Binding Scan.StartDate}" />
+
+                <TextBlock Grid.Row="7"
+                           Grid.Column="0"
+                           Text="Has minutes" />
+                <DatePicker Grid.Row="7"
+                            Grid.Column="1"
+                            SelectedDate="{Binding Scan.EndDate}" />
+                <Button Grid.Row="8"
+                        Grid.Column="1"
+                        Command="{Binding ScanCommand}"
+                        Content="Run" />
+            </Grid>
         </StackPanel>
 
         <StackPanel Grid.Row="1"
