@@ -163,24 +163,24 @@
                         for (var i = Math.Max(20, days); i < candles.Count; i++)
                         {
                             if (candles[i].Close / candles[i - days].Close > min &&
-                                SatisfiesMinAdr() &&
-                                SatisfiesMinAverageVolume() &&
-                                SatisfiesMinAverageDollarVolume())
+                                MinAdrOk() &&
+                                MinAverageVolumeOk() &&
+                                MinAverageDollarVolumeOk())
                             {
-                                yield return new Bookmark(symbol, TradingDay.StartOfDay(candles[i - 3].Time), ImmutableSortedSet<string>.Empty, null);
+                                yield return new Bookmark(symbol, TradingDay.StartOfDay(candles[i - days].Time), ImmutableSortedSet<string>.Empty, null);
                             }
 
-                            bool SatisfiesMinAdr()
+                            bool MinAdrOk()
                             {
                                 return this.minAdr is null || Take20().Adr() > this.minAdr;
                             }
 
-                            bool SatisfiesMinAverageVolume()
+                            bool MinAverageVolumeOk()
                             {
                                 return this.minAverageVolume is null || Take20().Average(x => x.Volume) > this.minAverageVolume;
                             }
 
-                            bool SatisfiesMinAverageDollarVolume()
+                            bool MinAverageDollarVolumeOk()
                             {
                                 return this.minAverageDollarVolume is null || Take20().Average(x => x.Volume * x.Close) > this.minAverageDollarVolume;
                             }

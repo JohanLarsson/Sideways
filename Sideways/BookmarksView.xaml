@@ -54,7 +54,7 @@
                                     Executed="OnClose" />
                 </Button.CommandBindings>
             </Button>
-            <Grid>
+            <Grid FocusManager.IsFocusScope="True">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
