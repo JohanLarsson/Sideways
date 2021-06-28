@@ -16,6 +16,7 @@
             MaxCallsPerMinute = 5,
         };
 
+        [Explicit("Uses real DB")]
         [Test]
         public static void TryCreateWhenUnlisted()
         {
@@ -28,6 +29,7 @@
             Assert.AreEqual(null, SymbolDownloads.TryCreate("I", default, default, new Downloader(settings), settings.AlphaVantage));
         }
 
+        [Explicit("Uses real DB")]
         [Test]
         public static void TryCreateWhenUpToDate()
         {
@@ -42,6 +44,7 @@
             Assert.AreEqual(null, SymbolDownloads.TryCreate("TSLA", new TimeRange(end.AddDays(-100), end), new TimeRange(end.AddDays(-100), end), new Downloader(settings), settings.AlphaVantage));
         }
 
+        [Explicit("Uses real DB")]
         [Test]
         public static void TryCreateWhenMissingMinutes()
         {
@@ -56,6 +59,7 @@
             Assert.AreEqual(null, SymbolDownloads.TryCreate("ETHE", new TimeRange(end.AddDays(-100), end), default, new Downloader(settings), settings.AlphaVantage));
         }
 
+        [Explicit("Uses real DB")]
         [Test]
         public static void TryCreateWhenDaysNeedUpdate()
         {
@@ -72,6 +76,7 @@
             Assert.AreEqual(0, symbolDownloads.MinutesDownloads.Length);
         }
 
+        [Explicit("Uses real DB")]
         [Test]
         public static void TryCreateWhenMinutesNeedUpdate()
         {
@@ -88,6 +93,7 @@
             Assert.AreEqual(null, symbolDownloads.MinutesDownloads.Single().Slice);
         }
 
+        [Explicit("Uses real DB")]
         [Test]
         public static void TryCreateWhenEmptyMinutes()
         {
@@ -104,6 +110,7 @@
             Assert.AreEqual(Enum.GetValues<Slice>(), symbolDownloads.MinutesDownloads.Select(x => x.Slice));
         }
 
+        [Explicit("Uses real DB")]
         [Test]
         public static void TryCreateWhenMinutesFillDownAll()
         {
@@ -120,6 +127,7 @@
             Assert.AreEqual(Enum.GetValues<Slice>().Except(new[] { Slice.Year1Month1 }), symbolDownloads.MinutesDownloads.Select(x => x.Slice));
         }
 
+        [Explicit("Uses real DB")]
         [Test]
         public static void TryCreateWhenDaysAndMinutesNeedsUpdate()
         {
