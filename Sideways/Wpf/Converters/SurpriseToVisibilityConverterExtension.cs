@@ -6,12 +6,12 @@
     using System.Windows.Markup;
 
     [ValueConversion(typeof(float), typeof(Visibility))]
-    [MarkupExtensionReturnType(typeof(VisibleWhenGreaterThanExtension))]
-    public sealed class VisibleWhenGreaterThanExtension : MarkupExtension, IValueConverter
+    [MarkupExtensionReturnType(typeof(SurpriseToVisibilityConverterExtension))]
+    public sealed class SurpriseToVisibilityConverterExtension : MarkupExtension, IValueConverter
     {
         private readonly double minimum;
 
-        public VisibleWhenGreaterThanExtension(double minimum)
+        public SurpriseToVisibilityConverterExtension(double minimum)
         {
             this.minimum = minimum;
         }
@@ -20,9 +20,9 @@
         {
             return value switch
             {
-                double x => x > this.minimum ? Visibility.Visible : Visibility.Collapsed,
-                float x => x > this.minimum ? Visibility.Visible : Visibility.Collapsed,
-                int x => x > this.minimum ? Visibility.Visible : Visibility.Collapsed,
+                double x => Math.Abs(x) > this.minimum ? Visibility.Visible : Visibility.Collapsed,
+                float x => Math.Abs(x) > this.minimum ? Visibility.Visible : Visibility.Collapsed,
+                int x => Math.Abs(x) > this.minimum ? Visibility.Visible : Visibility.Collapsed,
                 null => Visibility.Collapsed,
                 _ => throw new NotSupportedException($"Not handling value of type {value.GetType().Name}"),
             };
@@ -30,7 +30,7 @@
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new NotSupportedException($"{nameof(VisibleWhenGreaterThanExtension)} can only be used in OneWay bindings");
+            throw new NotSupportedException($"{nameof(SurpriseToVisibilityConverterExtension)} can only be used in OneWay bindings");
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider) => this;

@@ -251,7 +251,7 @@
                                Text="{Binding SurprisePercentage,
                                               StringFormat='{}{0:F0}%'}"
                                Visibility="{Binding SurprisePercentage,
-                                                    Converter={sideways:VisibleWhenGreaterThan 25}}" />
+                                                    Converter={sideways:SurpriseToVisibilityConverter 25}}" />
 
                     <TextBlock HorizontalAlignment="Center">
                         <TextBlock.Text>
