@@ -109,10 +109,9 @@
                         vm.Candles = Candles.Adjusted(splits, days, default);
                     }
 
-                    // Update minutes.
+                    vm.QuarterlyEarnings = Database.ReadQuarterlyEarnings(symbol);
                     var minutes = await Task.Run(() => Database.ReadMinutes(vm.Symbol)).ConfigureAwait(false);
                     vm.Candles = Candles.Adjusted(splits, days, minutes);
-                    vm.QuarterlyEarnings = Database.ReadQuarterlyEarnings(symbol);
                 }
 #pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception e)
