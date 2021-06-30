@@ -24,11 +24,11 @@
                       CanUserAddRows="False"
                       CanUserDeleteRows="False"
                       CanUserReorderColumns="False"
-                      IsSynchronizedWithCurrentItem="True"
-                      SelectionMode="Single"
-                      SelectionUnit="FullRow"
                       ItemsSource="{Binding CurrentCriteria}"
-                      RowDetailsVisibilityMode="VisibleWhenSelected">
+                      RowDetailsVisibilityMode="VisibleWhenSelected"
+                      SelectedItem="{x:Null}"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn local:SingleClick.Toggle="True"
                                             Binding="{Binding IsActive}"
@@ -64,14 +64,16 @@
                                                Text="Min" />
                                     <TextBox Grid.Row="1"
                                              Grid.Column="1"
-                                             Text="{Binding Min, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Min,
+                                                            UpdateSourceTrigger=LostFocus}" />
 
                                     <TextBlock Grid.Row="2"
                                                Grid.Column="0"
                                                Text="Max" />
                                     <TextBox Grid.Row="2"
                                              Grid.Column="1"
-                                             Text="{Binding Max, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Max,
+                                                            UpdateSourceTrigger=LostFocus}" />
                                 </Grid>
                             </DataTemplate>
                         </local:CriteriaTemplateSelector.AdrCriteria>
@@ -99,14 +101,16 @@
                                                Text="Min" />
                                     <TextBox Grid.Row="1"
                                              Grid.Column="1"
-                                             Text="{Binding Min, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Min,
+                                                            UpdateSourceTrigger=LostFocus}" />
 
                                     <TextBlock Grid.Row="2"
                                                Grid.Column="0"
                                                Text="Max" />
                                     <TextBox Grid.Row="2"
                                              Grid.Column="1"
-                                             Text="{Binding Max, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Max,
+                                                            UpdateSourceTrigger=LostFocus}" />
                                 </Grid>
                             </DataTemplate>
                         </local:CriteriaTemplateSelector.AtrCriteria>
@@ -134,14 +138,16 @@
                                                Text="Min" />
                                     <TextBox Grid.Row="1"
                                              Grid.Column="1"
-                                             Text="{Binding Min, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Min,
+                                                            UpdateSourceTrigger=LostFocus}" />
 
                                     <TextBlock Grid.Row="2"
                                                Grid.Column="0"
                                                Text="Max" />
                                     <TextBox Grid.Row="2"
                                              Grid.Column="1"
-                                             Text="{Binding Max, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Max,
+                                                            UpdateSourceTrigger=LostFocus}" />
                                 </Grid>
                             </DataTemplate>
                         </local:CriteriaTemplateSelector.AverageDollarVolumeCriteria>
@@ -169,14 +175,16 @@
                                                Text="Min" />
                                     <TextBox Grid.Row="1"
                                              Grid.Column="1"
-                                             Text="{Binding Min, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Min,
+                                                            UpdateSourceTrigger=LostFocus}" />
 
                                     <TextBlock Grid.Row="2"
                                                Grid.Column="0"
                                                Text="Max" />
                                     <TextBox Grid.Row="2"
                                              Grid.Column="1"
-                                             Text="{Binding Max, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Max,
+                                                            UpdateSourceTrigger=LostFocus}" />
                                 </Grid>
                             </DataTemplate>
                         </local:CriteriaTemplateSelector.AverageVolumeCriteria>
@@ -204,14 +212,16 @@
                                                Text="Min" />
                                     <TextBox Grid.Row="0"
                                              Grid.Column="1"
-                                             Text="{Binding Min, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Min,
+                                                            UpdateSourceTrigger=LostFocus}" />
 
                                     <TextBlock Grid.Row="1"
                                                Grid.Column="0"
                                                Text="Max" />
                                     <TextBox Grid.Row="1"
                                              Grid.Column="1"
-                                             Text="{Binding Max, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Max,
+                                                            UpdateSourceTrigger=LostFocus}" />
                                 </Grid>
                             </DataTemplate>
                         </local:CriteriaTemplateSelector.PriceCriteria>
@@ -239,14 +249,16 @@
                                                Text="Start" />
                                     <DatePicker Grid.Row="1"
                                                 Grid.Column="1"
-                                                Text="{Binding Start, UpdateSourceTrigger=LostFocus}" />
+                                                Text="{Binding Start,
+                                                               UpdateSourceTrigger=LostFocus}" />
 
                                     <TextBlock Grid.Row="2"
                                                Grid.Column="0"
                                                Text="End" />
                                     <DatePicker Grid.Row="2"
                                                 Grid.Column="1"
-                                                Text="{Binding End, UpdateSourceTrigger=LostFocus}" />
+                                                Text="{Binding End,
+                                                               UpdateSourceTrigger=LostFocus}" />
                                 </Grid>
                             </DataTemplate>
                         </local:CriteriaTemplateSelector.TimeCriteria>
@@ -269,21 +281,24 @@
                                                Text="Days" />
                                     <TextBox Grid.Row="0"
                                              Grid.Column="1"
-                                             Text="{Binding Days, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Days,
+                                                            UpdateSourceTrigger=LostFocus}" />
 
                                     <TextBlock Grid.Row="1"
                                                Grid.Column="0"
                                                Text="Min" />
                                     <TextBox Grid.Row="1"
                                              Grid.Column="1"
-                                             Text="{Binding Min, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Min,
+                                                            UpdateSourceTrigger=LostFocus}" />
 
                                     <TextBlock Grid.Row="2"
                                                Grid.Column="0"
                                                Text="Max" />
                                     <TextBox Grid.Row="2"
                                              Grid.Column="1"
-                                             Text="{Binding Max, UpdateSourceTrigger=LostFocus}" />
+                                             Text="{Binding Max,
+                                                            UpdateSourceTrigger=LostFocus}" />
                                 </Grid>
                             </DataTemplate>
                         </local:CriteriaTemplateSelector.YieldCriteria>
@@ -294,12 +309,26 @@
             <Button Command="{Binding ScanCommand}" Content="Run" />
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <TextBlock Text="Offset: " />
-            <TextBox MinWidth="30" Text="{Binding Offset}" />
+        <StackPanel Grid.Row="1" Visibility="{Binding ElementName=ResultsGrid, Path=HasItems, Converter={x:Static local:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Offset: " />
+                <TextBox MinWidth="30" Text="{Binding Offset}" />
+            </StackPanel>
+
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} of {1}">
+                        <Binding Converter="{x:Static local:AddOneConverter.Default}"
+                                 ElementName="ResultsGrid"
+                                 Path="SelectedIndex" />
+                        <Binding ElementName="ResultsGrid" Path="Items.Count" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
         </StackPanel>
 
-        <DataGrid Grid.Row="2"
+        <DataGrid x:Name="ResultsGrid"
+                  Grid.Row="2"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   ItemsSource="{Binding Results}"
