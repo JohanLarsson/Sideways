@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
 
     public class DescendingCandles : IReadOnlyList<Candle>, INotifyPropertyChanged
     {
@@ -53,6 +54,8 @@
         }
 
         public Candle this[int index] => this.candles[index];
+
+        public ReadOnlySpan<Candle> AsSpan() => CollectionsMarshal.AsSpan(this.candles);
 
         public IEnumerator<Candle> GetEnumerator() => this.candles.GetEnumerator();
 
