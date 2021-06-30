@@ -105,6 +105,15 @@
                           Style="{StaticResource IconStyle}" />
                 </RadioButton>
 
+                <RadioButton x:Name="ScanButton"
+                             Style="{StaticResource NavigationButton}"
+                             ToolTip="Scan">
+                    <Path Data="{StaticResource RecycleGeometry}"
+                          Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}},
+                                         Path=Foreground}"
+                          Style="{StaticResource IconStyle}" />
+                </RadioButton>
+
                 <RadioButton x:Name="SimulationButton"
                              Style="{StaticResource NavigationButton}"
                              ToolTip="Simulation">
@@ -467,17 +476,26 @@
                                          Visibility="{Binding ElementName=SimulationButton,
                                                               Path=IsChecked,
                                                               Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+
                 <sideways:BookmarksView HorizontalAlignment="Right"
                                         DataContext="{Binding Bookmarks}"
                                         Visibility="{Binding ElementName=BookmarksButton,
                                                              Path=IsChecked,
                                                              Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+
+                <sideways:ScanView HorizontalAlignment="Right"
+                                   DataContext="{Binding Scan}"
+                                   Visibility="{Binding ElementName=ScanButton,
+                                                        Path=IsChecked,
+                                                        Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+
                 <sideways:DownloadView Margin="6,0,0,0"
                                        HorizontalAlignment="Right"
                                        DataContext="{Binding Downloader}"
                                        Visibility="{Binding ElementName=DownloadButton,
                                                             Path=IsChecked,
                                                             Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+
                 <sideways:SettingsView HorizontalAlignment="Right"
                                        DataContext="{Binding Settings}"
                                        Visibility="{Binding ElementName=SettingsButton,

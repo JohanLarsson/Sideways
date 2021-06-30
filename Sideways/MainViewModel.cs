@@ -100,6 +100,21 @@
                             : bookmark.Time.AddDays(this.Bookmarks.Offset);
                 }
             };
+
+            this.Scan.PropertyChanged += (_, e) =>
+            {
+                if (e is { PropertyName: nameof(ScanViewModel.SelectedResult) } &&
+                    this.Scan.SelectedResult is { } bookmark)
+                {
+                    this.CurrentSymbol = SymbolViewModel.GetOrCreate(bookmark.Symbol, this.Downloader);
+                    this.Time = this.Scan.Offset == 0
+                        ? bookmark.Time
+                        : this.currentSymbol?.Candles is { } candles
+                            ? candles.Skip(bookmark.Time, CandleInterval.Day, this.Bookmarks.Offset)
+                            : bookmark.Time.AddDays(this.Scan.Offset);
+                }
+            };
+
             this.WatchList.CollectionChanged += (_, _) =>
             {
                 foreach (var symbol in this.WatchList)
@@ -118,6 +133,8 @@
         public Settings Settings { get; }
 
         public BookmarksViewModel Bookmarks { get; } = new();
+
+        public ScanViewModel Scan { get; } = new();
 
         public SimulationViewModel Simulation { get; }
 

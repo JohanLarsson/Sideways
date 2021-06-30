@@ -42,6 +42,6 @@
 
         public override string Info => $"Min {this.yield}% in {this.days} days";
 
-        public bool IsMatch(SortedCandles candles, int index) => candles[index].Close / candles[index - this.days].Close > this.yield;
+        public override bool IsMatch(SortedCandles candles, int index) => candles[index].Close / candles[index - this.days].Close > this.yield;
     }
 }
