@@ -20,6 +20,7 @@
         {
             return value switch
             {
+                string { Length: 0 } => null,
                 string s => Percent.Parse(s, culture),
                 _ => base.ConvertFrom(context, culture, value),
             };
@@ -41,7 +42,7 @@
             {
                 if (destinationType == typeof(string))
                 {
-                    return percent.ToString("X", culture);
+                    return percent.ToString("R", culture);
                 }
             }
 

@@ -8,6 +8,9 @@ namespace Sideways
     [TypeConverter(typeof(PercentTypeConverter))]
     public readonly struct Percent : IEquatable<Percent>, IComparable<Percent>, IComparable, IFormattable
     {
+        public static readonly Percent MinValue = new(float.MinValue);
+        public static readonly Percent MaxValue = new(float.MaxValue);
+
         private readonly float value;
 
         public Percent(float value)
@@ -27,9 +30,11 @@ namespace Sideways
 
         public static bool operator >=(Percent left, Percent right) => left.value >= right.value;
 
-        public static Percent From(float before, float after) => new((after - before) / Math.Abs(before));
+        public static Percent From(float before, float after) => new(100 * (after - before) / Math.Abs(before));
 
         public static Percent Parse(string text, IFormatProvider? formatProvider) => new(float.Parse(text.AsSpan().TrimEnd('%'), NumberStyles.Float, formatProvider));
+
+        public bool IsBetween(Percent min, Percent max) => this >= min && this <= max;
 
         public override string ToString() => $"{this.value}%";
 
