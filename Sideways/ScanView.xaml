@@ -29,7 +29,6 @@
                     <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="Active">
                         <DataGridCheckBoxColumn.CellStyle>
                             <Style BasedOn="{StaticResource {x:Type DataGridCell}}" TargetType="{x:Type DataGridCell}">
-                                <Setter Property="Background" Value="Transparent" />
                                 <Setter Property="local:SingleClick.Toggle" Value="True" />
                             </Style>
                         </DataGridCheckBoxColumn.CellStyle>
@@ -37,7 +36,13 @@
                     <DataGridTextColumn Binding="{Binding Info,
                                                           Mode=OneTime}"
                                         Header="Filter"
-                                        IsReadOnly="True" />
+                                        IsReadOnly="True">
+                        <DataGridTextColumn.CellStyle>
+                            <Style BasedOn="{StaticResource {x:Type DataGridCell}}" TargetType="{x:Type DataGridCell}">
+                                <Setter Property="local:SingleClick.Toggle" Value="True" />
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
                 <DataGrid.RowDetailsTemplateSelector>
                     <local:CriteriaTemplateSelector>

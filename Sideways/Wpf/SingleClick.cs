@@ -2,6 +2,7 @@
 {
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Media;
 
     public static class SingleClick
     {
@@ -9,7 +10,7 @@
             "Toggle",
             typeof(bool),
             typeof(SingleClick),
-            new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
+            new PropertyMetadata(false));
 
         static SingleClick()
         {
@@ -17,17 +18,52 @@
 
             static void OnPreviewMouseLeftButtonDown(object sender, RoutedEventArgs e)
             {
-                if (sender is DataGridCell { IsReadOnly: false, IsEditing: false, Content: CheckBox { IsEnabled: true } checkBox } cell &&
-                    GetToggle(cell))
+                switch (sender)
                 {
-                    checkBox.IsChecked = !checkBox.IsChecked;
-                    e.Handled = true;
+                    case DataGridCell { IsReadOnly: false, IsEditing: false, Content: CheckBox { IsEnabled: true } checkBox } cell
+                        when GetToggle(cell):
+                        checkBox.IsChecked = !checkBox.IsChecked;
+                        e.Handled = true;
+                        break;
+                    case DataGridCell { IsSelected: true, IsEditing: false } cell
+                        when GetToggle(cell) &&
+                             FirstAncestor<DataGridRow>(cell) is { } row &&
+                             FirstAncestor<DataGrid>(row) is { } grid:
+                        switch (grid.SelectionUnit)
+                        {
+                            case DataGridSelectionUnit.FullRow:
+                                row.IsSelected = false;
+                                break;
+                            case DataGridSelectionUnit.Cell:
+                                cell.IsSelected = false;
+                                break;
+                        }
+
+                        e.Handled = true;
+                        break;
                 }
+            }
+
+            static T? FirstAncestor<T>(Visual child)
+                where T : Visual
+            {
+                var parent = VisualTreeHelper.GetParent(child);
+                while (parent is { })
+                {
+                    if (parent is T match)
+                    {
+                        return match;
+                    }
+
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+
+                return null;
             }
         }
 
-        public static void SetToggle(DependencyObject element, bool value) => element.SetValue(ToggleProperty, value);
+        public static void SetToggle(DataGridCell element, bool value) => element.SetValue(ToggleProperty, value);
 
-        public static bool GetToggle(DependencyObject element) => (bool)element.GetValue(ToggleProperty);
+        public static bool GetToggle(DataGridCell element) => (bool)element.GetValue(ToggleProperty);
     }
 }
