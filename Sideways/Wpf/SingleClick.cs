@@ -65,8 +65,9 @@
             }
         }
 
-        public static void SetToggle(DataGridColumn element, bool value) => element.SetValue(ToggleProperty, value);
-
+        [AttachedPropertyBrowsableForType(typeof(DataGridColumn))]
         public static bool GetToggle(DataGridColumn element) => (bool)element.GetValue(ToggleProperty);
+
+        public static void SetToggle(DataGridColumn element, bool value) => element.SetValue(ToggleProperty, value);
     }
 }

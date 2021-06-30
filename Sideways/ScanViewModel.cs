@@ -31,16 +31,17 @@
         public ScanViewModel()
         {
             this.Results = new ReadOnlyObservableCollection<Bookmark>(this.results);
-            this.CurrentCriteria = new ObservableCollection<Criteria>
-            {
-                this.timeCriteria,
-                this.yieldCriteria,
-                this.priceCriteria,
-                this.adrCriteria,
-                this.averageVolumeCriteria,
-                this.averageDollarVolumeCriteria,
-                this.hasMinutes,
-            };
+            this.CurrentCriteria = new ReadOnlyObservableCollection<Criteria>(
+                new ObservableCollection<Criteria>
+                {
+                    this.timeCriteria,
+                    this.yieldCriteria,
+                    this.priceCriteria,
+                    this.adrCriteria,
+                    this.averageVolumeCriteria,
+                    this.averageDollarVolumeCriteria,
+                    this.hasMinutes,
+                });
 
             this.ScanCommand = new RelayCommand(_ => RunScan(), _ => this.CurrentCriteria.Any(x => x.IsActive));
 
@@ -77,7 +78,7 @@
 
         public ICommand ScanCommand { get; }
 
-        public ObservableCollection<Criteria> CurrentCriteria { get; }
+        public ReadOnlyObservableCollection<Criteria> CurrentCriteria { get; }
 
         public ReadOnlyObservableCollection<Bookmark> Results { get; }
 
