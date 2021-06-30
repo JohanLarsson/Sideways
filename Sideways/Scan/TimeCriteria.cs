@@ -13,7 +13,7 @@
             (Start: { } start, End: { } end) => $"[{start:yyyy-MM-dd}..{end:yyyy-MM-dd}]",
             (Start: null, End: { } end) => $"[..{end:yyyy-MM-dd}]",
             (Start: { } start, End: null) => $"[{start:yyyy-MM-dd}..]",
-            _ => "*",
+            (null, null) => "??",
             //// ReSharper restore LocalVariableHidesMember
         };
 
@@ -49,15 +49,14 @@
             }
         }
 
-        public override bool IsSatisfied(SortedCandles candles, int index) => (this.IsActive, this.Start, this.End) switch
+        public override bool IsSatisfied(SortedCandles candles, int index)
         {
-            // ReSharper disable LocalVariableHidesMember
-            (IsActive: true, Start: { } start, End:
-                { } end) => candles[index].Time >= start && candles[index].Time <= end,
-            (IsActive: true, Start: null, End: { } end) => candles[index].Time <= end,
-            (IsActive: true, Start: { } start, End: null) => candles[index].Time >= start,
-            _ => true,
-            //// ReSharper restore LocalVariableHidesMember
-        };
+            if (!this.IsActive)
+            {
+                throw new InvalidOperationException($"{nameof(YieldCriteria)} is not active.");
+            }
+
+            return candles[index].Time.IsBetween(this.start ?? DateTimeOffset.MinValue, this.end ?? DateTimeOffset.MaxValue);
+        }
     }
 }

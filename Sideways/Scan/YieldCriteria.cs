@@ -11,10 +11,10 @@
         public override string Info => (this.min, this.max) switch
         {
             // ReSharper disable LocalVariableHidesMember
-            ({ } min, { } max) => $"[{min}..{max}] in {this.days} days",
-            (null, { } max) => $"[..{max}] in {this.days} days",
-            ({ } min, null) => $"[{min}..] in {this.days} days",
-            (null, null) => $"yield",
+            ({ } min, { } max) => $"[{min}..{max}] in {this.days} d",
+            (null, { } max) => $"[..{max}] in {this.days} d",
+            ({ } min, null) => $"[{min}..] in {this.days} d",
+            (null, null) => $"*",
             //// ReSharper restore LocalVariableHidesMember
         };
 
