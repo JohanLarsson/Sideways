@@ -1,9 +1,9 @@
 ﻿namespace Sideways.Scan
 {
-    public class MinYield : Filter
+    public sealed class YieldCriteria : Criteria
     {
         private int days;
-        private float @yield;
+        private float min;
 
         public int Days
         {
@@ -22,17 +22,17 @@
             }
         }
 
-        public float Yield
+        public float Min
         {
-            get => this.yield;
+            get => this.min;
             set
             {
-                if (value == this.yield)
+                if (value.Equals(this.min))
                 {
                     return;
                 }
 
-                this.yield = value;
+                this.min = value;
                 this.OnPropertyChanged();
                 this.OnPropertyChanged(nameof(this.Info));
             }
@@ -40,8 +40,16 @@
 
         public override int ExtraDays => this.Days;
 
-        public override string Info => $"Min {this.yield}% in {this.days} days";
+        public override string Info => $"Min {this.min}% in {this.days} days";
 
-        public override bool IsMatch(SortedCandles candles, int index) => candles[index].Close / candles[index - this.days].Close > this.yield;
+        public override bool IsSatisfied(SortedCandles candles, int index)
+        {
+            return (this.IsActive, this.days, this.min) switch
+            {
+                // ReSharper disable LocalVariableHidesMember
+                (IsActive: true, days: > 0 and var days, min: > 0 and var min) => candles[index].Close / candles[index - days].Open > min,
+                _ => true,
+            };
+        }
     }
 }

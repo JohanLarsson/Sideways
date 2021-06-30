@@ -11,25 +11,35 @@
     using System.Windows;
     using System.Windows.Input;
 
+    using Sideways.Scan;
+
     public sealed class ScanViewModel : INotifyPropertyChanged
     {
         private readonly ObservableCollection<Bookmark> results = new();
+        private readonly TimeCriteria timeCriteria = new();
+        private readonly YieldCriteria yieldCriteria = new();
+        private readonly AdrCriteria adrCriteria = new();
+        private readonly AverageVolumeCriteria averageVolumeCriteria = new();
+        private readonly AverageDollarVolumeCriteria averageDollarVolumeCriteria = new();
+        private readonly HasMinutesCriteria hasMinutes = new();
 
         private Bookmark? selectedResult;
-        private double? minYield;
-        private int? days;
-        private double? minAdr;
-        private double? minAverageVolume;
-        private double? minAverageDollarVolume;
-        private bool hasMinutes;
-        private DateTimeOffset? startDate;
-        private DateTimeOffset? endDate;
         private int offset;
 
         public ScanViewModel()
         {
             this.Results = new ReadOnlyObservableCollection<Bookmark>(this.results);
-            this.ScanCommand = new RelayCommand(_ => RunScan());
+            this.CurrentCriteria = new ObservableCollection<Criteria>
+            {
+                this.timeCriteria,
+                this.yieldCriteria,
+                this.adrCriteria,
+                this.averageVolumeCriteria,
+                this.averageDollarVolumeCriteria,
+                this.hasMinutes,
+            };
+
+            this.ScanCommand = new RelayCommand(_ => RunScan(), _ => this.CurrentCriteria.Any(x => x.IsActive));
 
             async void RunScan()
             {
@@ -59,6 +69,8 @@
 
         public ICommand ScanCommand { get; }
 
+        public ObservableCollection<Criteria> CurrentCriteria { get; }
+
         public ReadOnlyObservableCollection<Bookmark> Results { get; }
 
         public Bookmark? SelectedResult
@@ -72,126 +84,6 @@
                 }
 
                 this.selectedResult = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public double? MinYield
-        {
-            get => this.minYield;
-            set
-            {
-                if (value == this.minYield)
-                {
-                    return;
-                }
-
-                this.minYield = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public int? Days
-        {
-            get => this.days;
-            set
-            {
-                if (value == this.days)
-                {
-                    return;
-                }
-
-                this.days = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public double? MinAdr
-        {
-            get => this.minAdr;
-            set
-            {
-                if (value == this.minAdr)
-                {
-                    return;
-                }
-
-                this.minAdr = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public double? MinAverageVolume
-        {
-            get => this.minAverageVolume;
-            set
-            {
-                if (value == this.minAverageVolume)
-                {
-                    return;
-                }
-
-                this.minAverageVolume = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public double? MinAverageDollarVolume
-        {
-            get => this.minAverageDollarVolume;
-            set
-            {
-                if (value == this.minAverageDollarVolume)
-                {
-                    return;
-                }
-
-                this.minAverageDollarVolume = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public bool HasMinutes
-        {
-            get => this.hasMinutes;
-            set
-            {
-                if (value == this.hasMinutes)
-                {
-                    return;
-                }
-
-                this.hasMinutes = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public DateTimeOffset? StartDate
-        {
-            get => this.startDate;
-            set
-            {
-                if (value == this.startDate)
-                {
-                    return;
-                }
-
-                this.startDate = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public DateTimeOffset? EndDate
-        {
-            get => this.endDate;
-            set
-            {
-                if (value == this.endDate)
-                {
-                    return;
-                }
-
-                this.endDate = value;
                 this.OnPropertyChanged();
             }
         }
@@ -211,181 +103,51 @@
             }
         }
 
-        public IEnumerable<Bookmark> Run()
-        {
-            if (this.minYield is { } &&
-                this.days is null)
-            {
-                throw new InvalidOperationException("days cannot be null when yield is specified.");
-            }
-
-            if (this.days is { } days)
-            {
-                if (this.minYield is null)
-                {
-                    throw new InvalidOperationException("yield cannot be null when days is specified.");
-                }
-
-                var min = 1 + (this.minYield / 100.0);
-                foreach (var symbol in Database.ReadSymbols())
-                {
-                    if (Candles() is { } candles)
-                    {
-                        for (var i = Math.Max(20, days); i < candles.Count; i++)
-                        {
-                            if (candles[i].Close / candles[i - days].Close > min &&
-                                MinAdrOk() &&
-                                MinAverageVolumeOk() &&
-                                MinAverageDollarVolumeOk())
-                            {
-                                yield return new Bookmark(symbol, TradingDay.StartOfDay(candles[i - days].Time), ImmutableSortedSet<string>.Empty, null);
-                            }
-
-                            bool MinAdrOk()
-                            {
-                                return this.minAdr is null || Take20().Adr() > this.minAdr;
-                            }
-
-                            bool MinAverageVolumeOk()
-                            {
-                                return this.minAverageVolume is null || Take20().Average(x => x.Volume) > this.minAverageVolume;
-                            }
-
-                            bool MinAverageDollarVolumeOk()
-                            {
-                                return this.minAverageDollarVolume is null || Take20().Average(x => x.Volume * x.Close) > this.minAverageDollarVolume;
-                            }
-
-                            IEnumerable<Candle> Take20()
-                            {
-                                for (var j = 0; j < 20; j++)
-                                {
-                                    yield return candles[i - j];
-                                }
-                            }
-                        }
-                    }
-
-                    SortedCandles? Candles()
-                    {
-                        if (MinTime() is { } minTime)
-                        {
-                            return Database.ReadDays(symbol, minTime, this.endDate ?? DateTimeOffset.Now);
-                        }
-
-                        if (this.endDate is { } maxTime)
-                        {
-                            return Database.ReadDays(symbol, DateTimeOffset.MinValue, maxTime);
-                        }
-
-                        return Database.ReadDays(symbol);
-
-                        DateTimeOffset? MinTime()
-                        {
-                            if (this.hasMinutes)
-                            {
-                                if (Database.FirstMinute(symbol) is { } firstMinute)
-                                {
-                                    if (this.startDate is { } minTime)
-                                    {
-                                        return DateTimeOffsetExtensions.Min(firstMinute, minTime);
-                                    }
-
-                                    return firstMinute;
-                                }
-                            }
-
-                            return this.startDate;
-                        }
-                    }
-                }
-            }
-        }
-
         public IEnumerable<Bookmark> Scan(string symbol)
         {
-            if (this.minYield is { } &&
-                this.days is null)
+            var start = this.CurrentCriteria.Where(x => x.IsActive).Max(x => x.ExtraDays);
+            if (Candles() is { } candles)
             {
-                throw new InvalidOperationException("days cannot be null when yield is specified.");
+                for (var i = start; i < candles.Count; i++)
+                {
+                    if (this.yieldCriteria.IsSatisfied(candles, i) &&
+                        this.adrCriteria.IsSatisfied(candles, i) &&
+                        this.averageVolumeCriteria.IsSatisfied(candles, i) &&
+                        this.averageDollarVolumeCriteria.IsSatisfied(candles, i))
+                    {
+                        yield return new Bookmark(symbol, TradingDay.StartOfDay(candles[i - this.yieldCriteria.Days].Time), ImmutableSortedSet<string>.Empty, null);
+                    }
+                }
             }
 
-            if (this.days is { } days)
+            SortedCandles? Candles()
             {
-                if (this.minYield is null)
+                // ReSharper disable once VariableHidesOuterVariable
+                if (Start() is { } start)
                 {
-                    throw new InvalidOperationException("yield cannot be null when days is specified.");
+                    return Database.ReadDays(symbol, start, this.timeCriteria.End ?? DateTimeOffset.Now);
                 }
 
-                var min = 1 + (this.minYield / 100.0);
-                if (Candles() is { } candles)
+                if (this.timeCriteria.End is { } end)
                 {
-                    for (var i = Math.Max(20, days); i < candles.Count; i++)
-                    {
-                        if (candles[i].Close / candles[i - days].Close > min &&
-                            MinAdrOk() &&
-                            MinAverageVolumeOk() &&
-                            MinAverageDollarVolumeOk())
-                        {
-                            yield return new Bookmark(symbol, TradingDay.StartOfDay(candles[i - days].Time), ImmutableSortedSet<string>.Empty, null);
-                        }
-
-                        bool MinAdrOk()
-                        {
-                            return this.minAdr is null || Take20().Adr() > this.minAdr;
-                        }
-
-                        bool MinAverageVolumeOk()
-                        {
-                            return this.minAverageVolume is null || Take20().Average(x => x.Volume) > this.minAverageVolume;
-                        }
-
-                        bool MinAverageDollarVolumeOk()
-                        {
-                            return this.minAverageDollarVolume is null || Take20().Average(x => x.Volume * x.Close) > this.minAverageDollarVolume;
-                        }
-
-                        IEnumerable<Candle> Take20()
-                        {
-                            for (var j = 0; j < 20; j++)
-                            {
-                                yield return candles[i - j];
-                            }
-                        }
-                    }
+                    return Database.ReadDays(symbol, DateTimeOffset.MinValue, end);
                 }
 
-                SortedCandles? Candles()
+                return Database.ReadDays(symbol);
+
+                DateTimeOffset? Start()
                 {
-                    if (MinTime() is { } minTime)
+                    return (this.hasMinutes.IsActive, this.timeCriteria.Start) switch
                     {
-                        return Database.ReadDays(symbol, minTime, this.endDate ?? DateTimeOffset.Now);
-                    }
-
-                    if (this.endDate is { } maxTime)
-                    {
-                        return Database.ReadDays(symbol, DateTimeOffset.MinValue, maxTime);
-                    }
-
-                    return Database.ReadDays(symbol);
-
-                    DateTimeOffset? MinTime()
-                    {
-                        if (this.hasMinutes)
-                        {
-                            if (Database.FirstMinute(symbol) is { } firstMinute)
-                            {
-                                if (this.startDate is { } minTime)
-                                {
-                                    return DateTimeOffsetExtensions.Min(firstMinute, minTime);
-                                }
-
-                                return firstMinute;
-                            }
-                        }
-
-                        return this.startDate;
-                    }
+                        // ReSharper disable VariableHidesOuterVariable
+                        (true, Start: { } start)
+                            when Database.FirstMinute(symbol) is { } first
+                            => DateTimeOffsetExtensions.Min(first, start),
+                        (true, Start: { })
+                            => null,
+                        (true, Start: null) => Database.FirstMinute(symbol),
+                        (_, Start: var start) => start,
+                    };
                 }
             }
         }
