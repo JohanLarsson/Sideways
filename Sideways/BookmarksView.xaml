@@ -75,56 +75,56 @@
                            Text="Days" />
                 <TextBox Grid.Row="0"
                          Grid.Column="1"
-                         Text="{Binding Scan.Days}" />
+                         Text="{Binding ScanViewModel.Days}" />
 
                 <TextBlock Grid.Row="1"
                            Grid.Column="0"
                            Text="Yield" />
                 <TextBox Grid.Row="1"
                          Grid.Column="1"
-                         Text="{Binding Scan.MinYield}" />
+                         Text="{Binding ScanViewModel.MinYield}" />
 
                 <TextBlock Grid.Row="2"
                            Grid.Column="0"
                            Text="Min ADR" />
                 <TextBox Grid.Row="2"
                          Grid.Column="1"
-                         Text="{Binding Scan.MinAdr}" />
+                         Text="{Binding ScanViewModel.MinAdr}" />
 
                 <TextBlock Grid.Row="3"
                            Grid.Column="0"
                            Text="Min vol" />
                 <TextBox Grid.Row="3"
                          Grid.Column="1"
-                         Text="{Binding Scan.MinAverageVolume}" />
+                         Text="{Binding ScanViewModel.MinAverageVolume}" />
 
                 <TextBlock Grid.Row="4"
                            Grid.Column="0"
                            Text="Min $ vol" />
                 <TextBox Grid.Row="4"
                          Grid.Column="1"
-                         Text="{Binding Scan.MinAverageDollarVolume}" />
+                         Text="{Binding ScanViewModel.MinAverageDollarVolume}" />
 
                 <TextBlock Grid.Row="5"
                            Grid.Column="0"
                            Text="Has minutes" />
                 <CheckBox Grid.Row="5"
                           Grid.Column="1"
-                          IsChecked="{Binding Scan.HasMinutes}" />
+                          IsChecked="{Binding ScanViewModel.HasMinutes}" />
 
                 <TextBlock Grid.Row="6"
                            Grid.Column="0"
                            Text="Start" />
                 <DatePicker Grid.Row="6"
                             Grid.Column="1"
-                            SelectedDate="{Binding Scan.StartDate}" />
+                            SelectedDate="{Binding ScanViewModel.StartDate}" />
 
                 <TextBlock Grid.Row="7"
                            Grid.Column="0"
                            Text="End" />
                 <DatePicker Grid.Row="7"
                             Grid.Column="1"
-                            SelectedDate="{Binding Scan.EndDate}" />
+                            SelectedDate="{Binding ScanViewModel.EndDate}" />
                 <Button Grid.Row="8"
                         Grid.Column="1"
                         Command="{Binding ScanCommand}"

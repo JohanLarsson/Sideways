@@ -1,4 +1,4 @@
-﻿namespace Sideways
+﻿namespace Sideways.Scan
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@
     using System.Linq;
     using System.Runtime.CompilerServices;
 
-    public sealed class Scan : INotifyPropertyChanged
+    public sealed class ScanViewModel : INotifyPropertyChanged
     {
         private double? minYield;
         private int? days;

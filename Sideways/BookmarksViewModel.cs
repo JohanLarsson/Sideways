@@ -25,7 +25,7 @@
             {
                 try
                 {
-                    var bookmarks = await Task.Run(() => this.Scan.Run().ToArray()).ConfigureAwait(false);
+                    var bookmarks = await Task.Run(() => this.ScanViewModel.Run().ToArray()).ConfigureAwait(false);
                     this.Add(BookmarksFile.Create(null, bookmarks));
                 }
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -43,7 +43,7 @@
 
         public ICommand ScanCommand { get; }
 
-        public Scan Scan { get; } = new();
+        public Scan.ScanViewModel ScanViewModel { get; } = new();
 
         public ImmutableList<BookmarksFile> BookmarkFiles
         {
