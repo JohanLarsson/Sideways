@@ -19,6 +19,17 @@
         public BookmarksViewModel()
         {
             this.NewCommand = new RelayCommand(_ => this.Add(BookmarksFile.Create(null, ImmutableList<Bookmark>.Empty)));
+            this.SaveCommand = new RelayCommand(_ => this.selectedBookmarkFile?.Save(), _ => this.selectedBookmarkFile is { });
+            this.CloseCommand = new RelayCommand(
+                _ =>
+                {
+                    if (this.selectedBookmarkFile is { } selected)
+                    {
+                        selected.AskSave();
+                        this.Remove(selected);
+                    }
+                },
+                _ => this.selectedBookmarkFile is { });
             this.ScanCommand = new RelayCommand(_ => RunScan());
 
             async void RunScan()
@@ -40,6 +51,10 @@
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public ICommand NewCommand { get; }
+
+        public ICommand SaveCommand { get; }
+
+        public ICommand CloseCommand { get; }
 
         public ICommand ScanCommand { get; }
 

@@ -39,21 +39,10 @@
                 </Button.CommandBindings>
             </Button>
 
-            <Button Command="Save" Content="Save">
-                <Button.CommandBindings>
-                    <CommandBinding CanExecute="OnCanSaveOrClose"
-                                    Command="Save"
-                                    Executed="OnSave" />
-                </Button.CommandBindings>
-            </Button>
+            <Button Command="{Binding SaveCommand}" Content="Save" />
 
-            <Button Command="Close" Content="Close">
-                <Button.CommandBindings>
-                    <CommandBinding CanExecute="OnCanSaveOrClose"
-                                    Command="Close"
-                                    Executed="OnClose" />
-                </Button.CommandBindings>
-            </Button>
+            <Button Command="{Binding CloseCommand}" Content="Close" />
+
             <Grid FocusManager.IsFocusScope="True">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

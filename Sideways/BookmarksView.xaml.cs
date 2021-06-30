@@ -59,33 +59,5 @@
                 }
             }
         }
-
-        private void OnClose(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (this.DataContext is BookmarksViewModel { SelectedBookmarkFile: { } selected } viewModel)
-            {
-                selected.AskSave();
-                viewModel.Remove(selected);
-                e.Handled = true;
-            }
-        }
-
-        private void OnCanSaveOrClose(object sender, CanExecuteRoutedEventArgs e)
-        {
-            if (this.DataContext is BookmarksViewModel { SelectedBookmarkFile: { } })
-            {
-                e.CanExecute = true;
-                e.Handled = true;
-            }
-        }
-
-        private void OnSave(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (this.DataContext is BookmarksViewModel { SelectedBookmarkFile: { } bookmarks })
-            {
-                bookmarks.Save();
-                e.Handled = true;
-            }
-        }
     }
 }
