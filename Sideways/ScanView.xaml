@@ -26,23 +26,15 @@
                       CanUserReorderColumns="False"
                       ItemsSource="{Binding CurrentCriteria}">
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" Header="Active">
-                        <DataGridCheckBoxColumn.CellStyle>
-                            <Style BasedOn="{StaticResource {x:Type DataGridCell}}" TargetType="{x:Type DataGridCell}">
-                                <Setter Property="local:SingleClick.Toggle" Value="True" />
-                            </Style>
-                        </DataGridCheckBoxColumn.CellStyle>
-                    </DataGridCheckBoxColumn>
-                    <DataGridTextColumn Binding="{Binding Info,
+                    <DataGridCheckBoxColumn local:SingleClick.Toggle="True"
+                                            Binding="{Binding IsActive,
+                                                              UpdateSourceTrigger=PropertyChanged}"
+                                            Header="Active" />
+                    <DataGridTextColumn local:SingleClick.Toggle="True"
+                                        Binding="{Binding Info,
                                                           Mode=OneTime}"
                                         Header="Filter"
-                                        IsReadOnly="True">
-                        <DataGridTextColumn.CellStyle>
-                            <Style BasedOn="{StaticResource {x:Type DataGridCell}}" TargetType="{x:Type DataGridCell}">
-                                <Setter Property="local:SingleClick.Toggle" Value="True" />
-                            </Style>
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
+                                        IsReadOnly="True" />
                 </DataGrid.Columns>
                 <DataGrid.RowDetailsTemplateSelector>
                     <local:CriteriaTemplateSelector>

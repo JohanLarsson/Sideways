@@ -20,13 +20,13 @@
             {
                 switch (sender)
                 {
-                    case DataGridCell { IsReadOnly: false, IsEditing: false, Content: CheckBox { IsEnabled: true } checkBox } cell
-                        when GetToggle(cell):
+                    case DataGridCell { IsReadOnly: false, IsEditing: false, Content: CheckBox { IsEnabled: true } checkBox, Column:DataGridCheckBoxColumn column } cell
+                        when GetToggle(column):
                         checkBox.IsChecked = !checkBox.IsChecked;
                         e.Handled = true;
                         break;
-                    case DataGridCell { IsSelected: true, IsEditing: false } cell
-                        when GetToggle(cell) &&
+                    case DataGridCell { IsSelected: true, IsEditing: false, Column:{} column } cell
+                        when GetToggle(column) &&
                              FirstAncestor<DataGridRow>(cell) is { } row &&
                              FirstAncestor<DataGrid>(row) is { } grid:
                         switch (grid.SelectionUnit)
@@ -62,8 +62,8 @@
             }
         }
 
-        public static void SetToggle(DataGridCell element, bool value) => element.SetValue(ToggleProperty, value);
+        public static void SetToggle(DataGridColumn element, bool value) => element.SetValue(ToggleProperty, value);
 
-        public static bool GetToggle(DataGridCell element) => (bool)element.GetValue(ToggleProperty);
+        public static bool GetToggle(DataGridColumn element) => (bool)element.GetValue(ToggleProperty);
     }
 }
