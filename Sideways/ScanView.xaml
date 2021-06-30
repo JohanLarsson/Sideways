@@ -26,7 +26,14 @@
                       CanUserReorderColumns="False"
                       ItemsSource="{Binding CurrentCriteria}">
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="Active" IsThreeState="False" />
+                    <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="Active">
+                        <DataGridCheckBoxColumn.CellStyle>
+                            <Style BasedOn="{StaticResource {x:Type DataGridCell}}" TargetType="{x:Type DataGridCell}">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="local:SingleClick.Toggle" Value="True" />
+                            </Style>
+                        </DataGridCheckBoxColumn.CellStyle>
+                    </DataGridCheckBoxColumn>
                     <DataGridTextColumn Binding="{Binding Info,
                                                           Mode=OneTime}"
                                         Header="Filter"
