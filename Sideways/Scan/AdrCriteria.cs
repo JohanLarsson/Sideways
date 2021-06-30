@@ -52,7 +52,7 @@
         public override bool IsSatisfied(SortedCandles candles, int index)
         {
             return !this.IsActive ||
-                   candles.AsSpan()[^20..].Adr().IsBetween(this.min ?? Percent.MinValue, this.max ?? Percent.MaxValue);
+                   candles.AsSpan().Slice(index - 20, 20).Adr().IsBetween(this.min ?? Percent.MinValue, this.max ?? Percent.MaxValue);
         }
     }
 }

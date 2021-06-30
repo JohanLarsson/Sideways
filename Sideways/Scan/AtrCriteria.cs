@@ -52,7 +52,7 @@
         public override bool IsSatisfied(SortedCandles candles, int index)
         {
             return !this.IsActive ||
-                   new FloatRange(this.min ?? float.MinValue, this.max ?? float.MaxValue).Contains(candles.AsSpan()[^21..].Atr());
+                   new FloatRange(this.min ?? float.MinValue, this.max ?? float.MaxValue).Contains(candles.AsSpan().Slice(index - 21, 21).Atr());
         }
     }
 }
