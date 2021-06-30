@@ -1,8 +1,6 @@
 ﻿namespace Sideways
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Windows.Data;
 
     public sealed class AverageDollarVolumeConverter : IMultiValueConverter
@@ -12,9 +10,9 @@
         public object? Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (values is { Length: > 1 } &&
-                values[0] is IReadOnlyList<Candle> { Count: > 20 } candles)
+                values[0] is DescendingCandles { Count: > 20 } candles)
             {
-                return candles.Average(x => x.Close * x.Volume) / 1_000_000;
+                return candles.AsSpan()[..20].Average(x => x.Close * x.Volume) / 1_000_000;
             }
 
             return null;
