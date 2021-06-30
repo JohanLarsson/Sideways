@@ -99,6 +99,8 @@
             return this.candles.Length - 1;
         }
 
+        public ReadOnlySpan<Candle> AsSpan() => this.candles.AsSpan();
+
         public bool Equals(SortedCandles other) => this.candles.Equals(other.candles);
 
         public IEnumerator<Candle> GetEnumerator() => ((IEnumerable<Candle>)this.candles).GetEnumerator();
