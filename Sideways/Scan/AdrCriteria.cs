@@ -1,7 +1,5 @@
 ﻿namespace Sideways.Scan
 {
-    using System;
-
     public sealed class AdrCriteria : Criteria
     {
         private Percent? min;
@@ -53,12 +51,8 @@
 
         public override bool IsSatisfied(SortedCandles candles, int index)
         {
-            if (!this.IsActive)
-            {
-                throw new InvalidOperationException($"{nameof(AdrCriteria)} is not active.");
-            }
-
-            return candles.AsSpan()[^20..].Adr().IsBetween(this.min ?? Percent.MinValue, this.max ?? Percent.MaxValue);
+            return !this.IsActive ||
+                   candles.AsSpan()[^20..].Adr().IsBetween(this.min ?? Percent.MinValue, this.max ?? Percent.MaxValue);
         }
     }
 }

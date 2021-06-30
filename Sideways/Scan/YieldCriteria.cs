@@ -73,7 +73,7 @@
         {
             if (!this.IsActive)
             {
-                throw new InvalidOperationException($"{nameof(YieldCriteria)} is not active.");
+                return true;
             }
 
             // ReSharper disable LocalVariableHidesMember

@@ -24,6 +24,7 @@
         private readonly HasMinutesCriteria hasMinutes = new();
 
         private Bookmark? selectedResult;
+        private bool isRunning;
         private int offset;
 
         public ScanViewModel()
@@ -45,6 +46,7 @@
             {
                 try
                 {
+                    this.IsRunning = true;
                     this.results.Clear();
                     var symbols = await Task.Run(() => Database.ReadSymbols()).ConfigureAwait(true);
                     foreach (var symbol in symbols)
@@ -61,6 +63,10 @@
 #pragma warning restore CA1031 // Do not catch general exception types
                 {
                     _ = MessageBox.Show(e.Message, "Scan", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    this.IsRunning = false;
                 }
             }
         }
@@ -84,6 +90,21 @@
                 }
 
                 this.selectedResult = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public bool IsRunning
+        {
+            get => this.isRunning;
+            private set
+            {
+                if (value == this.isRunning)
+                {
+                    return;
+                }
+
+                this.isRunning = value;
                 this.OnPropertyChanged();
             }
         }
@@ -122,7 +143,7 @@
 
             SortedCandles? Candles()
             {
-                // ReSharper disable once VariableHidesOuterVariable
+                // ReSharper disable VariableHidesOuterVariable
                 if (Start() is { } start)
                 {
                     return Database.ReadDays(symbol, start, this.timeCriteria.End ?? DateTimeOffset.Now);
@@ -137,18 +158,20 @@
 
                 DateTimeOffset? Start()
                 {
-                    return (this.hasMinutes.IsActive, this.timeCriteria.Start) switch
+                    return (this.hasMinutes.IsActive, this.timeCriteria) switch
                     {
-                        // ReSharper disable VariableHidesOuterVariable
-                        (true, Start: { } start)
+                        (true, { IsActive: true, Start: { } start })
                             when Database.FirstMinute(symbol) is { } first
                             => DateTimeOffsetExtensions.Min(first, start),
-                        (true, Start: { })
+                        (true, { IsActive: true, Start: { } })
                             => null,
-                        (true, Start: null) => Database.FirstMinute(symbol),
-                        (_, Start: var start) => start,
+                        (true, { IsActive: false }) => Database.FirstMinute(symbol),
+                        (true, { Start: null }) => Database.FirstMinute(symbol),
+                        (_, { IsActive: true, Start: { } start }) => start,
+                        _ => null,
                     };
                 }
+                //// ReSharper restore VariableHidesOuterVariable
             }
         }
 

@@ -51,19 +51,8 @@
 
         public override bool IsSatisfied(SortedCandles candles, int index)
         {
-            return (this.IsActive, this.Min, this.Max) switch
-            {
-                // ReSharper disable LocalVariableHidesMember
-                (IsActive: true, Min: { } min, Max: { } max) => IsBetween(Adr(), min, max),
-                (IsActive: true, Min: null, Max: { } max) => Adr() <= max,
-                (IsActive: true, Min: { } min, Max: null) => Adr() >= min,
-                _ => true,
-                //// ReSharper restore LocalVariableHidesMember
-            };
-
-            static bool IsBetween(float adr, float min, float max) => adr >= min && adr <= max;
-
-            float Adr() => candles.AsSpan()[^21..].Atr();
+            return !this.IsActive ||
+                   new FloatRange(this.min ?? float.MinValue, this.max ?? float.MaxValue).Contains(candles.AsSpan()[^21..].Atr());
         }
     }
 }

@@ -51,12 +51,8 @@
 
         public override bool IsSatisfied(SortedCandles candles, int index)
         {
-            if (!this.IsActive)
-            {
-                throw new InvalidOperationException($"{nameof(TimeCriteria)} is not active.");
-            }
-
-            return candles[index].Time.IsBetween(this.start ?? DateTimeOffset.MinValue, this.end ?? DateTimeOffset.MaxValue);
+            return !this.IsActive ||
+                   candles[index].Time.IsBetween(this.start ?? DateTimeOffset.MinValue, this.end ?? DateTimeOffset.MaxValue);
         }
     }
 }

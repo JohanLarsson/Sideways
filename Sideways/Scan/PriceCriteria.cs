@@ -1,6 +1,6 @@
 ﻿namespace Sideways.Scan
 {
-    public sealed class AverageVolumeCriteria : Criteria
+    public sealed class PriceCriteria : Criteria
     {
         private float? min;
         private float? max;
@@ -8,15 +8,14 @@
         public override string Info => (this.Min, this.Max) switch
         {
             // ReSharper disable LocalVariableHidesMember
-            (Min: { } min, Max:
-            { } max) => $"AV [{MillionConverter.DisplayText(min)}..{MillionConverter.DisplayText(max)}]",
-            (Min: null, Max: { } max) => $"AV [..{MillionConverter.DisplayText(max)}]",
-            (Min: { } min, Max: null) => $"AV [{MillionConverter.DisplayText(min)}..]",
-            _ => "AV *",
+            (Min: { } min, Max: { } max) => $"Price [{min:F1}..{max:F1}]",
+            (Min: null, Max: { } max) => $"Price [..{max:F1}]",
+            (Min: { } min, Max: null) => $"Price [{min:F1}..]",
+            _ => "Price *",
             //// ReSharper restore LocalVariableHidesMember
         };
 
-        public override int ExtraDays => this.IsActive ? 20 : 0;
+        public override int ExtraDays => 0;
 
         public float? Min
         {
@@ -53,7 +52,7 @@
         public override bool IsSatisfied(SortedCandles candles, int index)
         {
             return !this.IsActive ||
-                   new FloatRange(this.min ?? float.MinValue, this.max ?? float.MaxValue).Contains(candles.AsSpan()[^20..].Average(x => x.Volume));
+                   new FloatRange(this.min ?? float.MinValue, this.max ?? float.MaxValue).Contains(candles[index].Close);
         }
     }
 }
