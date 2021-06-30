@@ -26,7 +26,7 @@
                       CanUserReorderColumns="False"
                       ItemsSource="{Binding CurrentCriteria}">
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="Active">
+                    <DataGridCheckBoxColumn Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" Header="Active">
                         <DataGridCheckBoxColumn.CellStyle>
                             <Style BasedOn="{StaticResource {x:Type DataGridCell}}" TargetType="{x:Type DataGridCell}">
                                 <Setter Property="local:SingleClick.Toggle" Value="True" />
