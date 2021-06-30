@@ -182,10 +182,19 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Grid x:Name="Charts"
-                  Panel.ZIndex="101"
-                  sideways:Chart.BookmarkTime="{Binding Bookmarks.SelectedBookmark.Time,
-                                                        FallbackValue={x:Null}}">
+            <Grid x:Name="Charts" Panel.ZIndex="101">
+                <Grid.Style>
+                    <Style TargetType="{x:Type Grid}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=BookmarksButton, Path=IsChecked}" Value="True">
+                                <Setter Property="sideways:Chart.BookmarkTime" Value="{Binding Bookmarks.SelectedBookmark.Time, FallbackValue={x:Null}}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=ScanButton, Path=IsChecked}" Value="True">
+                                <Setter Property="sideways:Chart.BookmarkTime" Value="{Binding Scan.SelectedResult.Time, FallbackValue={x:Null}}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />

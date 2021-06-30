@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0">
-            <TextBlock HorizontalAlignment="Center" Text="Bookmarks" />
+            <TextBlock HorizontalAlignment="Center" Text="Scan" />
 
             <Grid FocusManager.IsFocusScope="True">
                 <Grid.RowDefinitions>

@@ -93,11 +93,12 @@
                     this.Bookmarks.SelectedBookmark is { } bookmark)
                 {
                     this.CurrentSymbol = SymbolViewModel.GetOrCreate(bookmark.Symbol, this.Downloader);
-                    this.Time = this.Bookmarks.Offset == 0
-                        ? bookmark.Time
-                        : this.currentSymbol?.Candles is { } candles
-                            ? candles.Skip(bookmark.Time, CandleInterval.Day, this.Bookmarks.Offset)
-                            : bookmark.Time.AddDays(this.Bookmarks.Offset);
+                    this.Time = (this.Bookmarks.Offset, this.currentSymbol?.Candles) switch
+                    {
+                        (var offset and not 0, { } candles) => candles.Skip(bookmark.Time, CandleInterval.Day, offset),
+                        (var offset and not 0, null) => bookmark.Time.AddDays(offset),
+                        _ => bookmark.Time,
+                    };
                 }
             };
 
@@ -107,11 +108,12 @@
                     this.Scan.SelectedResult is { } bookmark)
                 {
                     this.CurrentSymbol = SymbolViewModel.GetOrCreate(bookmark.Symbol, this.Downloader);
-                    this.Time = this.Scan.Offset == 0
-                        ? bookmark.Time
-                        : this.currentSymbol?.Candles is { } candles
-                            ? candles.Skip(bookmark.Time, CandleInterval.Day, this.Bookmarks.Offset)
-                            : bookmark.Time.AddDays(this.Scan.Offset);
+                    this.Time = (this.Scan.Offset, this.currentSymbol?.Candles) switch
+                    {
+                        (var offset and not 0, { } candles) => candles.Skip(bookmark.Time, CandleInterval.Day, offset),
+                        (var offset and not 0, null) => bookmark.Time.AddDays(offset),
+                        _ => bookmark.Time,
+                    };
                 }
             };
 
