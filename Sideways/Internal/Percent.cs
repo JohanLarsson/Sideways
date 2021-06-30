@@ -2,8 +2,11 @@
 namespace Sideways
 {
     using System;
+    using System.ComponentModel;
+    using System.Globalization;
 
-    public readonly struct Percent : IEquatable<Percent>, IComparable<Percent>, IComparable
+    [TypeConverter(typeof(PercentTypeConverter))]
+    public readonly struct Percent : IEquatable<Percent>, IComparable<Percent>, IComparable, IFormattable
     {
         private readonly float value;
 
@@ -26,7 +29,11 @@ namespace Sideways
 
         public static Percent From(float before, float after) => new((after - before) / Math.Abs(before));
 
+        public static Percent Parse(string text, IFormatProvider? formatProvider) => new(float.Parse(text.AsSpan().TrimEnd('%'), NumberStyles.Float, formatProvider));
+
         public override string ToString() => $"{this.value}%";
+
+        public string ToString(string? format, IFormatProvider? formatProvider) => $"{this.value.ToString(format, formatProvider)}%";
 
         public bool Equals(Percent other) => this.value == other.value;
 
