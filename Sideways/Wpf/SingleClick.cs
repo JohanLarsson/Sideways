@@ -2,6 +2,8 @@
 {
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
+    using System.Windows.Data;
     using System.Windows.Media;
 
     public static class SingleClick
@@ -20,12 +22,13 @@
             {
                 switch (sender)
                 {
-                    case DataGridCell { IsReadOnly: false, IsEditing: false, Content: CheckBox { IsEnabled: true } checkBox, Column:DataGridCheckBoxColumn column } cell
+                    case DataGridCell { IsReadOnly: false, IsEditing: false, Content: CheckBox { IsEnabled: true } checkBox, Column: DataGridCheckBoxColumn column } cell
                         when GetToggle(column):
                         checkBox.IsChecked = !checkBox.IsChecked;
+                        BindingOperations.GetBindingExpression(checkBox, ToggleButton.IsCheckedProperty)?.UpdateSource();
                         e.Handled = true;
                         break;
-                    case DataGridCell { IsSelected: true, IsEditing: false, Column:{} column } cell
+                    case DataGridCell { IsSelected: true, IsEditing: false, Column: { } column } cell
                         when GetToggle(column) &&
                              FirstAncestor<DataGridRow>(cell) is { } row &&
                              FirstAncestor<DataGrid>(row) is { } grid:

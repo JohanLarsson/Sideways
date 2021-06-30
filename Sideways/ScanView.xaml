@@ -27,8 +27,7 @@
                       ItemsSource="{Binding CurrentCriteria}">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn local:SingleClick.Toggle="True"
-                                            Binding="{Binding IsActive,
-                                                              UpdateSourceTrigger=PropertyChanged}"
+                                            Binding="{Binding IsActive}"
                                             Header="Active" />
                     <DataGridTextColumn local:SingleClick.Toggle="True"
                                         Binding="{Binding Info,
