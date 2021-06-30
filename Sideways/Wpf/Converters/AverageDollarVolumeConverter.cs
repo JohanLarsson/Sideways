@@ -12,7 +12,7 @@
             if (values is { Length: > 1 } &&
                 values[0] is DescendingCandles { Count: > 20 } candles)
             {
-                return candles.AsSpan()[..20].Average(x => x.Close * x.Volume) / 1_000_000;
+                return MillionConverter.DisplayText(candles.AsSpan()[..20].Average(x => x.Close * x.Volume), culture);
             }
 
             return null;

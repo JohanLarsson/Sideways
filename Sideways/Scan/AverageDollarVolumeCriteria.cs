@@ -8,10 +8,10 @@
         public override string Info => (this.Min, this.Max) switch
         {
             // ReSharper disable LocalVariableHidesMember
-            (Min: { } min, Max: { } max) => $"A$V [{min:F1}..{max:F1}]",
-            (Min: null, Max: { } max) => $"A$V [..{max:F1}]",
-            (Min: { } min, Max: null) => $"A$V [{min:F1}..]",
-            _ => "A$V *",
+            (Min: { } min, Max: { } max) => $"A$ [{MillionConverter.DisplayText(min)}..{MillionConverter.DisplayText(max)}]",
+            (Min: null, Max: { } max) => $"A$ [..{MillionConverter.DisplayText(max)}]",
+            (Min: { } min, Max: null) => $"A$ [{MillionConverter.DisplayText(min)}..]",
+            _ => "A$ *",
             //// ReSharper restore LocalVariableHidesMember
         };
 

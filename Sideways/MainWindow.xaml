@@ -385,7 +385,7 @@
 
                         <TextBlock>
                             <TextBlock.Text>
-                                <MultiBinding Converter="{x:Static sideways:AverageDollarVolumeConverter.Default}" StringFormat="A$V {0:##,#0} M">
+                                <MultiBinding Converter="{x:Static sideways:AverageDollarVolumeConverter.Default}" StringFormat="A$ {0}">
                                     <Binding ElementName="MiddleChart" Path="Candles" />
                                     <Binding ElementName="MiddleChart" Path="Time" />
                                     <Binding ElementName="MiddleChart" Path="PriceRange" />
