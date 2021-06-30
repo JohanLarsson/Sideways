@@ -14,6 +14,7 @@
             (Start: null, End: { } end) => $"[..{end:yyyy-MM-dd}]",
             (Start: { } start, End: null) => $"[{start:yyyy-MM-dd}..]",
             _ => "*",
+            //// ReSharper restore LocalVariableHidesMember
         };
 
         public DateTimeOffset? Start
@@ -49,12 +50,14 @@
         }
 
         public override bool IsSatisfied(SortedCandles candles, int index) => (this.IsActive, this.Start, this.End) switch
-            {
-                // ReSharper disable LocalVariableHidesMember
-                (IsActive: true, Start: { } start, End: { } end) => candles[index].Time >= start && candles[index].Time <= end,
-                (IsActive: true, Start: null, End: { } end) => candles[index].Time <= end,
-                (IsActive: true, Start: { } start, End: null) => candles[index].Time >= start,
-                _ => true,
-            };
+        {
+            // ReSharper disable LocalVariableHidesMember
+            (IsActive: true, Start: { } start, End:
+                { } end) => candles[index].Time >= start && candles[index].Time <= end,
+            (IsActive: true, Start: null, End: { } end) => candles[index].Time <= end,
+            (IsActive: true, Start: { } start, End: null) => candles[index].Time >= start,
+            _ => true,
+            //// ReSharper restore LocalVariableHidesMember
+        };
     }
 }

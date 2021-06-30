@@ -12,6 +12,7 @@
             (Min: null, Max: { } max) => $"AV [..{max:F1}]",
             (Min: { } min, Max: null) => $"AV [{min:F1}..]",
             _ => "AV *",
+            //// ReSharper restore LocalVariableHidesMember
         };
 
         public override int ExtraDays => this.IsActive ? 20 : 0;
@@ -57,6 +58,7 @@
                 (IsActive: true, Min: null, Max: { } max) => AverageVolume() <= max,
                 (IsActive: true, Min: { } min, Max: null) => AverageVolume() >= min,
                 _ => true,
+                //// ReSharper restore LocalVariableHidesMember
             };
 
             static bool IsBetween(float adr, float min, float max) => adr >= min && adr <= max;

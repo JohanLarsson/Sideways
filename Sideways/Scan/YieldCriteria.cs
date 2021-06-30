@@ -1,9 +1,22 @@
 ﻿namespace Sideways.Scan
 {
+    using System;
+
     public sealed class YieldCriteria : Criteria
     {
         private int days;
-        private float min;
+        private Percent? min;
+        private Percent? max;
+
+        public override string Info => (this.min, this.max) switch
+        {
+            // ReSharper disable LocalVariableHidesMember
+            ({ } min, { } max) => $"[{min}..{max}] in {this.days} days",
+            (null, { } max) => $"[..{max}] in {this.days} days",
+            ({ } min, null) => $"[{min}..] in {this.days} days",
+            (null, null) => $"yield",
+            //// ReSharper restore LocalVariableHidesMember
+        };
 
         public int Days
         {
@@ -22,12 +35,12 @@
             }
         }
 
-        public float Min
+        public Percent? Min
         {
             get => this.min;
             set
             {
-                if (value.Equals(this.min))
+                if (value == this.min)
                 {
                     return;
                 }
@@ -38,18 +51,39 @@
             }
         }
 
-        public override int ExtraDays => this.Days;
+        public Percent? Max
+        {
+            get => this.max;
+            set
+            {
+                if (value == this.max)
+                {
+                    return;
+                }
 
-        public override string Info => $"Min {this.min}% in {this.days} days";
+                this.max = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.Info));
+            }
+        }
+
+        public override int ExtraDays => this.Days;
 
         public override bool IsSatisfied(SortedCandles candles, int index)
         {
-            return (this.IsActive, this.days, this.min) switch
+            if (!this.IsActive)
             {
-                // ReSharper disable LocalVariableHidesMember
-                (IsActive: true, days: > 0 and var days, min: > 0 and var min) => candles[index].Close / candles[index - days].Open > min,
-                _ => true,
-            };
+                throw new InvalidOperationException($"{nameof(YieldCriteria)} is not active.");
+            }
+
+            // ReSharper disable LocalVariableHidesMember
+            if (this.days is > 0 and var days)
+            {
+                return Percent.From(candles[index - days].Open, candles[index].Close).IsBetween(this.min ?? Percent.MinValue, this.max ?? Percent.MaxValue);
+            }
+            //// ReSharper restore LocalVariableHidesMember
+
+            throw new InvalidOperationException($"{nameof(YieldCriteria)} expected days >= 1.");
         }
     }
 }

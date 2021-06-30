@@ -71,6 +71,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -91,10 +92,17 @@
 
                             <TextBlock Grid.Row="2"
                                        Grid.Column="0"
-                                       Text="Yield" />
+                                       Text="Min" />
                             <TextBox Grid.Row="2"
                                      Grid.Column="1"
                                      Text="{Binding Min}" />
+
+                            <TextBlock Grid.Row="3"
+                                       Grid.Column="0"
+                                       Text="Max" />
+                            <TextBox Grid.Row="3"
+                                     Grid.Column="1"
+                                     Text="{Binding Max}" />
                         </Grid>
                     </DataTemplate>
 
