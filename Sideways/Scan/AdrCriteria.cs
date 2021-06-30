@@ -1,9 +1,11 @@
 ﻿namespace Sideways.Scan
 {
+    using System;
+
     public sealed class AdrCriteria : Criteria
     {
-        private float? min;
-        private float? max;
+        private Percent? min;
+        private Percent? max;
 
         public override string Info => (this.Min, this.Max) switch
         {
@@ -17,7 +19,7 @@
 
         public override int ExtraDays => this.IsActive ? 20 : 0;
 
-        public float? Min
+        public Percent? Min
         {
             get => this.min;
             set
@@ -33,7 +35,7 @@
             }
         }
 
-        public float? Max
+        public Percent? Max
         {
             get => this.max;
             set
@@ -51,19 +53,12 @@
 
         public override bool IsSatisfied(SortedCandles candles, int index)
         {
-            return (this.IsActive, this.Min, this.Max) switch
+            if (!this.IsActive)
             {
-                // ReSharper disable LocalVariableHidesMember
-                (IsActive: true, Min: { } min, Max: { } max) => IsBetween(Adr(), min, max),
-                (IsActive: true, Min: null, Max: { } max) => Adr() <= max,
-                (IsActive: true, Min: { } min, Max: null) => Adr() >= min,
-                _ => true,
-                //// ReSharper restore LocalVariableHidesMember
-            };
+                throw new InvalidOperationException($"{nameof(AdrCriteria)} is not active.");
+            }
 
-            static bool IsBetween(float adr, float min, float max) => adr >= min && adr <= max;
-
-            float Adr() => candles.AsSpan()[^20..].Adr();
+            return candles.AsSpan()[^20..].Adr().IsBetween(this.min ?? Percent.MinValue, this.max ?? Percent.MaxValue);
         }
     }
 }

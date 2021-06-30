@@ -4,7 +4,7 @@
 
     public static class SpanExtensions
     {
-        public static float Adr(this ReadOnlySpan<Candle> candles) => 100 * (candles.Average(x => x.High / x.Low) - 1);
+        public static Percent Adr(this ReadOnlySpan<Candle> candles) => new(100 * (candles.Average(x => x.High / x.Low) - 1));
 
         public static float Atr(this ReadOnlySpan<Candle> candles)
         {

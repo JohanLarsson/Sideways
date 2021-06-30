@@ -53,7 +53,7 @@
         {
             if (!this.IsActive)
             {
-                throw new InvalidOperationException($"{nameof(YieldCriteria)} is not active.");
+                throw new InvalidOperationException($"{nameof(TimeCriteria)} is not active.");
             }
 
             return candles[index].Time.IsBetween(this.start ?? DateTimeOffset.MinValue, this.end ?? DateTimeOffset.MaxValue);

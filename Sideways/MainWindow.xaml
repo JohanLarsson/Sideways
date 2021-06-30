@@ -365,7 +365,7 @@
 
                         <TextBlock>
                             <TextBlock.Text>
-                                <MultiBinding Converter="{x:Static sideways:AdrConverter.Default}" StringFormat="ADR {0:F1}%">
+                                <MultiBinding Converter="{x:Static sideways:AdrConverter.Default}" StringFormat="ADR {0:F1}">
                                     <Binding ElementName="MiddleChart" Path="Candles" />
                                     <Binding ElementName="MiddleChart" Path="Time" />
                                     <Binding ElementName="MiddleChart" Path="PriceRange" />
