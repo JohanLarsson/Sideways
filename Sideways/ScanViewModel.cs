@@ -17,6 +17,7 @@
     {
         private readonly ObservableCollection<Bookmark> results = new();
         private readonly TimeCriteria timeCriteria = new();
+        private readonly PriceCriteria priceCriteria = new();
         private readonly YieldCriteria yieldCriteria = new();
         private readonly AdrCriteria adrCriteria = new();
         private readonly AverageVolumeCriteria averageVolumeCriteria = new();
@@ -34,6 +35,7 @@
             {
                 this.timeCriteria,
                 this.yieldCriteria,
+                this.priceCriteria,
                 this.adrCriteria,
                 this.averageVolumeCriteria,
                 this.averageDollarVolumeCriteria,

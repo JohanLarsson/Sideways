@@ -14,7 +14,7 @@
             ({ } min, { } max) => $"[{min}..{max}] in {this.days} d",
             (null, { } max) => $"[..{max}] in {this.days} d",
             ({ } min, null) => $"[{min}..] in {this.days} d",
-            (null, null) => $"*",
+            (null, null) => $"Yield *",
             //// ReSharper restore LocalVariableHidesMember
         };
 

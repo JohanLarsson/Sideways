@@ -13,7 +13,7 @@
             (Start: { } start, End: { } end) => $"[{start:yyyy-MM-dd}..{end:yyyy-MM-dd}]",
             (Start: null, End: { } end) => $"[..{end:yyyy-MM-dd}]",
             (Start: { } start, End: null) => $"[{start:yyyy-MM-dd}..]",
-            (null, null) => "??",
+            (null, null) => "Time *",
             //// ReSharper restore LocalVariableHidesMember
         };
 

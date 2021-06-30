@@ -19,197 +19,283 @@
         <StackPanel Grid.Row="0">
             <TextBlock HorizontalAlignment="Center" Text="Scan" />
 
-            <ListBox x:Name="CriteriaBox" ItemsSource="{Binding CurrentCriteria}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type scan:Criteria}">
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding IsActive}" />
-                            <TextBlock Text="{Binding Info}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <DataGrid x:Name="CriteriaBox"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserReorderColumns="False"
+                      ItemsSource="{Binding CurrentCriteria}">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="Active" IsThreeState="False" />
+                    <DataGridTextColumn Binding="{Binding Info,
+                                                          Mode=OneTime}"
+                                        Header="Filter"
+                                        IsReadOnly="True" />
+                </DataGrid.Columns>
+                <DataGrid.RowDetailsTemplateSelector>
+                    <local:CriteriaTemplateSelector>
+                        <local:CriteriaTemplateSelector.AdrCriteria>
+                            <DataTemplate DataType="{x:Type scan:AdrCriteria}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-            <ContentPresenter Content="{Binding ElementName=CriteriaBox, Path=SelectedItem}">
-                <ContentPresenter.Resources>
-                    <DataTemplate DataType="{x:Type scan:TimeCriteria}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Grid.ColumnSpan="2"
+                                               Text="ADR" />
 
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="2"
-                                       Text="Time" />
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="0"
+                                               Text="Min" />
+                                    <TextBox Grid.Row="1"
+                                             Grid.Column="1"
+                                             Text="{Binding Min}" />
 
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Start" />
-                            <DatePicker Grid.Row="1"
-                                        Grid.Column="1"
-                                        Text="{Binding Start}" />
+                                    <TextBlock Grid.Row="2"
+                                               Grid.Column="0"
+                                               Text="Max" />
+                                    <TextBox Grid.Row="2"
+                                             Grid.Column="1"
+                                             Text="{Binding Max}" />
+                                </Grid>
+                            </DataTemplate>
+                        </local:CriteriaTemplateSelector.AdrCriteria>
 
-                            <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="End" />
-                            <DatePicker Grid.Row="2"
-                                        Grid.Column="1"
-                                        Text="{Binding End}" />
-                        </Grid>
-                    </DataTemplate>
+                        <local:CriteriaTemplateSelector.AtrCriteria>
+                            <DataTemplate DataType="{x:Type scan:AtrCriteria}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                    <DataTemplate DataType="{x:Type scan:YieldCriteria}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Grid.ColumnSpan="2"
+                                               Text="ATR" />
 
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="2"
-                                       Text="Yield" />
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="0"
+                                               Text="Min" />
+                                    <TextBox Grid.Row="1"
+                                             Grid.Column="1"
+                                             Text="{Binding Min}" />
 
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Days" />
-                            <TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Text="{Binding Days}" />
+                                    <TextBlock Grid.Row="2"
+                                               Grid.Column="0"
+                                               Text="Max" />
+                                    <TextBox Grid.Row="2"
+                                             Grid.Column="1"
+                                             Text="{Binding Max}" />
+                                </Grid>
+                            </DataTemplate>
+                        </local:CriteriaTemplateSelector.AtrCriteria>
 
-                            <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="Min" />
-                            <TextBox Grid.Row="2"
-                                     Grid.Column="1"
-                                     Text="{Binding Min}" />
+                        <local:CriteriaTemplateSelector.AverageDollarVolumeCriteria>
+                            <DataTemplate DataType="{x:Type scan:AverageDollarVolumeCriteria}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Row="3"
-                                       Grid.Column="0"
-                                       Text="Max" />
-                            <TextBox Grid.Row="3"
-                                     Grid.Column="1"
-                                     Text="{Binding Max}" />
-                        </Grid>
-                    </DataTemplate>
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Grid.ColumnSpan="2"
+                                               Text="Average dollar volume" />
 
-                    <DataTemplate DataType="{x:Type scan:AdrCriteria}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="0"
+                                               Text="Min" />
+                                    <TextBox Grid.Row="1"
+                                             Grid.Column="1"
+                                             Text="{Binding Min}" />
 
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="2"
-                                       Text="ADR" />
+                                    <TextBlock Grid.Row="2"
+                                               Grid.Column="0"
+                                               Text="Max" />
+                                    <TextBox Grid.Row="2"
+                                             Grid.Column="1"
+                                             Text="{Binding Max}" />
+                                </Grid>
+                            </DataTemplate>
+                        </local:CriteriaTemplateSelector.AverageDollarVolumeCriteria>
 
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Min" />
-                            <TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Text="{Binding Min}" />
+                        <local:CriteriaTemplateSelector.AverageVolumeCriteria>
+                            <DataTemplate DataType="{x:Type scan:AverageVolumeCriteria}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="Max" />
-                            <TextBox Grid.Row="2"
-                                     Grid.Column="1"
-                                     Text="{Binding Max}" />
-                        </Grid>
-                    </DataTemplate>
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Grid.ColumnSpan="2"
+                                               Text="Average volume" />
 
-                    <DataTemplate DataType="{x:Type scan:AverageVolumeCriteria}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="0"
+                                               Text="Min" />
+                                    <TextBox Grid.Row="1"
+                                             Grid.Column="1"
+                                             Text="{Binding Min}" />
 
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="2"
-                                       Text="Average volume" />
+                                    <TextBlock Grid.Row="2"
+                                               Grid.Column="0"
+                                               Text="Max" />
+                                    <TextBox Grid.Row="2"
+                                             Grid.Column="1"
+                                             Text="{Binding Max}" />
+                                </Grid>
+                            </DataTemplate>
+                        </local:CriteriaTemplateSelector.AverageVolumeCriteria>
 
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Min" />
-                            <TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Text="{Binding Min}" />
+                        <local:CriteriaTemplateSelector.HasMinutesCriteria>
+                            <DataTemplate DataType="{x:Type scan:HasMinutesCriteria}">
+                                <TextBlock Text="Has minutes" />
+                            </DataTemplate>
+                        </local:CriteriaTemplateSelector.HasMinutesCriteria>
 
-                            <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="Max" />
-                            <TextBox Grid.Row="2"
-                                     Grid.Column="1"
-                                     Text="{Binding Max}" />
-                        </Grid>
-                    </DataTemplate>
+                        <local:CriteriaTemplateSelector.PriceCriteria>
+                            <DataTemplate DataType="{x:Type scan:PriceCriteria}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                    <DataTemplate DataType="{x:Type scan:AverageDollarVolumeCriteria}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Grid.ColumnSpan="2"
+                                               Text="Price" />
 
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="2"
-                                       Text="Average dollar volume" />
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="0"
+                                               Text="Min" />
+                                    <TextBox Grid.Row="1"
+                                             Grid.Column="1"
+                                             Text="{Binding Min}" />
 
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Min" />
-                            <TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Text="{Binding Min}" />
+                                    <TextBlock Grid.Row="2"
+                                               Grid.Column="0"
+                                               Text="Max" />
+                                    <TextBox Grid.Row="2"
+                                             Grid.Column="1"
+                                             Text="{Binding Max}" />
+                                </Grid>
+                            </DataTemplate>
+                        </local:CriteriaTemplateSelector.PriceCriteria>
 
-                            <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="Max" />
-                            <TextBox Grid.Row="2"
-                                     Grid.Column="1"
-                                     Text="{Binding Max}" />
-                        </Grid>
-                    </DataTemplate>
+                        <local:CriteriaTemplateSelector.TimeCriteria>
+                            <DataTemplate DataType="{x:Type scan:TimeCriteria}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                    <DataTemplate DataType="{x:Type scan:HasMinutesCriteria}">
-                        <TextBlock Text="Has minutes" />
-                    </DataTemplate>
-                </ContentPresenter.Resources>
-            </ContentPresenter>
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Grid.ColumnSpan="2"
+                                               Text="Time" />
+
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="0"
+                                               Text="Start" />
+                                    <DatePicker Grid.Row="1"
+                                                Grid.Column="1"
+                                                Text="{Binding Start}" />
+
+                                    <TextBlock Grid.Row="2"
+                                               Grid.Column="0"
+                                               Text="End" />
+                                    <DatePicker Grid.Row="2"
+                                                Grid.Column="1"
+                                                Text="{Binding End}" />
+                                </Grid>
+                            </DataTemplate>
+                        </local:CriteriaTemplateSelector.TimeCriteria>
+
+                        <local:CriteriaTemplateSelector.YieldCriteria>
+                            <DataTemplate DataType="{x:Type scan:YieldCriteria}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Grid.ColumnSpan="2"
+                                               Text="Yield" />
+
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="0"
+                                               Text="Days" />
+                                    <TextBox Grid.Row="1"
+                                             Grid.Column="1"
+                                             Text="{Binding Days}" />
+
+                                    <TextBlock Grid.Row="2"
+                                               Grid.Column="0"
+                                               Text="Min" />
+                                    <TextBox Grid.Row="2"
+                                             Grid.Column="1"
+                                             Text="{Binding Min}" />
+
+                                    <TextBlock Grid.Row="3"
+                                               Grid.Column="0"
+                                               Text="Max" />
+                                    <TextBox Grid.Row="3"
+                                             Grid.Column="1"
+                                             Text="{Binding Max}" />
+                                </Grid>
+                            </DataTemplate>
+                        </local:CriteriaTemplateSelector.YieldCriteria>
+                    </local:CriteriaTemplateSelector>
+                </DataGrid.RowDetailsTemplateSelector>
+            </DataGrid>
+
             <Button Command="{Binding ScanCommand}" Content="Run" />
         </StackPanel>
 
