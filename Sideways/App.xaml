@@ -261,33 +261,58 @@
                                                     Mode=OneTime,
                                                     Converter={sideways:SurpriseToVisibilityConverter 25}}" />
 
-                    <TextBlock HorizontalAlignment="Center">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="{}{0:S0}/{1:S0}">
-                                <Binding Mode="OneTime" Path="QoQ" />
-                                <Binding Mode="OneTime" Path="YoY" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                    <UniformGrid HorizontalAlignment="Center" Rows="1">
-                        <UniformGrid.Resources>
-                            <Style TargetType="{x:Type Rectangle}">
+                    <Grid HorizontalAlignment="Center">
+                        <Grid.Resources>
+                            <Style x:Key="ChangeBarStyle" TargetType="{x:Type Rectangle}">
                                 <Setter Property="Width" Value="4" />
                                 <Setter Property="Height" Value="2" />
                                 <Setter Property="Margin" Value="1,0" />
                                 <Setter Property="SnapsToDevicePixels" Value="True" />
                                 <Setter Property="UseLayoutRounding" Value="True" />
                             </Style>
-                        </UniformGrid.Resources>
-                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item8}, Mode=OneTime}" />
-                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item7}, Mode=OneTime}" />
-                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item6}, Mode=OneTime}" />
-                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item5}, Mode=OneTime}" />
-                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item4}, Mode=OneTime}" />
-                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item3}, Mode=OneTime}" />
-                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item2}, Mode=OneTime}" />
-                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item1}, Mode=OneTime}" />
-                    </UniformGrid>
+                        </Grid.Resources>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   HorizontalAlignment="Center"
+                                   Text="{Binding QoQ,
+                                                  StringFormat='S0',
+                                                  Mode=OneTime}" />
+
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="1"
+                                   Text=" / " />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="2"
+                                   HorizontalAlignment="Center"
+                                   Text="{Binding YoY,
+                                                  StringFormat='S0',
+                                                  Mode=OneTime}" />
+                        <UniformGrid Grid.Row="1"
+                                     Grid.Column="0"
+                                     HorizontalAlignment="Center"
+                                     Rows="1">
+                            <Rectangle Fill="{Binding DescendingQuarterlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item2}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
+                            <Rectangle Fill="{Binding DescendingQuarterlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item1}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
+                        </UniformGrid>
+
+                        <UniformGrid Grid.Row="1"
+                                     Grid.Column="2"
+                                     HorizontalAlignment="Center"
+                                     Rows="1">
+                            <Rectangle Fill="{Binding DescendingYearlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item2}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
+                            <Rectangle Fill="{Binding DescendingYearlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item1}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
+                        </UniformGrid>
+                    </Grid>
                 </StackPanel>
             </DataTemplate>
         </ResourceDictionary>

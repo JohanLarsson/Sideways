@@ -14,21 +14,36 @@
             this.index = index;
             if (index > 0)
             {
-                var changesBuilder = ImmutableArray.CreateBuilder<Percent>(Math.Min(index, 8));
+                var quarterlyChangesBuilder = ImmutableArray.CreateBuilder<Percent>(Math.Min(index, 8));
                 var previousBuilder = ImmutableArray.CreateBuilder<QuarterlyEarning>(index + 1);
                 for (var i = index; i >= 0; i--)
                 {
                     if (i > 0 &&
-                        changesBuilder.Count < changesBuilder.Capacity)
+                        quarterlyChangesBuilder.Count < quarterlyChangesBuilder.Capacity)
                     {
-                        changesBuilder.Add(Percent.Change(earnings[i - 1].ReportedEps, earnings[i].ReportedEps));
+                        quarterlyChangesBuilder.Add(Percent.Change(earnings[i - 1].ReportedEps, earnings[i].ReportedEps));
                     }
 
                     previousBuilder.Add(this.earnings[i]);
                 }
 
                 this.DescendingEarnings = previousBuilder.MoveToImmutable();
-                this.DescendingChanges = changesBuilder.MoveToImmutable();
+                this.DescendingQuarterlyChanges = quarterlyChangesBuilder.MoveToImmutable();
+                this.DescendingYearlyChanges = CreateDescendingYearlyChanges();
+
+                ImmutableArray<Percent> CreateDescendingYearlyChanges()
+                {
+                    var yearlyChangesBuilder = ImmutableArray.CreateBuilder<Percent>(Math.Min(index / 4, 4));
+                    for (var i = index; i >= 4; i -= 4)
+                    {
+                        if (yearlyChangesBuilder.Count < yearlyChangesBuilder.Capacity)
+                        {
+                            yearlyChangesBuilder.Add(Percent.Change(earnings[i - 4].ReportedEps, earnings[i].ReportedEps));
+                        }
+                    }
+
+                    return yearlyChangesBuilder.MoveToImmutable();
+                }
             }
         }
 
@@ -52,6 +67,8 @@
 
         public ImmutableArray<QuarterlyEarning> DescendingEarnings { get; }
 
-        public ImmutableArray<Percent> DescendingChanges { get; }
+        public ImmutableArray<Percent> DescendingQuarterlyChanges { get; }
+
+        public ImmutableArray<Percent> DescendingYearlyChanges { get; }
     }
 }
