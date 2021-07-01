@@ -11,24 +11,24 @@ namespace Sideways
         public static readonly Percent MinValue = new(float.MinValue);
         public static readonly Percent MaxValue = new(float.MaxValue);
 
-        private readonly float value;
+        public readonly float Scalar;
 
-        public Percent(float value)
+        public Percent(float scalar)
         {
-            this.value = value;
+            this.Scalar = scalar;
         }
 
-        public static bool operator ==(Percent left, Percent right) => left.value == right.value;
+        public static bool operator ==(Percent left, Percent right) => left.Scalar == right.Scalar;
 
-        public static bool operator !=(Percent left, Percent right) => left.value != right.value;
+        public static bool operator !=(Percent left, Percent right) => left.Scalar != right.Scalar;
 
-        public static bool operator <(Percent left, Percent right) => left.value < right.value;
+        public static bool operator <(Percent left, Percent right) => left.Scalar < right.Scalar;
 
-        public static bool operator >(Percent left, Percent right) => left.value > right.value;
+        public static bool operator >(Percent left, Percent right) => left.Scalar > right.Scalar;
 
-        public static bool operator <=(Percent left, Percent right) => left.value <= right.value;
+        public static bool operator <=(Percent left, Percent right) => left.Scalar <= right.Scalar;
 
-        public static bool operator >=(Percent left, Percent right) => left.value >= right.value;
+        public static bool operator >=(Percent left, Percent right) => left.Scalar >= right.Scalar;
 
         public static Percent Change(float @from, float to) => new(100 * (to - @from) / Math.Abs(@from));
 
@@ -36,25 +36,25 @@ namespace Sideways
 
         public bool IsBetween(Percent min, Percent max) => this >= min && this <= max;
 
-        public override string ToString() => $"{this.value}%";
+        public override string ToString() => $"{this.Scalar}%";
 
         public string ToString(string? format, IFormatProvider? formatProvider)
         {
             return format switch
             {
-                "S0" => this.value.ToString("F0", formatProvider),
-                "S1" => this.value.ToString("F1", formatProvider),
-                _ => $"{this.value.ToString(format, formatProvider)}%",
+                "S0" => this.Scalar.ToString("F0", formatProvider),
+                "S1" => this.Scalar.ToString("F1", formatProvider),
+                _ => $"{this.Scalar.ToString(format, formatProvider)}%",
             };
         }
 
-        public bool Equals(Percent other) => this.value == other.value;
+        public bool Equals(Percent other) => this.Scalar == other.Scalar;
 
         public override bool Equals(object? obj) => obj is Percent other && this.Equals(other);
 
-        public override int GetHashCode() => this.value.GetHashCode();
+        public override int GetHashCode() => this.Scalar.GetHashCode();
 
-        public int CompareTo(Percent other) => this.value.CompareTo(other.value);
+        public int CompareTo(Percent other) => this.Scalar.CompareTo(other.Scalar);
 
         public int CompareTo(object? obj)
         {

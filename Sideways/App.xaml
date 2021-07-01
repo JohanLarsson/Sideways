@@ -253,27 +253,14 @@
                         <ToolTip>
                             <StackPanel>
                                 <TextBlock Text="{Binding QoQ, StringFormat='QoQ {0:F0}', Mode=OneTime}" />
-                                <UniformGrid Margin="30,0,0,2"
-                                             HorizontalAlignment="Left"
-                                             Rows="1">
-                                    <Rectangle Fill="{Binding DescendingQuarterlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item4}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
-                                    <Rectangle Fill="{Binding DescendingQuarterlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item3}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
-                                    <Rectangle Fill="{Binding DescendingQuarterlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item2}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
-                                    <Rectangle Fill="{Binding DescendingQuarterlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item1}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
-                                </UniformGrid>
+                                <sideways:ChangesChart Height="25" Changes="{Binding DescendingQuarterlyChanges}" HorizontalAlignment="Left"/>
 
                                 <TextBlock Text="{Binding YoY, StringFormat='YoY {0:F0}', Mode=OneTime}" />
-                                <UniformGrid Margin="30,0,0,2"
-                                             HorizontalAlignment="Left"
-                                             Rows="1">
-                                    <Rectangle Fill="{Binding DescendingYearlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item4}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
-                                    <Rectangle Fill="{Binding DescendingYearlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item3}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
-                                    <Rectangle Fill="{Binding DescendingYearlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item2}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
-                                    <Rectangle Fill="{Binding DescendingYearlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item1}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
-                                </UniformGrid>
+                                <sideways:ChangesChart Height="25" Changes="{Binding DescendingYearlyChanges}" HorizontalAlignment="Left"/>
 
-                                <sideways:EarningsChart Height="50" Earnings="{Binding DescendingEarnings, Mode=OneTime}" />
                                 <TextBlock Text="{Binding Eps, StringFormat='EPS {0:F2}', Mode=OneTime}" />
+                                <sideways:EarningsChart Height="50" Earnings="{Binding DescendingEarnings, Mode=OneTime}" />
+
                                 <TextBlock Text="{Binding Estimate, StringFormat='Estimate {0:F2}', Mode=OneTime}" />
                                 <TextBlock Text="{Binding Surprise, StringFormat='Surprise {0:F2}', Mode=OneTime}" />
                                 <TextBlock Text="{Binding SurprisePercentage, StringFormat='Surprise {0:F1}', Mode=OneTime}" />

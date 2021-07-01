@@ -24,23 +24,27 @@
             this.index = index;
         }
 
+        public static SolidColorBrush Brush(Percent change)
+        {
+            if (change <= new Percent(-25))
+            {
+                return Brushes.Decreasing;
+            }
+
+            if (change >= new Percent(25))
+            {
+                return Brushes.Increasing;
+            }
+
+            return Brushes.Gray;
+        }
+
         public object? Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value is ImmutableArray<Percent> changes &&
                 this.index < changes.Length)
             {
-                var change = changes[this.index];
-                if (change <= new Percent(-25))
-                {
-                    return Brushes.Decreasing;
-                }
-
-                if (change >= new Percent(25))
-                {
-                    return Brushes.Increasing;
-                }
-
-                return Brushes.Gray;
+               return Brush(changes[this.index]);
             }
 
             return null;
