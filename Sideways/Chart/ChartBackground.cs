@@ -83,7 +83,7 @@
                 bookMarkX < renderSize.Width - this.CandleWidth)
             {
                 drawingContext.DrawRectangle(
-                    Brushes.DarkGray,
+                    Brushes.Accent,
                     null,
                     new Rect(
                         new Point(bookMarkX - 1, 0),
