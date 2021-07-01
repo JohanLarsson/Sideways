@@ -38,7 +38,15 @@ namespace Sideways
 
         public override string ToString() => $"{this.value}%";
 
-        public string ToString(string? format, IFormatProvider? formatProvider) => $"{this.value.ToString(format, formatProvider)}%";
+        public string ToString(string? format, IFormatProvider? formatProvider)
+        {
+            return format switch
+            {
+                "S0" => this.value.ToString("F0", formatProvider),
+                "S1" => this.value.ToString("F1", formatProvider),
+                _ => $"{this.value.ToString(format, formatProvider)}%",
+            };
+        }
 
         public bool Equals(Percent other) => this.value == other.value;
 

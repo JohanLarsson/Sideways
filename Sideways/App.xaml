@@ -242,8 +242,8 @@
                     <StackPanel.ToolTip>
                         <ToolTip>
                             <StackPanel>
-                                <TextBlock Text="{Binding QoQ, StringFormat='QoQ {0:F0}%'}" />
-                                <TextBlock Text="{Binding YoY, StringFormat='YoY {0:F0}%'}" />
+                                <TextBlock Text="{Binding QoQ, StringFormat='QoQ {0:F0}'}" />
+                                <TextBlock Text="{Binding YoY, StringFormat='YoY {0:F0}'}" />
                                 <sideways:EarningsChart Height="50" Earnings="{Binding PreviousEarnings}" />
                                 <TextBlock Text="{Binding Eps, StringFormat='EPS {0:F2}'}" />
                                 <TextBlock Text="{Binding Estimate, StringFormat='Estimate {0:F2}'}" />
@@ -260,7 +260,7 @@
 
                     <TextBlock HorizontalAlignment="Center">
                         <TextBlock.Text>
-                            <MultiBinding StringFormat="{}{0:F0}/{1:F0}">
+                            <MultiBinding StringFormat="{}{0:S0}/{1:S0}">
                                 <Binding Path="QoQ" />
                                 <Binding Path="YoY" />
                             </MultiBinding>

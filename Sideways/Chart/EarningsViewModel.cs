@@ -34,16 +34,14 @@
 
         public Percent? SurprisePercentage => this.earnings[this.index].SurprisePercentage;
 
-        public float? QoQ => this.index < 1
+        public Percent? QoQ => this.index < 1
             ? null
-            : PercentChange(this.earnings[this.index - 1].ReportedEps, this.earnings[this.index].ReportedEps);
+            : Percent.Change(this.earnings[this.index - 1].ReportedEps, this.earnings[this.index].ReportedEps);
 
-        public float? YoY => this.index < 4
+        public Percent? YoY => this.index < 4
             ? null
-            : PercentChange(this.earnings[this.index - 4].ReportedEps, this.earnings[this.index].ReportedEps);
+            : Percent.Change(this.earnings[this.index - 4].ReportedEps, this.earnings[this.index].ReportedEps);
 
         public ImmutableArray<QuarterlyEarning> PreviousEarnings { get; }
-
-        private static float PercentChange(float from, float to) => 100 * (to - from) / Math.Abs(from);
     }
 }
