@@ -5,7 +5,6 @@
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
-    using Sideways.AlphaVantage;
 
     public partial class MainWindow : Window
     {
