@@ -41,10 +41,10 @@
 
         public object? Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is ImmutableArray<Percent> changes &&
+            if (value is ImmutableArray<Percent> { IsDefaultOrEmpty: false } changes &&
                 this.index < changes.Length)
             {
-               return Brush(changes[this.index]);
+                return Brush(changes[this.index]);
             }
 
             return null;
