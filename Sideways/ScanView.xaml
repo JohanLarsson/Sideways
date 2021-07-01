@@ -249,16 +249,18 @@
                                                Text="Start" />
                                     <DatePicker Grid.Row="1"
                                                 Grid.Column="1"
-                                                Text="{Binding Start,
-                                                               UpdateSourceTrigger=LostFocus}" />
+                                                SelectedDate="{Binding Start,
+                                                                       Converter={x:Static local:DateConverter.Default},
+                                                                       UpdateSourceTrigger=LostFocus}" />
 
                                     <TextBlock Grid.Row="2"
                                                Grid.Column="0"
                                                Text="End" />
                                     <DatePicker Grid.Row="2"
                                                 Grid.Column="1"
-                                                Text="{Binding End,
-                                                               UpdateSourceTrigger=LostFocus}" />
+                                                SelectedDate="{Binding End,
+                                                                       Converter={x:Static local:DateConverter.Default},
+                                                                       UpdateSourceTrigger=LostFocus}" />
                                 </Grid>
                             </DataTemplate>
                         </local:CriteriaTemplateSelector.TimeCriteria>
