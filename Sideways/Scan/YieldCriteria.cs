@@ -79,7 +79,8 @@
             // ReSharper disable LocalVariableHidesMember
             if (this.days is > 0 and var days)
             {
-                return Percent.Change(candles[index - days].Open, candles[index].Close).IsBetween(this.min ?? Percent.MinValue, this.max ?? Percent.MaxValue);
+                var merged = Candle.Merge(candles.AsSpan().Slice(index - days, days));
+                return Percent.Change(merged.Open, merged.High).IsBetween(this.min ?? Percent.MinValue, this.max ?? Percent.MaxValue);
             }
             //// ReSharper restore LocalVariableHidesMember
 

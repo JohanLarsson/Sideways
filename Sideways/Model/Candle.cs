@@ -32,6 +32,17 @@
 
         public static bool operator !=(Candle left, Candle right) => !left.Equals(right);
 
+        public static Candle Merge(ReadOnlySpan<Candle> candles)
+        {
+            var merged = candles[0];
+            foreach (var c in candles[1..])
+            {
+                merged = merged.Merge(c);
+            }
+
+            return merged;
+        }
+
         public static bool ShouldMergeHour(DateTimeOffset x, DateTimeOffset y) =>
             x.IsSameDay(y) &&
             HourAndMinute.EndOfHourCandle(x) == HourAndMinute.EndOfHourCandle(y);
