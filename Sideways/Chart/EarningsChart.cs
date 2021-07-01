@@ -7,14 +7,12 @@
 
     public class EarningsChart : FrameworkElement
     {
-        /// <summary>Identifies the <see cref="Earnings"/> dependency property.</summary>
         public static readonly DependencyProperty EarningsProperty = EarningsBar.EarningsProperty.AddOwner(
             typeof(EarningsChart),
             new FrameworkPropertyMetadata(
                 default(ImmutableArray<QuarterlyEarning>),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="BarWidth"/> dependency property.</summary>
         public static readonly DependencyProperty BarWidthProperty = DependencyProperty.Register(
             nameof(BarWidth),
             typeof(int),
@@ -23,7 +21,6 @@
                 5,
                 FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="Bars"/> dependency property.</summary>
         public static readonly DependencyProperty BarsProperty = DependencyProperty.Register(
             nameof(Bars),
             typeof(int),
@@ -52,7 +49,7 @@
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            return new(this.Bars * this.BarWidth, this.Height);
+            return new(this.Bars * this.BarWidth, 0);
         }
 
         protected override void OnRender(DrawingContext drawingContext)
