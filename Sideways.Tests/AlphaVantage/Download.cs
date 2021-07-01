@@ -46,7 +46,8 @@
            return Database.ReadListings()
                .Select(x => x.Symbol)
                .Where(x => x.Length is > 1 and < 5 && !x.Contains("-"))
-               .Except(Database.ReadSymbols());
+               .Except(Database.ReadSymbols())
+               .Take(500);
         }
     }
 }
