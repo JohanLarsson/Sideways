@@ -236,18 +236,21 @@
 
             <DataTemplate DataType="{x:Type sideways:EarningsViewModel}">
                 <StackPanel Background="{x:Static sideways:Brushes.SemiTransparentBackground}"
+                            MinWidth="92"
                             ToolTipService.Placement="Top"
                             ToolTipService.ShowDuration="60000">
                     <StackPanel.ToolTip>
-                        <StackPanel>
-                            <TextBlock Text="{Binding QoQ, StringFormat='QoQ {0:F0}%'}" />
-                            <TextBlock Text="{Binding YoY, StringFormat='YoY {0:F0}%'}" />
-                            <sideways:EarningsChart Height="50" Earnings="{Binding PreviousEarnings}" />
-                            <TextBlock Text="{Binding Eps, StringFormat='EPS {0:F2}'}" />
-                            <TextBlock Text="{Binding Estimate, StringFormat='Estimate {0:F2}'}" />
-                            <TextBlock Text="{Binding Surprise, StringFormat='Surprise {0:F2}'}" />
-                            <TextBlock Text="{Binding SurprisePercentage, StringFormat='Surprise {0:F1}%'}" />
-                        </StackPanel>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock Text="{Binding QoQ, StringFormat='QoQ {0:F0}%'}" />
+                                <TextBlock Text="{Binding YoY, StringFormat='YoY {0:F0}%'}" />
+                                <sideways:EarningsChart Height="50" Earnings="{Binding PreviousEarnings}" />
+                                <TextBlock Text="{Binding Eps, StringFormat='EPS {0:F2}'}" />
+                                <TextBlock Text="{Binding Estimate, StringFormat='Estimate {0:F2}'}" />
+                                <TextBlock Text="{Binding Surprise, StringFormat='Surprise {0:F2}'}" />
+                                <TextBlock Text="{Binding SurprisePercentage, StringFormat='Surprise {0:F1}%'}" />
+                            </StackPanel>
+                        </ToolTip>
                     </StackPanel.ToolTip>
                     <TextBlock HorizontalAlignment="Center"
                                Text="{Binding SurprisePercentage,
