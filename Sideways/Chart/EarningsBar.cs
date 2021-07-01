@@ -14,8 +14,9 @@
             nameof(Earnings),
             typeof(ImmutableArray<QuarterlyEarning>),
             typeof(EarningsBar),
-            new PropertyMetadata(
+            new FrameworkPropertyMetadata(
                 default(ImmutableArray<QuarterlyEarning>),
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
                 (d, e) => ((EarningsBar)d).OnEarningsChanged((ImmutableArray<QuarterlyEarning>)e.NewValue)));
 
         /// <summary>Identifies the <see cref="Time"/> dependency property.</summary>
