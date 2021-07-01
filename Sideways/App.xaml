@@ -235,37 +235,58 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type sideways:EarningsViewModel}">
-                <StackPanel Background="{x:Static sideways:Brushes.SemiTransparentBackground}"
-                            MinWidth="92"
+                <StackPanel MinWidth="92"
+                            Background="{x:Static sideways:Brushes.SemiTransparentBackground}"
                             ToolTipService.Placement="Top"
                             ToolTipService.ShowDuration="60000">
                     <StackPanel.ToolTip>
                         <ToolTip>
                             <StackPanel>
-                                <TextBlock Text="{Binding QoQ, StringFormat='QoQ {0:F0}'}" />
-                                <TextBlock Text="{Binding YoY, StringFormat='YoY {0:F0}'}" />
-                                <sideways:EarningsChart Height="50" Earnings="{Binding PreviousEarnings}" />
-                                <TextBlock Text="{Binding Eps, StringFormat='EPS {0:F2}'}" />
-                                <TextBlock Text="{Binding Estimate, StringFormat='Estimate {0:F2}'}" />
-                                <TextBlock Text="{Binding Surprise, StringFormat='Surprise {0:F2}'}" />
-                                <TextBlock Text="{Binding SurprisePercentage, StringFormat='Surprise {0:F1}'}" />
+                                <TextBlock Text="{Binding QoQ, StringFormat='QoQ {0:F0}', Mode=OneTime}" />
+                                <TextBlock Text="{Binding YoY, StringFormat='YoY {0:F0}', Mode=OneTime}" />
+                                <sideways:EarningsChart Height="50" Earnings="{Binding DescendingEarnings, Mode=OneTime}" />
+                                <TextBlock Text="{Binding Eps, StringFormat='EPS {0:F2}', Mode=OneTime}" />
+                                <TextBlock Text="{Binding Estimate, StringFormat='Estimate {0:F2}', Mode=OneTime}" />
+                                <TextBlock Text="{Binding Surprise, StringFormat='Surprise {0:F2}', Mode=OneTime}" />
+                                <TextBlock Text="{Binding SurprisePercentage, StringFormat='Surprise {0:F1}', Mode=OneTime}" />
                             </StackPanel>
                         </ToolTip>
                     </StackPanel.ToolTip>
                     <TextBlock HorizontalAlignment="Center"
                                Text="{Binding SurprisePercentage,
-                                              StringFormat='{}{0:F0}'}"
+                                              StringFormat='{}{0:F0}',
+                                              Mode=OneTime}"
                                Visibility="{Binding SurprisePercentage,
+                                                    Mode=OneTime,
                                                     Converter={sideways:SurpriseToVisibilityConverter 25}}" />
 
                     <TextBlock HorizontalAlignment="Center">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0:S0}/{1:S0}">
-                                <Binding Path="QoQ" />
-                                <Binding Path="YoY" />
+                                <Binding Mode="OneTime" Path="QoQ" />
+                                <Binding Mode="OneTime" Path="YoY" />
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Style TargetType="{x:Type Rectangle}">
+                                <Setter Property="Width" Value="4" />
+                                <Setter Property="Height" Value="2" />
+                                <Setter Property="Margin" Value="1,0" />
+                                <Setter Property="SnapsToDevicePixels" Value="True" />
+                                <Setter Property="UseLayoutRounding" Value="True" />
+                            </Style>
+                        </StackPanel.Resources>
+                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item8}, Mode=OneTime}" />
+                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item7}, Mode=OneTime}" />
+                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item6}, Mode=OneTime}" />
+                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item5}, Mode=OneTime}" />
+                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item4}, Mode=OneTime}" />
+                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item3}, Mode=OneTime}" />
+                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item2}, Mode=OneTime}" />
+                        <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item1}, Mode=OneTime}" />
+                    </StackPanel>
                 </StackPanel>
             </DataTemplate>
         </ResourceDictionary>

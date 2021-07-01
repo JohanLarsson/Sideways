@@ -14,13 +14,21 @@
             this.index = index;
             if (index > 0)
             {
-                var builder = ImmutableArray.CreateBuilder<QuarterlyEarning>(index + 1);
+                var changesBuilder = ImmutableArray.CreateBuilder<Percent>(Math.Min(index, 8));
+                var previousBuilder = ImmutableArray.CreateBuilder<QuarterlyEarning>(index + 1);
                 for (var i = index; i >= 0; i--)
                 {
-                    builder.Add(this.earnings[i]);
+                    if (i > 0 &&
+                        changesBuilder.Count < changesBuilder.Capacity)
+                    {
+                        changesBuilder.Add(Percent.Change(earnings[i - 1].ReportedEps, earnings[i].ReportedEps));
+                    }
+
+                    previousBuilder.Add(this.earnings[i]);
                 }
 
-                this.PreviousEarnings = builder.MoveToImmutable();
+                this.DescendingEarnings = previousBuilder.MoveToImmutable();
+                this.DescendingChanges = changesBuilder.MoveToImmutable();
             }
         }
 
@@ -42,6 +50,8 @@
             ? null
             : Percent.Change(this.earnings[this.index - 4].ReportedEps, this.earnings[this.index].ReportedEps);
 
-        public ImmutableArray<QuarterlyEarning> PreviousEarnings { get; }
+        public ImmutableArray<QuarterlyEarning> DescendingEarnings { get; }
+
+        public ImmutableArray<Percent> DescendingChanges { get; }
     }
 }
