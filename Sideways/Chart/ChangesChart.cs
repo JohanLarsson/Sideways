@@ -36,15 +36,15 @@
             if (renderSize is { Width: > 0, Height: > 0 } &&
                 this.Changes is { IsDefaultOrEmpty: false } changes)
             {
-                var min = float.MaxValue;
-                var max = float.MinValue;
+                var min = 0f;
+                var max = 0f;
                 for (var i = 0; i < Math.Min(this.Bars, changes.Length); i++)
                 {
                     min = Math.Min(min, changes[i].Scalar);
                     max = Math.Max(max, changes[i].Scalar);
                 }
 
-                var position = CandlePosition.RightToLeft(renderSize, this.BarWidth, new ValueRange(new FloatRange(Math.Min(0, min), Math.Max(0, max)), Scale.Arithmetic), 1, 1);
+                var position = CandlePosition.RightToLeft(renderSize, this.BarWidth, new ValueRange(new FloatRange(min, max), Scale.Arithmetic), 1, 1);
 
                 for (var i = 0; i < Math.Min(this.Bars, changes.Length); i++)
                 {
