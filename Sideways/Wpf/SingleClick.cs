@@ -4,7 +4,6 @@
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
-    using System.Windows.Media;
 
     public static class SingleClick
     {
@@ -30,8 +29,8 @@
                         break;
                     case DataGridCell { IsSelected: true, IsEditing: false, Column: { } column } cell
                         when GetToggle(column) &&
-                             FirstAncestor<DataGridRow>(cell) is { } row &&
-                             FirstAncestor<DataGrid>(row) is { } grid:
+                             cell.FirstAncestor<DataGridRow>() is { } row &&
+                             row.FirstAncestor<DataGrid>() is { } grid:
                         switch (grid.SelectionUnit)
                         {
                             case DataGridSelectionUnit.FullRow:
@@ -45,23 +44,6 @@
                         e.Handled = true;
                         break;
                 }
-            }
-
-            static T? FirstAncestor<T>(Visual child)
-                where T : Visual
-            {
-                var parent = VisualTreeHelper.GetParent(child);
-                while (parent is { })
-                {
-                    if (parent is T match)
-                    {
-                        return match;
-                    }
-
-                    parent = VisualTreeHelper.GetParent(parent);
-                }
-
-                return null;
             }
         }
 
