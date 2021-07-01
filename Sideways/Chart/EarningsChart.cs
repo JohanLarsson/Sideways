@@ -19,6 +19,15 @@
             set => this.SetValue(EarningsProperty, value);
         }
 
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            return this.Earnings switch
+            {
+                { IsDefaultOrEmpty: false, Length: var length } => new(Math.Min(this.Bars, length) * this.BarWidth, 0),
+                _ => default,
+            };
+        }
+
         protected override void OnRender(DrawingContext drawingContext)
         {
             var renderSize = this.RenderSize;

@@ -21,6 +21,15 @@
             set => this.SetValue(ChangesProperty, value);
         }
 
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            return this.Changes switch
+            {
+                { IsDefaultOrEmpty: false, Length: var length } => new(Math.Min(this.Bars, length) * this.BarWidth, 0),
+                _ => default,
+            };
+        }
+
         protected override void OnRender(DrawingContext drawingContext)
         {
             var renderSize = this.RenderSize;
@@ -36,6 +45,7 @@
                 }
 
                 var position = CandlePosition.RightToLeft(renderSize, this.BarWidth, new ValueRange(new FloatRange(Math.Min(0, min), Math.Max(0, max)), Scale.Arithmetic), 1, 1);
+
                 for (var i = 0; i < Math.Min(this.Bars, changes.Length); i++)
                 {
                     drawingContext.DrawRectangle(
