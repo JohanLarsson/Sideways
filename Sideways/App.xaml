@@ -55,6 +55,8 @@
 
             <Style TargetType="{x:Type ToolTip}">
                 <Setter Property="Background" Value="{x:Static sideways:Brushes.Background}" />
+                <Setter Property="BorderBrush" Value="{x:Null}" />
+                <Setter Property="BorderThickness" Value="0" />
             </Style>
 
             <Style TargetType="{x:Type ContextMenu}">

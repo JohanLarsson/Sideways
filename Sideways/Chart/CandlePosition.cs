@@ -74,7 +74,7 @@
             }
 
             // ReSharper disable once PossibleLossOfFraction
-            var x = actualWidth - (candleWidth / 2);
+            var x = actualWidth - (candleWidth / 2.0);
             foreach (var candle in candles)
             {
                 switch (interval)

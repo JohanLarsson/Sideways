@@ -83,11 +83,11 @@
                 bookMarkX < renderSize.Width - this.CandleWidth)
             {
                 drawingContext.DrawRectangle(
-                    Brushes.Accent,
+                    Brushes.BookMark,
                     null,
                     new Rect(
-                        new Point(bookMarkX - 1, 0),
-                        new Point(bookMarkX, renderSize.Height)));
+                        new Point(bookMarkX - 0.25, 0),
+                        new Point(bookMarkX + 0.25, renderSize.Height)));
             }
 
             if (this.Earnings is { IsDefaultOrEmpty: false } earnings)
@@ -100,8 +100,8 @@
                             Brushes.DarkGray,
                             null,
                             new Rect(
-                                new Point(earningX - 1, 0),
-                                new Point(earningX, renderSize.Height)));
+                                new Point(earningX - 0.25, 0),
+                                new Point(earningX + 0.25, renderSize.Height)));
                     }
                 }
             }
