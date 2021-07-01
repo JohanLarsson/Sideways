@@ -9,9 +9,9 @@
     [MarkupExtensionReturnType(typeof(SurpriseToVisibilityConverterExtension))]
     public sealed class SurpriseToVisibilityConverterExtension : MarkupExtension, IValueConverter
     {
-        private readonly double minimum;
+        private readonly float minimum;
 
-        public SurpriseToVisibilityConverterExtension(double minimum)
+        public SurpriseToVisibilityConverterExtension(float minimum)
         {
             this.minimum = minimum;
         }
@@ -23,6 +23,7 @@
                 double x => Math.Abs(x) > this.minimum ? Visibility.Visible : Visibility.Collapsed,
                 float x => Math.Abs(x) > this.minimum ? Visibility.Visible : Visibility.Collapsed,
                 int x => Math.Abs(x) > this.minimum ? Visibility.Visible : Visibility.Collapsed,
+                Percent x => x.IsBetween(new Percent(-this.minimum), new Percent(this.minimum)) ? Visibility.Collapsed : Visibility.Visible,
                 null => Visibility.Collapsed,
                 _ => throw new NotSupportedException($"Not handling value of type {value.GetType().Name}"),
             };

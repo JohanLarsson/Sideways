@@ -10,7 +10,7 @@
         [TestCase(1f, 2f, "100.0%")]
         public static void From(float before, float after, string expected)
         {
-            Assert.AreEqual(expected, Percent.From(before, after).ToString("F1", CultureInfo.InvariantCulture));
+            Assert.AreEqual(expected, Percent.Change(before, after).ToString("F1", CultureInfo.InvariantCulture));
         }
     }
 }

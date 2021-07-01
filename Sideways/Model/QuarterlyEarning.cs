@@ -23,8 +23,8 @@
 
         public float? Surprise => this.ReportedEps - this.EstimatedEps;
 
-        public float? SurprisePercentage => this.EstimatedEps is { } estimatedEps
-            ? 100 * this.Surprise / Math.Abs(estimatedEps)
+        public Percent? SurprisePercentage => this.EstimatedEps is { } estimatedEps
+            ? Percent.Change(estimatedEps, this.ReportedEps)
             : null;
 
         public static bool operator ==(QuarterlyEarning left, QuarterlyEarning right) => left.Equals(right);

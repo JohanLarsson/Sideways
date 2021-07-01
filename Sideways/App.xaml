@@ -248,13 +248,13 @@
                                 <TextBlock Text="{Binding Eps, StringFormat='EPS {0:F2}'}" />
                                 <TextBlock Text="{Binding Estimate, StringFormat='Estimate {0:F2}'}" />
                                 <TextBlock Text="{Binding Surprise, StringFormat='Surprise {0:F2}'}" />
-                                <TextBlock Text="{Binding SurprisePercentage, StringFormat='Surprise {0:F1}%'}" />
+                                <TextBlock Text="{Binding SurprisePercentage, StringFormat='Surprise {0:F1}'}" />
                             </StackPanel>
                         </ToolTip>
                     </StackPanel.ToolTip>
                     <TextBlock HorizontalAlignment="Center"
                                Text="{Binding SurprisePercentage,
-                                              StringFormat='{}{0:F0}%'}"
+                                              StringFormat='{}{0:F0}'}"
                                Visibility="{Binding SurprisePercentage,
                                                     Converter={sideways:SurpriseToVisibilityConverter 25}}" />
 

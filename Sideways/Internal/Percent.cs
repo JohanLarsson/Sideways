@@ -30,7 +30,7 @@ namespace Sideways
 
         public static bool operator >=(Percent left, Percent right) => left.value >= right.value;
 
-        public static Percent From(float before, float after) => new(100 * (after - before) / Math.Abs(before));
+        public static Percent Change(float @from, float to) => new(100 * (to - @from) / Math.Abs(@from));
 
         public static Percent Parse(string text, IFormatProvider? formatProvider) => new(float.Parse(text.AsSpan().TrimEnd('%'), NumberStyles.Float, formatProvider));
 

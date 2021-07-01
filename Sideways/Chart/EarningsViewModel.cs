@@ -32,7 +32,7 @@
 
         public float? Surprise => this.earnings[this.index].Surprise;
 
-        public float? SurprisePercentage => this.earnings[this.index].SurprisePercentage;
+        public Percent? SurprisePercentage => this.earnings[this.index].SurprisePercentage;
 
         public float? QoQ => this.index < 1
             ? null
