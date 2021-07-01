@@ -244,6 +244,7 @@
                             <StackPanel>
                                 <TextBlock Text="{Binding QoQ, StringFormat='QoQ {0:F0}', Mode=OneTime}" />
                                 <TextBlock Text="{Binding YoY, StringFormat='YoY {0:F0}', Mode=OneTime}" />
+
                                 <sideways:EarningsChart Height="50" Earnings="{Binding DescendingEarnings, Mode=OneTime}" />
                                 <TextBlock Text="{Binding Eps, StringFormat='EPS {0:F2}', Mode=OneTime}" />
                                 <TextBlock Text="{Binding Estimate, StringFormat='Estimate {0:F2}', Mode=OneTime}" />
@@ -268,8 +269,8 @@
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
-                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                        <StackPanel.Resources>
+                    <UniformGrid HorizontalAlignment="Center" Rows="1">
+                        <UniformGrid.Resources>
                             <Style TargetType="{x:Type Rectangle}">
                                 <Setter Property="Width" Value="4" />
                                 <Setter Property="Height" Value="2" />
@@ -277,7 +278,7 @@
                                 <Setter Property="SnapsToDevicePixels" Value="True" />
                                 <Setter Property="UseLayoutRounding" Value="True" />
                             </Style>
-                        </StackPanel.Resources>
+                        </UniformGrid.Resources>
                         <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item8}, Mode=OneTime}" />
                         <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item7}, Mode=OneTime}" />
                         <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item6}, Mode=OneTime}" />
@@ -286,7 +287,7 @@
                         <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item3}, Mode=OneTime}" />
                         <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item2}, Mode=OneTime}" />
                         <Rectangle Fill="{Binding DescendingChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item1}, Mode=OneTime}" />
-                    </StackPanel>
+                    </UniformGrid>
                 </StackPanel>
             </DataTemplate>
         </ResourceDictionary>
