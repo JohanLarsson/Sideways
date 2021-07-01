@@ -5,7 +5,7 @@
     using System.Windows;
     using System.Windows.Media;
 
-    public class EarningsChart : FrameworkElement
+    public class EarningsChart : AbstractBarChart
     {
         public static readonly DependencyProperty EarningsProperty = EarningsBar.EarningsProperty.AddOwner(
             typeof(EarningsChart),
@@ -13,43 +13,10 @@
                 default(ImmutableArray<QuarterlyEarning>),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        public static readonly DependencyProperty BarWidthProperty = DependencyProperty.Register(
-            nameof(BarWidth),
-            typeof(int),
-            typeof(EarningsChart),
-            new FrameworkPropertyMetadata(
-                5,
-                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
-
-        public static readonly DependencyProperty BarsProperty = DependencyProperty.Register(
-            nameof(Bars),
-            typeof(int),
-            typeof(EarningsChart),
-            new FrameworkPropertyMetadata(
-                16,
-                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
-
         public ImmutableArray<QuarterlyEarning> Earnings
         {
             get => (ImmutableArray<QuarterlyEarning>)this.GetValue(EarningsProperty);
             set => this.SetValue(EarningsProperty, value);
-        }
-
-        public int BarWidth
-        {
-            get => (int)this.GetValue(BarWidthProperty);
-            set => this.SetValue(BarWidthProperty, value);
-        }
-
-        public int Bars
-        {
-            get => (int)this.GetValue(BarsProperty);
-            set => this.SetValue(BarsProperty, value);
-        }
-
-        protected override Size MeasureOverride(Size availableSize)
-        {
-            return new(this.Bars * this.BarWidth, 0);
         }
 
         protected override void OnRender(DrawingContext drawingContext)
