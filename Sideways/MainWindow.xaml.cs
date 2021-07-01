@@ -5,6 +5,7 @@
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
+    using Sideways.AlphaVantage;
 
     public partial class MainWindow : Window
     {
@@ -27,25 +28,13 @@
                     e.Handled = true;
                     break;
                 case Key.Left
-                    when Keyboard.Modifiers == ModifierKeys.Shift &&
-                         this.DataContext is MainViewModel vm:
-                    vm.SkipLeftCommand.Execute(CandleInterval.Hour);
-                    e.Handled = true;
-                    break;
-                case Key.Left
                     when this.DataContext is MainViewModel vm:
-                    vm.SkipLeftCommand.Execute(CandleInterval.Day);
-                    e.Handled = true;
-                    break;
-                case Key.Right
-                    when Keyboard.Modifiers == ModifierKeys.Shift &&
-                         this.DataContext is MainViewModel vm:
-                    vm.SkipRightCommand.Execute(CandleInterval.Hour);
+                    vm.SkipLeftCommand.Execute(Interval(Keyboard.Modifiers));
                     e.Handled = true;
                     break;
                 case Key.Right
                     when this.DataContext is MainViewModel vm:
-                    vm.SkipRightCommand.Execute(CandleInterval.Day);
+                    vm.SkipRightCommand.Execute(Interval(Keyboard.Modifiers));
                     e.Handled = true;
                     break;
                 case Key.Space
@@ -56,6 +45,17 @@
             }
 
             base.OnPreviewKeyDown(e);
+
+            static CandleInterval Interval(ModifierKeys modifier)
+            {
+                return modifier switch
+                {
+                    ModifierKeys.Shift => CandleInterval.Hour,
+                    ModifierKeys.Control => CandleInterval.FifteenMinutes,
+                    ModifierKeys.Control | ModifierKeys.Shift => CandleInterval.Minute,
+                    _ => CandleInterval.Day,
+                };
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)

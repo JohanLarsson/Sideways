@@ -11,10 +11,10 @@
 
         public static string DisplayText(float value, IFormatProvider? culture = null) => value switch
         {
-            > 10_000_000_000 => $"{(value / 1_000_000_000).ToString("F0", culture ?? CultureInfo.CurrentUICulture)}B",
-            > 1_000_000_000 => $"{(value / 1_000_000_000).ToString("0.#", culture ?? CultureInfo.CurrentUICulture)}B",
-            > 10_000_000 => $"{(value / 1_000_000).ToString("F0", culture ?? CultureInfo.CurrentUICulture)}M",
-            > 1_000_000 => $"{(value / 1_000_000).ToString("0.#", culture ?? CultureInfo.CurrentUICulture)}M",
+            >= 10_000_000_000 => $"{(value / 1_000_000_000).ToString("F0", culture ?? CultureInfo.CurrentUICulture)}B",
+            >= 1_000_000_000 => $"{(value / 1_000_000_000).ToString("0.#", culture ?? CultureInfo.CurrentUICulture)}B",
+            >= 10_000_000 => $"{(value / 1_000_000).ToString("F0", culture ?? CultureInfo.CurrentUICulture)}M",
+            >= 1_000_000 => $"{(value / 1_000_000).ToString("0.#", culture ?? CultureInfo.CurrentUICulture)}M",
             _ => value.ToString("N0", culture ?? CultureInfo.CurrentUICulture),
         };
 
