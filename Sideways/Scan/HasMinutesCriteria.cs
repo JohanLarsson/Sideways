@@ -6,9 +6,19 @@
     {
         public override string Info => "Has minutes";
 
-        public override bool IsSatisfied(SortedCandles candles, int index)
+        public bool IsSatisfied(SortedCandles candles, int index, DateTimeOffset? firstMinute)
         {
-            throw new InvalidOperationException("Used when reading from db.");
+            if (!this.IsActive)
+            {
+                return true;
+            }
+
+            if (firstMinute is null)
+            {
+                return false;
+            }
+
+            return candles[index].Time >= firstMinute;
         }
     }
 }

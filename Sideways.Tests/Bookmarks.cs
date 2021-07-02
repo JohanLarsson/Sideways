@@ -228,7 +228,7 @@ namespace Sideways.Tests
                     if (candles[i].Close / candles[i - 3].Open > 1.08 &&
                         candles[i].Close * candles[i].Volume > 10_000_000)
                     {
-                        bookmarks.Add(new Bookmark(symbol, TradingDay.StartOfDay(candles[i - 3].Time), ImmutableSortedSet<string>.Empty, null));
+                        bookmarks.Add(new Bookmark(symbol, TradingDay.StartOfRegularHours(candles[i - 3].Time), ImmutableSortedSet<string>.Empty, null));
                     }
                 }
             }

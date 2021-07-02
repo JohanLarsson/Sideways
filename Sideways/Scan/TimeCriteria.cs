@@ -49,7 +49,7 @@
             }
         }
 
-        public override bool IsSatisfied(SortedCandles candles, int index)
+        public bool IsSatisfied(SortedCandles candles, int index)
         {
             return !this.IsActive ||
                    candles[index].Time.IsBetween(this.start ?? DateTimeOffset.MinValue, this.end ?? DateTimeOffset.MaxValue);

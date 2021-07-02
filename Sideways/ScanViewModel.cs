@@ -129,52 +129,20 @@
 
         public IEnumerable<Bookmark> Scan(string symbol)
         {
+            var days = Database.ReadDays(symbol);
+            var firstMinute = this.hasMinutes.IsActive ? Database.FirstMinute(symbol) : null;
             var start = this.CurrentCriteria.Where(x => x.IsActive).Max(x => x.ExtraDays);
-            if (Candles() is { } candles)
+            for (var i = start; i < days.Count; i++)
             {
-                for (var i = start; i < candles.Count; i++)
+                if (this.timeCriteria.IsSatisfied(days, i) &&
+                    this.hasMinutes.IsSatisfied(days, i - (this.yieldCriteria.IsActive ? this.yieldCriteria.Days : 0), firstMinute) &&
+                    this.yieldCriteria.IsSatisfied(days, i) &&
+                    this.adrCriteria.IsSatisfied(days, i) &&
+                    this.averageVolumeCriteria.IsSatisfied(days, i) &&
+                    this.averageDollarVolumeCriteria.IsSatisfied(days, i))
                 {
-                    if (this.yieldCriteria.IsSatisfied(candles, i) &&
-                        this.adrCriteria.IsSatisfied(candles, i) &&
-                        this.averageVolumeCriteria.IsSatisfied(candles, i) &&
-                        this.averageDollarVolumeCriteria.IsSatisfied(candles, i))
-                    {
-                        yield return new Bookmark(symbol, TradingDay.StartOfDay(candles[i - this.yieldCriteria.Days].Time), ImmutableSortedSet<string>.Empty, null);
-                    }
+                    yield return new Bookmark(symbol, TradingDay.StartOfRegularHours(days[i].Time), ImmutableSortedSet<string>.Empty, null);
                 }
-            }
-
-            SortedCandles? Candles()
-            {
-                // ReSharper disable VariableHidesOuterVariable
-                if (Start() is { } start)
-                {
-                    return Database.ReadDays(symbol, start, this.timeCriteria.End ?? DateTimeOffset.Now);
-                }
-
-                if (this.timeCriteria.End is { } end)
-                {
-                    return Database.ReadDays(symbol, DateTimeOffset.MinValue, end);
-                }
-
-                return Database.ReadDays(symbol);
-
-                DateTimeOffset? Start()
-                {
-                    return (this.hasMinutes.IsActive, this.timeCriteria) switch
-                    {
-                        (true, { IsActive: true, Start: { } start })
-                            when Database.FirstMinute(symbol) is { } first
-                            => DateTimeOffsetExtensions.Min(first, start),
-                        (true, { IsActive: true, Start: { } })
-                            => null,
-                        (true, { IsActive: false }) => Database.FirstMinute(symbol),
-                        (true, { Start: null }) => Database.FirstMinute(symbol),
-                        (_, { IsActive: true, Start: { } start }) => start,
-                        _ => null,
-                    };
-                }
-                //// ReSharper restore VariableHidesOuterVariable
             }
         }
 

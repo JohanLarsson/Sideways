@@ -69,7 +69,7 @@
 
         public override int ExtraDays => this.Days;
 
-        public override bool IsSatisfied(SortedCandles candles, int index)
+        public bool IsSatisfied(SortedCandles candles, int index)
         {
             if (!this.IsActive)
             {

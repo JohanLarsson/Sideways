@@ -50,7 +50,7 @@
             }
         }
 
-        public override bool IsSatisfied(SortedCandles candles, int index)
+        public bool IsSatisfied(SortedCandles candles, int index)
         {
             return !this.IsActive ||
                    new FloatRange(this.min ?? float.MinValue, this.max ?? float.MaxValue).Contains(candles.AsSpan().Slice(index - 20, 20).Average(x => x.Volume));
