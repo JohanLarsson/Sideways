@@ -101,6 +101,16 @@
 
         public ReadOnlySpan<Candle> AsSpan() => this.candles.AsSpan();
 
+        public ReadOnlySpan<Candle> Slice(int index, int length)
+        {
+            return length switch
+            {
+                > 0 => this.candles.AsSpan().Slice(index, length),
+                < 0 => this.candles.AsSpan().Slice(index + length + 1, -length),
+                _ => throw new ArgumentException(nameof(length)),
+            };
+        }
+
         public bool Equals(SortedCandles other) => this.candles.Equals(other.candles);
 
         public IEnumerator<Candle> GetEnumerator() => ((IEnumerable<Candle>)this.candles).GetEnumerator();
