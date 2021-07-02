@@ -195,7 +195,10 @@
                     var bookmark = new Bookmark(symbol, time, ImmutableSortedSet<string>.Empty, null);
                     if (bookmarkFile.Add(bookmark))
                     {
-                        bookmarks.SelectedBookmark = bookmark;
+                        if (bookmark.Time == this.Time)
+                        {
+                            bookmarks.SelectedBookmark = bookmark;
+                        }
                     }
                     else
                     {
