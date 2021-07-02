@@ -65,6 +65,17 @@
             };
         }
 
+        public static double ClampedX(DateTimeOffset time, DescendingCandles candles, double actualWidth, int candleWidth, CandleInterval interval)
+        {
+            if (candles.Count == 0 ||
+                time > candles[0].Time)
+            {
+                return actualWidth;
+            }
+
+            return X(time, candles, actualWidth, candleWidth, interval) ?? 0;
+        }
+
         public static double? X(DateTimeOffset time, DescendingCandles candles, double actualWidth, int candleWidth, CandleInterval interval)
         {
             if (candles.Count == 0 ||
@@ -112,13 +123,13 @@
 
         public double Y(float value) => this.valueRange.Y(value, this.renderSize.Height);
 
-        public Point? Point(TimeAndPrice start, DescendingCandles candles, CandleInterval interval)
+        public static Point? Point(TimeAndPrice timeAndPrice, DescendingCandles candles, Size renderSize, int candleWidth, CandleInterval interval, ValueRange valueRange)
         {
-            if (X(start.Time, candles, this.renderSize.Width, this.candleWidth, interval) is { } x)
+            if (X(timeAndPrice.Time, candles, renderSize.Width, candleWidth, interval) is { } x)
             {
                 return new Point(
                     x,
-                    this.Y(start.Price));
+                    valueRange.Y(timeAndPrice.Price, renderSize.Height));
             }
 
             return null;

@@ -4,61 +4,51 @@
     using System.Collections;
     using System.ComponentModel;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Markup;
     using System.Windows.Media;
+    using System.Windows.Shapes;
 
     [ContentProperty(nameof(Child))]
     public class MeasureDecorator : CandleSeries
     {
-        /// <summary>Identifies the <see cref="Background"/> dependency property.</summary>
-        public static readonly DependencyProperty BackgroundProperty = DependencyProperty.Register(
-            nameof(Background),
-            typeof(SolidColorBrush),
-            typeof(MeasureDecorator),
-            new FrameworkPropertyMetadata(
-                Brushes.MeasureBackground,
-                FrameworkPropertyMetadataOptions.AffectsRender));
-
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
         public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
             typeof(MeasureDecorator),
             new FrameworkPropertyMetadata(
                 null,
-                FrameworkPropertyMetadataOptions.AffectsRender));
+                FrameworkPropertyMetadataOptions.AffectsArrange));
 
-        /// <summary>Identifies the <see cref="PriceScale"/> dependency property.</summary>
         public static readonly DependencyProperty PriceScaleProperty = Chart.PriceScaleProperty.AddOwner(
             typeof(MeasureDecorator),
             new FrameworkPropertyMetadata(
                 Scale.Logarithmic,
-                FrameworkPropertyMetadataOptions.AffectsRender));
+                FrameworkPropertyMetadataOptions.AffectsArrange));
 
-        private static readonly DependencyPropertyKey CurrentPropertyKey = DependencyProperty.RegisterReadOnly(
-            nameof(Current),
+        private static readonly DependencyPropertyKey MeasurementPropertyKey = DependencyProperty.RegisterReadOnly(
+            nameof(Measurement),
             typeof(Measurement),
             typeof(MeasureDecorator),
             new FrameworkPropertyMetadata(
                 default(Measurement),
-                FrameworkPropertyMetadataOptions.AffectsRender));
+                FrameworkPropertyMetadataOptions.AffectsArrange,
+                OnMeasurementChanged));
 
-        /// <summary>Identifies the <see cref="Current"/> dependency property.</summary>
-        public static readonly DependencyProperty CurrentProperty = CurrentPropertyKey.DependencyProperty;
+        public static readonly DependencyProperty MeasurementProperty = MeasurementPropertyKey.DependencyProperty;
 
+        private readonly Rectangle rectangle = new() { Visibility = Visibility.Collapsed, Fill = Brushes.MeasureBackground, IsHitTestVisible = false };
+        private readonly ContentPresenter infoPresenter = new() { Visibility = Visibility.Collapsed, IsHitTestVisible = false };
         private CandleSticks? child;
-        private MeasureAdorner? adorner;
 
         static MeasureDecorator()
         {
             ClipToBoundsProperty.OverrideMetadata(typeof(MeasureDecorator), new PropertyMetadata(true));
         }
 
-#pragma warning disable WPF0012 // CLR property type should match registered type.
-        public SolidColorBrush? Background
-#pragma warning restore WPF0012 // CLR property type should match registered type.
+        public MeasureDecorator()
         {
-            get => (SolidColorBrush?)this.GetValue(BackgroundProperty);
-            set => this.SetValue(BackgroundProperty, value);
+            this.AddVisualChild(this.rectangle);
+            this.AddVisualChild(this.infoPresenter);
         }
 
         public FloatRange? PriceRange
@@ -73,10 +63,10 @@
             set => this.SetValue(PriceScaleProperty, value);
         }
 
-        public Measurement? Current
+        public Measurement? Measurement
         {
-            get => (Measurement?)this.GetValue(CurrentProperty);
-            private set => this.SetValue(CurrentPropertyKey, value);
+            get => (Measurement?)this.GetValue(MeasurementProperty);
+            private set => this.SetValue(MeasurementPropertyKey, value);
         }
 
         [DefaultValue(null)]
@@ -103,66 +93,81 @@
             _ => EmptyEnumerator.Instance,
         };
 
-        protected override int VisualChildrenCount => this.child is null ? 0 : 1;
+        protected override int VisualChildrenCount => this.child is null ? 2 : 3;
 
-        protected override Visual GetVisualChild(int index)
+        protected override Visual GetVisualChild(int index) => index switch
         {
-            if ((this.child is null) || (index != 0))
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), index, "Check VisualChildrenCount first");
-            }
-
-            return this.child;
-        }
+            0 => this.rectangle,
+            1 => (Visual?)this.child ?? this.infoPresenter,
+            2 when this.child is not null => this.infoPresenter,
+            _ => throw new ArgumentOutOfRangeException(nameof(index), "Check VisualChildrenCount first"),
+        };
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (this.child is { } child)
-            {
-                child.Measure(availableSize);
-                return child.DesiredSize;
-            }
-
-            return default;
+            this.rectangle.Measure(availableSize);
+            this.child?.Measure(availableSize);
+            this.infoPresenter.Measure(availableSize);
+            return this.child?.DesiredSize ?? default;
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (this.child is { } child)
+            if (this.PriceRange is { } priceRange &&
+                this.Candles is { } candles &&
+                this.CandleWidth is var candleWidth &&
+                this.CandleInterval is var candleInterval &&
+                this.Measurement is { To: { } to } measurement)
             {
-                child.Arrange(new Rect(finalSize));
-            }
+                var valueRange = new ValueRange(priceRange, this.PriceScale);
+                this.rectangle.Arrange(new Rect(
+                    Point(measurement.From),
+                    Point(to)));
+                this.child?.Arrange(new Rect(finalSize));
+                this.infoPresenter.Arrange(InfoRectangle());
 
-            return finalSize;
-        }
-
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            var renderSize = this.RenderSize;
-            if (this.Background is { } background &&
-                this.PriceRange is { } priceRange &&
-                this.Current is { To: { } end } measurement)
-            {
-                var candlePosition = CandlePosition.RightToLeft(renderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale));
-                if (candlePosition.Point(measurement.From, this.Candles, this.CandleInterval) is { } p1 &&
-                    candlePosition.Point(end, this.Candles, this.CandleInterval) is { } p2)
+                Point Point(TimeAndPrice timeAndPrice)
                 {
-                    drawingContext.DrawRectangle(background, null, new Rect(p1, p2));
-                    if (this.adorner is null)
+                    return new(
+                        CandlePosition.ClampedX(timeAndPrice.Time, candles, finalSize.Width, candleWidth, candleInterval),
+                        valueRange.Y(timeAndPrice.Price, finalSize.Height));
+                }
+
+                Rect InfoRectangle()
+                {
+                    var position = Point(to);
+                    var desiredSize = this.infoPresenter.DesiredSize;
+                    return new Rect(new Point(position.X + OffsetX(), Y()), desiredSize);
+
+                    double OffsetX()
                     {
-                        this.adorner = MeasureAdorner.Show(this, measurement, p2);
+                        return measurement switch
+                        {
+                            { From: { Time: var s }, To: { Time: var e } }
+                                when s <= e
+                                => -desiredSize.Width,
+                            _ => 0,
+                        };
                     }
-                    else
+
+                    double Y()
                     {
-                        this.adorner.Update(measurement, p2);
+                        return this.Measurement switch
+                        {
+                            { From: { Price: var s }, To: { Price: var e } }
+                                when s <= e
+                                => Math.Max(0, position.Y - desiredSize.Height),
+                            _ => position.Y,
+                        };
                     }
                 }
             }
-            else if (this.adorner is { } adorner)
+            else
             {
-                AdornerService.Remove(adorner);
-                this.adorner = null;
+                this.child?.Arrange(new Rect(finalSize));
             }
+
+            return finalSize;
         }
 
         protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)
@@ -175,11 +180,11 @@
             if (this.PriceRange is { } priceRange &&
                 CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale)).TimeAndPrice(e.GetPosition(this), this.Candles) is { } timeAndPrice)
             {
-                this.Current = Measurement.Start(timeAndPrice);
+                this.Measurement = Measurement.Start(timeAndPrice);
             }
             else
             {
-                this.Current = null;
+                this.Measurement = null;
             }
         }
 
@@ -189,9 +194,9 @@
                 e.LeftButton == MouseButtonState.Pressed &&
                 CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale)).TimeAndPrice(e.GetPosition(this), this.Candles) is { } timeAndPrice)
             {
-                if (this.Current is { } measurement)
+                if (this.Measurement is { } measurement)
                 {
-                    this.Current = measurement.WithEnd(timeAndPrice, Candles());
+                    this.Measurement = measurement.WithEnd(timeAndPrice, Candles());
 
                     int Candles()
                     {
@@ -214,9 +219,28 @@
                 }
                 else
                 {
-                    this.Current = Measurement.Start(timeAndPrice);
+                    this.Measurement = Measurement.Start(timeAndPrice);
                 }
             }
+        }
+
+        private static void OnMeasurementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var decorator = (MeasureDecorator)d;
+#pragma warning disable WPF0041 // Set mutable dependency properties using SetCurrentValue.
+            if (e.NewValue is Measurement { To: not null } measurement)
+            {
+                decorator.rectangle.Visibility = Visibility.Visible;
+                decorator.infoPresenter.Content = measurement;
+                decorator.infoPresenter.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                decorator.rectangle.Visibility = Visibility.Collapsed;
+                decorator.infoPresenter.Visibility = Visibility.Collapsed;
+                decorator.infoPresenter.Content = null;
+            }
+#pragma warning restore WPF0041 // Set mutable dependency properties using SetCurrentValue.
         }
     }
 }

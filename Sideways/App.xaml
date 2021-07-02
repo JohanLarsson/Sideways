@@ -198,7 +198,7 @@
             </sideways:DownloadStatusTemplateSelector>
 
             <DataTemplate DataType="{x:Type sideways:Measurement}">
-                <Grid>
+                <Grid Background="{x:Static sideways:Brushes.Background}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -253,10 +253,14 @@
                         <ToolTip>
                             <StackPanel>
                                 <TextBlock Text="{Binding QoQ, StringFormat='QoQ {0:F0}', Mode=OneTime}" />
-                                <sideways:ChangesChart Height="25" Changes="{Binding DescendingQuarterlyChanges}" HorizontalAlignment="Left"/>
+                                <sideways:ChangesChart Height="25"
+                                                       HorizontalAlignment="Left"
+                                                       Changes="{Binding DescendingQuarterlyChanges}" />
 
                                 <TextBlock Text="{Binding YoY, StringFormat='YoY {0:F0}', Mode=OneTime}" />
-                                <sideways:ChangesChart Height="25" Changes="{Binding DescendingYearlyChanges}" HorizontalAlignment="Left"/>
+                                <sideways:ChangesChart Height="25"
+                                                       HorizontalAlignment="Left"
+                                                       Changes="{Binding DescendingYearlyChanges}" />
 
                                 <TextBlock Text="{Binding Eps, StringFormat='EPS {0:F2}', Mode=OneTime}" />
                                 <sideways:EarningsChart Height="50" Earnings="{Binding DescendingEarnings, Mode=OneTime}" />

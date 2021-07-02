@@ -24,31 +24,40 @@
             {
                 case Key.C
                     when Keyboard.Modifiers == ModifierKeys.Control &&
-                         FocusManager.GetFocusedElement(this) is not TextBox:
+                         ShouldUpdateChart():
                     ApplicationCommands.Copy.Execute(null, this);
                     e.Handled = true;
                     break;
                 case Key.Left
                     when this.DataContext is MainViewModel vm &&
-                         FocusManager.GetFocusedElement(this) is not TextBox:
+                         ShouldUpdateChart():
                     vm.SkipLeftCommand.Execute(Interval(Keyboard.Modifiers));
                     e.Handled = true;
                     break;
                 case Key.Right
                     when this.DataContext is MainViewModel vm &&
-                         FocusManager.GetFocusedElement(this) is not TextBox:
+                         ShouldUpdateChart():
                     vm.SkipRightCommand.Execute(Interval(Keyboard.Modifiers));
                     e.Handled = true;
                     break;
                 case Key.Space
                     when this.DataContext is MainViewModel vm &&
-                         FocusManager.GetFocusedElement(this) is not TextBox:
+                         ShouldUpdateChart():
                     vm.Animation.ToggleCommand.Execute(null);
                     e.Handled = true;
                     break;
             }
 
             base.OnPreviewKeyDown(e);
+
+            bool ShouldUpdateChart()
+            {
+                return FocusManager.GetFocusedElement(this) switch
+                {
+                    TextBox => this.SymbolComboBox.IsKeyboardFocusWithin,
+                    _ => true,
+                };
+            }
 
             static CandleInterval Interval(ModifierKeys modifier)
             {
