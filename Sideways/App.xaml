@@ -19,7 +19,7 @@
                 <Setter Property="Width" Value="1" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
                 <Setter Property="VerticalAlignment" Value="Stretch" />
-                <Setter Property="Background" Value="{x:Static sideways:Brushes.DarkGray}" />
+                <Setter Property="Foreground" Value="{x:Static sideways:Brushes.DarkGray}" />
                 <Setter Property="ShowsPreview" Value="False" />
                 <!--  We  hack it with negative margin for easier resize  -->
                 <Setter Property="Panel.ZIndex" Value="100" />
@@ -29,7 +29,7 @@
                             <Border Margin="-12,0" Background="Transparent">
                                 <Rectangle Width="1"
                                            HorizontalAlignment="Center"
-                                           Fill="{TemplateBinding Background}"
+                                           Fill="{TemplateBinding Foreground}"
                                            Stretch="Fill" />
                             </Border>
                         </ControlTemplate>
