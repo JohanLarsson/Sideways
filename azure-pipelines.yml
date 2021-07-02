@@ -11,6 +11,18 @@ steps:
     configuration: '$(buildConfiguration)'
     msbuildArgs: '/restore'
 
+- task: VSBuild@1
+  displayName: Publish
+  inputs:
+    solution: Sideways
+    configuration: '$(buildConfiguration)'
+    msbuildArgs: '/t:Publish /p:PublishDir="$(Build.ArtifactStagingDirectory)/Bin"'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)/Bin'
+    ArtifactName: Bin
+
 - task: VSTest@2
   displayName: Test
   inputs:
