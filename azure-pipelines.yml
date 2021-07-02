@@ -9,16 +9,17 @@ steps:
   displayName: Build
   inputs:
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/restore'
+    msbuildArgs: '/restore /bl:"$(Build.ArtifactStagingDirectory)/Logs/build.binlog"'
 
 - task: VSBuild@1
   displayName: Publish
   inputs:
     solution: Sideways
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/t:Publish /p:PublishDir="$(Build.ArtifactStagingDirectory)/Bin"'
+    msbuildArgs: '/t:Publish /p:PublishDir="$(Build.ArtifactStagingDirectory)/Bin" /bl:"$(Build.ArtifactStagingDirectory)/Logs/publish.binlog"'
 
 - task: PublishBuildArtifacts@1
+  displayName: Publish bin artifacts
   inputs:
     pathToPublish: '$(Build.ArtifactStagingDirectory)/Bin'
     ArtifactName: Bin
@@ -27,3 +28,10 @@ steps:
   displayName: Test
   inputs:
     configuration: '$(buildConfiguration)'
+
+- task: PublishBuildArtifacts@1
+  condition: succeededOrFailed()
+  displayName: Publish log artifacts
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)/Logs'
+    ArtifactName: Logs
