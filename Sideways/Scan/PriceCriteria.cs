@@ -2,7 +2,7 @@
 {
     public sealed class PriceCriteria : Criteria
     {
-        private float? min;
+        private float? min = 1;
         private float? max;
 
         public override string Info => (this.Min, this.Max) switch

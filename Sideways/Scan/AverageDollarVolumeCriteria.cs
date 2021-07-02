@@ -2,7 +2,7 @@
 {
     public sealed class AverageDollarVolumeCriteria : Criteria
     {
-        private float? min;
+        private float? min = 1_000_000;
         private float? max;
 
         public override string Info => (this.Min, this.Max) switch

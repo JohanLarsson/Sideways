@@ -2,7 +2,7 @@
 {
     public sealed class AdrCriteria : Criteria
     {
-        private Percent? min;
+        private Percent? min = new Percent(5);
         private Percent? max;
 
         public override string Info => (this.Min, this.Max) switch

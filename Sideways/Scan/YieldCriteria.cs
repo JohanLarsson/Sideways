@@ -4,8 +4,8 @@
 
     public sealed class YieldCriteria : Criteria
     {
-        private int days;
-        private Percent? min;
+        private int days = 5;
+        private Percent? min = new Percent(25);
         private Percent? max;
 
         public override string Info => (this.min, this.max) switch

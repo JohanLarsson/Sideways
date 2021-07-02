@@ -4,7 +4,7 @@
 
     public sealed class TimeCriteria : Criteria
     {
-        private DateTimeOffset? start;
+        private DateTimeOffset? start = DateTimeOffset.Now.AddMonths(-1);
         private DateTimeOffset? end;
 
         public override string Info => (this.Start, this.End) switch
