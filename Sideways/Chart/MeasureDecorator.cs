@@ -211,8 +211,8 @@
                     this.Measurement = measurement.WithEnd(
                         timeAndPrice,
                         Math.Abs(fromIndex - IndexOf(timeAndPrice.Time)),
-                        fromIndex >= 20 ? candles.Slice(fromIndex, 20).Adr() : null,
-                        fromIndex >= 21 ? candles.Slice(fromIndex, 21).Atr() : null);
+                        candles.Count - fromIndex >= 20 ? candles.Slice(fromIndex, 20).Adr() : null,
+                        candles.Count - fromIndex >= 21 ? candles.Slice(fromIndex, 21).Atr() : null);
 
                     int IndexOf(DateTimeOffset time)
                     {
