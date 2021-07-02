@@ -7,10 +7,21 @@
 
     public class ChartBackground : CandleSeries
     {
-        public static readonly DependencyProperty BookmarkTimeProperty = Chart.BookmarkTimeProperty.AddOwner(
+        /// <summary>Identifies the <see cref="Bookmarks"/> dependency property.</summary>
+        public static readonly DependencyProperty BookmarksProperty = DependencyProperty.Register(
+            nameof(Bookmarks),
+            typeof(ObservableSortedSet<Bookmark>),
             typeof(ChartBackground),
             new FrameworkPropertyMetadata(
-                default(DateTimeOffset?),
+                default(ObservableSortedSet<Bookmark>),
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
+        public static readonly DependencyProperty SelectedBookmarkProperty = DependencyProperty.Register(
+            nameof(SelectedBookmark),
+            typeof(Bookmark),
+            typeof(ChartBackground),
+            new FrameworkPropertyMetadata(
+                default(Bookmark),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
         /// <summary>Identifies the <see cref="Earnings"/> dependency property.</summary>
@@ -20,10 +31,20 @@
                 default(ImmutableArray<QuarterlyEarning>),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        public DateTimeOffset? BookmarkTime
+        private Pen? bookmarkPen;
+        private Pen? earningPen;
+        private Pen? selectedBookmarkPen;
+
+        public ObservableSortedSet<Bookmark>? Bookmarks
         {
-            get => (DateTimeOffset?)this.GetValue(BookmarkTimeProperty);
-            set => this.SetValue(BookmarkTimeProperty, value);
+            get => (ObservableSortedSet<Bookmark>?)this.GetValue(BookmarksProperty);
+            set => this.SetValue(BookmarksProperty, value);
+        }
+
+        public Bookmark? SelectedBookmark
+        {
+            get => (Bookmark?)this.GetValue(SelectedBookmarkProperty);
+            set => this.SetValue(SelectedBookmarkProperty, value);
         }
 
         public ImmutableArray<QuarterlyEarning> Earnings
@@ -31,9 +52,6 @@
             get => (ImmutableArray<QuarterlyEarning>)this.GetValue(EarningsProperty);
             set => this.SetValue(EarningsProperty, value);
         }
-
-        private Pen? bookmarkPen;
-        private Pen? earningPen;
 
         protected override void OnRender(DrawingContext drawingContext)
         {
@@ -81,16 +99,6 @@
                     break;
             }
 
-            if (this.BookmarkTime is { } bookmarkTime &&
-                CandlePosition.X(bookmarkTime, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } bookMarkX &&
-                bookMarkX < renderSize.Width - this.CandleWidth)
-            {
-                drawingContext.DrawLine(
-                    this.bookmarkPen ??= CreatePen(Brushes.BookMark, 0.5),
-                    new Point(bookMarkX, 0),
-                    new Point(bookMarkX, renderSize.Height));
-            }
-
             if (this.Earnings is { IsDefaultOrEmpty: false } earnings)
             {
                 foreach (var earning in earnings)
@@ -98,11 +106,24 @@
                     if (CandlePosition.X(earning.ReportedDate, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } earningX)
                     {
                         drawingContext.DrawLine(
-                            this.earningPen ??= CreatePen(Brushes.Gray, 0.5),
+                            this.earningPen ??= CreatePen(Brushes.Gray, 0.25),
                             new Point(earningX, 0),
                             new Point(earningX, renderSize.Height));
                     }
                 }
+            }
+
+            if (this.Bookmarks is { Count: > 0 } bookmarks)
+            {
+                foreach (var bookmark in bookmarks)
+                {
+                    DrawLine(bookmark.Time, this.bookmarkPen ??= CreatePen(Brushes.BookMark, 0.25));
+                }
+            }
+
+            if (this.SelectedBookmark is { } selectedBookmark)
+            {
+                DrawLine(selectedBookmark.Time, this.selectedBookmarkPen ??= CreatePen(Brushes.SelectedBookMark, 0.25));
             }
 
             void DrawBand(Func<Candle, bool> func, SolidColorBrush brush)
@@ -138,6 +159,18 @@
                     {
                         break;
                     }
+                }
+            }
+
+            void DrawLine(DateTimeOffset time, Pen pen)
+            {
+                if (CandlePosition.X(time, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } bookMarkX &&
+                    bookMarkX < renderSize.Width - this.CandleWidth)
+                {
+                    drawingContext.DrawLine(
+                        pen,
+                        new Point(bookMarkX, 0),
+                        new Point(bookMarkX, renderSize.Height));
                 }
             }
         }
