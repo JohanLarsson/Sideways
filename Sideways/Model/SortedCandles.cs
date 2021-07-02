@@ -99,15 +99,13 @@
             return this.candles.Length - 1;
         }
 
-        public ReadOnlySpan<Candle> AsSpan() => this.candles.AsSpan();
-
         public ReadOnlySpan<Candle> Slice(int index, int length)
         {
             return length switch
             {
                 > 0 => this.candles.AsSpan().Slice(index, length),
                 < 0 => this.candles.AsSpan().Slice(index + length + 1, -length),
-                _ => throw new ArgumentException(nameof(length)),
+                _ => throw new ArgumentException("Zero not allowed for length.", nameof(length)),
             };
         }
 
