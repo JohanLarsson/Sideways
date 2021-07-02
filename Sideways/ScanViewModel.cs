@@ -141,7 +141,7 @@
                     this.averageVolumeCriteria.IsSatisfied(days, i) &&
                     this.averageDollarVolumeCriteria.IsSatisfied(days, i))
                 {
-                    yield return new Bookmark(symbol, TradingDay.StartOfRegularHours(days[i].Time), ImmutableSortedSet<string>.Empty, null);
+                    yield return new Bookmark(symbol, TradingDay.EndOfDay(days[i].Time), ImmutableSortedSet<string>.Empty, null);
                 }
             }
         }
