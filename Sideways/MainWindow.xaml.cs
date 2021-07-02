@@ -2,6 +2,7 @@
 {
     using System.ComponentModel;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
@@ -23,25 +24,25 @@
             {
                 case Key.C
                     when Keyboard.Modifiers == ModifierKeys.Control &&
-                         ReferenceEquals(Keyboard.FocusedElement, this.SymbolComboBox):
+                         FocusManager.GetFocusedElement(this) is not TextBox:
                     ApplicationCommands.Copy.Execute(null, this);
                     e.Handled = true;
                     break;
                 case Key.Left
                     when this.DataContext is MainViewModel vm &&
-                         ReferenceEquals(Keyboard.FocusedElement, this.SymbolComboBox):
+                         FocusManager.GetFocusedElement(this) is not TextBox:
                     vm.SkipLeftCommand.Execute(Interval(Keyboard.Modifiers));
                     e.Handled = true;
                     break;
                 case Key.Right
                     when this.DataContext is MainViewModel vm &&
-                         ReferenceEquals(Keyboard.FocusedElement, this.SymbolComboBox):
+                         FocusManager.GetFocusedElement(this) is not TextBox:
                     vm.SkipRightCommand.Execute(Interval(Keyboard.Modifiers));
                     e.Handled = true;
                     break;
                 case Key.Space
                     when this.DataContext is MainViewModel vm &&
-                         ReferenceEquals(Keyboard.FocusedElement, this.SymbolComboBox):
+                         FocusManager.GetFocusedElement(this) is not TextBox:
                     vm.Animation.ToggleCommand.Execute(null);
                     e.Handled = true;
                     break;
