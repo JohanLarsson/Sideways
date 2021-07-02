@@ -24,28 +24,7 @@
             this.Simulation = new SimulationViewModel(this);
             this.Animation = new AnimationViewModel(this);
             this.symbols = ImmutableSortedSet.CreateRange(Database.ReadSymbols());
-            this.AddBookmarkCommand = new RelayCommand(_ =>
-            {
-                switch (this)
-                {
-                    case { CurrentSymbol: { Symbol: { } symbol }, Time: { } time, Bookmarks: { SelectedBookmarkFile: { } bookmarkFile } }:
-                        if (!bookmarkFile.Add(new Bookmark(symbol, time, ImmutableSortedSet<string>.Empty, null)))
-                        {
-                            _ = MessageBox.Show("Bookmark already exists.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-
-                        break;
-                    case { Bookmarks: { SelectedBookmarkFile: null } }:
-                        MessageBox.Show("No bookmark added, a bookmarks file must be selected.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
-                        break;
-                    case { CurrentSymbol: { Candles: { } } }:
-                        MessageBox.Show("No bookmark added, a symbol with candles must be open.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
-                        break;
-                    default:
-                        MessageBox.Show("No bookmark added.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
-                        break;
-                }
-            });
+            this.AddBookmarkCommand = new RelayCommand(_ => this.AddBookmark(this.Time));
 
             this.AddToWatchlistCommand = new RelayCommand(_ =>
             {
@@ -126,6 +105,29 @@
             };
 
             this.currentSymbol = SymbolViewModel.GetOrCreate("TSLA", this.Downloader);
+        }
+
+        public void AddBookmark(DateTimeOffset time)
+        {
+            switch (this)
+            {
+                case { CurrentSymbol: { Symbol: { } symbol }, Bookmarks: { SelectedBookmarkFile: { } bookmarkFile } }:
+                    if (!bookmarkFile.Add(new Bookmark(symbol, time, ImmutableSortedSet<string>.Empty, null)))
+                    {
+                        _ = MessageBox.Show("Bookmark already exists.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+
+                    break;
+                case { Bookmarks: { SelectedBookmarkFile: null } }:
+                    MessageBox.Show("No bookmark added, a bookmarks file must be selected.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
+                    break;
+                case { CurrentSymbol: { Candles: { } } }:
+                    MessageBox.Show("No bookmark added, a symbol with candles must be open.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
+                    break;
+                default:
+                    MessageBox.Show("No bookmark added.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
+                    break;
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

@@ -282,6 +282,13 @@
                                     <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Green}" Period="200" />
 
                                     <sideways:MeasureDecorator>
+                                        <sideways:MeasureDecorator.CommandBindings>
+                                            <CommandBinding Command="{x:Static sideways:Bookmark.AddCommand}"
+                                                            Executed="AddBookMark" />
+                                        </sideways:MeasureDecorator.CommandBindings>
+                                        <sideways:MeasureDecorator.InputBindings>
+                                            <MouseBinding Command="{x:Static sideways:Bookmark.AddCommand}" MouseAction="LeftDoubleClick" />
+                                        </sideways:MeasureDecorator.InputBindings>
                                         <sideways:CandleSticks />
                                     </sideways:MeasureDecorator>
 
@@ -423,6 +430,14 @@
                                     <sideways:VWap Brush="{x:Static sideways:Brushes.LightGray}" />
 
                                     <sideways:MeasureDecorator>
+                                        <sideways:MeasureDecorator.CommandBindings>
+                                            <CommandBinding Command="{x:Static sideways:Bookmark.AddCommand}"
+                                                            Executed="AddBookMark" />
+                                        </sideways:MeasureDecorator.CommandBindings>
+                                        <sideways:MeasureDecorator.InputBindings>
+                                            <MouseBinding Command="{x:Static sideways:Bookmark.AddCommand}" MouseAction="LeftDoubleClick" />
+                                        </sideways:MeasureDecorator.InputBindings>
+
                                         <sideways:CandleSticks />
                                     </sideways:MeasureDecorator>
                                 </Grid>

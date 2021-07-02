@@ -95,6 +95,17 @@
 
         protected override int VisualChildrenCount => this.child is null ? 2 : 3;
 
+        public TimeAndPrice? TimeAndPrice(Point position)
+        {
+            if (this.PriceRange is { } priceRange)
+            {
+                return CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale))
+                                     .TimeAndPrice(position, this.Candles);
+            }
+
+            return null;
+        }
+
         protected override Visual GetVisualChild(int index) => index switch
         {
             0 => this.rectangle,
@@ -177,8 +188,7 @@
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            if (this.PriceRange is { } priceRange &&
-                CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale)).TimeAndPrice(e.GetPosition(this), this.Candles) is { } timeAndPrice)
+            if (this.TimeAndPrice(e.GetPosition(this)) is { } timeAndPrice)
             {
                 this.Measurement = Measurement.Start(timeAndPrice);
             }
@@ -190,9 +200,8 @@
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (this.PriceRange is { } priceRange &&
-                e.LeftButton == MouseButtonState.Pressed &&
-                CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale)).TimeAndPrice(e.GetPosition(this), this.Candles) is { } timeAndPrice)
+            if (e.LeftButton == MouseButtonState.Pressed &&
+                this.TimeAndPrice(e.GetPosition(this)) is { } timeAndPrice)
             {
                 if (this.Measurement is { } measurement)
                 {
