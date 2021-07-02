@@ -24,7 +24,7 @@
         public static readonly SolidColorBrush DarkGray = Create(Color.FromArgb(byte.MaxValue, 40, 40, 40));
         public static readonly SolidColorBrush CrossHair = Create(Color.FromArgb(160, byte.MaxValue, byte.MaxValue, byte.MaxValue));
         public static readonly SolidColorBrush BookMark = Create(Color.FromArgb(80, 90, 140, byte.MaxValue));
-        public static readonly SolidColorBrush SelectedBookMark = Create(Color.FromArgb(180, 110, 160, byte.MaxValue));
+        public static readonly SolidColorBrush SelectedBookMark = Create(Color.FromArgb(byte.MaxValue, 110, 160, byte.MaxValue));
 
         public static readonly SolidColorBrush Transparent = System.Windows.Media.Brushes.Transparent;
         public static readonly SolidColorBrush Accent = Create(Color.FromArgb(byte.MaxValue, 100, 149, 237));

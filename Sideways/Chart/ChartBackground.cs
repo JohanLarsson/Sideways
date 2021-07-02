@@ -54,9 +54,9 @@
             set => this.SetValue(SelectedBookmarkProperty, value);
         }
 
-        public Bookmark SelectedScanResult
+        public Bookmark? SelectedScanResult
         {
-            get => (Bookmark)this.GetValue(SelectedScanResultProperty);
+            get => (Bookmark?)this.GetValue(SelectedScanResultProperty);
             set => this.SetValue(SelectedScanResultProperty, value);
         }
 
@@ -141,7 +141,7 @@
 
             if (this.SelectedScanResult is { } selectedScanResult)
             {
-                DrawLine(selectedScanResult.Time, this.selectedScanResultPen ??= CreatePen(Brushes.SelectedBookMark, 0.25, DashStyles.Dot));
+                DrawLine(selectedScanResult.Time, this.selectedScanResultPen ??= CreatePen(Brushes.SelectedBookMark, 0.25, DashStyles.Dash));
             }
 
             void DrawBand(Func<Candle, bool> func, SolidColorBrush brush)
