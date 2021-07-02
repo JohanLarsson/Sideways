@@ -12,7 +12,7 @@
             if (values is { Length: > 1 } &&
                 values[0] is DescendingCandles { Count: > 20 } candles)
             {
-                return candles.AsSpan()[..20].Adr();
+                return candles[..20].Adr();
             }
 
             return null;

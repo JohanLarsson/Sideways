@@ -55,6 +55,9 @@
 
         public Candle this[int index] => this.candles[index];
 
+        // ReSharper disable once UnusedMember.Global
+        public ReadOnlySpan<Candle> Slice(int start, int length) => CollectionsMarshal.AsSpan(this.candles).Slice(start, length);
+
         public ReadOnlySpan<Candle> AsSpan() => CollectionsMarshal.AsSpan(this.candles);
 
         public IEnumerator<Candle> GetEnumerator() => this.candles.GetEnumerator();

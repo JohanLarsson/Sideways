@@ -13,7 +13,7 @@
                 values[0] is DescendingCandles { Count: > 21 } candles)
             {
                 // https://www.investopedia.com/terms/a/atr.asp
-                return candles.AsSpan()[..21].Atr();
+                return candles[..21].Atr();
             }
 
             return null;
