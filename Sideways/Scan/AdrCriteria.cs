@@ -5,12 +5,12 @@
         private Percent? min = new Percent(5);
         private Percent? max;
 
-        public override string Info => (this.Min, this.Max) switch
+        public override string Info => (this.min, this.max) switch
         {
             // ReSharper disable LocalVariableHidesMember
-            (Min: { } min, Max: { } max) => $"ADR [{min:F1}..{max:F1}]",
-            (Min: null, Max: { } max) => $"ADR [..{max:F1}]",
-            (Min: { } min, Max: null) => $"ADR [{min:F1}..]",
+            (min: { } min, max: { } max) => $"{min.Scalar:#.#} ≤ ADR ≤ {max.Scalar:#.#}",
+            (min: null, max: { } max) => $"ADR ≤ {max.Scalar:#.#}",
+            (min: { } min, max: null) => $"{min.Scalar:#.#} ≤ ADR",
             _ => "ADR *",
             //// ReSharper restore LocalVariableHidesMember
         };

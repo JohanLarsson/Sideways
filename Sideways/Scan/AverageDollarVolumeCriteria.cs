@@ -5,12 +5,12 @@
         private float? min = 1_000_000;
         private float? max;
 
-        public override string Info => (this.Min, this.Max) switch
+        public override string Info => (this.min, this.max) switch
         {
             // ReSharper disable LocalVariableHidesMember
-            (Min: { } min, Max: { } max) => $"A$ [{MillionConverter.DisplayText(min)}..{MillionConverter.DisplayText(max)}]",
-            (Min: null, Max: { } max) => $"A$ [..{MillionConverter.DisplayText(max)}]",
-            (Min: { } min, Max: null) => $"A$ [{MillionConverter.DisplayText(min)}..]",
+            (min: { } min, max: { } max) => $"{MillionConverter.DisplayText(min)} ≤ A$ ≤ {MillionConverter.DisplayText(max)}",
+            (min: null, max: { } max) => $"A$ ≤ {MillionConverter.DisplayText(max)}",
+            (min: { } min, max: null) => $"{MillionConverter.DisplayText(min)} ≤ A$",
             _ => "A$ *",
             //// ReSharper restore LocalVariableHidesMember
         };
