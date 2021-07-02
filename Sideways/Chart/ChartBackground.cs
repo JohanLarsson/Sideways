@@ -32,6 +32,9 @@
             set => this.SetValue(EarningsProperty, value);
         }
 
+        private Pen? bookmarkPen;
+        private Pen? earningPen;
+
         protected override void OnRender(DrawingContext drawingContext)
         {
             var renderSize = this.RenderSize;
@@ -82,12 +85,10 @@
                 CandlePosition.X(bookmarkTime, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } bookMarkX &&
                 bookMarkX < renderSize.Width - this.CandleWidth)
             {
-                drawingContext.DrawRectangle(
-                    Brushes.BookMark,
-                    null,
-                    new Rect(
-                        new Point(bookMarkX - 0.25, 0),
-                        new Point(bookMarkX + 0.25, renderSize.Height)));
+                drawingContext.DrawLine(
+                    this.bookmarkPen ??= CreatePen(Brushes.BookMark, 0.5),
+                    new Point(bookMarkX, 0),
+                    new Point(bookMarkX, renderSize.Height));
             }
 
             if (this.Earnings is { IsDefaultOrEmpty: false } earnings)
@@ -96,12 +97,10 @@
                 {
                     if (CandlePosition.X(earning.ReportedDate, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } earningX)
                     {
-                        drawingContext.DrawRectangle(
-                            Brushes.DarkGray,
-                            null,
-                            new Rect(
-                                new Point(earningX - 0.25, 0),
-                                new Point(earningX + 0.25, renderSize.Height)));
+                        drawingContext.DrawLine(
+                            this.earningPen ??= CreatePen(Brushes.Gray, 0.5),
+                            new Point(earningX, 0),
+                            new Point(earningX, renderSize.Height));
                     }
                 }
             }
@@ -141,6 +140,13 @@
                     }
                 }
             }
+        }
+
+        private static Pen CreatePen(SolidColorBrush brus, double thickness)
+        {
+            var pen = new Pen(brus, thickness);
+            pen.Freeze();
+            return pen;
         }
     }
 }
