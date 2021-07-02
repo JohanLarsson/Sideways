@@ -214,7 +214,12 @@
 
                                 <sideways:ChartBackground Grid.Row="0"
                                                           Grid.RowSpan="3"
-                                                          Grid.Column="0" />
+                                                          Grid.Column="0"
+                                                          Bookmarks="{Binding Bookmarks.SelectedBookmarkFile.Bookmarks}"
+                                                          SelectedBookmark="{Binding Bookmarks.SelectedBookmark}"
+                                                          SelectedScanResult="{Binding Scan.SelectedResult}"
+                                                          Symbol="{Binding CurrentSymbolText,
+                                                                           Mode=OneWay}" />
 
                                 <Grid Grid.Row="0" Grid.Column="0">
 
@@ -265,7 +270,9 @@
                                                           Bookmarks="{Binding Bookmarks.SelectedBookmarkFile.Bookmarks}"
                                                           Earnings="{Binding CurrentSymbol.QuarterlyEarnings}"
                                                           SelectedBookmark="{Binding Bookmarks.SelectedBookmark}"
-                                                          SelectedScanResult="{Binding Scan.SelectedResult}" />
+                                                          SelectedScanResult="{Binding Scan.SelectedResult}"
+                                                          Symbol="{Binding CurrentSymbolText,
+                                                                           Mode=OneWay}" />
 
                                 <Grid Grid.Row="0" Grid.Column="0">
 
@@ -283,8 +290,7 @@
 
                                     <sideways:MeasureDecorator>
                                         <sideways:MeasureDecorator.CommandBindings>
-                                            <CommandBinding Command="{x:Static sideways:Bookmark.AddCommand}"
-                                                            Executed="AddBookMark" />
+                                            <CommandBinding Command="{x:Static sideways:Bookmark.AddCommand}" Executed="AddBookMark" />
                                         </sideways:MeasureDecorator.CommandBindings>
                                         <sideways:MeasureDecorator.InputBindings>
                                             <MouseBinding Command="{x:Static sideways:Bookmark.AddCommand}" MouseAction="LeftDoubleClick" />
@@ -420,7 +426,12 @@
 
                                 <sideways:ChartBackground Grid.Row="0"
                                                           Grid.RowSpan="3"
-                                                          Grid.Column="0" />
+                                                          Grid.Column="0"
+                                                          Bookmarks="{Binding Bookmarks.SelectedBookmarkFile.Bookmarks}"
+                                                          SelectedBookmark="{Binding Bookmarks.SelectedBookmark}"
+                                                          SelectedScanResult="{Binding Scan.SelectedResult}"
+                                                          Symbol="{Binding CurrentSymbolText,
+                                                                           Mode=OneWay}" />
 
                                 <Grid Grid.Row="0" Grid.Column="0">
                                     <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
@@ -431,8 +442,7 @@
 
                                     <sideways:MeasureDecorator>
                                         <sideways:MeasureDecorator.CommandBindings>
-                                            <CommandBinding Command="{x:Static sideways:Bookmark.AddCommand}"
-                                                            Executed="AddBookMark" />
+                                            <CommandBinding Command="{x:Static sideways:Bookmark.AddCommand}" Executed="AddBookMark" />
                                         </sideways:MeasureDecorator.CommandBindings>
                                         <sideways:MeasureDecorator.InputBindings>
                                             <MouseBinding Command="{x:Static sideways:Bookmark.AddCommand}" MouseAction="LeftDoubleClick" />

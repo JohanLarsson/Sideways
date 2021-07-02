@@ -7,6 +7,14 @@
 
     public class ChartBackground : CandleSeries
     {
+        public static readonly DependencyProperty SymbolProperty = DependencyProperty.Register(
+            nameof(Symbol),
+            typeof(string),
+            typeof(ChartBackground),
+            new FrameworkPropertyMetadata(
+                default(string),
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         public static readonly DependencyProperty BookmarksProperty = DependencyProperty.Register(
             nameof(Bookmarks),
             typeof(ObservableSortedSet<Bookmark>),
@@ -41,6 +49,12 @@
         private Pen? selectedBookmarkPen;
         private Pen? selectedScanResultPen;
         private Pen? earningPen;
+
+        public string? Symbol
+        {
+            get => (string?)this.GetValue(SymbolProperty);
+            set => this.SetValue(SymbolProperty, value);
+        }
 
         public ObservableSortedSet<Bookmark>? Bookmarks
         {
@@ -126,11 +140,15 @@
                 }
             }
 
-            if (this.Bookmarks is { Count: > 0 } bookmarks)
+            if (this.Bookmarks is { Count: > 0 } bookmarks &&
+                this.Symbol is { } symbol)
             {
                 foreach (var bookmark in bookmarks)
                 {
-                    DrawLine(bookmark.Time, this.bookmarkPen ??= CreatePen(Brushes.BookMark, 0.25));
+                    if (bookmark.Symbol == symbol)
+                    {
+                        DrawLine(bookmark.Time, this.bookmarkPen ??= CreatePen(Brushes.BookMark, 0.25));
+                    }
                 }
             }
 
