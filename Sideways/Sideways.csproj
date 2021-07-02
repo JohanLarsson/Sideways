@@ -6,6 +6,8 @@
     <UseWPF>true</UseWPF>
     <LangVersion>latest</LangVersion>
     <Nullable>Enable</Nullable>
+    <EmbedAllSources>true</EmbedAllSources>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -13,6 +15,13 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <AnalysisLevel>latest</AnalysisLevel>
     <ApplicationIcon>sideways.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
   <ItemGroup>
