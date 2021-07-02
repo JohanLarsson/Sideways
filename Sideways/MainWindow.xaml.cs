@@ -22,22 +22,26 @@
             switch (e.Key)
             {
                 case Key.C
-                    when Keyboard.Modifiers == ModifierKeys.Control:
+                    when Keyboard.Modifiers == ModifierKeys.Control &&
+                         ReferenceEquals(Keyboard.FocusedElement, this.SymbolComboBox):
                     ApplicationCommands.Copy.Execute(null, this);
                     e.Handled = true;
                     break;
                 case Key.Left
-                    when this.DataContext is MainViewModel vm:
+                    when this.DataContext is MainViewModel vm &&
+                         ReferenceEquals(Keyboard.FocusedElement, this.SymbolComboBox):
                     vm.SkipLeftCommand.Execute(Interval(Keyboard.Modifiers));
                     e.Handled = true;
                     break;
                 case Key.Right
-                    when this.DataContext is MainViewModel vm:
+                    when this.DataContext is MainViewModel vm &&
+                         ReferenceEquals(Keyboard.FocusedElement, this.SymbolComboBox):
                     vm.SkipRightCommand.Execute(Interval(Keyboard.Modifiers));
                     e.Handled = true;
                     break;
                 case Key.Space
-                    when this.DataContext is MainViewModel vm:
+                    when this.DataContext is MainViewModel vm &&
+                         ReferenceEquals(Keyboard.FocusedElement, this.SymbolComboBox):
                     vm.Animation.ToggleCommand.Execute(null);
                     e.Handled = true;
                     break;
