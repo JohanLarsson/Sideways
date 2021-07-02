@@ -7,7 +7,6 @@
 
     public class ChartBackground : CandleSeries
     {
-        /// <summary>Identifies the <see cref="Bookmarks"/> dependency property.</summary>
         public static readonly DependencyProperty BookmarksProperty = DependencyProperty.Register(
             nameof(Bookmarks),
             typeof(ObservableSortedSet<Bookmark>),
@@ -24,7 +23,14 @@
                 default(Bookmark),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="Earnings"/> dependency property.</summary>
+        public static readonly DependencyProperty SelectedScanResultProperty = DependencyProperty.Register(
+            nameof(SelectedScanResult),
+            typeof(Bookmark),
+            typeof(ChartBackground),
+            new FrameworkPropertyMetadata(
+                default(Bookmark),
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         public static readonly DependencyProperty EarningsProperty = EarningsBar.EarningsProperty.AddOwner(
             typeof(ChartBackground),
             new FrameworkPropertyMetadata(
@@ -32,8 +38,9 @@
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
         private Pen? bookmarkPen;
-        private Pen? earningPen;
         private Pen? selectedBookmarkPen;
+        private Pen? selectedScanResultPen;
+        private Pen? earningPen;
 
         public ObservableSortedSet<Bookmark>? Bookmarks
         {
@@ -45,6 +52,12 @@
         {
             get => (Bookmark?)this.GetValue(SelectedBookmarkProperty);
             set => this.SetValue(SelectedBookmarkProperty, value);
+        }
+
+        public Bookmark SelectedScanResult
+        {
+            get => (Bookmark)this.GetValue(SelectedScanResultProperty);
+            set => this.SetValue(SelectedScanResultProperty, value);
         }
 
         public ImmutableArray<QuarterlyEarning> Earnings
@@ -126,6 +139,11 @@
                 DrawLine(selectedBookmark.Time, this.selectedBookmarkPen ??= CreatePen(Brushes.SelectedBookMark, 0.25));
             }
 
+            if (this.SelectedScanResult is { } selectedScanResult)
+            {
+                DrawLine(selectedScanResult.Time, this.selectedScanResultPen ??= CreatePen(Brushes.SelectedBookMark, 0.25, DashStyles.Dot));
+            }
+
             void DrawBand(Func<Candle, bool> func, SolidColorBrush brush)
             {
                 var position = CandlePosition.RightToLeft(renderSize, candleWidth, default);
@@ -175,9 +193,12 @@
             }
         }
 
-        private static Pen CreatePen(SolidColorBrush brus, double thickness)
+        private static Pen CreatePen(SolidColorBrush brush, double thickness, DashStyle? dashStyle = null)
         {
-            var pen = new Pen(brus, thickness);
+            var pen = new Pen(brush, thickness)
+            {
+                DashStyle = dashStyle,
+            };
             pen.Freeze();
             return pen;
         }

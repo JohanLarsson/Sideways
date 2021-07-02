@@ -264,7 +264,8 @@
                                                           Grid.Column="0"
                                                           Bookmarks="{Binding Bookmarks.SelectedBookmarkFile.Bookmarks}"
                                                           Earnings="{Binding CurrentSymbol.QuarterlyEarnings}"
-                                                          SelectedBookmark="{Binding Bookmarks.SelectedBookmark}" />
+                                                          SelectedBookmark="{Binding Bookmarks.SelectedBookmark}"
+                                                          SelectedScanResult="{Binding Scan.SelectedResult}" />
 
                                 <Grid Grid.Row="0" Grid.Column="0">
 
