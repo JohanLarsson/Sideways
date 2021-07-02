@@ -201,24 +201,26 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Closing price" />
 
-                                    <TextBlock Grid.Row="0"
+                                    <TextBlock Grid.Row="1"
                                                Grid.Column="0"
                                                Text="Min" />
-                                    <TextBox Grid.Row="0"
+                                    <TextBox Grid.Row="1"
                                              Grid.Column="1"
                                              Text="{Binding Min,
                                                             UpdateSourceTrigger=LostFocus}" />
 
-                                    <TextBlock Grid.Row="1"
+                                    <TextBlock Grid.Row="2"
                                                Grid.Column="0"
                                                Text="Max" />
-                                    <TextBox Grid.Row="1"
+                                    <TextBox Grid.Row="2"
                                              Grid.Column="1"
                                              Text="{Binding Max,
                                                             UpdateSourceTrigger=LostFocus}" />
@@ -239,10 +241,14 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock Grid.Row="0"
-                                               Grid.Column="0"
-                                               Grid.ColumnSpan="2"
-                                               Text="Time" />
+                                    <UniformGrid Grid.Row="0"
+                                                 Grid.Column="0"
+                                                 Grid.ColumnSpan="2"
+                                                 Columns="2">
+                                        <RadioButton Content="YTD" IsChecked="{Binding YearToDate, UpdateSourceTrigger=PropertyChanged}" />
+                                        <RadioButton Content="Month" IsChecked="{Binding LastMonth, UpdateSourceTrigger=PropertyChanged}" />
+                                        <RadioButton Content="Week" IsChecked="{Binding LastWeek, UpdateSourceTrigger=PropertyChanged}" />
+                                    </UniformGrid>
 
                                     <TextBlock Grid.Row="1"
                                                Grid.Column="0"
