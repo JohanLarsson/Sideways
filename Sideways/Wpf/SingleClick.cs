@@ -27,22 +27,6 @@
                         BindingOperations.GetBindingExpression(checkBox, ToggleButton.IsCheckedProperty)?.UpdateSource();
                         e.Handled = true;
                         break;
-                    case DataGridCell { IsSelected: true, IsEditing: false, Column: { } column } cell
-                        when GetToggle(column) &&
-                             cell.FirstAncestor<DataGridRow>() is { } row &&
-                             row.FirstAncestor<DataGrid>() is { } grid:
-                        switch (grid.SelectionUnit)
-                        {
-                            case DataGridSelectionUnit.FullRow:
-                                row.IsSelected = false;
-                                break;
-                            case DataGridSelectionUnit.Cell:
-                                cell.IsSelected = false;
-                                break;
-                        }
-
-                        e.Handled = true;
-                        break;
                 }
             }
         }

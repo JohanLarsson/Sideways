@@ -33,7 +33,7 @@
                     <DataGridCheckBoxColumn local:SingleClick.Toggle="True"
                                             Binding="{Binding IsActive}"
                                             Header="Active" />
-                    <DataGridTextColumn local:SingleClick.Toggle="True"
+                    <DataGridTextColumn local:Select.Toggle="True"
                                         Binding="{Binding Info,
                                                           Mode=OneWay}"
                                         Header="Filter"
