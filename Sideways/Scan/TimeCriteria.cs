@@ -110,12 +110,12 @@
             }
         }
 
-        private static DateTimeOffset FirstDayOfYear(int year) => new(year, 1, 1, 0, 0, 0, 0, TimeSpan.Zero);
-
         public bool IsSatisfied(SortedCandles candles, int index)
         {
             return !this.IsActive ||
                    candles[index].Time.IsBetween(this.start ?? DateTimeOffset.MinValue, this.end ?? DateTimeOffset.MaxValue);
         }
+
+        private static DateTimeOffset FirstDayOfYear(int year) => new(year, 1, 1, 0, 0, 0, 0, TimeSpan.Zero);
     }
 }

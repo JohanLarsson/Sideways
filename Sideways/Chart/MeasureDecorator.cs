@@ -196,25 +196,26 @@
             {
                 if (this.Measurement is { } measurement)
                 {
-                    this.Measurement = measurement.WithEnd(timeAndPrice, Candles());
+                    var candles = this.Candles;
+                    var fromIndex = IndexOf(measurement.From.Time);
 
-                    int Candles()
+                    this.Measurement = measurement.WithEnd(
+                        timeAndPrice,
+                        Math.Abs(fromIndex - IndexOf(timeAndPrice.Time)),
+                        fromIndex >= 20 ? candles.Slice(fromIndex, 20).Adr() : null,
+                        fromIndex >= 21 ? candles.Slice(fromIndex, 21).Atr() : null);
+
+                    int IndexOf(DateTimeOffset time)
                     {
-                        var candles = this.Candles;
-                        return Math.Abs(IndexOf(measurement.From.Time) - IndexOf(timeAndPrice.Time));
-
-                        int IndexOf(DateTimeOffset time)
+                        for (var i = 0; i < candles.Count; i++)
                         {
-                            for (var i = 0; i < candles.Count; i++)
+                            if (candles[i].Time == time)
                             {
-                                if (candles[i].Time == time)
-                                {
-                                    return i;
-                                }
+                                return i;
                             }
-
-                            return -1;
                         }
+
+                        return -1;
                     }
                 }
                 else

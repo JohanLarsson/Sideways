@@ -205,31 +205,53 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="6" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
+
                     <TextBlock Grid.Row="0"
-                               Grid.Column="0"
+                               Grid.Column="2"
                                HorizontalAlignment="Left"
                                Text="{Binding TimeChange,
                                               Mode=OneTime}" />
                     <TextBlock Grid.Row="0"
-                               Grid.Column="2"
+                               Grid.Column="4"
                                HorizontalAlignment="Left"
                                Text="{Binding Candles,
                                               StringFormat='{}{0} bars',
                                               Mode=OneTime}" />
+
                     <TextBlock Grid.Row="1"
                                Grid.Column="0"
+                               Margin="4,0"
+                               Text="{Binding AtrChange,
+                                              StringFormat='{}{0:F0}ATR',
+                                              Mode=OneTime}"
+                               Visibility="{Binding AtrChange,
+                                                    Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}" />
+
+                    <TextBlock Grid.Row="1"
+                               Grid.Column="1"
+                               Margin="4,0"
+                               Text="{Binding AdrChange,
+                                              StringFormat='{}{0:F0}ADR',
+                                              Mode=OneTime}"
+                               Visibility="{Binding AdrChange,
+                                                    Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}" />
+
+                    <TextBlock Grid.Row="1"
+                               Grid.Column="2"
                                HorizontalAlignment="Left"
                                Text="{Binding DollarChange,
                                               StringFormat='${0:F1}',
                                               Mode=OneTime}" />
                     <TextBlock Grid.Row="1"
-                               Grid.Column="2"
+                               Grid.Column="4"
                                HorizontalAlignment="Left"
                                Text="{Binding PercentChange,
-                                              StringFormat='{}{0:F1}%',
+                                              StringFormat='{}{0:F1}',
                                               Mode=OneTime}" />
                 </Grid>
             </DataTemplate>

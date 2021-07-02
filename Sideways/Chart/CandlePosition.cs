@@ -121,8 +121,6 @@
             return null;
         }
 
-        public double Y(float value) => this.valueRange.Y(value, this.renderSize.Height);
-
         public static Point? Point(TimeAndPrice timeAndPrice, DescendingCandles candles, Size renderSize, int candleWidth, CandleInterval interval, ValueRange valueRange)
         {
             if (X(timeAndPrice.Time, candles, renderSize.Width, candleWidth, interval) is { } x)
@@ -134,6 +132,8 @@
 
             return null;
         }
+
+        public double Y(float value) => this.valueRange.Y(value, this.renderSize.Height);
 
         public TimeAndPrice? TimeAndPrice(Point position, DescendingCandles candles)
         {

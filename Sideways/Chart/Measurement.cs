@@ -2,11 +2,13 @@
 {
     public class Measurement
     {
-        private Measurement(TimeAndPrice @from, TimeAndPrice? to, int? candles)
+        private Measurement(TimeAndPrice @from, TimeAndPrice? to, int? candles, Percent? adr, float? atr)
         {
             this.From = @from;
             this.To = to;
             this.Candles = candles;
+            this.Adr = adr;
+            this.Atr = atr;
         }
 
         public TimeAndPrice From { get; }
@@ -15,9 +17,17 @@
 
         public int? Candles { get; }
 
-        public double? PercentChange => 100 * (this.To?.Price - this.From.Price) / this.From.Price;
+        public Percent? Adr { get; }
 
-        public double? DollarChange => this.To?.Price - this.From.Price;
+        public float? Atr { get; }
+
+        public Percent? PercentChange => this.To is { Price: var to } ? Percent.Change(this.From.Price, to) : null;
+
+        public float? DollarChange => this.To?.Price - this.From.Price;
+
+        public float? AdrChange => this.PercentChange?.Scalar / this.Adr?.Scalar;
+
+        public float? AtrChange => this.DollarChange / this.Atr;
 
         public string? TimeChange => (this.To?.Time - this.From.Time) switch
         {
@@ -30,8 +40,8 @@
             _ => string.Empty,
         };
 
-        public static Measurement Start(TimeAndPrice timeAndPrice) => new(timeAndPrice, null, null);
+        public static Measurement Start(TimeAndPrice timeAndPrice) => new(timeAndPrice, null, null, null, null);
 
-        public Measurement WithEnd(TimeAndPrice timeAndPrice, int candles) => new(this.From, timeAndPrice, candles);
+        public Measurement WithEnd(TimeAndPrice timeAndPrice, int candles, Percent? adr, float? atr) => new(this.From, timeAndPrice, candles, adr, atr);
     }
 }
