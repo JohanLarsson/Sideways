@@ -108,7 +108,7 @@
                 <RadioButton x:Name="ScanButton"
                              Style="{StaticResource NavigationButton}"
                              ToolTip="Scan">
-                    <Path Data="{StaticResource RecycleGeometry}"
+                    <Path Data="{StaticResource MagnifyingGlassGeometry}"
                           Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}},
                                          Path=Foreground}"
                           Style="{StaticResource IconStyle}" />
