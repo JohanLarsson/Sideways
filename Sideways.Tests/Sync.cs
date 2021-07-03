@@ -22,6 +22,17 @@
         }
 
         [Test]
+        public static void DumpDaysAndEarnings()
+        {
+            var target = new FileInfo(Path.Combine(Database.DbFile.DirectoryName, "DaysAndEarnings.sqlite3"));
+            Sideways.Sync.CopyDays(Database.DbFile, target);
+            Sideways.Sync.CopyDividends(Database.DbFile, target);
+            Sideways.Sync.CopySplits(Database.DbFile, target);
+            Sideways.Sync.CopyAnnualEarnings(Database.DbFile, target);
+            Sideways.Sync.CopyQuarterlyEarnings(Database.DbFile, target);
+        }
+
+        [Test]
         public static void CopyListings()
         {
             var rebuilt = new FileInfo(Database.DbFile.FullName + ".new");
