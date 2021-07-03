@@ -26,7 +26,8 @@
         [TestCaseSource(nameof(MissingSymbolsSource))]
         public static async Task DaysAndSplitsAsync(string symbol)
         {
-            await Downloader.DaysAndSplitsAsync(symbol);
+            var daysAndSplitsAsync = await Downloader.DaysAndSplitsAsync(symbol);
+            CollectionAssert.IsNotEmpty(daysAndSplitsAsync.Candles);
         }
 
         [TestCase("TSLA")]
@@ -43,11 +44,11 @@
 
         private static IEnumerable<string> MissingSymbolsSource()
         {
-           return Database.ReadListings()
-               .Select(x => x.Symbol)
-               .Where(x => x.Length is > 1 and < 5 && !x.Contains("-"))
-               .Except(Database.ReadSymbols())
-               .Take(500);
+            return Database.ReadListings()
+                .Select(x => x.Symbol)
+                .Where(x => x.Length is > 1 and < 5 && !x.Contains("-"))
+                .Except(Database.ReadSymbols())
+                .Take(500);
         }
     }
 }
