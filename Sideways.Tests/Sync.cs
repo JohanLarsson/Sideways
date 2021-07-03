@@ -24,7 +24,7 @@
         [Test]
         public static void DumpDaysAndEarnings()
         {
-            var target = new FileInfo(Path.Combine(Database.DbFile.DirectoryName, "DaysAndEarnings.sqlite3"));
+            var target = new FileInfo(Path.Combine(Database.DbFile.DirectoryName!, "DaysAndEarnings.sqlite3"));
             Sideways.Sync.CopyDays(Database.DbFile, target);
             Sideways.Sync.CopyDividends(Database.DbFile, target);
             Sideways.Sync.CopySplits(Database.DbFile, target);

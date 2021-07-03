@@ -1,6 +1,5 @@
 ﻿namespace Sideways
 {
-    using System.Collections.Immutable;
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Controls;
@@ -47,6 +46,19 @@
                     vm.Animation.ToggleCommand.Execute(null);
                     e.Handled = true;
                     break;
+            }
+
+            if (e.SystemKey == Key.S &&
+                Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+            {
+                var window = new Window
+                {
+                    Content = new SyncView(),
+                    Owner = this,
+                };
+
+                window.Show();
+                e.Handled = true;
             }
 
             base.OnPreviewKeyDown(e);
