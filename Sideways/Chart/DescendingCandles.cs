@@ -58,6 +58,26 @@
         // ReSharper disable once UnusedMember.Global
         public ReadOnlySpan<Candle> Slice(int start, int length) => CollectionsMarshal.AsSpan(this.candles).Slice(start, length);
 
+        public Percent? Adr(int start = 0)
+        {
+            if (this.CanSlice(start, 20))
+            {
+                return this.Slice(start, 20).Adr();
+            }
+
+            return null;
+        }
+
+        public float? Atr(int start = 0)
+        {
+            if (this.CanSlice(start, 21))
+            {
+                return this.Slice(start, 21).Atr();
+            }
+
+            return null;
+        }
+
         public IEnumerator<Candle> GetEnumerator() => this.candles.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)this.candles).GetEnumerator();
@@ -70,5 +90,7 @@
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private bool CanSlice(int start, int length) => this.candles.Count > start + length;
     }
 }

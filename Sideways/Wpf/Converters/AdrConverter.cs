@@ -10,9 +10,9 @@
         public object? Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (values is { Length: > 1 } &&
-                values[0] is DescendingCandles { Count: > 20 } candles)
+                values[0] is DescendingCandles candles)
             {
-                return candles[..20].Adr();
+                return candles.Adr();
             }
 
             return null;
