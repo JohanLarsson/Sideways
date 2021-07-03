@@ -99,6 +99,13 @@
             return this.candles.Length - 1;
         }
 
+        public bool CanSlice(int index, int length) => length switch
+        {
+            0 => false,
+            < 0 => index - length >= 0,
+            > 0 => index + length < this.Count,
+        };
+
         public ReadOnlySpan<Candle> Slice(int index, int length)
         {
             return length switch

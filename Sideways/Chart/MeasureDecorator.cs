@@ -206,16 +206,17 @@
         {
             if (e.LeftButton == MouseButtonState.Pressed &&
                 this.Measurement is { } measurement &&
+                this.ItemsSource is { } itemsSource &&
+                this.Candles is { } candles &&
                 this.TimeAndPrice(e.GetPosition(this)) is { } timeAndPrice)
             {
-                var candles = this.Candles;
                 var fromIndex = IndexOf(measurement.From.Time);
 
                 this.Measurement = measurement.WithEnd(
                     timeAndPrice,
                     Math.Abs(fromIndex - IndexOf(timeAndPrice.Time)),
-                    candles.Adr(fromIndex),
-                    candles.Atr(fromIndex));
+                    itemsSource.Adr(measurement.From.Time),
+                    itemsSource.Atr(measurement.From.Time));
 
                 int IndexOf(DateTimeOffset time)
                 {

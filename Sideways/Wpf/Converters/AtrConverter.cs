@@ -10,9 +10,10 @@
         public object? Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (values is { Length: > 1 } &&
-                values[0] is DescendingCandles candles)
+                values[0] is Candles candles &&
+                values[1] is DateTimeOffset time)
             {
-                return candles.Atr();
+                return candles.Atr(time);
             }
 
             return null;

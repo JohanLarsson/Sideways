@@ -244,5 +244,27 @@
                 return map(candles[index]);
             }
         }
+
+        public Percent? Adr(DateTimeOffset time)
+        {
+            if (this.days.IndexOf(time, this.dayIndex) is >= 0 and var index &&
+                this.days.CanSlice(index, -20))
+            {
+                return this.days.Slice(index, -20).Adr();
+            }
+
+            return null;
+        }
+
+        public float? Atr(DateTimeOffset time)
+        {
+            if (this.days.IndexOf(time, this.dayIndex) is >= 0 and var index &&
+                this.days.CanSlice(index, -21))
+            {
+                return this.days.Slice(index, -21).Atr();
+            }
+
+            return null;
+        }
     }
 }
