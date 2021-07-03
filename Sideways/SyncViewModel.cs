@@ -8,7 +8,7 @@
     public class SyncViewModel : INotifyPropertyChanged
     {
         private string? fileName;
-        private string? status;
+        private string? status = "idle";
 
         public SyncViewModel()
         {
@@ -18,11 +18,11 @@
                     var source = new FileInfo(this.fileName!);
                     foreach (var symbol in Database.ReadSymbols(source))
                     {
-                        this.Status = $"Copying {symbol}";
+                        this.Status = $"copying {symbol}";
                         Sync.CopyAll(symbol, source, Database.DbFile);
                     }
 
-                    this.Status = "Done";
+                    this.Status = "done";
                 },
                 _ => this.fileName is { } file && File.Exists(file));
         }

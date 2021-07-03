@@ -14,13 +14,13 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0"
                    Grid.Column="0"
@@ -29,11 +29,24 @@
                  Grid.Column="1"
                  Text="{Binding FileName}" />
 
+        <Button Grid.Row="0"
+                Grid.Column="2"
+                Command="Open"
+                Content="...">
+            <Button.CommandBindings>
+                <CommandBinding Command="Open" Executed="OnOpen" />
+            </Button.CommandBindings>
+        </Button>
+
         <Button Grid.Row="1"
                 Grid.Column="1"
+                HorizontalAlignment="Left"
                 Command="{Binding OneWayFromFileCommand}"
                 Content="One way from file" />
 
-        <TextBlock Text="{Binding Status}"></TextBlock>
+        <TextBlock Grid.Row="2"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="3"
+                   Text="{Binding Status}" />
     </Grid>
 </UserControl>
