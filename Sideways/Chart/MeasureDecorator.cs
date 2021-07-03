@@ -192,7 +192,11 @@
             {
                 this.Measurement = Measurement.Start(timeAndPrice);
             }
-            else
+        }
+
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            if (this.Measurement is { To: null })
             {
                 this.Measurement = null;
             }
@@ -201,35 +205,29 @@
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed &&
+                this.Measurement is { } measurement &&
                 this.TimeAndPrice(e.GetPosition(this)) is { } timeAndPrice)
             {
-                if (this.Measurement is { } measurement)
+                var candles = this.Candles;
+                var fromIndex = IndexOf(measurement.From.Time);
+
+                this.Measurement = measurement.WithEnd(
+                    timeAndPrice,
+                    Math.Abs(fromIndex - IndexOf(timeAndPrice.Time)),
+                    candles.Count - fromIndex >= 20 ? candles.Slice(fromIndex, 20).Adr() : null,
+                    candles.Count - fromIndex >= 21 ? candles.Slice(fromIndex, 21).Atr() : null);
+
+                int IndexOf(DateTimeOffset time)
                 {
-                    var candles = this.Candles;
-                    var fromIndex = IndexOf(measurement.From.Time);
-
-                    this.Measurement = measurement.WithEnd(
-                        timeAndPrice,
-                        Math.Abs(fromIndex - IndexOf(timeAndPrice.Time)),
-                        candles.Count - fromIndex >= 20 ? candles.Slice(fromIndex, 20).Adr() : null,
-                        candles.Count - fromIndex >= 21 ? candles.Slice(fromIndex, 21).Atr() : null);
-
-                    int IndexOf(DateTimeOffset time)
+                    for (var i = 0; i < candles.Count; i++)
                     {
-                        for (var i = 0; i < candles.Count; i++)
+                        if (candles[i].Time == time)
                         {
-                            if (candles[i].Time == time)
-                            {
-                                return i;
-                            }
+                            return i;
                         }
-
-                        return -1;
                     }
-                }
-                else
-                {
-                    this.Measurement = Measurement.Start(timeAndPrice);
+
+                    return -1;
                 }
             }
         }
