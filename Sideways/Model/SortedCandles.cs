@@ -102,7 +102,7 @@
         public bool CanSlice(int index, int length) => length switch
         {
             0 => false,
-            < 0 => index - length >= 0,
+            < 0 => index + length >= 0,
             > 0 => index + length < this.Count,
         };
 
