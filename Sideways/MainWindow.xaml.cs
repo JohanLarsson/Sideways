@@ -107,8 +107,8 @@
 
         private void OnCopy(object sender, RoutedEventArgs e)
         {
-            var bmp = new RenderTargetBitmap((int)this.Charts.ActualWidth, (int)this.Charts.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-            bmp.Render(this.Charts);
+            var bmp = new RenderTargetBitmap((int)(this.Root.ActualWidth - this.ContextPane.ActualWidth), (int)this.Root.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+            bmp.Render(this.Root);
             Clipboard.SetImage(bmp);
             e.Handled = true;
         }
