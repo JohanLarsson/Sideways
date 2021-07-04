@@ -93,7 +93,7 @@
                         <Setter Property="Height" Value="24" />
                         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
                         <Setter Property="GroupName" Value="NavigationButtons" />
-                        <Setter Property="sideways:Toggle.IsSelected" Value="True" />
+                        <Setter Property="sideways:Toggle.IsChecked" Value="True" />
                     </Style>
                 </StackPanel.Resources>
 
