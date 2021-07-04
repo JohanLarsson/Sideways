@@ -15,6 +15,7 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <AnalysisLevel>latest</AnalysisLevel>
     <ApplicationIcon>sideways.ico</ApplicationIcon>
+    <ApplicationManifest>App.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <PropertyGroup>
