@@ -17,12 +17,12 @@
         mc:Ignorable="d">
     <Window.Style>
         <Style TargetType="{x:Type Window}">
-            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderThickness" Value="4" />
+            <Setter Property="BorderBrush" Value="Transparent" />
             <Style.Triggers>
                 <Trigger Property="WindowState" Value="Maximized">
                     <!--  Hack around WPF weirdness, bonds not correct when maximized  -->
                     <Setter Property="BorderThickness" Value="8" />
-                    <Setter Property="BorderBrush" Value="Transparent" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -33,7 +33,7 @@
                       CornerRadius="0"
                       GlassFrameThickness="0"
                       NonClientFrameEdges="None"
-                      ResizeBorderThickness="2"
+                      ResizeBorderThickness="4"
                       UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
 
