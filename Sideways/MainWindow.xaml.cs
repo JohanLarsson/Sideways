@@ -107,10 +107,30 @@
 
         private void OnCopy(object sender, RoutedEventArgs e)
         {
-            var bmp = new RenderTargetBitmap((int)(this.Root.ActualWidth - this.ContextPane.ActualWidth), (int)this.Root.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-            bmp.Render(this.Root);
-            Clipboard.SetImage(bmp);
+            Clipboard.SetImage(Dump(this.Root));
             e.Handled = true;
+
+            // Workaround for WPF weirdness https://docs.microsoft.com/en-us/archive/blogs/jaimer/rendertargetbitmap-tips
+            static BitmapSource Dump(Visual target)
+            {
+                var bounds = VisualTreeHelper.GetDescendantBounds(target);
+                var rtb = new RenderTargetBitmap(
+                    (int)bounds.Width,
+                    (int)bounds.Height,
+                    96.0,
+                    96.0,
+                    PixelFormats.Pbgra32);
+
+                var dv = new DrawingVisual();
+                using (var ctx = dv.RenderOpen())
+                {
+                    var vb = new VisualBrush(target);
+                    ctx.DrawRectangle(vb, null, new Rect(bounds.Size));
+                }
+
+                rtb.Render(dv);
+                return rtb;
+            }
         }
 
         private void OnClickMinimize(object sender, RoutedEventArgs e) => this.SetCurrentValue(WindowStateProperty, WindowState.Minimized);
