@@ -243,7 +243,11 @@
                           IsHitTestVisible="{Binding ElementName=MiddlePane,
                                                      Path=ActualWidth,
                                                      Converter={sideways:GreaterThanConverter 0}}"
-                          Style="{StaticResource VerticalAxisGridSplitter}" />
+                          Style="{StaticResource VerticalAxisGridSplitter}">
+                <GridSplitter.InputBindings>
+                    <MouseBinding Command="{x:Static sideways:VerticalGridSplitter.TogglePreviousCommand}" MouseAction="LeftDoubleClick" />
+                </GridSplitter.InputBindings>
+            </GridSplitter>
 
             <Grid x:Name="MiddlePane" Grid.Column="2">
                 <sideways:Chart x:Name="MiddleChart"
@@ -402,7 +406,11 @@
 
             <GridSplitter Grid.Column="3"
                           Focusable="False"
-                          Style="{StaticResource VerticalAxisGridSplitter}" />
+                          Style="{StaticResource VerticalAxisGridSplitter}">
+                <GridSplitter.InputBindings>
+                    <MouseBinding Command="{x:Static sideways:VerticalGridSplitter.ToggleNextCommand}" MouseAction="LeftDoubleClick" />
+                </GridSplitter.InputBindings>
+            </GridSplitter>
 
             <Grid x:Name="RightPane" Grid.Column="4">
                 <sideways:Chart x:Name="RightChart"
@@ -491,7 +499,11 @@
                           IsHitTestVisible="{Binding ElementName=RightPane,
                                                      Path=ActualWidth,
                                                      Converter={sideways:GreaterThanConverter 0}}"
-                          Style="{StaticResource VerticalAxisGridSplitter}" />
+                          Style="{StaticResource VerticalAxisGridSplitter}">
+                <GridSplitter.InputBindings>
+                    <MouseBinding Command="{x:Static sideways:VerticalGridSplitter.ToggleNextCommand}" MouseAction="LeftDoubleClick" />
+                </GridSplitter.InputBindings>
+            </GridSplitter>
 
             <Grid x:Name="ContextPane" Grid.Column="6">
                 <sideways:SimulationView HorizontalAlignment="Right"

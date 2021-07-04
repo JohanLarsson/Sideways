@@ -7,15 +7,16 @@
 
     public static class VerticalGridSplitter
     {
-        public static readonly RoutedCommand ResetCommand = new(nameof(ResetCommand), typeof(VerticalGridSplitter));
+        public static readonly RoutedCommand TogglePreviousCommand = new(nameof(TogglePreviousCommand), typeof(VerticalGridSplitter));
+        public static readonly RoutedCommand ToggleNextCommand = new(nameof(ToggleNextCommand), typeof(VerticalGridSplitter));
 
-        public static readonly DependencyProperty CanResetProperty = DependencyProperty.RegisterAttached(
-            "CanReset",
+        public static readonly DependencyProperty IsToggleEnabledProperty = DependencyProperty.RegisterAttached(
+            "IsToggleEnabled",
             typeof(bool),
             typeof(VerticalGridSplitter),
             new PropertyMetadata(
                 false,
-                OnCanResetChanged));
+                OnIsToggleEnabledChanged));
 
         private static readonly DependencyPropertyKey PreviousDefinitionPropertyKey = DependencyProperty.RegisterAttachedReadOnly(
             "PreviousDefinition",
@@ -40,31 +41,55 @@
 
         static VerticalGridSplitter()
         {
-            CommandManager.RegisterClassCommandBinding(typeof(GridSplitter), new CommandBinding(ResetCommand, OnReset, OnCanReset));
-            CommandManager.RegisterClassInputBinding(typeof(GridSplitter), new InputBinding(ResetCommand, new MouseGesture(MouseAction.LeftDoubleClick)));
+            CommandManager.RegisterClassCommandBinding(typeof(GridSplitter), new CommandBinding(TogglePreviousCommand, OnTogglePrevious, OnCanReset));
+            CommandManager.RegisterClassCommandBinding(typeof(GridSplitter), new CommandBinding(ToggleNextCommand, OnToggleNext, OnCanReset));
 
             static void OnCanReset(object sender, CanExecuteRoutedEventArgs e)
             {
-                e.CanExecute = sender is GridSplitter splitter &&
-                               splitter.GetValue(OriginalDefinitionsProperty) is OriginalDefinitions original &&
-                               original.CanReset();
+                e.CanExecute = sender is GridSplitter { IsEnabled: true } splitter &&
+                               splitter.GetValue(OriginalDefinitionsProperty) is OriginalDefinitions;
                 e.Handled = true;
             }
 
-            static void OnReset(object sender, ExecutedRoutedEventArgs e)
+            static void OnTogglePrevious(object sender, ExecutedRoutedEventArgs e)
             {
                 var splitter = (GridSplitter)sender;
                 if (splitter.GetValue(OriginalDefinitionsProperty) is OriginalDefinitions original)
                 {
-                    original.Reset();
+                    if (original.CanReset())
+                    {
+                        original.Reset();
+                        e.Handled = true;
+                    }
+                    else if (GetPreviousDefinition(splitter) is { } definition)
+                    {
+                        definition.Width = new GridLength(0, GridUnitType.Pixel);
+                    }
+                }
+            }
+
+            static void OnToggleNext(object sender, ExecutedRoutedEventArgs e)
+            {
+                var splitter = (GridSplitter)sender;
+                if (splitter.GetValue(OriginalDefinitionsProperty) is OriginalDefinitions original)
+                {
+                    if (original.CanReset())
+                    {
+                        original.Reset();
+                        e.Handled = true;
+                    }
+                    else if (GetNextDefinition(splitter) is { } definition)
+                    {
+                        definition.Width = new GridLength(0, GridUnitType.Pixel);
+                    }
                 }
             }
         }
 
         [AttachedPropertyBrowsableForType(typeof(GridSplitter))]
-        public static bool GetCanReset(GridSplitter element) => (bool)element.GetValue(CanResetProperty);
+        public static bool GetIsToggleEnabled(GridSplitter element) => (bool)element.GetValue(IsToggleEnabledProperty);
 
-        public static void SetCanReset(GridSplitter element, bool value) => element.SetValue(CanResetProperty, value);
+        public static void SetIsToggleEnabled(GridSplitter element, bool value) => element.SetValue(IsToggleEnabledProperty, value);
 
         [AttachedPropertyBrowsableForType(typeof(GridSplitter))]
         public static ColumnDefinition? GetPreviousDefinition(GridSplitter element) => (ColumnDefinition)element.GetValue(PreviousDefinitionProperty);
@@ -76,7 +101,7 @@
 
         public static void SetNextDefinition(GridSplitter element, ColumnDefinition? value) => element.SetValue(NextDefinitionPropertyKey, value);
 
-        private static void OnCanResetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnIsToggleEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is true &&
                 d is GridSplitter { Parent: Grid grid } splitter)

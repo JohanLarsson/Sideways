@@ -23,7 +23,7 @@
                 <Setter Property="ShowsPreview" Value="False" />
                 <!--  We  hack it with negative margin for easier resize  -->
                 <Setter Property="Panel.ZIndex" Value="100" />
-                <Setter Property="sideways:VerticalGridSplitter.CanReset" Value="True" />
+                <Setter Property="sideways:VerticalGridSplitter.IsToggleEnabled" Value="True" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type GridSplitter}">
