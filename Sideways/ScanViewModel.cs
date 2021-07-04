@@ -19,6 +19,7 @@
         private readonly TimeCriteria timeCriteria = new();
         private readonly PriceCriteria priceCriteria = new();
         private readonly YieldCriteria yieldCriteria = new();
+        private readonly GapCriteria gapCriteria = new();
         private readonly AdrCriteria adrCriteria = new();
         private readonly AverageVolumeCriteria averageVolumeCriteria = new();
         private readonly AverageDollarVolumeCriteria averageDollarVolumeCriteria = new();
@@ -37,6 +38,7 @@
                     this.timeCriteria,
                     this.yieldCriteria,
                     this.priceCriteria,
+                    this.gapCriteria,
                     this.adrCriteria,
                     this.averageVolumeCriteria,
                     this.averageDollarVolumeCriteria,
@@ -141,8 +143,9 @@
                 if (this.timeCriteria.IsSatisfied(days, i) &&
                     this.hasMinutes.IsSatisfied(days, i - (this.yieldCriteria.IsActive ? this.yieldCriteria.Days : 0), firstMinute) &&
                     this.yieldCriteria.IsSatisfied(days, i) &&
-                    this.adrCriteria.IsSatisfied(days, i) &&
                     this.priceCriteria.IsSatisfied(days, i) &&
+                    this.gapCriteria.IsSatisfied(days, i) &&
+                    this.adrCriteria.IsSatisfied(days, i) &&
                     this.averageVolumeCriteria.IsSatisfied(days, i) &&
                     this.averageDollarVolumeCriteria.IsSatisfied(days, i))
                 {
