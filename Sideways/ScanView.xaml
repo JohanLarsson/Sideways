@@ -29,6 +29,298 @@
                       SelectedItem="{x:Null}"
                       SelectionMode="Single"
                       SelectionUnit="FullRow">
+                <DataGrid.RowDetailsTemplateSelector>
+                    <local:CriteriaTemplateselector>
+                        <DataTemplate DataType="{x:Type scan:AdrCriteria}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="2"
+                                       Text="ADR" />
+
+                                <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="Min" />
+                                <TextBox Grid.Row="1"
+                                     Grid.Column="1"
+                                     Text="{Binding Min,
+                                                    UpdateSourceTrigger=LostFocus}" />
+
+                                <TextBlock Grid.Row="2"
+                                       Grid.Column="0"
+                                       Text="Max" />
+                                <TextBox Grid.Row="2"
+                                     Grid.Column="1"
+                                     Text="{Binding Max,
+                                                    UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type scan:AtrCriteria}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="2"
+                                       Text="ATR" />
+
+                                <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="Min" />
+                                <TextBox Grid.Row="1"
+                                     Grid.Column="1"
+                                     Text="{Binding Min,
+                                                    UpdateSourceTrigger=LostFocus}" />
+
+                                <TextBlock Grid.Row="2"
+                                       Grid.Column="0"
+                                       Text="Max" />
+                                <TextBox Grid.Row="2"
+                                     Grid.Column="1"
+                                     Text="{Binding Max,
+                                                    UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type scan:AverageDollarVolumeCriteria}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="2"
+                                       Text="Average dollar volume" />
+
+                                <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="Min" />
+                                <TextBox Grid.Row="1"
+                                     Grid.Column="1"
+                                     Text="{Binding Min,
+                                                    UpdateSourceTrigger=LostFocus}" />
+
+                                <TextBlock Grid.Row="2"
+                                       Grid.Column="0"
+                                       Text="Max" />
+                                <TextBox Grid.Row="2"
+                                     Grid.Column="1"
+                                     Text="{Binding Max,
+                                                    UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type scan:AverageVolumeCriteria}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="2"
+                                       Text="Average volume" />
+
+                                <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="Min" />
+                                <TextBox Grid.Row="1"
+                                     Grid.Column="1"
+                                     Text="{Binding Min,
+                                                    UpdateSourceTrigger=LostFocus}" />
+
+                                <TextBlock Grid.Row="2"
+                                       Grid.Column="0"
+                                       Text="Max" />
+                                <TextBox Grid.Row="2"
+                                     Grid.Column="1"
+                                     Text="{Binding Max,
+                                                    UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type scan:GapCriteria}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="2"
+                                       Text="o - cc" />
+
+                                <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="Min" />
+                                <TextBox Grid.Row="1"
+                                     Grid.Column="1"
+                                     Text="{Binding Min,
+                                                    UpdateSourceTrigger=LostFocus}" />
+
+                                <TextBlock Grid.Row="2"
+                                       Grid.Column="0"
+                                       Text="Max" />
+                                <TextBox Grid.Row="2"
+                                     Grid.Column="1"
+                                     Text="{Binding Max,
+                                                    UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type scan:HasMinutesCriteria}">
+                            <TextBlock Text="Has minutes" />
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type scan:PriceCriteria}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Closing price" />
+
+                                <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="Min" />
+                                <TextBox Grid.Row="1"
+                                     Grid.Column="1"
+                                     Text="{Binding Min,
+                                                    UpdateSourceTrigger=LostFocus}" />
+
+                                <TextBlock Grid.Row="2"
+                                       Grid.Column="0"
+                                       Text="Max" />
+                                <TextBox Grid.Row="2"
+                                     Grid.Column="1"
+                                     Text="{Binding Max,
+                                                    UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type scan:TimeCriteria}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <UniformGrid Grid.Row="0"
+                                         Grid.Column="0"
+                                         Grid.ColumnSpan="2"
+                                         Columns="2">
+                                    <RadioButton Content="YTD" IsChecked="{Binding YearToDate, UpdateSourceTrigger=PropertyChanged}" />
+                                    <RadioButton Content="Month" IsChecked="{Binding LastMonth, UpdateSourceTrigger=PropertyChanged}" />
+                                    <RadioButton Content="Week" IsChecked="{Binding LastWeek, UpdateSourceTrigger=PropertyChanged}" />
+                                </UniformGrid>
+
+                                <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="Start" />
+                                <DatePicker Grid.Row="1"
+                                        Grid.Column="1"
+                                        SelectedDate="{Binding Start,
+                                                               Converter={x:Static local:DateConverter.Default},
+                                                               UpdateSourceTrigger=LostFocus}" />
+
+                                <TextBlock Grid.Row="2"
+                                       Grid.Column="0"
+                                       Text="End" />
+                                <DatePicker Grid.Row="2"
+                                        Grid.Column="1"
+                                        SelectedDate="{Binding End,
+                                                               Converter={x:Static local:DateConverter.Default},
+                                                               UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type scan:YieldCriteria}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Text="Days" />
+                                <TextBox Grid.Row="0"
+                                     Grid.Column="1"
+                                     Text="{Binding Days,
+                                                    UpdateSourceTrigger=LostFocus}" />
+
+                                <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="Min" />
+                                <TextBox Grid.Row="1"
+                                     Grid.Column="1"
+                                     Text="{Binding Min,
+                                                    UpdateSourceTrigger=LostFocus}" />
+
+                                <TextBlock Grid.Row="2"
+                                       Grid.Column="0"
+                                       Text="Max" />
+                                <TextBox Grid.Row="2"
+                                     Grid.Column="1"
+                                     Text="{Binding Max,
+                                                    UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                        </DataTemplate>
+                    </local:CriteriaTemplateselector>
+                </DataGrid.RowDetailsTemplateSelector>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn local:SingleClick.Toggle="True"
                                             Binding="{Binding IsActive}"
@@ -39,279 +331,6 @@
                                         Header="Filter"
                                         IsReadOnly="True" />
                 </DataGrid.Columns>
-                <DataGrid.RowDetailsTemplateSelector>
-                    <local:CriteriaTemplateSelector>
-                        <local:CriteriaTemplateSelector.AdrCriteria>
-                            <DataTemplate DataType="{x:Type scan:AdrCriteria}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock Grid.Row="0"
-                                               Grid.Column="0"
-                                               Grid.ColumnSpan="2"
-                                               Text="ADR" />
-
-                                    <TextBlock Grid.Row="1"
-                                               Grid.Column="0"
-                                               Text="Min" />
-                                    <TextBox Grid.Row="1"
-                                             Grid.Column="1"
-                                             Text="{Binding Min,
-                                                            UpdateSourceTrigger=LostFocus}" />
-
-                                    <TextBlock Grid.Row="2"
-                                               Grid.Column="0"
-                                               Text="Max" />
-                                    <TextBox Grid.Row="2"
-                                             Grid.Column="1"
-                                             Text="{Binding Max,
-                                                            UpdateSourceTrigger=LostFocus}" />
-                                </Grid>
-                            </DataTemplate>
-                        </local:CriteriaTemplateSelector.AdrCriteria>
-
-                        <local:CriteriaTemplateSelector.AtrCriteria>
-                            <DataTemplate DataType="{x:Type scan:AtrCriteria}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock Grid.Row="0"
-                                               Grid.Column="0"
-                                               Grid.ColumnSpan="2"
-                                               Text="ATR" />
-
-                                    <TextBlock Grid.Row="1"
-                                               Grid.Column="0"
-                                               Text="Min" />
-                                    <TextBox Grid.Row="1"
-                                             Grid.Column="1"
-                                             Text="{Binding Min,
-                                                            UpdateSourceTrigger=LostFocus}" />
-
-                                    <TextBlock Grid.Row="2"
-                                               Grid.Column="0"
-                                               Text="Max" />
-                                    <TextBox Grid.Row="2"
-                                             Grid.Column="1"
-                                             Text="{Binding Max,
-                                                            UpdateSourceTrigger=LostFocus}" />
-                                </Grid>
-                            </DataTemplate>
-                        </local:CriteriaTemplateSelector.AtrCriteria>
-
-                        <local:CriteriaTemplateSelector.AverageDollarVolumeCriteria>
-                            <DataTemplate DataType="{x:Type scan:AverageDollarVolumeCriteria}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock Grid.Row="0"
-                                               Grid.Column="0"
-                                               Grid.ColumnSpan="2"
-                                               Text="Average dollar volume" />
-
-                                    <TextBlock Grid.Row="1"
-                                               Grid.Column="0"
-                                               Text="Min" />
-                                    <TextBox Grid.Row="1"
-                                             Grid.Column="1"
-                                             Text="{Binding Min,
-                                                            UpdateSourceTrigger=LostFocus}" />
-
-                                    <TextBlock Grid.Row="2"
-                                               Grid.Column="0"
-                                               Text="Max" />
-                                    <TextBox Grid.Row="2"
-                                             Grid.Column="1"
-                                             Text="{Binding Max,
-                                                            UpdateSourceTrigger=LostFocus}" />
-                                </Grid>
-                            </DataTemplate>
-                        </local:CriteriaTemplateSelector.AverageDollarVolumeCriteria>
-
-                        <local:CriteriaTemplateSelector.AverageVolumeCriteria>
-                            <DataTemplate DataType="{x:Type scan:AverageVolumeCriteria}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock Grid.Row="0"
-                                               Grid.Column="0"
-                                               Grid.ColumnSpan="2"
-                                               Text="Average volume" />
-
-                                    <TextBlock Grid.Row="1"
-                                               Grid.Column="0"
-                                               Text="Min" />
-                                    <TextBox Grid.Row="1"
-                                             Grid.Column="1"
-                                             Text="{Binding Min,
-                                                            UpdateSourceTrigger=LostFocus}" />
-
-                                    <TextBlock Grid.Row="2"
-                                               Grid.Column="0"
-                                               Text="Max" />
-                                    <TextBox Grid.Row="2"
-                                             Grid.Column="1"
-                                             Text="{Binding Max,
-                                                            UpdateSourceTrigger=LostFocus}" />
-                                </Grid>
-                            </DataTemplate>
-                        </local:CriteriaTemplateSelector.AverageVolumeCriteria>
-
-                        <local:CriteriaTemplateSelector.HasMinutesCriteria>
-                            <DataTemplate DataType="{x:Type scan:HasMinutesCriteria}">
-                                <TextBlock Text="Has minutes" />
-                            </DataTemplate>
-                        </local:CriteriaTemplateSelector.HasMinutesCriteria>
-
-                        <local:CriteriaTemplateSelector.PriceCriteria>
-                            <DataTemplate DataType="{x:Type scan:PriceCriteria}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Closing price" />
-
-                                    <TextBlock Grid.Row="1"
-                                               Grid.Column="0"
-                                               Text="Min" />
-                                    <TextBox Grid.Row="1"
-                                             Grid.Column="1"
-                                             Text="{Binding Min,
-                                                            UpdateSourceTrigger=LostFocus}" />
-
-                                    <TextBlock Grid.Row="2"
-                                               Grid.Column="0"
-                                               Text="Max" />
-                                    <TextBox Grid.Row="2"
-                                             Grid.Column="1"
-                                             Text="{Binding Max,
-                                                            UpdateSourceTrigger=LostFocus}" />
-                                </Grid>
-                            </DataTemplate>
-                        </local:CriteriaTemplateSelector.PriceCriteria>
-
-                        <local:CriteriaTemplateSelector.TimeCriteria>
-                            <DataTemplate DataType="{x:Type scan:TimeCriteria}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <UniformGrid Grid.Row="0"
-                                                 Grid.Column="0"
-                                                 Grid.ColumnSpan="2"
-                                                 Columns="2">
-                                        <RadioButton Content="YTD" IsChecked="{Binding YearToDate, UpdateSourceTrigger=PropertyChanged}" />
-                                        <RadioButton Content="Month" IsChecked="{Binding LastMonth, UpdateSourceTrigger=PropertyChanged}" />
-                                        <RadioButton Content="Week" IsChecked="{Binding LastWeek, UpdateSourceTrigger=PropertyChanged}" />
-                                    </UniformGrid>
-
-                                    <TextBlock Grid.Row="1"
-                                               Grid.Column="0"
-                                               Text="Start" />
-                                    <DatePicker Grid.Row="1"
-                                                Grid.Column="1"
-                                                SelectedDate="{Binding Start,
-                                                                       Converter={x:Static local:DateConverter.Default},
-                                                                       UpdateSourceTrigger=LostFocus}" />
-
-                                    <TextBlock Grid.Row="2"
-                                               Grid.Column="0"
-                                               Text="End" />
-                                    <DatePicker Grid.Row="2"
-                                                Grid.Column="1"
-                                                SelectedDate="{Binding End,
-                                                                       Converter={x:Static local:DateConverter.Default},
-                                                                       UpdateSourceTrigger=LostFocus}" />
-                                </Grid>
-                            </DataTemplate>
-                        </local:CriteriaTemplateSelector.TimeCriteria>
-
-                        <local:CriteriaTemplateSelector.YieldCriteria>
-                            <DataTemplate DataType="{x:Type scan:YieldCriteria}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock Grid.Row="0"
-                                               Grid.Column="0"
-                                               Text="Days" />
-                                    <TextBox Grid.Row="0"
-                                             Grid.Column="1"
-                                             Text="{Binding Days,
-                                                            UpdateSourceTrigger=LostFocus}" />
-
-                                    <TextBlock Grid.Row="1"
-                                               Grid.Column="0"
-                                               Text="Min" />
-                                    <TextBox Grid.Row="1"
-                                             Grid.Column="1"
-                                             Text="{Binding Min,
-                                                            UpdateSourceTrigger=LostFocus}" />
-
-                                    <TextBlock Grid.Row="2"
-                                               Grid.Column="0"
-                                               Text="Max" />
-                                    <TextBox Grid.Row="2"
-                                             Grid.Column="1"
-                                             Text="{Binding Max,
-                                                            UpdateSourceTrigger=LostFocus}" />
-                                </Grid>
-                            </DataTemplate>
-                        </local:CriteriaTemplateSelector.YieldCriteria>
-                    </local:CriteriaTemplateSelector>
-                </DataGrid.RowDetailsTemplateSelector>
             </DataGrid>
 
             <Button Command="{Binding ScanCommand}" Content="Run" />

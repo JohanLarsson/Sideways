@@ -61,7 +61,7 @@
                 return false;
             }
 
-            return Percent.Change(candles[index].Open, candles[index - 1].Close).IsBetween(this.min ?? Percent.MinValue, this.max ?? Percent.MaxValue);
+            return Percent.Change(candles[index - 1].Close, candles[index].Open).IsBetween(this.min ?? Percent.MinValue, this.max ?? Percent.MaxValue);
         }
     }
 }
