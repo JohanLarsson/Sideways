@@ -7,7 +7,7 @@
     using System.Windows.Markup;
 
     [ContentProperty(nameof(Templates))]
-    public class CriteriaTemplateSelector : DataTemplateSelector
+    public class CriteriaTemplateSelector_ : DataTemplateSelector
     {
 #pragma warning disable CA1002 // Do not expose generic lists
         public List<DataTemplate> Templates { get; } = new();
