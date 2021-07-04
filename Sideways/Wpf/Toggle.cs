@@ -3,15 +3,15 @@
     using System.Windows;
     using System.Windows.Controls;
 
-    public static class Select
+    public static class Toggle
     {
-        public static readonly DependencyProperty ToggleProperty = DependencyProperty.RegisterAttached(
-            "Toggle",
+        public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.RegisterAttached(
+            "IsSelected",
             typeof(bool),
-            typeof(Select),
+            typeof(Toggle),
             new PropertyMetadata(default(bool)));
 
-        static Select()
+        static Toggle()
         {
             EventManager.RegisterClassHandler(typeof(DataGridCell), UIElement.PreviewMouseLeftButtonDownEvent, new RoutedEventHandler(OnPreviewMouseLeftButtonDown));
 
@@ -20,7 +20,7 @@
                 switch (sender)
                 {
                     case DataGridCell { IsSelected: true, IsEditing: false, Column: { } column } cell
-                        when GetToggle(column) &&
+                        when GetIsSelected(column) &&
                              cell.FirstAncestor<DataGridRow>() is { } row &&
                              row.FirstAncestor<DataGrid>() is { } grid:
                         switch (grid.SelectionUnit)
@@ -39,9 +39,9 @@
             }
         }
 
-        [AttachedPropertyBrowsableForType(typeof(DependencyObject))]
-        public static bool GetToggle(DependencyObject element) => (bool)element.GetValue(ToggleProperty);
+        [AttachedPropertyBrowsableForType(typeof(DataGridCell))]
+        public static bool GetIsSelected(DependencyObject element) => (bool)element.GetValue(IsSelectedProperty);
 
-        public static void SetToggle(DependencyObject element, bool value) => element.SetValue(ToggleProperty, value);
+        public static void SetIsSelected(DependencyObject element, bool value) => element.SetValue(IsSelectedProperty, value);
     }
 }
