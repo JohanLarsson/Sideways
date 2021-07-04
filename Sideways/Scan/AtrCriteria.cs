@@ -51,7 +51,12 @@
 
         public bool IsSatisfied(SortedCandles candles, int index)
         {
-            return !this.IsActive ||
+            if (!this.IsActive)
+            {
+                return true;
+            }
+
+            return candles.CanSlice(index, -21) &&
                    new FloatRange(this.min ?? float.MinValue, this.max ?? float.MaxValue).Contains(candles.Slice(index, -21).Atr());
         }
     }

@@ -51,7 +51,12 @@
 
         public bool IsSatisfied(SortedCandles candles, int index)
         {
-            return !this.IsActive ||
+            if (!this.IsActive)
+            {
+                return true;
+            }
+
+            return candles.CanSlice(index, -20) &&
                    candles.Slice(index, -20).Adr().IsBetween(this.min ?? Percent.MinValue, this.max ?? Percent.MaxValue);
         }
     }
