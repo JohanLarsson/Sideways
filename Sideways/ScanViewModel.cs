@@ -51,10 +51,15 @@
                 {
                     this.IsRunning = true;
                     this.results.Clear();
+                    var timeRange = this.timeCriteria is { IsActive: true, Start: var start, End: var end }
+                        ? new TimeRange(
+                            start?.AddDays(-2 * this.CurrentCriteria.Where(x => x.IsActive).Max(x => x.ExtraDays)) ?? DateTimeOffset.MinValue,
+                            end ?? DateTimeOffset.MaxValue)
+                        : (TimeRange?)null;
                     var symbols = await Task.Run(() => Database.ReadSymbols()).ConfigureAwait(true);
                     foreach (var symbol in symbols)
                     {
-                        var bookmarks = await Task.Run(() => this.Scan(symbol)).ConfigureAwait(true);
+                        var bookmarks = await Task.Run(() => this.Scan(symbol, timeRange)).ConfigureAwait(true);
                         foreach (var bookmark in bookmarks)
                         {
                             this.results.Add(bookmark);
@@ -127,12 +132,11 @@
             }
         }
 
-        public IEnumerable<Bookmark> Scan(string symbol)
+        public IEnumerable<Bookmark> Scan(string symbol, TimeRange? timeRange)
         {
-            var days = Database.ReadDays(symbol);
+            var days = timeRange is { Min: var start, Max: var end } ? Database.ReadDays(symbol, start, end) : Database.ReadDays(symbol);
             var firstMinute = this.hasMinutes.IsActive ? Database.FirstMinute(symbol) : null;
-            var start = this.CurrentCriteria.Where(x => x.IsActive).Max(x => x.ExtraDays);
-            for (var i = start; i < days.Count; i++)
+            for (var i = 0; i < days.Count; i++)
             {
                 if (this.timeCriteria.IsSatisfied(days, i) &&
                     this.hasMinutes.IsSatisfied(days, i - (this.yieldCriteria.IsActive ? this.yieldCriteria.Days : 0), firstMinute) &&
