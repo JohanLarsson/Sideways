@@ -107,13 +107,21 @@
 
         private void OnCopy(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetImage(Dump(this.Root));
+            Clipboard.SetImage(Capture(this.Root, Rect()));
             e.Handled = true;
 
-            // Workaround for WPF weirdness https://docs.microsoft.com/en-us/archive/blogs/jaimer/rendertargetbitmap-tips
-            static BitmapSource Dump(Visual target)
+            Rect Rect()
             {
-                var bounds = VisualTreeHelper.GetDescendantBounds(target);
+                return new(
+                    default(Point) + VisualTreeHelper.GetOffset(this.Root),
+                    new Size(
+                        this.Root.ActualWidth - this.ContextPane.ActualWidth,
+                        this.Root.ActualHeight));
+            }
+
+            // Workaround for WPF weirdness https://docs.microsoft.com/en-us/archive/blogs/jaimer/rendertargetbitmap-tips
+            static BitmapSource Capture(Visual target, Rect bounds)
+            {
                 var rtb = new RenderTargetBitmap(
                     (int)bounds.Width,
                     (int)bounds.Height,
@@ -124,7 +132,12 @@
                 var dv = new DrawingVisual();
                 using (var ctx = dv.RenderOpen())
                 {
-                    var vb = new VisualBrush(target);
+                    var vb = new VisualBrush(target)
+                    {
+                        ViewboxUnits = BrushMappingMode.Absolute,
+                        Viewbox = bounds,
+                    };
+
                     ctx.DrawRectangle(vb, null, new Rect(bounds.Size));
                 }
 
