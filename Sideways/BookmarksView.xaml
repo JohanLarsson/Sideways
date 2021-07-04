@@ -58,6 +58,11 @@
                   CanUserAddRows="False"
                   ItemsSource="{Binding SelectedBookmarkFile.Bookmarks}"
                   SelectedItem="{Binding SelectedBookmark}">
+            <DataGrid.CommandBindings>
+                <CommandBinding CanExecute="OnCanDelete"
+                                Command="Delete"
+                                Executed="OnDelete" />
+            </DataGrid.CommandBindings>
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Symbol,
                                                       Mode=OneTime}"

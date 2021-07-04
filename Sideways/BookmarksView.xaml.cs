@@ -59,5 +59,22 @@
                 }
             }
         }
+
+        private void OnCanDelete(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (sender is DataGrid { ItemsSource: ObservableSortedSet<Bookmark>, SelectedItem: Bookmark })
+            {
+                e.CanExecute = true;
+                e.Handled = true;
+            }
+        }
+
+        private void OnDelete(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (sender is DataGrid { ItemsSource: ObservableSortedSet<Bookmark> bookmarks, SelectedItem: Bookmark item })
+            {
+                e.Handled = bookmarks.Remove(item);
+            }
+        }
     }
 }
