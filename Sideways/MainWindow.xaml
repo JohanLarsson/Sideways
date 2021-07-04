@@ -82,7 +82,11 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Text="Sideways" />
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Text="Sideways" />
+                <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=(FocusManager.FocusedElement), StringFormat=' FocusManager.FocusedElement: {0}'}" />
+                <TextBlock Text="{Binding Path=(Keyboard.FocusedElement), StringFormat=' Keyboard.FocusedElement: {0}'}" />
+            </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <StackPanel.Resources>
