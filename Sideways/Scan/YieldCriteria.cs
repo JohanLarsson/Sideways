@@ -76,6 +76,11 @@
                 return true;
             }
 
+            if (!candles.CanSlice(index, -this.days))
+            {
+                return false;
+            }
+
             // ReSharper disable LocalVariableHidesMember
             if (this.days is > 0 and var days)
             {
