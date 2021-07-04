@@ -30,7 +30,7 @@
                       SelectionMode="Single"
                       SelectionUnit="FullRow">
                 <DataGrid.RowDetailsTemplateSelector>
-                    <local:CriteriaTemplateselector>
+                    <local:CriteriaTemplateSelector>
                         <DataTemplate DataType="{x:Type scan:AdrCriteria}">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -319,7 +319,7 @@
                                                     UpdateSourceTrigger=LostFocus}" />
                             </Grid>
                         </DataTemplate>
-                    </local:CriteriaTemplateselector>
+                    </local:CriteriaTemplateSelector>
                 </DataGrid.RowDetailsTemplateSelector>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn local:SingleClick.Toggle="True"
