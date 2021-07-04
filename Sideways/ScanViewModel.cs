@@ -142,6 +142,7 @@
                     this.hasMinutes.IsSatisfied(days, i - (this.yieldCriteria.IsActive ? this.yieldCriteria.Days : 0), firstMinute) &&
                     this.yieldCriteria.IsSatisfied(days, i) &&
                     this.adrCriteria.IsSatisfied(days, i) &&
+                    this.priceCriteria.IsSatisfied(days, i) &&
                     this.averageVolumeCriteria.IsSatisfied(days, i) &&
                     this.averageDollarVolumeCriteria.IsSatisfied(days, i))
                 {
