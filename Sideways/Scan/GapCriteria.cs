@@ -15,6 +15,8 @@
             //// ReSharper restore LocalVariableHidesMember
         };
 
+        public override int ExtraDays => 1;
+
         public Percent? Min
         {
             get => this.min;
