@@ -447,6 +447,12 @@
 
                                 <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
 
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Red}"
+                                                        Period="50"
+                                                        Visibility="{Binding ElementName=HourButton,
+                                                                             Path=IsChecked,
+                                                                             Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+
                                 <sideways:VWap Brush="{x:Static sideways:Brushes.LightGray}" />
 
                                 <sideways:MeasureDecorator>
@@ -491,7 +497,11 @@
                             </Setter>
                         </Style>
                     </StackPanel.Resources>
-                    <RadioButton Content="h" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.Hour}}" />
+                    <RadioButton x:Name="HourButton"
+                                 Content="h"
+                                 IsChecked="{Binding ElementName=RightChart,
+                                                     Path=CandleInterval,
+                                                     Converter={x:Static sideways:CandleIntervalToBoolConverter.Hour}}" />
                     <RadioButton Content="15 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.FifteenMinutes}}" />
                     <RadioButton Content="5 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.FiveMinutes}}" />
                     <RadioButton Content="1 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.Minute}}" />
