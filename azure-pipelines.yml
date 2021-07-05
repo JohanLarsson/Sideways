@@ -1,37 +1,27 @@
 pool:
   vmImage: 'windows-latest'
 
-variables:
-  buildConfiguration: 'Release'
-
 steps:
-- task: VSBuild@1
-  displayName: Build
-  inputs:
-    configuration: '$(buildConfiguration)'
-    msbuildArgs: '/restore /bl:"$(Build.ArtifactStagingDirectory)/Logs/build.binlog"'
+- powershell: .\build.ps1
+  displayName: Build and test
 
-- task: VSBuild@1
-  displayName: Publish
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  displayName: Publish test results
   inputs:
-    solution: Sideways
-    configuration: '$(buildConfiguration)'
-    msbuildArgs: '/t:Publish /p:PublishDir="$(Build.ArtifactStagingDirectory)/Bin" /bl:"$(Build.ArtifactStagingDirectory)/Logs/publish.binlog"'
+    testResultsFormat: VSTest
+    testResultsFiles: 'artifacts/Test results/*.trx'
 
 - task: PublishBuildArtifacts@1
+  condition: succeededOrFailed()
   displayName: Publish bin artifacts
   inputs:
-    pathToPublish: '$(Build.ArtifactStagingDirectory)/Bin'
+    pathToPublish: 'artifacts/Bin'
     ArtifactName: Bin
-
-- task: VSTest@2
-  displayName: Test
-  inputs:
-    configuration: '$(buildConfiguration)'
 
 - task: PublishBuildArtifacts@1
   condition: succeededOrFailed()
   displayName: Publish log artifacts
   inputs:
-    pathToPublish: '$(Build.ArtifactStagingDirectory)/Logs'
+    pathToPublish: 'artifacts/Logs'
     ArtifactName: Logs
