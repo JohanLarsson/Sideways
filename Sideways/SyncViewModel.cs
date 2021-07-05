@@ -23,6 +23,11 @@
                         this.Status = "reading symbols";
                         var source = new FileInfo(this.fileName!);
                         var symbols = await Task.Run(() => Database.ReadSymbols(source)).ConfigureAwait(false);
+                        if (symbols.IsDefaultOrEmpty)
+                        {
+                            symbols = await Task.Run(() => Database.ReadSymbolsFromMinutes(source)).ConfigureAwait(false);
+                        }
+
                         foreach (var symbol in symbols)
                         {
                             this.Status = $"copying {symbol}";

@@ -6,6 +6,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Text.Json;
 
     using NUnit.Framework;
 
@@ -30,6 +31,17 @@
             Sideways.Sync.CopySplits(Database.DbFile, target);
             Sideways.Sync.CopyAnnualEarnings(Database.DbFile, target);
             Sideways.Sync.CopyQuarterlyEarnings(Database.DbFile, target);
+        }
+
+        [Test]
+        public static void DumpMinutes()
+        {
+            var target = new FileInfo(Path.Combine(Database.DbFile.DirectoryName!, "Minutes.sqlite3"));
+            var bookmarks = JsonSerializer.Deserialize<ImmutableList<Bookmark>>(File.ReadAllText(Path.Combine(BookmarksFile.Directory, "May 2021 moves.bookmarks")));
+            foreach (var symbol in bookmarks.Select(x => x.Symbol).Distinct())
+            {
+                Sideways.Sync.CopyMinutes(symbol, Database.DbFile, target);
+            }
         }
 
         [Test]

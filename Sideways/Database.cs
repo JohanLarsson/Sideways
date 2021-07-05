@@ -33,6 +33,23 @@
             return builder.ToImmutable();
         }
 
+        public static ImmutableArray<string> ReadSymbolsFromMinutes(FileInfo? file = null)
+        {
+            using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
+            connection.Open();
+            using var command = new SqliteCommand(
+                "SELECT DISTINCT symbol FROM minutes",
+                connection);
+            using var reader = command.ExecuteReader();
+            var builder = ImmutableArray.CreateBuilder<string>();
+            while (reader.Read())
+            {
+                builder.Add(reader.GetString(0));
+            }
+
+            return builder.ToImmutable();
+        }
+
         public static SortedCandles ReadDays(string symbol, FileInfo? file = null)
         {
             using var connection = new SqliteConnection($"Data Source={Source(file ?? DbFile)}");
