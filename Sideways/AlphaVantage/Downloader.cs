@@ -29,24 +29,11 @@
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.RefreshSymbolsCommand = new RelayCommand(_ => this.RefreshSymbolDownloadsAsync());
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            this.DownloadAllSymbolsCommand = new RelayCommand(_ => DownloadAll(), _ => !this.symbolDownloads.IsEmpty);
-
-            async void DownloadAll()
-            {
-                this.SymbolDownloadState.Start = DateTimeOffset.Now;
-                while (this.symbolDownloads.FirstOrDefault(x => x is { State: { Status: DownloadStatus.Waiting } } && x.DownloadCommand.CanExecute(null)) is { } symbolDownload)
-                {
-                    await symbolDownload.DownloadAsync().ConfigureAwait(false);
-                    if (symbolDownload.State is { Exception: { Message: { } message } } &&
-                        message.Contains("Our standard API call frequency is 5 calls per minute and 500 calls per day.", StringComparison.Ordinal))
-                    {
-                        break;
-                    }
-                }
-
-                this.symbolDownloadState.Exception = this.symbolDownloads.FirstOrDefault(x => x.State.Exception is { })?.State.Exception;
-                this.SymbolDownloadState.End = DateTimeOffset.Now;
-            }
+            this.DownloadAllCommand = new RelayCommand(
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                _ => this.DownloadAllAsync(_ => true),
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                _ => this is { symbolDownloads: { IsEmpty: false }, symbolDownloadState: { Status: DownloadStatus.Waiting or DownloadStatus.Error } });
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -61,7 +48,7 @@
 
         public ICommand RefreshSymbolsCommand { get; }
 
-        public ICommand DownloadAllSymbolsCommand { get; }
+        public ICommand DownloadAllCommand { get; }
 
         public AlphaVantageClient Client
         {
@@ -187,15 +174,28 @@
             this.Downloads = this.Downloads.Add(download);
         }
 
-        public void Dispose()
+        public async Task DownloadAllAsync(Func<SymbolDownloads, bool> filter)
         {
-            if (this.disposed)
+            this.SymbolDownloadState.Start = DateTimeOffset.Now;
+            while (this.symbolDownloads.FirstOrDefault(x => IsMatch(x)) is { } symbolDownload)
             {
-                return;
+                await symbolDownload.DownloadAsync().ConfigureAwait(false);
+                if (symbolDownload.State is { Exception: { Message: { } message } } &&
+                    message.Contains("Our standard API call frequency is 5 calls per minute and 500 calls per day.", StringComparison.Ordinal))
+                {
+                    break;
+                }
             }
 
-            this.disposed = true;
-            this.client?.Dispose();
+            this.symbolDownloadState.Exception = this.symbolDownloads.FirstOrDefault(x => x.State.Exception is { })?.State.Exception;
+            this.SymbolDownloadState.End = DateTimeOffset.Now;
+
+            bool IsMatch(AlphaVantage.SymbolDownloads candidate)
+            {
+                return candidate is { State: { Status: DownloadStatus.Waiting } } &&
+                       candidate.DownloadCommand.CanExecute(null) &&
+                       filter(candidate);
+            }
         }
 
         public void Unlisted(string symbol)
@@ -221,6 +221,17 @@
         public void NotifyDownloadedMinutes(string symbol) => this.NewMinutes?.Invoke(this, symbol);
 
         public void NotifyDownloadedEarnings(string symbol) => this.NewEarnings?.Invoke(this, symbol);
+
+        public void Dispose()
+        {
+            if (this.disposed)
+            {
+                return;
+            }
+
+            this.disposed = true;
+            this.client?.Dispose();
+        }
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {

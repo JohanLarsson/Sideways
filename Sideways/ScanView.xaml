@@ -44,25 +44,25 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="2"
-                                       Text="ADR" />
+                                           Grid.Column="0"
+                                           Grid.ColumnSpan="2"
+                                           Text="ADR" />
 
                                 <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Min" />
+                                           Grid.Column="0"
+                                           Text="Min" />
                                 <TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Text="{Binding Min,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Min,
+                                                        UpdateSourceTrigger=LostFocus}" />
 
                                 <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="Max" />
+                                           Grid.Column="0"
+                                           Text="Max" />
                                 <TextBox Grid.Row="2"
-                                     Grid.Column="1"
-                                     Text="{Binding Max,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Max,
+                                                        UpdateSourceTrigger=LostFocus}" />
                             </Grid>
                         </DataTemplate>
 
@@ -79,25 +79,25 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="2"
-                                       Text="ATR" />
+                                           Grid.Column="0"
+                                           Grid.ColumnSpan="2"
+                                           Text="ATR" />
 
                                 <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Min" />
+                                           Grid.Column="0"
+                                           Text="Min" />
                                 <TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Text="{Binding Min,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Min,
+                                                        UpdateSourceTrigger=LostFocus}" />
 
                                 <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="Max" />
+                                           Grid.Column="0"
+                                           Text="Max" />
                                 <TextBox Grid.Row="2"
-                                     Grid.Column="1"
-                                     Text="{Binding Max,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Max,
+                                                        UpdateSourceTrigger=LostFocus}" />
                             </Grid>
                         </DataTemplate>
 
@@ -114,25 +114,25 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="2"
-                                       Text="Average dollar volume" />
+                                           Grid.Column="0"
+                                           Grid.ColumnSpan="2"
+                                           Text="Average dollar volume" />
 
                                 <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Min" />
+                                           Grid.Column="0"
+                                           Text="Min" />
                                 <TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Text="{Binding Min,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Min,
+                                                        UpdateSourceTrigger=LostFocus}" />
 
                                 <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="Max" />
+                                           Grid.Column="0"
+                                           Text="Max" />
                                 <TextBox Grid.Row="2"
-                                     Grid.Column="1"
-                                     Text="{Binding Max,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Max,
+                                                        UpdateSourceTrigger=LostFocus}" />
                             </Grid>
                         </DataTemplate>
 
@@ -149,25 +149,25 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="2"
-                                       Text="Average volume" />
+                                           Grid.Column="0"
+                                           Grid.ColumnSpan="2"
+                                           Text="Average volume" />
 
                                 <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Min" />
+                                           Grid.Column="0"
+                                           Text="Min" />
                                 <TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Text="{Binding Min,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Min,
+                                                        UpdateSourceTrigger=LostFocus}" />
 
                                 <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="Max" />
+                                           Grid.Column="0"
+                                           Text="Max" />
                                 <TextBox Grid.Row="2"
-                                     Grid.Column="1"
-                                     Text="{Binding Max,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Max,
+                                                        UpdateSourceTrigger=LostFocus}" />
                             </Grid>
                         </DataTemplate>
 
@@ -184,25 +184,25 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="2"
-                                       Text="o - cc" />
+                                           Grid.Column="0"
+                                           Grid.ColumnSpan="2"
+                                           Text="o - cc" />
 
                                 <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Min" />
+                                           Grid.Column="0"
+                                           Text="Min" />
                                 <TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Text="{Binding Min,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Min,
+                                                        UpdateSourceTrigger=LostFocus}" />
 
                                 <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="Max" />
+                                           Grid.Column="0"
+                                           Text="Max" />
                                 <TextBox Grid.Row="2"
-                                     Grid.Column="1"
-                                     Text="{Binding Max,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Max,
+                                                        UpdateSourceTrigger=LostFocus}" />
                             </Grid>
                         </DataTemplate>
 
@@ -224,20 +224,20 @@
                                 <TextBlock Text="Closing price" />
 
                                 <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Min" />
+                                           Grid.Column="0"
+                                           Text="Min" />
                                 <TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Text="{Binding Min,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Min,
+                                                        UpdateSourceTrigger=LostFocus}" />
 
                                 <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="Max" />
+                                           Grid.Column="0"
+                                           Text="Max" />
                                 <TextBox Grid.Row="2"
-                                     Grid.Column="1"
-                                     Text="{Binding Max,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Max,
+                                                        UpdateSourceTrigger=LostFocus}" />
                             </Grid>
                         </DataTemplate>
 
@@ -254,31 +254,31 @@
                                 </Grid.ColumnDefinitions>
 
                                 <UniformGrid Grid.Row="0"
-                                         Grid.Column="0"
-                                         Grid.ColumnSpan="2"
-                                         Columns="2">
+                                             Grid.Column="0"
+                                             Grid.ColumnSpan="2"
+                                             Columns="2">
                                     <RadioButton Content="YTD" IsChecked="{Binding YearToDate, UpdateSourceTrigger=PropertyChanged}" />
                                     <RadioButton Content="Month" IsChecked="{Binding LastMonth, UpdateSourceTrigger=PropertyChanged}" />
                                     <RadioButton Content="Week" IsChecked="{Binding LastWeek, UpdateSourceTrigger=PropertyChanged}" />
                                 </UniformGrid>
 
                                 <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Start" />
+                                           Grid.Column="0"
+                                           Text="Start" />
                                 <DatePicker Grid.Row="1"
-                                        Grid.Column="1"
-                                        SelectedDate="{Binding Start,
-                                                               Converter={x:Static local:DateConverter.Default},
-                                                               UpdateSourceTrigger=LostFocus}" />
+                                            Grid.Column="1"
+                                            SelectedDate="{Binding Start,
+                                                                   Converter={x:Static local:DateConverter.Default},
+                                                                   UpdateSourceTrigger=LostFocus}" />
 
                                 <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="End" />
+                                           Grid.Column="0"
+                                           Text="End" />
                                 <DatePicker Grid.Row="2"
-                                        Grid.Column="1"
-                                        SelectedDate="{Binding End,
-                                                               Converter={x:Static local:DateConverter.Default},
-                                                               UpdateSourceTrigger=LostFocus}" />
+                                            Grid.Column="1"
+                                            SelectedDate="{Binding End,
+                                                                   Converter={x:Static local:DateConverter.Default},
+                                                                   UpdateSourceTrigger=LostFocus}" />
                             </Grid>
                         </DataTemplate>
 
@@ -295,28 +295,28 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       Text="Days" />
+                                           Grid.Column="0"
+                                           Text="Days" />
                                 <TextBox Grid.Row="0"
-                                     Grid.Column="1"
-                                     Text="{Binding Days,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Days,
+                                                        UpdateSourceTrigger=LostFocus}" />
 
                                 <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Text="Min" />
+                                           Grid.Column="0"
+                                           Text="Min" />
                                 <TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Text="{Binding Min,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Min,
+                                                        UpdateSourceTrigger=LostFocus}" />
 
                                 <TextBlock Grid.Row="2"
-                                       Grid.Column="0"
-                                       Text="Max" />
+                                           Grid.Column="0"
+                                           Text="Max" />
                                 <TextBox Grid.Row="2"
-                                     Grid.Column="1"
-                                     Text="{Binding Max,
-                                                    UpdateSourceTrigger=LostFocus}" />
+                                         Grid.Column="1"
+                                         Text="{Binding Max,
+                                                        UpdateSourceTrigger=LostFocus}" />
                             </Grid>
                         </DataTemplate>
                     </local:CriteriaTemplateSelector>
@@ -342,16 +342,26 @@
                 <TextBox MinWidth="30" Text="{Binding Offset}" />
             </StackPanel>
 
-            <TextBlock>
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="{}{0} of {1}">
-                        <Binding Converter="{x:Static local:AddOneConverter.Default}"
-                                 ElementName="ResultsGrid"
-                                 Path="SelectedIndex" />
-                        <Binding ElementName="ResultsGrid" Path="Items.Count" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} of {1}">
+                            <Binding Converter="{x:Static local:AddOneConverter.Default}"
+                                     ElementName="ResultsGrid"
+                                     Path="SelectedIndex" />
+                            <Binding ElementName="ResultsGrid" Path="Items.Count" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+
+                <Button Padding="2,0"
+                        Command="{Binding DownloadAllCommand}"
+                        Content="{Binding Downloader.SymbolDownloadState.Status}"
+                        ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}"
+                        Focusable="False"
+                        ToolTipService.ShowOnDisabled="True" />
+            </StackPanel>
+
         </StackPanel>
 
         <DataGrid x:Name="ResultsGrid"

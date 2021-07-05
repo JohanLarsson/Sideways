@@ -21,6 +21,7 @@
         {
             this.Settings = Settings.FromFile();
             this.Downloader = new(this.Settings);
+            this.Scan = new ScanViewModel(this.Downloader);
             this.Simulation = new SimulationViewModel(this);
             this.Animation = new AnimationViewModel(this);
             this.symbols = ImmutableSortedSet.CreateRange(Database.ReadSymbols());
@@ -115,7 +116,7 @@
 
         public BookmarksViewModel Bookmarks { get; } = new();
 
-        public ScanViewModel Scan { get; } = new();
+        public ScanViewModel Scan { get; }
 
         public SimulationViewModel Simulation { get; }
 

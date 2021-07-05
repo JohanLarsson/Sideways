@@ -11,6 +11,7 @@
     using System.Windows;
     using System.Windows.Input;
 
+    using Sideways.AlphaVantage;
     using Sideways.Scan;
 
     public sealed class ScanViewModel : INotifyPropertyChanged
@@ -29,8 +30,9 @@
         private bool isRunning;
         private int offset;
 
-        public ScanViewModel()
+        public ScanViewModel(Downloader downloader)
         {
+            this.Downloader = downloader;
             this.Results = new ReadOnlyObservableCollection<Bookmark>(this.results);
             this.CurrentCriteria = new ReadOnlyObservableCollection<Criteria>(
                 new ObservableCollection<Criteria>
@@ -46,6 +48,12 @@
                 });
 
             this.ScanCommand = new RelayCommand(_ => RunScan(), _ => this.CurrentCriteria.Any(x => x.IsActive));
+            this.DownloadAllCommand = new RelayCommand(
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                _ => downloader.DownloadAllAsync(d => this.results.Any(x => x.Symbol == d.Symbol)),
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                _ => this.results.Count > 0 &&
+                     downloader is { SymbolDownloads: { IsEmpty: false }, SymbolDownloadState: { Status: DownloadStatus.Waiting or DownloadStatus.Completed or DownloadStatus.Error } });
 
             async void RunScan()
             {
@@ -84,6 +92,10 @@
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public ICommand ScanCommand { get; }
+
+        public ICommand DownloadAllCommand { get; }
+
+        public Downloader Downloader { get; }
 
         public ReadOnlyObservableCollection<Criteria> CurrentCriteria { get; }
 
