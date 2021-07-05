@@ -38,7 +38,7 @@
         {
             var target = new FileInfo(Path.Combine(Database.DbFile.DirectoryName!, "Minutes.sqlite3"));
             var bookmarks = JsonSerializer.Deserialize<ImmutableList<Bookmark>>(File.ReadAllText(Path.Combine(BookmarksFile.Directory, "May 2021 moves.bookmarks")));
-            foreach (var symbol in bookmarks.Select(x => x.Symbol).Distinct())
+            foreach (var symbol in bookmarks!.Select(x => x.Symbol).Distinct())
             {
                 Sideways.Sync.CopyMinutes(symbol, Database.DbFile, target);
             }
