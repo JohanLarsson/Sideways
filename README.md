@@ -1,6 +1,6 @@
 # Sideways
 
-[![Build Status](https://johan-larsson.visualstudio.com/Sideways/_apis/build/status/JohanLarsson.Sideways?branchName=main)](https://johan-larsson.visualstudio.com/Sideways/_build/latest?definitionId=18&branchName=main)
+[![Build status badge](https://github.com/JohanLarsson/Sideways/workflows/CI/badge.svg)](https://github.com/JohanLarsson/Sideways/actions?query=workflow%3ACI "Build status")
 
 App for backtesting and viewing charts.
 
