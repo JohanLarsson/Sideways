@@ -25,3 +25,13 @@ Ctrl + W adds current symbol to watchlist.
 
 Alt + R selects random item in current list, symbols or bookmarks.
 Alt + Left and Right moves back and forward in history.
+
+## For non programmers
+Currently we don't distribute binaries for download meaning sideways is built from source. Here are the steps:
+
+1. Get the code
+  (a) Install git if not installed https://gitforwindows.org/
+   - Run `git clone "https://github.com/JohanLarsson/Sideways" "C:/git/Sideways"` in a command prompt
+2. Build the code
+  (a) Install x64 SDK from https://dotnet.microsoft.com/download/visual-studio-sdks
+  - Click `C:/git/Sideways/run.cmd` it takes a couple of minutes as it downloads latest sources then builds them and runs the app. Nice ting is that it will always be the most recent version of sideways. 
