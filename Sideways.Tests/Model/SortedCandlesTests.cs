@@ -8,7 +8,7 @@
 
     public static class SortedCandlesTests
     {
-        [TestCase(0, 0, true)]
+        [TestCase(0, 0, false)]
         [TestCase(0, 1, true)]
         [TestCase(0, 2, true)]
         [TestCase(0, 3, true)]
