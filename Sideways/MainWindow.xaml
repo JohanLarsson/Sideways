@@ -342,27 +342,9 @@
                                 Visibility="{Binding .,
                                                      Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
                             <Button.ToolTip>
-                                <ToolTip d:DataContext="{d:DesignInstance Type=alphaVantage:SymbolDownloads}" DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding Symbol, StringFormat='Download missing data for: {0}'}" />
-                                        <TextBlock Text="{Binding DayText}" />
-                                        <TextBlock Text="{Binding MinutesText}" />
-                                        <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
-                                        <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
-                                        <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
-                                        <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
-                                        <ItemsControl ItemsSource="{Binding AllDownloads}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type alphaVantage:Download}">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <ContentPresenter Content="{Binding State.Status}" ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}" />
-                                                        <TextBlock Text="{Binding Info}" />
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </StackPanel>
-                                </ToolTip>
+                                <ToolTip Content="{Binding RelativeSource={RelativeSource Self},
+                                                           Path=PlacementTarget.DataContext}"
+                                         ContentTemplate="{StaticResource SymbolDownloadsTemplate}" />
                             </Button.ToolTip>
                             <Button.DataContext>
                                 <MultiBinding Converter="{x:Static sideways:SymbolDownloadConverter.Default}">

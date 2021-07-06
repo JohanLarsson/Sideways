@@ -1,6 +1,7 @@
 ﻿<Application x:Class="Sideways.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:alphaVantage="clr-namespace:Sideways.AlphaVantage"
              xmlns:sideways="clr-namespace:Sideways"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
@@ -345,6 +346,28 @@
                             <Rectangle Fill="{Binding DescendingYearlyChanges, Converter={x:Static sideways:ChangeToBrushConverter.Item1}, Mode=OneTime}" Style="{StaticResource ChangeBarStyle}" />
                         </UniformGrid>
                     </Grid>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="SymbolDownloadsTemplate" DataType="{x:Type alphaVantage:SymbolDownloads}">
+                <StackPanel>
+                    <TextBlock Text="{Binding Symbol, StringFormat='Download missing data for: {0}'}" />
+                    <TextBlock Text="{Binding DayText}" />
+                    <TextBlock Text="{Binding MinutesText}" />
+                    <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
+                    <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
+                    <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
+                    <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
+                    <ItemsControl ItemsSource="{Binding AllDownloads}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type alphaVantage:Download}">
+                                <StackPanel Orientation="Horizontal">
+                                    <ContentPresenter Content="{Binding State.Status}" ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}" />
+                                    <TextBlock Text="{Binding Info}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
             </DataTemplate>
         </ResourceDictionary>

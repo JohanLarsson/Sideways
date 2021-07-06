@@ -354,12 +354,16 @@
                     </TextBlock.Text>
                 </TextBlock>
 
-                <Button Padding="2,0"
+                <Button Padding="4,0"
                         Command="{Binding DownloadAllCommand}"
                         Content="{Binding Downloader.SymbolDownloadState.Status}"
                         ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}"
                         Focusable="False"
-                        ToolTipService.ShowOnDisabled="True" />
+                        ToolTipService.ShowOnDisabled="True">
+                    <Button.ToolTip>
+                        <ToolTip Content="{Binding Downloader.CurrentSymbolDownload}" ContentTemplate="{StaticResource SymbolDownloadsTemplate}" />
+                    </Button.ToolTip>
+                </Button>
             </StackPanel>
 
         </StackPanel>

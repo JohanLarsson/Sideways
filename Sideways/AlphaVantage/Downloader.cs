@@ -20,6 +20,7 @@
         private ImmutableList<Download> downloads = ImmutableList<Download>.Empty;
         private ImmutableSortedSet<SymbolDownloads> symbolDownloads;
         private DownloadState symbolDownloadState = new();
+        private SymbolDownloads? currentSymbolDownload;
         private bool disposed;
 
         public Downloader(Settings settings)
@@ -113,6 +114,21 @@
             }
         }
 
+        public SymbolDownloads? CurrentSymbolDownload
+        {
+            get => this.currentSymbolDownload;
+            private set
+            {
+                if (ReferenceEquals(value, this.currentSymbolDownload))
+                {
+                    return;
+                }
+
+                this.currentSymbolDownload = value;
+                this.OnPropertyChanged();
+            }
+        }
+
         public async Task RefreshSymbolDownloadsAsync()
         {
             this.SymbolDownloads = this.symbolDownloads.Clear();
@@ -179,6 +195,7 @@
             this.SymbolDownloadState.Start = DateTimeOffset.Now;
             while (this.symbolDownloads.FirstOrDefault(x => IsMatch(x)) is { } symbolDownload)
             {
+                this.CurrentSymbolDownload = symbolDownload;
                 await symbolDownload.DownloadAsync().ConfigureAwait(false);
                 if (symbolDownload.State is { Exception: { Message: { } message } } &&
                     message.Contains("Our standard API call frequency is 5 calls per minute and 500 calls per day.", StringComparison.Ordinal))
@@ -189,6 +206,7 @@
 
             this.symbolDownloadState.Exception = this.symbolDownloads.FirstOrDefault(x => x.State.Exception is { })?.State.Exception;
             this.SymbolDownloadState.End = DateTimeOffset.Now;
+            this.CurrentSymbolDownload = null;
 
             bool IsMatch(AlphaVantage.SymbolDownloads candidate)
             {
