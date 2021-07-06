@@ -110,9 +110,8 @@
         {
             return length switch
             {
-                > 0 => this.candles.AsSpan().Slice(index, length),
+                >= 0 => this.candles.AsSpan().Slice(index, length),
                 < 0 => this.candles.AsSpan().Slice(index + length + 1, -length),
-                _ => throw new ArgumentException("Zero not allowed for length.", nameof(length)),
             };
         }
 

@@ -8,6 +8,7 @@
 
     public static class SortedCandlesTests
     {
+        [TestCase(0, 0, true)]
         [TestCase(0, 1, true)]
         [TestCase(0, 2, true)]
         [TestCase(0, 3, true)]
@@ -59,6 +60,7 @@
             Assert.AreEqual(expected, candles.CanSlice(index, length));
         }
 
+        [TestCase(0, 0, "")]
         [TestCase(0, 1, "1")]
         [TestCase(0, 2, "1, 2")]
         [TestCase(0, 3, "1, 2, 3")]
