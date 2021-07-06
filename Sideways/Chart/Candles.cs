@@ -106,7 +106,7 @@
                         {
                             CandleInterval.None => throw new InvalidEnumArgumentException(nameof(interval), (int)interval, typeof(CandleInterval)),
                             CandleInterval.Week => throw new NotSupportedException("Not supporting VWAP for weeks yet."),
-                            CandleInterval.Day => throw new NotSupportedException("Not supporting VWAP for weeks yet."),
+                            CandleInterval.Day => throw new NotSupportedException("Not supporting VWAP for days yet."),
                             CandleInterval.Hour => Candle.ShouldMergeHour(x.Time, y.Time),
                             CandleInterval.FifteenMinutes => Candle.ShouldMergeFifteenMinutes(x.Time, y.Time),
                             CandleInterval.FiveMinutes => Candle.ShouldMergeFiveMinutes(x.Time, y.Time),
