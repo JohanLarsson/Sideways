@@ -223,9 +223,9 @@
 
                             <Grid Grid.Row="0" Grid.Column="0">
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Ma10}" Period="10" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Ma20}" Period="20" />
 
                                 <sideways:MeasureDecorator>
                                     <sideways:CandleSticks />
@@ -282,17 +282,17 @@
 
                             <Grid Grid.Row="0" Grid.Column="0">
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Ma10}" Period="10" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Ma20}" Period="20" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Red}" Period="50" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Ma50}" Period="50" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Orange}" Period="100" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Ma100}" Period="100" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Blue}" Period="150" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Ma150}" Period="150" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Green}" Period="200" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Ma200}" Period="200" />
 
                                 <sideways:MeasureDecorator>
                                     <sideways:MeasureDecorator.CommandBindings>
@@ -425,11 +425,11 @@
                                                                        Mode=OneWay}" />
 
                             <Grid Grid.Row="0" Grid.Column="0">
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Purple}" Period="10" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Ma10}" Period="10" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Yellow}" Period="20" />
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Ma20}" Period="20" />
 
-                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Red}"
+                                <sideways:MovingAverage Brush="{x:Static sideways:Brushes.Ma50}"
                                                         Period="50"
                                                         Visibility="{Binding ElementName=HourButton,
                                                                              Path=IsChecked,

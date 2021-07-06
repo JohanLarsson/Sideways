@@ -184,7 +184,7 @@
                 <sideways:DownloadStatusTemplateSelector.Completed>
                     <DataTemplate>
                         <Path Data="{StaticResource CheckGeometry}"
-                              Fill="{x:Static sideways:Brushes.Green}"
+                              Fill="{x:Static sideways:Brushes.Ma200}"
                               Style="{StaticResource IconStyle}" />
                     </DataTemplate>
                 </sideways:DownloadStatusTemplateSelector.Completed>
@@ -193,7 +193,7 @@
                     <DataTemplate>
                         <Path Margin="1"
                               Data="{StaticResource CrossGeometry}"
-                              Fill="{x:Static sideways:Brushes.Red}"
+                              Fill="{x:Static sideways:Brushes.Ma50}"
                               Style="{StaticResource IconStyle}" />
                     </DataTemplate>
                 </sideways:DownloadStatusTemplateSelector.Error>

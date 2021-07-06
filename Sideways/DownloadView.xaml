@@ -35,6 +35,7 @@
                 <Button Command="{Binding RefreshSymbolsCommand}"
                         Content="Refresh"
                         ToolTip="The list is populated by reading the entire database in the background." />
+
                 <Button Command="{Binding DownloadAllCommand}" ToolTip="Download missing data for all symbols">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
