@@ -99,8 +99,8 @@
                         for (var i = 0; i < candles.Count - 1; i++)
                         {
                             if (candles[i].Time.Date != candles[i + 1].Time.Date &&
-                                TradingDay.IsOrdinaryHours(candles[i].Time) &&
-                                TradingDay.IsOrdinaryHours(candles[i + 1].Time))
+                                TradingDay.IsRegularHours(candles[i].Time) &&
+                                TradingDay.IsRegularHours(candles[i + 1].Time))
                             {
                                 drawingContext.DrawRectangle(
                                     brush,

@@ -35,7 +35,7 @@
 
         public static bool IsPostMarket(DateTimeOffset t) => t.TimeOfDay > new TimeSpan(16, 00, 00);
 
-        public static bool IsOrdinaryHours(DateTimeOffset t) => t.TimeOfDay > new TimeSpan(09, 30, 00) && t.TimeOfDay <= new TimeSpan(16, 00, 00);
+        public static bool IsRegularHours(DateTimeOffset t) => t.TimeOfDay > new TimeSpan(09, 30, 00) && t.TimeOfDay <= new TimeSpan(16, 00, 00);
 
         public static TradingDay LastComplete()
         {

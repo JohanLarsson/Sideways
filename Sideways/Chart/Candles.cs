@@ -25,8 +25,8 @@
 
         public IEnumerable<Candle> DescendingDays(DateTimeOffset end)
         {
-            if (TradingDay.IsOrdinaryHours(end) &&
-                this.DescendingMinutes(end).TakeWhile(x => IsSameDayOrdinaryHours(x.Time)).MergeBy((_, _) => true).FirstOrNull() is { } merged)
+            if (TradingDay.IsRegularHours(end) &&
+                this.DescendingMinutes(end).TakeWhile(x => IsSameDayRegularHours(x.Time)).MergeBy((_, _) => true).FirstOrNull() is { } merged)
             {
                 yield return merged;
                 end = end.AddDays(-1);
@@ -50,10 +50,10 @@
                 yield return day.WithTime(TradingDay.EndOfDay(day.Time));
             }
 
-            bool IsSameDayOrdinaryHours(DateTimeOffset time)
+            bool IsSameDayRegularHours(DateTimeOffset time)
             {
                 return time.IsSameDay(end) &&
-                       TradingDay.IsOrdinaryHours(time);
+                       TradingDay.IsRegularHours(time);
             }
         }
 

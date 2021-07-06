@@ -41,9 +41,9 @@
         [TestCase(16, 00, true)]
         [TestCase(16, 01, false)]
         [TestCase(20, 00, false)]
-        public static void IsOrdinaryHours(int hour, int minute, bool expected)
+        public static void IsRegularHours(int hour, int minute, bool expected)
         {
-            Assert.AreEqual(expected, TradingDay.IsOrdinaryHours(new DateTimeOffset(2021, 06, 01, hour, minute, 0, TimeSpan.Zero)));
+            Assert.AreEqual(expected, TradingDay.IsRegularHours(new DateTimeOffset(2021, 06, 01, hour, minute, 0, TimeSpan.Zero)));
         }
 
         [TestCase(2020, 01, 01, false, Description = "New Year's Day")]
