@@ -4,7 +4,7 @@
 
 App for backtesting and viewing charts.
 
-![image](https://user-images.githubusercontent.com/1640096/124611676-f51e3380-de71-11eb-821e-f423283900df.png)
+![image](https://user-images.githubusercontent.com/1640096/124612024-475f5480-de72-11eb-90f4-dbdb512db7da.png)
 
 This is currently pre alpha so there may be breaking changes.
 
