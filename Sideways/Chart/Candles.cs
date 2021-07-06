@@ -26,9 +26,17 @@
         public IEnumerable<Candle> DescendingDays(DateTimeOffset end)
         {
             if (TradingDay.IsRegularHours(end) &&
-                this.DescendingMinutes(end).TakeWhile(x => IsSameDayRegularHours(x.Time)).MergeBy((_, _) => true).FirstOrNull() is { } merged)
+                this.DayRegularMinutes(end, this.minuteIndex) is { Length: > 0 } minutes)
             {
-                yield return merged;
+                if (minutes.Length == 1)
+                {
+                    yield return minutes[0];
+                }
+                else
+                {
+                    yield return Candle.Merge(minutes);
+                }
+
                 end = end.AddDays(-1);
             }
 
@@ -48,12 +56,6 @@
             {
                 var day = this.days[i];
                 yield return day.WithTime(TradingDay.EndOfDay(day.Time));
-            }
-
-            bool IsSameDayRegularHours(DateTimeOffset time)
-            {
-                return time.IsSameDay(end) &&
-                       TradingDay.IsRegularHours(time);
             }
         }
 
@@ -265,6 +267,23 @@
             }
 
             return null;
+        }
+
+        private ReadOnlySpan<Candle> DayRegularMinutes(DateTimeOffset end, int startAt)
+        {
+            var endIndex = this.minutes.IndexOf(end, startAt);
+            if (endIndex <= 0)
+            {
+                return default;
+            }
+
+            var start = this.minutes.IndexOf(TradingDay.StartOfRegularHours(end), endIndex - (end - TradingDay.StartOfRegularHours(end)).Minutes);
+            if (start < 0)
+            {
+                return this.minutes[..(endIndex + 1)];
+            }
+
+            return this.minutes[(start + 1)..(endIndex + 1)];
         }
     }
 }
