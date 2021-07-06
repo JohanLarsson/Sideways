@@ -6,7 +6,6 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Text.Json;
 
     using NUnit.Framework;
 
@@ -37,10 +36,12 @@
         public static void DumpMinutes()
         {
             var target = new FileInfo(Path.Combine(Database.DbFile.DirectoryName!, "Minutes.sqlite3"));
-            var bookmarks = JsonSerializer.Deserialize<ImmutableList<Bookmark>>(File.ReadAllText(Path.Combine(BookmarksFile.Directory, "May 2021 moves.bookmarks")));
-            foreach (var symbol in bookmarks!.Select(x => x.Symbol).Distinct())
+            foreach (var symbol in Database.ReadSymbols())
             {
-                Sideways.Sync.CopyMinutes(symbol, Database.DbFile, target);
+                if ((DateTimeOffset.Now - Database.MinuteRange(symbol).Max).Days < 10)
+                {
+                    Sideways.Sync.CopyMinutes(symbol, Database.DbFile, target);
+                }
             }
         }
 
