@@ -271,6 +271,11 @@
 
         private ReadOnlySpan<Candle> DayRegularMinutes(DateTimeOffset end, int startAt)
         {
+            if (end.Hour >= 16)
+            {
+                end = end.WithHourAndMinute(new HourAndMinute(16, 00));
+            }
+
             var endIndex = this.minutes.IndexOf(end, startAt);
             if (endIndex <= 0)
             {
