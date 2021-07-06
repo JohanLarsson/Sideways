@@ -152,17 +152,33 @@
             var firstMinute = this.hasMinutes.IsActive ? Database.FirstMinute(symbol) : null;
             for (var i = 0; i < days.Count; i++)
             {
-                if (this.timeCriteria.IsSatisfied(days, i) &&
-                    this.hasMinutes.IsSatisfied(days, i - (this.yieldCriteria.IsActive ? this.yieldCriteria.Days : 0), firstMinute) &&
-                    this.yieldCriteria.IsSatisfied(days, i) &&
-                    this.priceCriteria.IsSatisfied(days, i) &&
-                    this.gapCriteria.IsSatisfied(days, i) &&
-                    this.adrCriteria.IsSatisfied(days, i) &&
-                    this.averageVolumeCriteria.IsSatisfied(days, i) &&
-                    this.averageDollarVolumeCriteria.IsSatisfied(days, i))
+                if (IsSatisfied(i))
                 {
-                    yield return new Bookmark(symbol, TradingDay.EndOfDay(days[i].Time), ImmutableSortedSet<string>.Empty, null);
+                    if (this.yieldCriteria.IsActive &&
+                        !this.gapCriteria.IsActive &&
+                        i < days.Count - 1 &&
+                        IsSatisfied(i + 1))
+                    {
+                        // Sample next match to avoid consecutive.
+                        continue;
+                    }
+                    else
+                    {
+                        yield return new Bookmark(symbol, TradingDay.EndOfDay(days[i].Time), ImmutableSortedSet<string>.Empty, null);
+                    }
                 }
+            }
+
+            bool IsSatisfied(int index)
+            {
+                return this.timeCriteria.IsSatisfied(days, index) &&
+                       this.hasMinutes.IsSatisfied(days, index - (this.yieldCriteria.IsActive ? this.yieldCriteria.Days : 0), firstMinute) &&
+                       this.yieldCriteria.IsSatisfied(days, index) &&
+                       this.priceCriteria.IsSatisfied(days, index) &&
+                       this.gapCriteria.IsSatisfied(days, index) &&
+                       this.adrCriteria.IsSatisfied(days, index) &&
+                       this.averageVolumeCriteria.IsSatisfied(days, index) &&
+                       this.averageDollarVolumeCriteria.IsSatisfied(days, index);
             }
         }
 
