@@ -68,15 +68,9 @@
             }
         }
 
-        [AttachedPropertyBrowsableForType(typeof(DependencyObject))]
-        public static bool GetIsSymbolSearch(DependencyObject element)
-        {
-            return (bool)element.GetValue(IsSymbolSearchProperty);
-        }
+        [AttachedPropertyBrowsableForType(typeof(ComboBox))]
+        public static bool GetIsSymbolSearch(ComboBox element) => (bool)element.GetValue(IsSymbolSearchProperty);
 
-        public static void SetIsSymbolSearch(DependencyObject element, bool value)
-        {
-            element.SetValue(IsSymbolSearchProperty, value);
-        }
+        public static void SetIsSymbolSearch(ComboBox element, bool value) => element.SetValue(IsSymbolSearchProperty, value);
     }
 }
