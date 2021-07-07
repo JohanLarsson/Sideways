@@ -1,6 +1,10 @@
 ﻿namespace Sideways
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.ComponentModel;
+    using System.Globalization;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
@@ -135,6 +139,31 @@
 
                 rtb.Render(dv);
                 return rtb;
+            }
+        }
+
+        private void OnPaste(object sender, RoutedEventArgs e)
+        {
+            if (this.BookmarksButton.IsChecked is true &&
+                this.DataContext is MainViewModel { Bookmarks: { SelectedBookmarkFile: { } bookmarkFile } } &&
+                Clipboard.ContainsText(TextDataFormat.CommaSeparatedValue))
+            {
+                bookmarkFile.Bookmarks.AddRange(ParseBookmarks(Clipboard.GetText(TextDataFormat.CommaSeparatedValue)));
+            }
+
+            static IEnumerable<Bookmark> ParseBookmarks(string csv)
+            {
+                foreach (var line in csv.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (line.Split(',') is { Length: 2 } parts)
+                    {
+                        yield return new Bookmark(parts[0], DateTimeOffset.Parse(parts[1], CultureInfo.InvariantCulture), ImmutableSortedSet<string>.Empty, null);
+                    }
+                    else
+                    {
+                        _ = MessageBox.Show("Invalid bookmark format.", "Paste", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
             }
         }
 

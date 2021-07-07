@@ -37,8 +37,6 @@
         public static BookmarksFile Create(FileInfo? file, IEnumerable<Bookmark> bookmarks) =>
             new(file, ImmutableSortedSet.CreateRange(BookMarkComparer.Default, bookmarks));
 
-        public bool Add(Bookmark bookmark) => this.Bookmarks.Add(bookmark);
-
         public void Save()
         {
             if (!System.IO.Directory.Exists(Directory))

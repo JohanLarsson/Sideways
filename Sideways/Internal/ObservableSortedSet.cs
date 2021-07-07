@@ -39,6 +39,14 @@
             return this.inner.Count > before;
         }
 
+        public void AddRange(IEnumerable<T> items)
+        {
+            this.inner = this.inner.Union(items);
+            this.OnPropertyChanged(nameof(this.Count));
+            this.OnPropertyChanged("Item[]");
+            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
         void ICollection<T>.Add(T item) => this.Add(item);
 
         public bool Remove(T item)

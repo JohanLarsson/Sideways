@@ -39,6 +39,7 @@
 
     <Window.CommandBindings>
         <CommandBinding Command="Copy" Executed="OnCopy" />
+        <CommandBinding Command="Paste" Executed="OnPaste" />
     </Window.CommandBindings>
 
     <Window.InputBindings>

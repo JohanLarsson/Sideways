@@ -194,7 +194,7 @@
             {
                 case { CurrentSymbol: { Symbol: { } symbol }, Bookmarks: { SelectedBookmarkFile: { } bookmarkFile } bookmarks }:
                     var bookmark = new Bookmark(symbol, time, ImmutableSortedSet<string>.Empty, null);
-                    if (bookmarkFile.Add(bookmark))
+                    if (bookmarkFile.Bookmarks.Add(bookmark))
                     {
                         if (bookmark.Time == this.Time)
                         {
