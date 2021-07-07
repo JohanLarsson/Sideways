@@ -6,6 +6,8 @@
     using System.Collections.Immutable;
     using System.Diagnostics;
 
+    [DebuggerTypeProxy(typeof(ReadOnlyListDebugView<>))]
+    [DebuggerDisplay("Count = {Count}")]
     public readonly struct SortedCandles : IEquatable<SortedCandles>, IReadOnlyList<Candle>
     {
         public static readonly SortedCandles Empty = new(ImmutableArray<Candle>.Empty);
