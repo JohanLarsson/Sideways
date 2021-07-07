@@ -49,7 +49,6 @@
                     Gesture="Space" />
         <KeyBinding sideways:Priority.Over="{Binding ElementName=SymbolBox}"
                     Command="Copy"
-                    CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
                     Gesture="Ctrl+C" />
 
         <KeyBinding Key="Left"

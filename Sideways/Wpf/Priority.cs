@@ -36,7 +36,7 @@
                         {
                             if (binding.Command is RoutedCommand routed)
                             {
-                                routed.Execute(binding.CommandParameter, binding.CommandTarget);
+                                routed.Execute(binding.CommandParameter, binding.CommandTarget ?? Window.GetWindow(element));
                             }
                             else
                             {
