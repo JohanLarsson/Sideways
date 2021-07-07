@@ -34,7 +34,15 @@
                     {
                         if (binding.Gesture.Matches(sender, e))
                         {
-                            binding.Command.Execute(binding.CommandParameter);
+                            if (binding.Command is RoutedCommand routed)
+                            {
+                                routed.Execute(binding.CommandParameter, binding.CommandTarget);
+                            }
+                            else
+                            {
+                                binding.Command.Execute(binding.CommandParameter);
+                            }
+
                             e.Handled = true;
                         }
                     }

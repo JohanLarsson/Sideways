@@ -22,12 +22,6 @@
         {
             switch (e.Key)
             {
-                case Key.C
-                    when Keyboard.Modifiers == ModifierKeys.Control &&
-                         ShouldUpdateChart():
-                    ApplicationCommands.Copy.Execute(null, this);
-                    e.Handled = true;
-                    break;
                 case Key.Left
                     when this.DataContext is MainViewModel vm &&
                          ShouldUpdateChart():
