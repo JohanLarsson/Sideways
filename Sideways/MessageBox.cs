@@ -4,7 +4,7 @@
 
     public static class MessageBox
     {
-        public static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button, MessageBoxImage messageBoxImage = MessageBoxImage.None)
+        public static MessageBoxResult Show(string messageBoxText, MessageBoxButton button, MessageBoxImage messageBoxImage = MessageBoxImage.None, string caption = "Sideways")
         {
             if (Application.Current.MainWindow is { } window)
             {

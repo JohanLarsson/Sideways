@@ -161,7 +161,7 @@
                     }
                     else
                     {
-                        _ = MessageBox.Show("Invalid bookmark format.", "Paste", MessageBoxButton.OK, MessageBoxImage.Information);
+                        _ = MessageBox.Show("Invalid bookmark format.", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
             }

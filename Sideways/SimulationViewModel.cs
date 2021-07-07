@@ -66,7 +66,7 @@
                 }
                 else
                 {
-                    _ = MessageBox.Show("Cannot buy symbol.", "Simulation", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _ = MessageBox.Show("Cannot buy symbol.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
 
@@ -84,7 +84,7 @@
                 }
                 else
                 {
-                    _ = MessageBox.Show("Cannot sell symbol.", "Simulation", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _ = MessageBox.Show("Cannot sell symbol.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -149,7 +149,7 @@
         {
             if (this.current is { } simulation &&
                 IsDirty() &&
-                MessageBox.Show("Do you want to save current simulation first?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                MessageBox.Show("Do you want to save current simulation first?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 this.Save();
             }

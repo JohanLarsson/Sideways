@@ -35,10 +35,10 @@
                         watchList.Add(symbol);
                         break;
                     case { WatchList: null }:
-                        MessageBox.Show("No watchlist entry added, a watchlist must be open.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("No watchlist entry added, a watchlist must be open.", MessageBoxButton.OK, MessageBoxImage.Error);
                         break;
                     default:
-                        MessageBox.Show("No watchlist entry added.", "Watchlist", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("No watchlist entry added.", MessageBoxButton.OK, MessageBoxImage.Error);
                         break;
                 }
             });
@@ -203,18 +203,18 @@
                     }
                     else
                     {
-                        _ = MessageBox.Show("Bookmark already exists.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Information);
+                        _ = MessageBox.Show("Bookmark already exists.", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
 
                     break;
                 case { Bookmarks: { SelectedBookmarkFile: null } }:
-                    MessageBox.Show("No bookmark added, a bookmarks file must be selected.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("No bookmark added, a bookmarks file must be selected.",  MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
                 case { CurrentSymbol: { Candles: { } } }:
-                    MessageBox.Show("No bookmark added, a symbol with candles must be open.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("No bookmark added, a symbol with candles must be open.", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
                 default:
-                    MessageBox.Show("No bookmark added.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("No bookmark added.", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
             }
         }

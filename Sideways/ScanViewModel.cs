@@ -80,7 +80,7 @@
                 catch (Exception e)
 #pragma warning restore CA1031 // Do not catch general exception types
                 {
-                    _ = MessageBox.Show(e.Message, "Scan", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _ = MessageBox.Show(e.Message, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 finally
                 {

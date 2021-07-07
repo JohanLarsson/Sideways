@@ -90,7 +90,7 @@
         public void AskSave()
         {
             if (this.IsDirty() &&
-                MessageBox.Show("Do you want to save bookmarks?", "Save", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                MessageBox.Show("Do you want to save bookmarks?", MessageBoxButton.YesNo, messageBoxImage: MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 this.Save();
             }

@@ -51,7 +51,7 @@
                     catch (Exception exception)
 #pragma warning restore CA1031 // Do not catch general exception types
                     {
-                        _ = MessageBox.Show(exception.Message, "Invalid simulation file.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        _ = MessageBox.Show(exception.Message, MessageBoxButton.OK, MessageBoxImage.Error);
                     }
 
                     e.Handled = true;

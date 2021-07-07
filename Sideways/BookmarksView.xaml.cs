@@ -37,7 +37,7 @@
                 {
                     if (viewModel.BookmarkFiles.Any(x => x.FileName == dialog.FileName))
                     {
-                        _ = MessageBox.Show("Bookmark file already open.", "Bookmark", MessageBoxButton.OK, MessageBoxImage.Information);
+                        _ = MessageBox.Show("Bookmark file already open.", MessageBoxButton.OK, MessageBoxImage.Information);
                         return;
                     }
 
@@ -52,7 +52,7 @@
                     catch (Exception exception)
 #pragma warning restore CA1031 // Do not catch general exception types
                     {
-                        _ = MessageBox.Show(exception.Message, "Invalid bookmark file.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        _ = MessageBox.Show(exception.Message, MessageBoxButton.OK, MessageBoxImage.Error);
                     }
 
                     e.Handled = true;
