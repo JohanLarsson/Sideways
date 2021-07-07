@@ -59,6 +59,14 @@
             return this.inner.Count > before;
         }
 
+        public void RemoveRange(IEnumerable<T> items)
+        {
+            this.inner = this.inner.Except(items);
+            this.OnPropertyChanged(nameof(this.Count));
+            this.OnPropertyChanged("Item[]");
+            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
         public void Clear()
         {
             this.inner = this.inner.Clear();

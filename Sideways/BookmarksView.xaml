@@ -62,6 +62,7 @@
                 <CommandBinding CanExecute="OnCanDelete"
                                 Command="Delete"
                                 Executed="OnDelete" />
+                <CommandBinding CanExecute="OnCanCut" Command="Cut" Executed="OnCut"></CommandBinding>
             </DataGrid.CommandBindings>
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Symbol,

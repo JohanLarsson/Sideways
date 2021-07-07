@@ -76,5 +76,19 @@
                 e.Handled = bookmarks.Remove(item);
             }
         }
+
+        private void OnCanCut(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = ApplicationCommands.Copy.CanExecute(e.Parameter, (DataGrid)sender);
+            e.Handled = true;
+        }
+
+        private void OnCut(object sender, ExecutedRoutedEventArgs e)
+        {
+            var dataGrid = (DataGrid)sender;
+            ApplicationCommands.Copy.Execute(e.Parameter, dataGrid);
+            ((BookmarksViewModel)this.DataContext).SelectedBookmarkFile!.Bookmarks.RemoveRange(dataGrid.SelectedItems.Cast<Bookmark>());
+            e.Handled = true;
+        }
     }
 }
