@@ -47,6 +47,7 @@
         <KeyBinding sideways:Priority.Over="{Binding ElementName=SymbolBox}"
                     Command="{Binding Animation.ToggleCommand}"
                     Gesture="Space" />
+
         <KeyBinding sideways:Priority.Over="{Binding ElementName=SymbolBox}"
                     Command="Copy"
                     Gesture="Ctrl+C" />

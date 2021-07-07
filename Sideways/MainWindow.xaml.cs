@@ -100,11 +100,15 @@
 
             Rect Rect()
             {
+                const int rightGridSplitterLineWidth = 1;
+
                 return new(
-                    default(Point) + VisualTreeHelper.GetOffset(this.Root),
+                    default(Point) + VisualTreeHelper.GetOffset(this.Root) + new Vector(LeftOffset(), 0),
                     new Size(
-                        this.Root.ActualWidth - this.ContextPane.ActualWidth,
+                        this.Root.ActualWidth - this.ContextPane.ActualWidth - LeftOffset() - rightGridSplitterLineWidth,
                         this.Root.ActualHeight));
+
+                int LeftOffset() => this.LeftPane.ActualWidth == 0 ? 1 : 0;
             }
 
             // Workaround for WPF weirdness https://docs.microsoft.com/en-us/archive/blogs/jaimer/rendertargetbitmap-tips
