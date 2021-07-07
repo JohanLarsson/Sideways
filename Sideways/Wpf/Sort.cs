@@ -16,15 +16,9 @@
                 OnDirectionChanged));
 
         [AttachedPropertyBrowsableForType(typeof(ItemsControl))]
-        public static ListSortDirection? GetDirection(ItemsControl element)
-        {
-            return (ListSortDirection)element.GetValue(DirectionProperty);
-        }
+        public static ListSortDirection? GetDirection(ItemsControl element) => (ListSortDirection)element.GetValue(DirectionProperty);
 
-        public static void SetDirection(ItemsControl element, ListSortDirection? value)
-        {
-            element.SetValue(DirectionProperty, value);
-        }
+        public static void SetDirection(ItemsControl element, ListSortDirection? value) => element.SetValue(DirectionProperty, value);
 
         private static void OnDirectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

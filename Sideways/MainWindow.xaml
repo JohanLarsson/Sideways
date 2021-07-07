@@ -10,7 +10,7 @@
                                          IsDesignTimeCreatable=False}"
         sideways:SelectCommands.IsEnabled="True"
         Background="{x:Static sideways:Brushes.Background}"
-        FocusManager.FocusedElement="{Binding ElementName=SymbolComboBox}"
+        FocusManager.FocusedElement="{Binding ElementName=SymbolBox}"
         Loaded="OnLoaded"
         TextElement.Foreground="{x:Static sideways:Brushes.Text}"
         WindowState="Maximized"
@@ -44,6 +44,9 @@
     <Window.InputBindings>
         <KeyBinding Command="{Binding AddBookmarkCommand}" Gesture="Ctrl+B" />
         <KeyBinding Command="{Binding AddToWatchlistCommand}" Gesture="Ctrl+W" />
+        <KeyBinding sideways:Priority.Over="{Binding ElementName=SymbolBox}"
+                    Command="{Binding Animation.ToggleCommand}"
+                    Gesture="Space" />
 
         <KeyBinding Key="Left"
                     Command="{Binding SkipLeftCommand}"
@@ -63,7 +66,6 @@
                     CommandParameter="{x:Static sideways:CandleInterval.Hour}"
                     Modifiers="Shift" />
 
-        <KeyBinding Key="Space" Command="{Binding Animation.ToggleCommand}" />
     </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
@@ -316,7 +318,7 @@
                             VerticalAlignment="Top"
                             Background="{x:Static sideways:Brushes.SemiTransparentBackground}">
                     <StackPanel Orientation="Horizontal">
-                        <ComboBox x:Name="SymbolComboBox"
+                        <ComboBox x:Name="SymbolBox"
                                   HorizontalAlignment="Left"
                                   sideways:ComboBoxEx.IsSymbolSearch="True"
                                   FontSize="24"

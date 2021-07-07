@@ -40,12 +40,6 @@
                     vm.SkipRightCommand.Execute(Interval(Keyboard.Modifiers));
                     e.Handled = true;
                     break;
-                case Key.Space
-                    when this.DataContext is MainViewModel vm &&
-                         ShouldUpdateChart():
-                    vm.Animation.ToggleCommand.Execute(null);
-                    e.Handled = true;
-                    break;
             }
 
             if (e.SystemKey == Key.S &&
@@ -67,7 +61,7 @@
             {
                 return FocusManager.GetFocusedElement(this) switch
                 {
-                    TextBox => this.SymbolComboBox.IsKeyboardFocusWithin,
+                    TextBox => this.SymbolBox.IsKeyboardFocusWithin,
                     _ => true,
                 };
             }
@@ -102,7 +96,7 @@
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            Keyboard.Focus(this.SymbolComboBox);
+            Keyboard.Focus(this.SymbolBox);
         }
 
         private void OnCopy(object sender, RoutedEventArgs e)
