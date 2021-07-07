@@ -42,13 +42,8 @@
     </Window.CommandBindings>
 
     <Window.InputBindings>
-        <KeyBinding Key="B"
-                    Command="{Binding AddBookmarkCommand}"
-                    Modifiers="Control" />
-
-        <KeyBinding Key="W"
-                    Command="{Binding AddToWatchlistCommand}"
-                    Modifiers="Control" />
+        <KeyBinding Command="{Binding AddBookmarkCommand}" Gesture="Ctrl+B" />
+        <KeyBinding Command="{Binding AddToWatchlistCommand}" Gesture="Ctrl+W" />
 
         <KeyBinding Key="Left"
                     Command="{Binding SkipLeftCommand}"
@@ -342,9 +337,7 @@
                                 Visibility="{Binding .,
                                                      Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
                             <Button.ToolTip>
-                                <ToolTip Content="{Binding RelativeSource={RelativeSource Self},
-                                                           Path=PlacementTarget.DataContext}"
-                                         ContentTemplate="{StaticResource SymbolDownloadsTemplate}" />
+                                <ToolTip Content="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}" ContentTemplate="{StaticResource SymbolDownloadsTemplate}" />
                             </Button.ToolTip>
                             <Button.DataContext>
                                 <MultiBinding Converter="{x:Static sideways:SymbolDownloadConverter.Default}">
