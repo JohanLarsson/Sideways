@@ -59,7 +59,7 @@
             _ = days.MovingAverage(20, x => x.Close).Count();
             _ = days.MovingAverage(10, x => x.Close).Count();
             stopwatch.Stop();
-            Assert.Pass($"{1000000 * stopwatch.ElapsedTicks / Stopwatch.Frequency} µs");
+            Assert.Pass($"{1_000_000 * stopwatch.ElapsedTicks / Stopwatch.Frequency} µs");
         }
     }
 }
