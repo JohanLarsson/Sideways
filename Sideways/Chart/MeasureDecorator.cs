@@ -199,7 +199,7 @@
             this.Measurement = this.Measurement switch
             {
                 { To: null } => null,
-                { Finished: true} measurement => measurement,
+                { Finished: true } measurement => measurement,
                 { } measurement => measurement.Finish(),
                 _ => null,
             };

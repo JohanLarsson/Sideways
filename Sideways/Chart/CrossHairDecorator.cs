@@ -24,14 +24,18 @@
             nameof(Position),
             typeof(Point?),
             typeof(CrossHairDecorator),
-            new FrameworkPropertyMetadata(
-                null,
-                FrameworkPropertyMetadataOptions.AffectsRender));
+            new PropertyMetadata(null));
 
         public static readonly DependencyProperty PositionProperty = PositionPropertyKey.DependencyProperty;
 
+        private readonly DrawingVisual drawing = new();
         private Pen? pen;
         private UIElement? child;
+
+        public CrossHairDecorator()
+        {
+            this.AddVisualChild(this.drawing);
+        }
 
 #pragma warning disable WPF0012 // CLR property type should match registered type.
         public SolidColorBrush? Stroke
@@ -71,16 +75,16 @@
             _ => EmptyEnumerator.Instance,
         };
 
-        protected override int VisualChildrenCount => this.child is null ? 0 : 1;
+        protected override int VisualChildrenCount => this.child is null ? 0 : 2;
 
         protected override Visual GetVisualChild(int index)
         {
-            if (this.child is null || index != 0)
+            return index switch
             {
-                throw new ArgumentOutOfRangeException(nameof(index), index, "Check VisualChildrenCount first");
-            }
-
-            return this.child;
+                0 when this.child is { } => this.drawing,
+                1 when this.child is { } => this.child,
+                _ => throw new ArgumentOutOfRangeException(nameof(index), index, "Check VisualChildrenCount first"),
+            };
         }
 
         protected override Size MeasureOverride(Size availableSize)
@@ -106,11 +110,35 @@
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            var renderSize = this.RenderSize;
-            if (this.Stroke is { } brush &&
-                this.Position is { } p)
+            this.Render(this.Position);
+        }
+
+        protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)
+        {
+            return new PointHitTestResult(this, hitTestParameters.HitPoint);
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            var position = e.GetPosition(this);
+            this.Render(position);
+            this.Position = position;
+        }
+
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            this.Render(null);
+            this.Position = null;
+        }
+
+        private void Render(Point? position)
+        {
+            using var drawingContext = this.drawing.RenderOpen();
+            if (this.Stroke is { } stroke &&
+                position is { } p)
             {
-                this.pen ??= CreatePen(brush);
+                var renderSize = this.RenderSize;
+                this.pen ??= CreatePen(stroke);
                 drawingContext.DrawLine(this.pen, new Point(0, p.Y), new Point(renderSize.Width, p.Y));
                 drawingContext.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, renderSize.Height));
 
@@ -121,21 +149,6 @@
                     return temp;
                 }
             }
-        }
-
-        protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)
-        {
-            return new PointHitTestResult(this, hitTestParameters.HitPoint);
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            this.Position = e.GetPosition(this);
-        }
-
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            this.Position = null;
         }
     }
 }
