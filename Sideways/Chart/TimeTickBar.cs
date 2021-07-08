@@ -44,7 +44,7 @@
                 switch (this.CandleInterval)
                 {
                     case CandleInterval.Week:
-                        for (var i = 0; i < this.Candles.Count - 1; i++)
+                        for (var i = 0; i < candles.Count - 1; i++)
                         {
                             if (candles[i].Time.Year != candles[i + 1].Time.Year)
                             {
@@ -60,7 +60,7 @@
 
                         break;
                     case CandleInterval.Day:
-                        for (var i = 0; i < this.Candles.Count - 1; i++)
+                        for (var i = 0; i < candles.Count - 1; i++)
                         {
                             if (candles[i].Time.Month != candles[i + 1].Time.Month)
                             {
@@ -85,7 +85,7 @@
 
                         break;
                     case CandleInterval.Hour:
-                        foreach (var candle in this.Candles)
+                        foreach (var candle in candles)
                         {
                             if (HourAndMinute.EndOfHourCandle(candle.Time) == new HourAndMinute(10, 00))
                             {
@@ -101,9 +101,9 @@
 
                         break;
                     case CandleInterval.FifteenMinutes:
-                        for (var i = 1; i < this.Candles.Count; i++)
+                        for (var i = 1; i < candles.Count; i++)
                         {
-                            var hourAndMinute = HourAndMinute.EndOfHourCandle(this.Candles[i].Time);
+                            var hourAndMinute = HourAndMinute.EndOfHourCandle(candles[i].Time);
                             if (hourAndMinute is { Hour: 9, Minute: 30 } or { Hour: 12, Minute: 0 } or { Hour: 16, Minute: 0 } &&
                                 hourAndMinute != HourAndMinute.EndOfHourCandle(candles[i - 1].Time))
                             {
@@ -119,9 +119,9 @@
 
                         break;
                     case CandleInterval.FiveMinutes:
-                        for (var i = 1; i < this.Candles.Count; i++)
+                        for (var i = 1; i < candles.Count; i++)
                         {
-                            var hourAndMinute = HourAndMinute.EndOfHourCandle(this.Candles[i].Time);
+                            var hourAndMinute = HourAndMinute.EndOfHourCandle(candles[i].Time);
                             if (hourAndMinute.Hour != 20 &&
                                 hourAndMinute != HourAndMinute.EndOfHourCandle(candles[i - 1].Time))
                             {
@@ -137,9 +137,9 @@
 
                         break;
                     case CandleInterval.Minute:
-                        for (var i = 1; i < this.Candles.Count; i++)
+                        for (var i = 1; i < candles.Count; i++)
                         {
-                            var hourAndMinute = HourAndMinute.EndOfThirtyMinutesCandle(this.Candles[i].Time);
+                            var hourAndMinute = HourAndMinute.EndOfThirtyMinutesCandle(candles[i].Time);
                             if (hourAndMinute.Hour != 20 &&
                                 hourAndMinute != HourAndMinute.EndOfThirtyMinutesCandle(candles[i - 1].Time))
                             {
