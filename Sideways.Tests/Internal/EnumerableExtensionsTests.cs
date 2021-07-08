@@ -1,5 +1,9 @@
 ﻿namespace Sideways.Tests.Internal
 {
+    using System;
+    using System.Diagnostics;
+    using System.Linq;
+
     using NUnit.Framework;
 
     public static class EnumerableExtensionsTests
@@ -32,6 +36,28 @@
         public static void MovingAverage(double[] xs, int period, double[] expected)
         {
             CollectionAssert.AreEqual(expected, xs.MovingAverage(period));
+        }
+
+        [Test]
+        public static void BenchmarkMovingAverage()
+        {
+            var days = Database.ReadDays("TSLA", new DateTimeOffset(2018, 01, 01, 00, 00, 00, TimeSpan.Zero), DateTimeOffset.Now);
+            _ = days.MovingAverage(200, x => x.Close).Count();
+            _ = days.MovingAverage(150, x => x.Close).Count();
+            _ = days.MovingAverage(100, x => x.Close).Count();
+            _ = days.MovingAverage(50, x => x.Close).Count();
+            _ = days.MovingAverage(20, x => x.Close).Count();
+            _ = days.MovingAverage(10, x => x.Close).Count();
+
+            var stopwatch = Stopwatch.StartNew();
+            _ = days.MovingAverage(200, x => x.Close).Count();
+            _ = days.MovingAverage(150, x => x.Close).Count();
+            _ = days.MovingAverage(100, x => x.Close).Count();
+            _ = days.MovingAverage(50, x => x.Close).Count();
+            _ = days.MovingAverage(20, x => x.Close).Count();
+            _ = days.MovingAverage(10, x => x.Close).Count();
+            stopwatch.Stop();
+            Assert.Pass($"{1000000 * stopwatch.ElapsedTicks / Stopwatch.Frequency} µs");
         }
     }
 }
