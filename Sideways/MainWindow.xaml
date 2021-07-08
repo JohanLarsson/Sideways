@@ -234,7 +234,7 @@
                                 </sideways:MeasureDecorator>
                             </Grid>
 
-                            <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+                            <sideways:PriceTickBar Grid.Row="0" Grid.Column="1" />
 
                             <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
 
@@ -309,7 +309,7 @@
                                 <sideways:EarningsBar VerticalAlignment="Bottom" Earnings="{Binding CurrentSymbol.QuarterlyEarnings}" />
                             </Grid>
 
-                            <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+                            <sideways:PriceTickBar Grid.Row="0" Grid.Column="1" />
 
                             <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
 
@@ -449,7 +449,7 @@
                                 </sideways:MeasureDecorator>
                             </Grid>
 
-                            <sideways:TextTickBar Grid.Row="0" Grid.Column="1" />
+                            <sideways:PriceTickBar Grid.Row="0" Grid.Column="1" />
 
                             <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
 

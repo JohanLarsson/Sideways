@@ -5,24 +5,24 @@
     using System.Windows.Documents;
     using System.Windows.Media;
 
-    public class TextTickBar : FrameworkElement
+    public class PriceTickBar : FrameworkElement
     {
         public static readonly DependencyProperty FillProperty = DependencyProperty.Register(
             nameof(Fill),
             typeof(SolidColorBrush),
-            typeof(TextTickBar),
+            typeof(PriceTickBar),
             new FrameworkPropertyMetadata(
                 Brushes.Gray,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
         public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
-            typeof(TextTickBar),
+            typeof(PriceTickBar),
             new FrameworkPropertyMetadata(
                 null,
                 FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsParentMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
 
         public static readonly DependencyProperty PriceScaleProperty = Chart.PriceScaleProperty.AddOwner(
-            typeof(TextTickBar),
+            typeof(PriceTickBar),
             new FrameworkPropertyMetadata(
                 Scale.Logarithmic,
                 FrameworkPropertyMetadataOptions.AffectsRender));
