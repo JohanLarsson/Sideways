@@ -64,7 +64,7 @@
                 return new Size(text.Width, text.Height);
             }
 
-            return Size.Empty;
+            return default;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
