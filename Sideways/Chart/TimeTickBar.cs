@@ -9,7 +9,6 @@
 
     public class TimeTickBar : CandleSeries
     {
-        /// <summary>Identifies the <see cref="Fill"/> dependency property.</summary>
         public static readonly DependencyProperty FillProperty = DependencyProperty.Register(
             nameof(Fill),
             typeof(SolidColorBrush),
@@ -18,9 +17,6 @@
                 Brushes.Gray,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>
-        /// Fill property
-        /// </summary>
         public SolidColorBrush Fill
         {
             get => (SolidColorBrush)this.GetValue(FillProperty);
