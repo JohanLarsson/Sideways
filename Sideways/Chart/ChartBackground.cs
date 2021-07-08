@@ -1,6 +1,7 @@
 ﻿namespace Sideways
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Windows;
     using System.Windows.Media;
@@ -49,6 +50,7 @@
         private Pen? selectedBookmarkPen;
         private Pen? selectedScanResultPen;
         private Pen? earningPen;
+        private DashStyle? bookMarksDashStyle;
 
         public string? Symbol
         {
@@ -159,7 +161,9 @@
 
             if (this.SelectedScanResult is { } selectedScanResult)
             {
-                DrawLine(selectedScanResult.Time, this.selectedScanResultPen ??= CreatePen(Brushes.SelectedBookMark, 0.25, DashStyles.Dash));
+                DrawLine(
+                    selectedScanResult.Time,
+                    this.selectedScanResultPen ??= CreatePen(Brushes.SelectedBookMark, 0.25, this.bookMarksDashStyle ??= CreateDashStyle(new[] { 16.0, 16.0 }, 0)));
             }
 
             void DrawBand(Func<Candle, bool> func, SolidColorBrush brush)
@@ -200,13 +204,13 @@
 
             void DrawLine(DateTimeOffset time, Pen pen)
             {
-                if (CandlePosition.X(time, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } bookMarkX &&
-                    bookMarkX < renderSize.Width - this.CandleWidth)
+                if (CandlePosition.X(time, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } x &&
+                    x < renderSize.Width - this.CandleWidth)
                 {
                     drawingContext.DrawLine(
                         pen,
-                        new Point(bookMarkX, 0),
-                        new Point(bookMarkX, renderSize.Height));
+                        new Point(x, 0),
+                        new Point(x, renderSize.Height));
                 }
             }
         }
@@ -219,6 +223,13 @@
             };
             pen.Freeze();
             return pen;
+        }
+
+        private static DashStyle CreateDashStyle(IEnumerable<double> dashes, double offset)
+        {
+            DashStyle style = new(dashes, offset);
+            style.Freeze();
+            return style;
         }
     }
 }
