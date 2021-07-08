@@ -41,7 +41,9 @@
         [Test]
         public static void BenchmarkMovingAverage()
         {
-            var days = Database.ReadDays("TSLA", new DateTimeOffset(2018, 01, 01, 00, 00, 00, TimeSpan.Zero), DateTimeOffset.Now);
+            var days = Database.ReadDays("TSLA", new DateTimeOffset(2018, 01, 01, 00, 00, 00, TimeSpan.Zero), new DateTimeOffset(2021, 01, 01, 00, 00, 00, TimeSpan.Zero));
+
+            // warm up
             _ = days.MovingAverage(200, x => x.Close).Count();
             _ = days.MovingAverage(150, x => x.Close).Count();
             _ = days.MovingAverage(100, x => x.Close).Count();
