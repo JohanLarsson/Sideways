@@ -1,5 +1,6 @@
 ﻿namespace Sideways
 {
+    using System;
     using System.Globalization;
     using System.Windows;
     using System.Windows.Documents;
@@ -27,6 +28,8 @@
                 Scale.Logarithmic,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+        private StepAndFormat stepAndFormat;
+
         public SolidColorBrush Fill
         {
             get => (SolidColorBrush)this.GetValue(FillProperty);
@@ -49,8 +52,9 @@
         {
             if (this.PriceRange is { Max: var max } range)
             {
+                this.stepAndFormat = StepAndFormat.Create(range, availableSize.Height);
                 var text = new FormattedText(
-                    max.ToString(StringFormat(Step(range, availableSize.Height)), DateTimeFormatInfo.InvariantInfo),
+                    max.ToString(this.stepAndFormat.Format, DateTimeFormatInfo.InvariantInfo),
                     CultureInfo.InvariantCulture,
                     FlowDirection.LeftToRight,
                     new Typeface(
@@ -69,7 +73,8 @@
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (this.PriceRange is { } range)
+            if (this.PriceRange is { } range &&
+                this.stepAndFormat is { Step: var step, Format: { } format })
             {
                 var fontFamily = TextElement.GetFontFamily(this);
                 var typeface = new Typeface(
@@ -79,8 +84,6 @@
                     TextElement.GetFontStretch(this));
                 var fontSize = TextElement.GetFontSize(this);
                 var fill = this.Fill;
-                var step = Step(range, this.ActualHeight);
-                var format = StringFormat(step);
                 var value = range.Min + step - (range.Min % step);
                 var halfTextHeight = fontSize * fontFamily.LineSpacing / 2;
                 var position = CandlePosition.RightToLeft(this.RenderSize, default, new ValueRange(range, this.PriceScale));
@@ -108,45 +111,69 @@
             }
         }
 
-        private static float Step(FloatRange range, double height)
+        private readonly struct StepAndFormat : IEquatable<StepAndFormat>
         {
-            if (range.Max - range.Min < 0.0001)
+            internal readonly float Step;
+            internal readonly string Format;
+
+            private StepAndFormat(float step, string format)
             {
-                return float.MaxValue;
+                this.Step = step;
+                this.Format = format;
             }
 
-            var valueRange = new ValueRange(range, Scale.Arithmetic);
-            var step = 1.0f;
-            while (Pixels() < 50)
+            public bool Equals(StepAndFormat other) => this.Step.Equals(other.Step) && this.Format == other.Format;
+
+            public override bool Equals(object? obj) => obj is StepAndFormat other && this.Equals(other);
+
+            public override int GetHashCode() => HashCode.Combine(this.Step, this.Format);
+
+            internal static StepAndFormat Create(FloatRange priceRange, double height)
             {
-                step *= 10;
+                var step = Step(priceRange, height);
+                return new StepAndFormat(step, StringFormat(step));
+
+                static float Step(FloatRange range, double height)
+                {
+                    if (range.Max - range.Min < 0.0001)
+                    {
+                        return float.MaxValue;
+                    }
+
+                    var valueRange = new ValueRange(range, Scale.Arithmetic);
+                    var step = 1.0f;
+                    while (Pixels() < 50)
+                    {
+                        step *= 10;
+                    }
+
+                    while (Pixels() > 500)
+                    {
+                        step /= 10;
+                    }
+
+                    if (Pixels() > 100)
+                    {
+                        step *= 0.5f;
+                    }
+
+                    return step;
+
+                    double Pixels() => valueRange.Y(range.Max - step, height);
+                }
+
+                static string StringFormat(float step)
+                {
+                    return step switch
+                    {
+                        < 0.001f => "F4",
+                        < 0.01f => "F3",
+                        < 0.1f => "F2",
+                        < 1 => "F1",
+                        _ => "F0",
+                    };
+                }
             }
-
-            while (Pixels() > 500)
-            {
-                step /= 10;
-            }
-
-            if (Pixels() > 100)
-            {
-                step *= 0.5f;
-            }
-
-            return step;
-
-            double Pixels() => valueRange.Y(range.Max - step, height);
-        }
-
-        private static string StringFormat(float step)
-        {
-            return step switch
-            {
-                < 0.001f => "F4",
-                < 0.01f => "F3",
-                < 0.1f => "F2",
-                < 1 => "F1",
-                _ => "F0",
-            };
         }
     }
 }
