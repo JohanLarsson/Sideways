@@ -11,9 +11,8 @@
     [ContentProperty(nameof(Child))]
     public class CrossHairDecorator : FrameworkElement
     {
-        /// <summary>Identifies the <see cref="Brush"/> dependency property.</summary>
-        public static readonly DependencyProperty BrushProperty = DependencyProperty.Register(
-            nameof(Brush),
+        public static readonly DependencyProperty StrokeProperty = DependencyProperty.Register(
+            nameof(Stroke),
             typeof(SolidColorBrush),
             typeof(CrossHairDecorator),
             new FrameworkPropertyMetadata(
@@ -21,7 +20,6 @@
                 FrameworkPropertyMetadataOptions.AffectsRender,
                 (o, _) => ((CrossHairDecorator)o).pen = null));
 
-        /// <summary>Identifies the <see cref="Position"/> dependency property.</summary>
         public static readonly DependencyProperty PositionProperty = DependencyProperty.Register(
             nameof(Position),
             typeof(Point?),
@@ -39,11 +37,11 @@
         }
 
 #pragma warning disable WPF0012 // CLR property type should match registered type.
-        public SolidColorBrush? Brush
+        public SolidColorBrush? Stroke
 #pragma warning restore WPF0012 // CLR property type should match registered type.
         {
-            get => (SolidColorBrush?)this.GetValue(BrushProperty);
-            set => this.SetValue(BrushProperty, value);
+            get => (SolidColorBrush?)this.GetValue(StrokeProperty);
+            set => this.SetValue(StrokeProperty, value);
         }
 
         public Point? Position
@@ -112,7 +110,7 @@
         protected override void OnRender(DrawingContext drawingContext)
         {
             var renderSize = this.RenderSize;
-            if (this.Brush is { } brush &&
+            if (this.Stroke is { } brush &&
                 this.IsMouseOver)
             {
                 this.pen ??= CreatePen(brush);
