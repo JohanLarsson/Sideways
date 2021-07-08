@@ -6,21 +6,18 @@
 
     public class VWap : CandleSeries
     {
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
         public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
             typeof(VWap),
             new FrameworkPropertyMetadata(
                 null,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="PriceScale"/> dependency property.</summary>
         public static readonly DependencyProperty PriceScaleProperty = Chart.PriceScaleProperty.AddOwner(
             typeof(VWap),
             new FrameworkPropertyMetadata(
                 Scale.Logarithmic,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="Stroke"/> dependency property.</summary>
         public static readonly DependencyProperty StrokeProperty = DependencyProperty.Register(
             nameof(Stroke),
             typeof(SolidColorBrush),

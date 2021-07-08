@@ -6,21 +6,18 @@
 
     public class MovingAverage : CandleSeries
     {
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
         public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
             typeof(MovingAverage),
             new FrameworkPropertyMetadata(
                 null,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="PriceScale"/> dependency property.</summary>
         public static readonly DependencyProperty PriceScaleProperty = Chart.PriceScaleProperty.AddOwner(
             typeof(MovingAverage),
             new FrameworkPropertyMetadata(
                 Scale.Logarithmic,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="Stroke"/> dependency property.</summary>
         public static readonly DependencyProperty StrokeProperty = DependencyProperty.Register(
             nameof(Stroke),
             typeof(SolidColorBrush),
@@ -30,7 +27,6 @@
                 FrameworkPropertyMetadataOptions.AffectsRender,
                 (d, e) => ((MovingAverage)d).pen = null));
 
-        /// <summary>Identifies the <see cref="Period"/> dependency property.</summary>
         public static readonly DependencyProperty PeriodProperty = DependencyProperty.Register(
             nameof(Period),
             typeof(int),
