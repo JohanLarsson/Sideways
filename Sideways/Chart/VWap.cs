@@ -20,9 +20,9 @@
                 Scale.Logarithmic,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="Brush"/> dependency property.</summary>
-        public static readonly DependencyProperty BrushProperty = DependencyProperty.Register(
-            nameof(Brush),
+        /// <summary>Identifies the <see cref="Stroke"/> dependency property.</summary>
+        public static readonly DependencyProperty StrokeProperty = DependencyProperty.Register(
+            nameof(Stroke),
             typeof(SolidColorBrush),
             typeof(VWap),
             new FrameworkPropertyMetadata(
@@ -52,10 +52,10 @@
             set => this.SetValue(PriceScaleProperty, value);
         }
 
-        public SolidColorBrush? Brush
+        public SolidColorBrush? Stroke
         {
-            get => (SolidColorBrush?)this.GetValue(BrushProperty);
-            set => this.SetValue(BrushProperty, value);
+            get => (SolidColorBrush?)this.GetValue(StrokeProperty);
+            set => this.SetValue(StrokeProperty, value);
         }
 
         protected override int VisualChildrenCount => 1;

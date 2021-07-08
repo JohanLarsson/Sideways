@@ -20,15 +20,15 @@
                 Scale.Logarithmic,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="Brush"/> dependency property.</summary>
-        public static readonly DependencyProperty BrushProperty = DependencyProperty.Register(
-            nameof(Brush),
+        /// <summary>Identifies the <see cref="Stroke"/> dependency property.</summary>
+        public static readonly DependencyProperty StrokeProperty = DependencyProperty.Register(
+            nameof(Stroke),
             typeof(SolidColorBrush),
             typeof(MovingAverage),
             new FrameworkPropertyMetadata(
                 default(SolidColorBrush),
                 FrameworkPropertyMetadataOptions.AffectsRender,
-                (d, e) => ((MovingAverage)d).pen = CreatePen((SolidColorBrush?)e.NewValue)));
+                (d, e) => ((MovingAverage)d).pen = null));
 
         /// <summary>Identifies the <see cref="Period"/> dependency property.</summary>
         public static readonly DependencyProperty PeriodProperty = DependencyProperty.Register(
@@ -59,10 +59,10 @@
             set => this.SetValue(PriceScaleProperty, value);
         }
 
-        public SolidColorBrush? Brush
+        public SolidColorBrush? Stroke
         {
-            get => (SolidColorBrush?)this.GetValue(BrushProperty);
-            set => this.SetValue(BrushProperty, value);
+            get => (SolidColorBrush?)this.GetValue(StrokeProperty);
+            set => this.SetValue(StrokeProperty, value);
         }
 
         public int Period
@@ -86,9 +86,10 @@
         protected override void OnRender(DrawingContext drawingContext)
         {
             using var context = this.drawing.RenderOpen();
-            if (this.pen is { } &&
+            if (this.Stroke is { } brush &&
                 this.PriceRange is { } priceRange)
             {
+                this.pen ??= CreatePen(brush);
                 Point? previous = null;
                 var position = CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale));
                 foreach (var a in this.Candles.MovingAverage(this.Period, c => c.Close))
@@ -112,16 +113,11 @@
             }
         }
 
-        private static Pen? CreatePen(SolidColorBrush? brush)
+        private static Pen CreatePen(SolidColorBrush brush)
         {
-            if (brush is { })
-            {
-                var temp = new Pen(brush, 1);
-                temp.Freeze();
-                return temp;
-            }
-
-            return null;
+            var pen = new Pen(brush, 1);
+            pen.Freeze();
+            return pen;
         }
     }
 }

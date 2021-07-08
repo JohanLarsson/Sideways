@@ -113,6 +113,13 @@
                 this.pen ??= CreatePen(brush);
                 drawingContext.DrawLine(this.pen, new Point(0, p.Y), new Point(renderSize.Width, p.Y));
                 drawingContext.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, renderSize.Height));
+
+                static Pen CreatePen(SolidColorBrush brush)
+                {
+                    var temp = new Pen(brush, 0.25);
+                    temp.Freeze();
+                    return temp;
+                }
             }
         }
 
@@ -129,18 +136,6 @@
         protected override void OnMouseLeave(MouseEventArgs e)
         {
             this.Position = null;
-        }
-
-        private static Pen? CreatePen(SolidColorBrush? brush)
-        {
-            if (brush is { })
-            {
-                var temp = new Pen(brush, 0.25);
-                temp.Freeze();
-                return temp;
-            }
-
-            return null;
         }
     }
 }
