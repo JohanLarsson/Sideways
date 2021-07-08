@@ -103,7 +103,8 @@
                     case CandleInterval.FifteenMinutes:
                         for (var i = 1; i < candles.Count; i++)
                         {
-                            if (BeginHourCandle(i) is { } hourAndMinute and ({ Hour: 9, Minute: 30 } or { Hour: 12, Minute: 0 } or { Hour: 15, Minute: 0 }))
+                            if (BeginHourCandle(i) is { } hourAndMinute &&
+                                hourAndMinute is { Hour: 9, Minute: 30 } or { Hour: 12, Minute: 0 } or { Hour: 15, Minute: 0 })
                             {
                                 DrawText($"{hourAndMinute.Hour}:{hourAndMinute.Minute:00}", position.Left);
                             }

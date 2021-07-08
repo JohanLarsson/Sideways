@@ -76,7 +76,7 @@
         protected override Size MeasureOverride(Size availableSize)
         {
             this.Candles.ExtraCount = Math.Max(this.Candles.ExtraCount, this.Period);
-            return base.MeasureOverride(availableSize);
+            return default;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
@@ -93,10 +93,7 @@
                     var p2 = new Point(position.CenterLeft, position.Y(a));
                     if (previous is { } p1)
                     {
-                        context.DrawLine(
-                            this.pen,
-                            p1,
-                            p2);
+                        context.DrawLine(this.pen, p1, p2);
                     }
 
                     previous = p2;
@@ -106,14 +103,14 @@
                         break;
                     }
                 }
-            }
-        }
 
-        private static Pen CreatePen(SolidColorBrush brush)
-        {
-            var pen = new Pen(brush, 1);
-            pen.Freeze();
-            return pen;
+                static Pen CreatePen(SolidColorBrush brush)
+                {
+                    var pen = new Pen(brush, 1);
+                    pen.Freeze();
+                    return pen;
+                }
+            }
         }
     }
 }
