@@ -196,16 +196,19 @@
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
-            if (this.Measurement is { To: null })
+            this.Measurement = this.Measurement switch
             {
-                this.Measurement = null;
-            }
+                { To: null } => null,
+                { Finished: true} measurement => measurement,
+                { } measurement => measurement.Finish(),
+                _ => null,
+            };
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed &&
-                this.Measurement is { } measurement &&
+                this.Measurement is { Finished: false } measurement &&
                 this.ItemsSource is { } itemsSource &&
                 this.Candles is { } candles &&
                 this.TimeAndPrice(e.GetPosition(this)) is { } timeAndPrice)
