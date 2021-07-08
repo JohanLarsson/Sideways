@@ -5,35 +5,30 @@
 
     public abstract class CandleSeries : FrameworkElement
     {
-        /// <summary>Identifies the <see cref="ItemsSource"/> dependency property.</summary>
         public static readonly DependencyProperty ItemsSourceProperty = Chart.ItemsSourceProperty.AddOwner(
             typeof(CandleSeries),
             new FrameworkPropertyMetadata(
                 default(Candles),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="Time"/> dependency property.</summary>
         public static readonly DependencyProperty TimeProperty = Chart.TimeProperty.AddOwner(
             typeof(CandleSeries),
             new FrameworkPropertyMetadata(
                 DateTimeOffset.Now,
                 FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        /// <summary>Identifies the <see cref="CandleInterval"/> dependency property.</summary>
         public static readonly DependencyProperty CandleIntervalProperty = Chart.CandleIntervalProperty.AddOwner(
             typeof(CandleSeries),
             new FrameworkPropertyMetadata(
                 CandleInterval.None,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="CandleWidth"/> dependency property.</summary>
         public static readonly DependencyProperty CandleWidthProperty = Chart.CandleWidthProperty.AddOwner(
             typeof(CandleSeries),
             new FrameworkPropertyMetadata(
                 5,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="Candles"/> dependency property.</summary>
         public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(typeof(CandleSeries));
 
         static CandleSeries()
