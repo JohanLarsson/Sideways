@@ -103,9 +103,7 @@
                     case CandleInterval.FifteenMinutes:
                         for (var i = 1; i < candles.Count; i++)
                         {
-                            var hourAndMinute = HourAndMinute.EndOfHourCandle(candles[i].Time);
-                            if (hourAndMinute is { Hour: 9, Minute: 30 } or { Hour: 12, Minute: 0 } or { Hour: 16, Minute: 0 } &&
-                                hourAndMinute != HourAndMinute.EndOfHourCandle(candles[i - 1].Time))
+                            if (BeginHourCandle(i) is { } hourAndMinute and ({ Hour: 9, Minute: 30 } or { Hour: 12, Minute: 0 } or { Hour: 15, Minute: 0 }))
                             {
                                 DrawText($"{hourAndMinute.Hour}:{hourAndMinute.Minute:00}", position.Left);
                             }
@@ -121,9 +119,8 @@
                     case CandleInterval.FiveMinutes:
                         for (var i = 1; i < candles.Count; i++)
                         {
-                            var hourAndMinute = HourAndMinute.EndOfHourCandle(candles[i].Time);
-                            if (hourAndMinute.Hour != 20 &&
-                                hourAndMinute != HourAndMinute.EndOfHourCandle(candles[i - 1].Time))
+                            if (TradingDay.IsRegularHours(candles[i].Time) &&
+                                BeginHourCandle(i) is { } hourAndMinute)
                             {
                                 DrawText($"{hourAndMinute.Hour}:{hourAndMinute.Minute:00}", position.Left);
                             }
@@ -156,6 +153,23 @@
                         break;
                     default:
                         throw new InvalidEnumArgumentException();
+                }
+
+                HourAndMinute? BeginHourCandle(int index)
+                {
+                    var end = HourAndMinute.EndOfHourCandle(candles[index].Time);
+                    if (index < candles.Count - 1 &&
+                        end != HourAndMinute.EndOfHourCandle(candles[index + 1].Time))
+                    {
+                        return end switch
+                        {
+                            { Hour: 10 } => new HourAndMinute(09, 30),
+                            { Hour: 9, Minute: 30 } => new HourAndMinute(09, 00),
+                            _ => new HourAndMinute(end.Hour - 1, 00),
+                        };
+                    }
+
+                    return null;
                 }
 
                 void DrawText(string text, double x)
