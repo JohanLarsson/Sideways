@@ -20,7 +20,7 @@
                 FrameworkPropertyMetadataOptions.AffectsRender,
                 (o, _) => ((CrossHairDecorator)o).pen = null));
 
-        public static readonly DependencyProperty PositionProperty = DependencyProperty.Register(
+        private static readonly DependencyPropertyKey PositionPropertyKey = DependencyProperty.RegisterReadOnly(
             nameof(Position),
             typeof(Point?),
             typeof(CrossHairDecorator),
@@ -28,13 +28,10 @@
                 null,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+        public static readonly DependencyProperty PositionProperty = PositionPropertyKey.DependencyProperty;
+
         private Pen? pen;
         private UIElement? child;
-
-        static CrossHairDecorator()
-        {
-            ClipToBoundsProperty.OverrideMetadata(typeof(CrossHairDecorator), new PropertyMetadata(true));
-        }
 
 #pragma warning disable WPF0012 // CLR property type should match registered type.
         public SolidColorBrush? Stroke
@@ -47,7 +44,7 @@
         public Point? Position
         {
             get => (Point?)this.GetValue(PositionProperty);
-            set => this.SetValue(PositionProperty, value);
+            set => this.SetValue(PositionPropertyKey, value);
         }
 
         [DefaultValue(null)]
@@ -111,10 +108,9 @@
         {
             var renderSize = this.RenderSize;
             if (this.Stroke is { } brush &&
-                this.IsMouseOver)
+                this.Position is { } p)
             {
                 this.pen ??= CreatePen(brush);
-                var p = Mouse.GetPosition(this);
                 drawingContext.DrawLine(this.pen, new Point(0, p.Y), new Point(renderSize.Width, p.Y));
                 drawingContext.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, renderSize.Height));
             }
@@ -127,12 +123,12 @@
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            this.SetCurrentValue(PositionProperty, e.GetPosition(this));
+            this.Position = e.GetPosition(this);
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)
         {
-            this.SetCurrentValue(PositionProperty, null);
+            this.Position = null;
         }
 
         private static Pen? CreatePen(SolidColorBrush? brush)
