@@ -116,8 +116,23 @@
                     case ListBox listBox:
                         listBox.ScrollIntoView(listBox.SelectedItem);
                         break;
-                    case DataGrid listBox:
-                        listBox.ScrollIntoView(listBox.SelectedItem);
+                    case DataGrid dataGrid:
+                        dataGrid.ScrollIntoView(dataGrid.SelectedItem);
+                        FindFocusable()?.Focus();
+
+                        DataGridCell? FindFocusable()
+                        {
+                            foreach (var column in dataGrid.Columns)
+                            {
+                                if (column.GetCellContent(dataGrid.SelectedItem) is { Parent: DataGridCell { Focusable: true } cell })
+                                {
+                                    return cell;
+                                }
+                            }
+
+                            return null;
+                        }
+
                         break;
                 }
             }
