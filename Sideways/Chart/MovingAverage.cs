@@ -72,10 +72,10 @@
             ? this.layer
             : throw new ArgumentOutOfRangeException(nameof(index));
 
-        protected override Size MeasureOverride(Size availableSize)
+        protected override Size ArrangeOverride(Size finalSize)
         {
             this.Candles.ExtraCount = Math.Max(this.Candles.ExtraCount, this.Period);
-            return default;
+            return finalSize;
         }
 
         protected override void OnRender(DrawingContext drawingContext)

@@ -51,7 +51,7 @@
         protected override Size ArrangeOverride(Size finalSize)
         {
             this.Candles.VisibleCount = (int)Math.Ceiling(finalSize.Width / this.CandleWidth);
-            return base.ArrangeOverride(finalSize);
+            return finalSize;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
