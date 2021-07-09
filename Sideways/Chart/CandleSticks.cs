@@ -49,7 +49,7 @@
         protected override Size MeasureOverride(Size availableSize)
         {
             this.Candles.VisibleCount = (int)Math.Ceiling(availableSize.Width / this.CandleWidth);
-            return base.MeasureOverride(availableSize);
+            return default;
         }
 
         protected override Visual GetVisualChild(int index) => index == 0
