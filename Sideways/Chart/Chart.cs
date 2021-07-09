@@ -164,7 +164,7 @@
             }
 
             this.Refresh();
-            return base.ArrangeOverride(finalSize);
+            return finalSize;
         }
 
         protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)

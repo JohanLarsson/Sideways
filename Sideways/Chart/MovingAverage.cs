@@ -25,7 +25,7 @@
             new FrameworkPropertyMetadata(
                 default(SolidColorBrush),
                 FrameworkPropertyMetadataOptions.AffectsRender,
-                (d, e) => ((MovingAverage)d).pen = null));
+                (d, _) => ((MovingAverage)d).pen = null));
 
         public static readonly DependencyProperty PeriodProperty = DependencyProperty.Register(
             nameof(Period),
