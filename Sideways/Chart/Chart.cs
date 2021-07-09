@@ -18,7 +18,7 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 default(DateTimeOffset),
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.RegisterAttached(
             nameof(ItemsSource),
@@ -42,7 +42,7 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 CandleInterval.None,
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public static readonly DependencyProperty CandleWidthProperty = DependencyProperty.RegisterAttached(
             nameof(CandleWidth),
@@ -50,7 +50,7 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 5,
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public static readonly DependencyProperty PriceRangeProperty = DependencyProperty.RegisterAttached(
             nameof(PriceRange),
@@ -200,15 +200,9 @@
             return base.ArrangeOverride(finalSize);
         }
 
-        /// <summary>
-        ///     Fills in the background based on the Background property.
-        /// </summary>
-        protected override void OnRender(DrawingContext drawingContext)
+        protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)
         {
-            drawingContext.DrawRectangle(
-                Brushes.Transparent,
-                null,
-                new Rect(this.RenderSize));
+            return new PointHitTestResult(this, hitTestParameters.HitPoint);
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
