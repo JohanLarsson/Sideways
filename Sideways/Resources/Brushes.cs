@@ -9,8 +9,9 @@
         public static readonly SolidColorBrush MeasureBackground = Create(Color.FromArgb(30, 160, 160, 160));
         public static readonly SolidColorBrush Increasing = Create(Color.FromArgb(byte.MaxValue, 66, 154, 66));
         public static readonly SolidColorBrush Decreasing = Create(Color.FromArgb(byte.MaxValue, 154, 66, 66));
-        public static readonly SolidColorBrush PreMarket = Create(Color.FromArgb(10, 255, 255, 20));
-        public static readonly SolidColorBrush PostMarket = Create(Color.FromArgb(10, 50, 50, 255));
+        public static readonly SolidColorBrush PreMarket = Create(Color.FromArgb(9, 255, 255, 20));
+        public static readonly SolidColorBrush PostMarket = Create(Color.FromArgb(9, 50, 50, 255));
+        public static readonly SolidColorBrush Even = Create(Color.FromArgb(10, 80, 80, 80));
 
         public static readonly SolidColorBrush Ma10 = Create(Color.FromArgb(150, 99, 61, 143));
         public static readonly SolidColorBrush Ma20 = Create(Color.FromArgb(120, 143, 139, 61));
@@ -19,7 +20,6 @@
         public static readonly SolidColorBrush Ma100 = Create(Color.FromArgb(80, 143, 113, 61));
         public static readonly SolidColorBrush Ma200 = Create(Color.FromArgb(80, 61, 143, 61));
 
-        public static readonly SolidColorBrush Even = Create(Color.FromArgb(10, 80, 80, 80));
         public static readonly SolidColorBrush LightGray = Create(Color.FromArgb(byte.MaxValue, 160, 160, 160));
         public static readonly SolidColorBrush Gray = Create(Color.FromArgb(byte.MaxValue, 128, 128, 128));
         public static readonly SolidColorBrush DarkGray = Create(Color.FromArgb(byte.MaxValue, 40, 40, 40));
