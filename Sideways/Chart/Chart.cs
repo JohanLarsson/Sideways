@@ -26,7 +26,8 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 default(DateTimeOffset),
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsArrange));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                (o, _) => (o as Chart)?.Refresh()));
 
         public static readonly DependencyProperty CandleIntervalProperty = DependencyProperty.RegisterAttached(
             nameof(CandleInterval),
@@ -157,44 +158,7 @@
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            var candles = this.Candles;
-            candles.Clear();
-            if (finalSize is { Width: > 0, Height: > 0 } &&
-                this.ItemsSource is { } itemsSource)
-            {
-                var min = float.MaxValue;
-                var max = float.MinValue;
-                var maxVolume = 0;
-                foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval)
-                                                  .Take(candles.VisibleCount + candles.ExtraCount))
-                {
-                    if (candles.Count <= candles.VisibleCount)
-                    {
-                        min = Math.Min(min, candle.Low);
-                        max = Math.Max(max, candle.High);
-                        maxVolume = Math.Max(maxVolume, candle.Volume);
-                    }
-
-                    candles.Add(candle);
-                }
-
-                if (candles.Count > 0)
-                {
-                    this.SetCurrentValue(PriceRangeProperty, new FloatRange(min, max));
-                    this.SetCurrentValue(MaxVolumeProperty, maxVolume);
-                }
-                else
-                {
-                    this.SetCurrentValue(PriceRangeProperty, null);
-                    this.SetCurrentValue(MaxVolumeProperty, 0);
-                }
-            }
-            else
-            {
-                this.SetCurrentValue(PriceRangeProperty, null);
-                this.SetCurrentValue(MaxVolumeProperty, 0);
-            }
-
+            this.Refresh();
             foreach (UIElement child in this.Children)
             {
                 child.Arrange(new Rect(finalSize));
@@ -257,6 +221,47 @@
 
                 // Must be better ways for this but may require pinvoke. Good enough for now.
                 static bool IsFromTouch(MouseWheelEventArgs e) => e.Delta % Mouse.MouseWheelDeltaForOneLine != 0;
+            }
+        }
+
+        private void Refresh()
+        {
+            var candles = this.Candles;
+            candles.Clear();
+            if (candles.VisibleCount > 0 &&
+                this.ItemsSource is { } itemsSource)
+            {
+                var min = float.MaxValue;
+                var max = float.MinValue;
+                var maxVolume = 0;
+                foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval)
+                                                  .Take(candles.VisibleCount + candles.ExtraCount))
+                {
+                    if (candles.Count <= candles.VisibleCount)
+                    {
+                        min = Math.Min(min, candle.Low);
+                        max = Math.Max(max, candle.High);
+                        maxVolume = Math.Max(maxVolume, candle.Volume);
+                    }
+
+                    candles.Add(candle);
+                }
+
+                if (candles.Count > 0)
+                {
+                    this.SetCurrentValue(PriceRangeProperty, new FloatRange(min, max));
+                    this.SetCurrentValue(MaxVolumeProperty, maxVolume);
+                }
+                else
+                {
+                    this.SetCurrentValue(PriceRangeProperty, null);
+                    this.SetCurrentValue(MaxVolumeProperty, 0);
+                }
+            }
+            else
+            {
+                this.SetCurrentValue(PriceRangeProperty, null);
+                this.SetCurrentValue(MaxVolumeProperty, 0);
             }
         }
 
