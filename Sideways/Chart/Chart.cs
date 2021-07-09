@@ -158,12 +158,12 @@
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            this.Refresh();
             foreach (UIElement child in this.Children)
             {
                 child.Arrange(new Rect(finalSize));
             }
 
+            this.Refresh();
             return base.ArrangeOverride(finalSize);
         }
 

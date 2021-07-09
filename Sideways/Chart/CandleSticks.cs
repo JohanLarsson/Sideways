@@ -48,10 +48,10 @@
             ? this.layer
             : throw new ArgumentOutOfRangeException(nameof(index));
 
-        protected override Size MeasureOverride(Size availableSize)
+        protected override Size ArrangeOverride(Size finalSize)
         {
-            this.Candles.VisibleCount = (int)Math.Ceiling(availableSize.Width / this.CandleWidth);
-            return default;
+            this.Candles.VisibleCount = (int)Math.Ceiling(finalSize.Width / this.CandleWidth);
+            return base.ArrangeOverride(finalSize);
         }
 
         protected override void OnRender(DrawingContext drawingContext)
