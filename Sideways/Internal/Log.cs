@@ -42,7 +42,7 @@
 
                 this.disposed = true;
                 this.stopwatch.Stop();
-                indent = indent.Substring(2);
+                indent = indent[2..];
                 Debug.WriteLine(indent + this.text + (this.stopwatch.ElapsedMilliseconds > 0 ? $" took: {this.stopwatch.ElapsedMilliseconds} ms" : $" took: {1_000_000 * this.stopwatch.ElapsedTicks / Stopwatch.Frequency} µs"));
             }
         }
