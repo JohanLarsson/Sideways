@@ -84,12 +84,12 @@
             if (this.Stroke is { } brush &&
                 this.PriceRange is { } priceRange)
             {
-                this.pen ??= CreatePen(brush);
+                this.pen ??= Brushes.CreatePen(brush);
                 Point? previous = null;
                 var position = CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale));
                 foreach (var a in this.Candles.MovingAverage(this.Period, c => c.Close))
                 {
-                    var p2 = new Point(position.CenterLeft, position.Y(a));
+                    var p2 = new Point(position.Center, position.Y(a));
                     if (previous is { } p1)
                     {
                         context.DrawLine(this.pen, p1, p2);
@@ -101,13 +101,6 @@
                     {
                         break;
                     }
-                }
-
-                static Pen CreatePen(SolidColorBrush brush)
-                {
-                    var pen = new Pen(brush, 1);
-                    pen.Freeze();
-                    return pen;
                 }
             }
         }

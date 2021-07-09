@@ -41,6 +41,13 @@
 
         public static SolidColorBrush Get(Candle candle) => candle.Open < candle.Close ? Increasing : Decreasing;
 
+        public static Pen CreatePen(SolidColorBrush brush)
+        {
+            var pen = new Pen(brush, 1);
+            pen.Freeze();
+            return pen;
+        }
+
         private static SolidColorBrush Create(Color color)
         {
             var brush = new SolidColorBrush(color);

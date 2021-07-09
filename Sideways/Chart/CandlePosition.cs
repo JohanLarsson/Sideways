@@ -7,22 +7,20 @@
     {
         internal readonly double Left;
         internal readonly double Right;
-        internal readonly double CenterLeft;
-        internal readonly double CenterRight;
         private readonly int candleWidth;
         private readonly Size renderSize;
         private readonly ValueRange valueRange;
 
-        private CandlePosition(double left, double right, double centerLeft, double centerRight, int candleWidth, Size renderSize, ValueRange valueRange)
+        private CandlePosition(double left, double right, int candleWidth, Size renderSize, ValueRange valueRange)
         {
             this.Left = left;
             this.Right = right;
-            this.CenterLeft = centerLeft;
-            this.CenterRight = centerRight;
             this.candleWidth = candleWidth;
             this.renderSize = renderSize;
             this.valueRange = valueRange;
         }
+
+        internal double Center => (this.Left + this.Right) / 2;
 
         public static bool operator ==(CandlePosition left, CandlePosition right)
         {
@@ -38,13 +36,10 @@
         {
             var right = renderSize.Width - rightPad;
             var left = right - candleWidth + rightPad + leftPad;
-            var centerRight = Math.Ceiling((right + left) / 2);
 
             return new(
                 left: left,
                 right: right,
-                centerLeft: centerRight - 1,
-                centerRight: centerRight,
                 candleWidth: candleWidth,
                 renderSize: renderSize,
                 valueRange: valueRange);
@@ -133,6 +128,11 @@
             return null;
         }
 
+        public static double SnapCenterX(double x, int candleWidth)
+        {
+            return x - (x % candleWidth) + (0.5 * candleWidth);
+        }
+
         public double Y(float value) => this.valueRange.Y(value, this.renderSize.Height);
 
         public TimeAndPrice? TimeAndPrice(Point position, DescendingCandles candles)
@@ -149,8 +149,6 @@
         public CandlePosition ShiftLeft() => new(
             left: this.Left - this.candleWidth,
             right: this.Right - this.candleWidth,
-            centerLeft: this.CenterLeft - this.candleWidth,
-            centerRight: this.CenterRight - this.candleWidth,
             candleWidth: this.candleWidth,
             renderSize: this.renderSize,
             valueRange: this.valueRange);
@@ -159,8 +157,6 @@
         {
             return this.Left.Equals(other.Left) &&
                    this.Right.Equals(other.Right) &&
-                   this.CenterLeft.Equals(other.CenterLeft) &&
-                   this.CenterRight.Equals(other.CenterRight) &&
                    this.candleWidth.Equals(other.candleWidth) &&
                    Size.Equals(this.renderSize, other.renderSize) &&
                    this.valueRange.Equals(other.valueRange);
@@ -173,7 +169,7 @@
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(this.Left, this.Right, this.CenterLeft, this.CenterRight, this.candleWidth, this.renderSize, this.valueRange);
+            return HashCode.Combine(this.Left, this.Right, this.candleWidth, this.renderSize, this.valueRange);
         }
     }
 }

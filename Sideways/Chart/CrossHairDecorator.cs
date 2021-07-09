@@ -20,6 +20,12 @@
                 FrameworkPropertyMetadataOptions.AffectsRender,
                 (o, _) => ((CrossHairDecorator)o).pen = null));
 
+        public static readonly DependencyProperty CandleWidthProperty = Chart.CandleWidthProperty.AddOwner(
+            typeof(CrossHairDecorator),
+            new FrameworkPropertyMetadata(
+                5,
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         private static readonly DependencyPropertyKey PositionPropertyKey = DependencyProperty.RegisterReadOnly(
             nameof(Position),
             typeof(Point?),
@@ -43,6 +49,12 @@
         {
             get => (SolidColorBrush?)this.GetValue(StrokeProperty);
             set => this.SetValue(StrokeProperty, value);
+        }
+
+        public int CandleWidth
+        {
+            get => (int)this.GetValue(CandleWidthProperty);
+            set => this.SetValue(CandleWidthProperty, value);
         }
 
         public Point? Position
@@ -137,6 +149,7 @@
             if (this.Stroke is { } stroke &&
                 position is { } p)
             {
+                p = new Point(CandlePosition.SnapCenterX(p.X, this.CandleWidth), p.Y);
                 var renderSize = this.RenderSize;
                 this.pen ??= CreatePen(stroke);
                 drawingContext.DrawLine(this.pen, new Point(0, p.Y), new Point(renderSize.Width, p.Y));

@@ -72,7 +72,7 @@
                 var position = CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale));
                 foreach (var a in candles.DescendingVWaps(this.Time, this.CandleInterval))
                 {
-                    var p2 = new Point(position.CenterLeft, position.Y(a));
+                    var p2 = new Point(position.Center, position.Y(a));
                     if (previous is { } p1)
                     {
                         context.DrawLine(

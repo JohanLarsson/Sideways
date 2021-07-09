@@ -18,6 +18,9 @@
                 Scale.Logarithmic,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+        private static readonly Pen IncreasingPen = Brushes.CreatePen(Brushes.Increasing);
+        private static readonly Pen DecreasingPen = Brushes.CreatePen(Brushes.Decreasing);
+
         private readonly LayerVisual layer = new();
 
         static CandleSticks()
@@ -62,13 +65,10 @@
                 var position = CandlePosition.RightToLeftPadded(this.RenderSize, this.CandleWidth, new ValueRange(range, this.PriceScale));
                 foreach (var candle in this.Candles)
                 {
-                    var brush = Brushes.Get(candle);
-                    context.DrawRectangle(
-                        brush,
-                        null,
-                        Rect(
-                            new Point(position.CenterLeft, position.Y(candle.Low)),
-                            new Point(position.CenterRight, position.Y(candle.High))));
+                    context.DrawLine(
+                        GetPen(candle),
+                        new Point(position.Center, position.Y(candle.Low)),
+                        new Point(position.Center, position.Y(candle.High)));
                     var yOpen = (int)position.Y(candle.Open);
                     var yClose = (int)position.Y(candle.Close);
                     if (yOpen == yClose)
@@ -77,7 +77,7 @@
                     }
 
                     context.DrawRectangle(
-                        brush,
+                        Brushes.Get(candle),
                         null,
                         Rect(
                             new Point(position.Left, yOpen),
@@ -89,6 +89,10 @@
                         break;
                     }
                 }
+
+                static Pen GetPen(Candle candle) => candle.Open < candle.Close
+                    ? IncreasingPen
+                    : DecreasingPen;
 
                 static Rect Rect(Point p1, Point p2)
                 {
