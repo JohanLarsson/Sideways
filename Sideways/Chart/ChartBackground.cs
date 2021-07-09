@@ -141,7 +141,7 @@
                     if (CandlePosition.X(earning.ReportedDate, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } earningX)
                     {
                         drawingContext.DrawLine(
-                            this.earningPen ??= CreatePen(Brushes.Gray, 0.25),
+                            this.earningPen ??= CreatePen(Brushes.MediumDarkGray, 0.25),
                             new Point(earningX, 0),
                             new Point(earningX, renderSize.Height));
                     }
