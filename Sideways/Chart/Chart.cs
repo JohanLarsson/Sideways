@@ -12,14 +12,6 @@
     [ContentProperty(nameof(Children))]
     public class Chart : FrameworkElement
     {
-        public static readonly DependencyProperty TimeProperty = DependencyProperty.RegisterAttached(
-            nameof(Time),
-            typeof(DateTimeOffset),
-            typeof(Chart),
-            new FrameworkPropertyMetadata(
-                default(DateTimeOffset),
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsArrange));
-
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.RegisterAttached(
             nameof(ItemsSource),
             typeof(Candles),
@@ -28,13 +20,13 @@
                 default(Candles),
                 FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-        public static readonly DependencyProperty CandlesProperty = DependencyProperty.RegisterAttached(
-            nameof(Candles),
-            typeof(DescendingCandles),
+        public static readonly DependencyProperty TimeProperty = DependencyProperty.RegisterAttached(
+            nameof(Time),
+            typeof(DateTimeOffset),
             typeof(Chart),
             new FrameworkPropertyMetadata(
-                default(DescendingCandles),
-                FrameworkPropertyMetadataOptions.Inherits));
+                default(DateTimeOffset),
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public static readonly DependencyProperty CandleIntervalProperty = DependencyProperty.RegisterAttached(
             nameof(CandleInterval),
@@ -52,20 +44,28 @@
                 5,
                 FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-        public static readonly DependencyProperty PriceRangeProperty = DependencyProperty.RegisterAttached(
-            nameof(PriceRange),
-            typeof(FloatRange?),
-            typeof(Chart),
-            new FrameworkPropertyMetadata(
-                null,
-                FrameworkPropertyMetadataOptions.Inherits));
-
         public static readonly DependencyProperty PriceScaleProperty = DependencyProperty.RegisterAttached(
             nameof(PriceScale),
             typeof(Scale),
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 Scale.Logarithmic,
+                FrameworkPropertyMetadataOptions.Inherits));
+
+        public static readonly DependencyProperty CandlesProperty = DependencyProperty.RegisterAttached(
+            nameof(Candles),
+            typeof(DescendingCandles),
+            typeof(Chart),
+            new FrameworkPropertyMetadata(
+                default(DescendingCandles),
+                FrameworkPropertyMetadataOptions.Inherits));
+
+        public static readonly DependencyProperty PriceRangeProperty = DependencyProperty.RegisterAttached(
+            nameof(PriceRange),
+            typeof(FloatRange?),
+            typeof(Chart),
+            new FrameworkPropertyMetadata(
+                null,
                 FrameworkPropertyMetadataOptions.Inherits));
 
         public static readonly DependencyProperty MaxVolumeProperty = DependencyProperty.RegisterAttached(
@@ -82,11 +82,7 @@
             this.Candles = new DescendingCandles();
         }
 
-        public DateTimeOffset Time
-        {
-            get => (DateTimeOffset)this.GetValue(TimeProperty);
-            set => this.SetValue(TimeProperty, value);
-        }
+        public UIElementCollection Children { get; }
 
         public Candles? ItemsSource
         {
@@ -94,12 +90,10 @@
             set => this.SetValue(ItemsSourceProperty, value);
         }
 
-#pragma warning disable WPF0012 // CLR property type should match registered type.
-        public DescendingCandles Candles
-#pragma warning restore WPF0012 // CLR property type should match registered type.
+        public DateTimeOffset Time
         {
-            get => (DescendingCandles)this.GetValue(CandlesProperty);
-            set => this.SetValue(CandlesProperty, value);
+            get => (DateTimeOffset)this.GetValue(TimeProperty);
+            set => this.SetValue(TimeProperty, value);
         }
 
         public CandleInterval CandleInterval
@@ -114,16 +108,24 @@
             set => this.SetValue(CandleWidthProperty, value);
         }
 
-        public FloatRange? PriceRange
-        {
-            get => (FloatRange?)this.GetValue(PriceRangeProperty);
-            protected set => this.SetValue(PriceRangeProperty, value);
-        }
-
         public Scale PriceScale
         {
             get => (Scale)this.GetValue(PriceScaleProperty);
             set => this.SetValue(PriceScaleProperty, value);
+        }
+
+#pragma warning disable WPF0012 // CLR property type should match registered type.
+        public DescendingCandles Candles
+#pragma warning restore WPF0012 // CLR property type should match registered type.
+        {
+            get => (DescendingCandles)this.GetValue(CandlesProperty);
+            set => this.SetValue(CandlesProperty, value);
+        }
+
+        public FloatRange? PriceRange
+        {
+            get => (FloatRange?)this.GetValue(PriceRangeProperty);
+            protected set => this.SetValue(PriceRangeProperty, value);
         }
 
         public int? MaxVolume
@@ -131,8 +133,6 @@
             get => (int?)this.GetValue(MaxVolumeProperty);
             protected set => this.SetValue(MaxVolumeProperty, value);
         }
-
-        public UIElementCollection Children { get; }
 
         protected override int VisualChildrenCount => this.Children.Count;
 
