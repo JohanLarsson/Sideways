@@ -142,6 +142,9 @@
 
         protected override Size MeasureOverride(Size availableSize)
         {
+            var candles = this.Candles;
+            candles.VisibleCount = 0;
+            candles.ExtraCount = 0;
             var rect = Rect.Empty;
             foreach (UIElement child in this.Children)
             {
