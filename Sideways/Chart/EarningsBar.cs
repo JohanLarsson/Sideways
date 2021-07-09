@@ -9,7 +9,6 @@
 
     public class EarningsBar : FrameworkElement
     {
-        /// <summary>Identifies the <see cref="Earnings"/> dependency property.</summary>
         public static readonly DependencyProperty EarningsProperty = DependencyProperty.Register(
             nameof(Earnings),
             typeof(ImmutableArray<QuarterlyEarning>),
@@ -19,21 +18,18 @@
                 FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
                 (d, e) => ((EarningsBar)d).OnEarningsChanged((ImmutableArray<QuarterlyEarning>)e.NewValue)));
 
-        /// <summary>Identifies the <see cref="Time"/> dependency property.</summary>
         public static readonly DependencyProperty TimeProperty = Chart.TimeProperty.AddOwner(
             typeof(EarningsBar),
             new FrameworkPropertyMetadata(
                 DateTimeOffset.Now,
                 FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        /// <summary>Identifies the <see cref="CandleInterval"/> dependency property.</summary>
         public static readonly DependencyProperty CandleIntervalProperty = Chart.CandleIntervalProperty.AddOwner(
             typeof(EarningsBar),
             new FrameworkPropertyMetadata(
                 CandleInterval.None,
                 FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-        /// <summary>Identifies the <see cref="CandleWidth"/> dependency property.</summary>
         public static readonly DependencyProperty CandleWidthProperty = Chart.CandleWidthProperty.AddOwner(
             typeof(EarningsBar),
             new FrameworkPropertyMetadata(

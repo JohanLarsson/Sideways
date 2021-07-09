@@ -12,7 +12,6 @@
     [ContentProperty(nameof(Children))]
     public class Chart : FrameworkElement
     {
-        /// <summary>Identifies the <see cref="Time"/> dependency property.</summary>
         public static readonly DependencyProperty TimeProperty = DependencyProperty.RegisterAttached(
             nameof(Time),
             typeof(DateTimeOffset),
@@ -21,7 +20,6 @@
                 default(DateTimeOffset),
                 FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="ItemsSource"/> dependency property.</summary>
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.RegisterAttached(
             nameof(ItemsSource),
             typeof(Candles),
@@ -30,7 +28,6 @@
                 default(Candles),
                 FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-        /// <summary>Identifies the <see cref="Candles"/> dependency property.</summary>
         public static readonly DependencyProperty CandlesProperty = DependencyProperty.RegisterAttached(
             nameof(Candles),
             typeof(DescendingCandles),
@@ -39,7 +36,6 @@
                 default(DescendingCandles),
                 FrameworkPropertyMetadataOptions.Inherits));
 
-        /// <summary>Identifies the <see cref="CandleInterval"/> dependency property.</summary>
         public static readonly DependencyProperty CandleIntervalProperty = DependencyProperty.RegisterAttached(
             nameof(CandleInterval),
             typeof(CandleInterval),
@@ -48,7 +44,6 @@
                 CandleInterval.None,
                 FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="CandleWidth"/> dependency property.</summary>
         public static readonly DependencyProperty CandleWidthProperty = DependencyProperty.RegisterAttached(
             nameof(CandleWidth),
             typeof(int),
@@ -57,7 +52,6 @@
                 5,
                 FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
         public static readonly DependencyProperty PriceRangeProperty = DependencyProperty.RegisterAttached(
             nameof(PriceRange),
             typeof(FloatRange?),
@@ -66,7 +60,6 @@
                 null,
                 FrameworkPropertyMetadataOptions.Inherits));
 
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
         public static readonly DependencyProperty PriceScaleProperty = DependencyProperty.RegisterAttached(
             nameof(PriceScale),
             typeof(Scale),
@@ -75,7 +68,6 @@
                 Scale.Logarithmic,
                 FrameworkPropertyMetadataOptions.Inherits));
 
-        /// <summary>Identifies the <see cref="MaxVolume"/> dependency property.</summary>
         public static readonly DependencyProperty MaxVolumeProperty = DependencyProperty.RegisterAttached(
             nameof(MaxVolume),
             typeof(int?),

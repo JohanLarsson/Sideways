@@ -6,7 +6,6 @@
 
     public class VolumeBars : CandleSeries
     {
-        /// <summary>Identifies the <see cref="MaxVolume"/> dependency property.</summary>
         public static readonly DependencyProperty MaxVolumeProperty = Chart.MaxVolumeProperty.AddOwner(
             typeof(VolumeBars),
             new FrameworkPropertyMetadata(
