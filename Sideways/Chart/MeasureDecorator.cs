@@ -148,28 +148,35 @@
                 {
                     var position = Point(to);
                     var desiredSize = this.infoPresenter.DesiredSize;
-                    return new Rect(new Point(position.X + OffsetX(), Y()), desiredSize);
+                    return new Rect(Clamp(new Point(X(), Y())), desiredSize);
 
-                    double OffsetX()
+                    double X()
                     {
                         return measurement switch
                         {
                             { From: { Time: var s }, To: { Time: var e } }
                                 when s <= e
-                                => -desiredSize.Width,
-                            _ => 0,
+                                => position.X - desiredSize.Width,
+                            _ => position.X,
                         };
                     }
 
                     double Y()
                     {
-                        return this.Measurement switch
+                        return measurement switch
                         {
                             { From: { Price: var s }, To: { Price: var e } }
                                 when s <= e
-                                => Math.Max(0, position.Y - desiredSize.Height),
+                                => position.Y - desiredSize.Height,
                             _ => position.Y,
                         };
+                    }
+
+                    Point Clamp(Point p)
+                    {
+                        return new(
+                            Math.Clamp(p.X, 0, finalSize.Width - desiredSize.Width),
+                            Math.Clamp(p.Y, 0, finalSize.Height - desiredSize.Height));
                     }
                 }
             }
