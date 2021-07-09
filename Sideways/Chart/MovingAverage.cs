@@ -33,14 +33,13 @@
             typeof(MovingAverage),
             new PropertyMetadata(default(int)));
 
-        private readonly DrawingVisual drawing;
+        private readonly LayerVisual layer = new();
 
         private Pen? pen;
 
         public MovingAverage()
         {
-            this.drawing = new DrawingVisual();
-            this.AddVisualChild(this.drawing);
+            this.AddVisualChild(this.layer);
         }
 
         public FloatRange? PriceRange
@@ -70,7 +69,7 @@
         protected override int VisualChildrenCount => 1;
 
         protected override Visual GetVisualChild(int index) => index == 0
-            ? this.drawing
+            ? this.layer
             : throw new ArgumentOutOfRangeException(nameof(index));
 
         protected override Size MeasureOverride(Size availableSize)
@@ -81,7 +80,7 @@
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            using var context = this.drawing.RenderOpen();
+            using var context = this.layer.RenderOpen();
             if (this.Stroke is { } brush &&
                 this.PriceRange is { } priceRange)
             {

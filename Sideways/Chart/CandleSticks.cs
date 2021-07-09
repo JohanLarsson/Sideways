@@ -6,8 +6,6 @@
 
     public class CandleSticks : CandleSeries
     {
-        private readonly DrawingVisual drawing;
-
         /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
         public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
             typeof(CandleSticks),
@@ -22,6 +20,8 @@
                 Scale.Logarithmic,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+        private readonly LayerVisual layer = new();
+
         static CandleSticks()
         {
             RenderOptions.EdgeModeProperty.OverrideMetadata(typeof(CandleSticks), new UIPropertyMetadata(EdgeMode.Aliased));
@@ -29,8 +29,7 @@
 
         public CandleSticks()
         {
-            this.drawing = new DrawingVisual();
-            this.AddVisualChild(this.drawing);
+            this.AddVisualChild(this.layer);
         }
 
         public FloatRange? PriceRange
@@ -54,12 +53,12 @@
         }
 
         protected override Visual GetVisualChild(int index) => index == 0
-            ? this.drawing
+            ? this.layer
             : throw new ArgumentOutOfRangeException(nameof(index));
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            using var context = this.drawing.RenderOpen();
+            using var context = this.layer.RenderOpen();
             if (this.PriceRange is { } range)
             {
                 var position = CandlePosition.RightToLeftPadded(this.RenderSize, this.CandleWidth, new ValueRange(range, this.PriceScale));

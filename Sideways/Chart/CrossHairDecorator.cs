@@ -28,13 +28,13 @@
 
         public static readonly DependencyProperty PositionProperty = PositionPropertyKey.DependencyProperty;
 
-        private readonly OverlayVisual overlay = new();
+        private readonly LayerVisual layer = new();
         private Pen? pen;
         private UIElement? child;
 
         public CrossHairDecorator()
         {
-            this.AddVisualChild(this.overlay);
+            this.AddVisualChild(this.layer);
         }
 
 #pragma warning disable WPF0012 // CLR property type should match registered type.
@@ -82,7 +82,7 @@
             return index switch
             {
                 0 when this.child is { } => this.child,
-                1 when this.child is { } => this.overlay,
+                1 when this.child is { } => this.layer,
                 _ => throw new ArgumentOutOfRangeException(nameof(index), index, "Check VisualChildrenCount first"),
             };
         }
@@ -133,7 +133,7 @@
 
         private void Render(Point? position)
         {
-            using var drawingContext = this.overlay.RenderOpen();
+            using var drawingContext = this.layer.RenderOpen();
             if (this.Stroke is { } stroke &&
                 position is { } p)
             {
