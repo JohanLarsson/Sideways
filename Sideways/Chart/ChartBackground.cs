@@ -46,6 +46,8 @@
                 default(ImmutableArray<QuarterlyEarning>),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+        private static readonly Pen PreMarketPen = Brushes.CreatePen(Brushes.PreMarket);
+
         private Pen? bookmarkPen;
         private Pen? selectedBookmarkPen;
         private Pen? selectedScanResultPen;
@@ -90,18 +92,18 @@
             switch (this.CandleInterval)
             {
                 case CandleInterval.FiveMinutes or CandleInterval.Minute:
-                    DrawBetweenDays(Brushes.PreMarket);
+                    DrawBetweenDays(PreMarketPen);
                     DrawBand(x => TradingDay.IsPreMarket(x.Time), Brushes.PreMarket);
                     DrawBand(x => TradingDay.IsPostMarket(x.Time), Brushes.PostMarket);
                     DrawBand(x => x.Time.Hour % 2 == 0 && TradingDay.IsRegularHours(x.Time), Brushes.Even);
                     break;
                 case CandleInterval.Hour or CandleInterval.FifteenMinutes:
-                    DrawBetweenDays(Brushes.PreMarket);
+                    DrawBetweenDays(PreMarketPen);
                     DrawBand(x => TradingDay.IsPreMarket(x.Time), Brushes.PreMarket);
                     DrawBand(x => TradingDay.IsPostMarket(x.Time), Brushes.PostMarket);
                     break;
 
-                    void DrawBetweenDays(SolidColorBrush brush)
+                    void DrawBetweenDays(Pen pen)
                     {
                         var position = CandlePosition.RightToLeft(renderSize, candleWidth, default);
                         for (var i = 0; i < candles.Count - 1; i++)
@@ -110,12 +112,10 @@
                                 TradingDay.IsRegularHours(candles[i].Time) &&
                                 TradingDay.IsRegularHours(candles[i + 1].Time))
                             {
-                                drawingContext.DrawRectangle(
-                                    brush,
-                                    null,
-                                    new Rect(
-                                        new Point(position.Left, 0),
-                                        new Point(position.Left + 1, renderSize.Height)));
+                                drawingContext.DrawLine(
+                                    pen,
+                                    new Point(position.Center, 0),
+                                    new Point(position.Center, renderSize.Height));
                             }
 
                             position = position.ShiftLeft();
