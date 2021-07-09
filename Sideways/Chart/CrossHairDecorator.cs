@@ -149,7 +149,7 @@
             if (this.Stroke is { } stroke &&
                 position is { } p)
             {
-                p = new Point(CandlePosition.SnapCenterX(p.X, this.CandleWidth), p.Y);
+                p = new Point(CandlePosition.SnapX(p.X, this.ActualWidth, this.CandleWidth), p.Y);
                 var renderSize = this.RenderSize;
                 this.pen ??= CreatePen(stroke);
                 drawingContext.DrawLine(this.pen, new Point(0, p.Y), new Point(renderSize.Width, p.Y));

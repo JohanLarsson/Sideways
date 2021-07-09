@@ -3,6 +3,8 @@
     using System;
     using System.Windows;
 
+    using Accessibility;
+
     public readonly struct CandlePosition : IEquatable<CandlePosition>
     {
         internal readonly double Left;
@@ -128,9 +130,11 @@
             return null;
         }
 
-        public static double SnapCenterX(double x, int candleWidth)
+        public static double SnapX(double x, double actualWidth, int candleWidth)
         {
-            return x - (x % candleWidth) + (0.5 * candleWidth);
+            return actualWidth - Center(actualWidth - x);
+
+            double Center(double value) => value - (value % candleWidth) + (0.5 * candleWidth);
         }
 
         public double Y(float value) => this.valueRange.Y(value, this.renderSize.Height);
