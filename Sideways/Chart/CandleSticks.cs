@@ -6,14 +6,12 @@
 
     public class CandleSticks : CandleSeries
     {
-        /// <summary>Identifies the <see cref="PriceRange"/> dependency property.</summary>
         public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
             typeof(CandleSticks),
             new FrameworkPropertyMetadata(
                 null,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>Identifies the <see cref="PriceScale"/> dependency property.</summary>
         public static readonly DependencyProperty PriceScaleProperty = Chart.PriceScaleProperty.AddOwner(
             typeof(CandleSticks),
             new FrameworkPropertyMetadata(
@@ -46,15 +44,15 @@
 
         protected override int VisualChildrenCount => 1;
 
+        protected override Visual GetVisualChild(int index) => index == 0
+            ? this.layer
+            : throw new ArgumentOutOfRangeException(nameof(index));
+
         protected override Size MeasureOverride(Size availableSize)
         {
             this.Candles.VisibleCount = (int)Math.Ceiling(availableSize.Width / this.CandleWidth);
             return default;
         }
-
-        protected override Visual GetVisualChild(int index) => index == 0
-            ? this.layer
-            : throw new ArgumentOutOfRangeException(nameof(index));
 
         protected override void OnRender(DrawingContext drawingContext)
         {
