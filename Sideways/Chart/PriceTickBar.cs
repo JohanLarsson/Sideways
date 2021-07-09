@@ -20,7 +20,7 @@
             typeof(PriceTickBar),
             new FrameworkPropertyMetadata(
                 null,
-                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsParentMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
 
         public static readonly DependencyProperty PriceScaleProperty = Chart.PriceScaleProperty.AddOwner(
             typeof(PriceTickBar),
