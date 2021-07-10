@@ -151,7 +151,7 @@
             {
                 p = new Point(CandlePosition.SnapX(p.X, this.ActualWidth, this.CandleWidth), p.Y);
                 var renderSize = this.RenderSize;
-                this.pen ??= Brushes.CreatePen(stroke);
+                this.pen ??= Brushes.CreatePen(stroke, 0.25);
                 drawingContext.DrawLine(this.pen, new Point(0, p.Y), new Point(renderSize.Width, p.Y));
                 drawingContext.DrawLine(this.pen, new Point(p.X, 0), new Point(p.X, renderSize.Height));
             }
