@@ -3,8 +3,6 @@
     using System;
     using System.Windows;
 
-    using Accessibility;
-
     public readonly struct CandlePosition : IEquatable<CandlePosition>
     {
         internal readonly double Left;

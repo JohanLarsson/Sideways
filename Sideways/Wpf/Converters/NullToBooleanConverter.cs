@@ -2,7 +2,6 @@
 {
     using System;
     using System.Globalization;
-    using System.Threading;
     using System.Windows.Data;
 
     [ValueConversion(typeof(object), typeof(bool))]
