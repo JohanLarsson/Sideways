@@ -52,7 +52,6 @@
         private Pen? selectedBookmarkPen;
         private Pen? selectedScanResultPen;
         private Pen? earningPen;
-        private DashStyle? bookMarksDashStyle;
 
         public string? Symbol
         {
@@ -169,7 +168,7 @@
             {
                 DrawLine(
                     selectedScanResult.Time,
-                    this.selectedScanResultPen ??= CreatePen(Brushes.SelectedBookMark, 0.25, this.bookMarksDashStyle ??= CreateDashStyle(new[] { 16.0, 16.0 }, 0)));
+                    this.selectedScanResultPen ??= Brushes.CreatePen(Brushes.SelectedBookMark, 0.25, Brushes.CreateDashStyle(new[] { 16.0, 16.0 }, 0)));
             }
 
             void DrawBand(Func<Candle, bool> func, SolidColorBrush brush)
@@ -219,23 +218,6 @@
                         new Point(x, renderSize.Height));
                 }
             }
-        }
-
-        private static Pen CreatePen(SolidColorBrush brush, double thickness, DashStyle? dashStyle = null)
-        {
-            var pen = new Pen(brush, thickness)
-            {
-                DashStyle = dashStyle,
-            };
-            pen.Freeze();
-            return pen;
-        }
-
-        private static DashStyle CreateDashStyle(IEnumerable<double> dashes, double offset)
-        {
-            DashStyle style = new(dashes, offset);
-            style.Freeze();
-            return style;
         }
     }
 }

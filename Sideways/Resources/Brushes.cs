@@ -41,11 +41,21 @@
 
         public static SolidColorBrush Get(Candle candle) => candle.Open < candle.Close ? Increasing : Decreasing;
 
-        public static Pen CreatePen(SolidColorBrush brush, double strokeThickness = 1.0)
+        public static Pen CreatePen(SolidColorBrush brush, double strokeThickness = 1.0, DashStyle? dashStyle = null)
         {
-            var pen = new Pen(brush, strokeThickness);
+            var pen = new Pen(brush, strokeThickness)
+            {
+                DashStyle = dashStyle,
+            };
             pen.Freeze();
             return pen;
+        }
+
+        public static DashStyle CreateDashStyle(double[] dashes, double offset)
+        {
+            DashStyle style = new(dashes, offset);
+            style.Freeze();
+            return style;
         }
 
         private static SolidColorBrush Create(Color color)
