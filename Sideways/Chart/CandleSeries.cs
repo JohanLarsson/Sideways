@@ -33,7 +33,9 @@
             typeof(CandleSeries),
             new FrameworkPropertyMetadata(
                     default(DescendingCandles),
+#pragma warning disable WPF0022 // Cast value to correct type.
                     (o, e) => ((CandleSeries)o).OnCandlesChanged((DescendingCandles)e.NewValue)));
+#pragma warning restore WPF0022 // Cast value to correct type.
 
         static CandleSeries()
         {
