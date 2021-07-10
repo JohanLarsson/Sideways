@@ -28,6 +28,8 @@ dotnet_diagnostic.CA5394.severity = none
 dotnet_diagnostic.WPF0060.severity = none
 # WPF0061: Accessor method for attached property should have standard documentation text.
 dotnet_diagnostic.WPF0061.severity = none
+# WPF0062: Property changed callback should have standard documentation text.
+dotnet_diagnostic.WPF0062.severity = none
 
 # CA1710: Identifiers should have correct suffix
 dotnet_diagnostic.CA1710.severity = none
