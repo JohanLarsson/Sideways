@@ -41,9 +41,9 @@
 
         public static SolidColorBrush Get(Candle candle) => candle.Open < candle.Close ? Increasing : Decreasing;
 
-        public static Pen CreatePen(SolidColorBrush brush)
+        public static Pen CreatePen(SolidColorBrush brush, double strokeThickness = 1.0)
         {
-            var pen = new Pen(brush, 1);
+            var pen = new Pen(brush, strokeThickness);
             pen.Freeze();
             return pen;
         }

@@ -25,7 +25,7 @@
             new FrameworkPropertyMetadata(
                 default(SolidColorBrush),
                 FrameworkPropertyMetadataOptions.AffectsRender,
-                (d, e) => ((VWap)d).pen = CreatePen((SolidColorBrush?)e.NewValue)));
+                (d, e) => ((VWap)d).pen = null));
 
         private readonly DrawingVisual drawing;
 
@@ -64,10 +64,11 @@
         protected override void OnRender(DrawingContext drawingContext)
         {
             using var context = this.drawing.RenderOpen();
-            if (this.pen is { } &&
+            if (this.Stroke is { } stroke &&
                 this.ItemsSource is { } candles &&
                 this.PriceRange is { } priceRange)
             {
+                this.pen ??= Brushes.CreatePen(stroke);
                 Point? previous = null;
                 var position = CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale));
                 foreach (var a in candles.DescendingVWaps(this.Time, this.CandleInterval))
@@ -89,18 +90,6 @@
                     }
                 }
             }
-        }
-
-        private static Pen? CreatePen(SolidColorBrush? brush)
-        {
-            if (brush is { })
-            {
-                var temp = new Pen(brush, 1);
-                temp.Freeze();
-                return temp;
-            }
-
-            return null;
         }
     }
 }

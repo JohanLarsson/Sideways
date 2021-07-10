@@ -141,7 +141,7 @@
                     if (CandlePosition.X(earning.ReportedDate, candles, renderSize.Width, candleWidth, this.CandleInterval) is { } earningX)
                     {
                         drawingContext.DrawLine(
-                            this.earningPen ??= CreatePen(Brushes.MediumDarkGray, 0.25),
+                            this.earningPen ??= Brushes.CreatePen(Brushes.MediumDarkGray, 0.25),
                             new Point(earningX, 0),
                             new Point(earningX, renderSize.Height));
                     }
@@ -155,14 +155,14 @@
                 {
                     if (bookmark.Symbol == symbol)
                     {
-                        DrawLine(bookmark.Time, this.bookmarkPen ??= CreatePen(Brushes.BookMark, 0.25));
+                        DrawLine(bookmark.Time, this.bookmarkPen ??= Brushes.CreatePen(Brushes.BookMark, 0.25));
                     }
                 }
             }
 
             if (this.SelectedBookmark is { } selectedBookmark)
             {
-                DrawLine(selectedBookmark.Time, this.selectedBookmarkPen ??= CreatePen(Brushes.SelectedBookMark, 0.25));
+                DrawLine(selectedBookmark.Time, this.selectedBookmarkPen ??= Brushes.CreatePen(Brushes.SelectedBookMark, 0.25));
             }
 
             if (this.SelectedScanResult is { } selectedScanResult)
