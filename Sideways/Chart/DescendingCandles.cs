@@ -20,8 +20,6 @@
 
         public Candle? FirstVisible => this.candles.Count == 0 ? null : this.candles[Math.Min(this.candles.Count - 1, this.VisibleCount)];
 
-        public Candle? LastVisible => this.candles.Count == 0 ? null : this.candles[0];
-
         public int VisibleCount
         {
             get => this.visibleCount;
