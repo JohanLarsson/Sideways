@@ -41,7 +41,7 @@
         public int ExtraCount
         {
             get => this.extraCount;
-            set
+            private set
             {
                 if (value == this.extraCount)
                 {
@@ -65,6 +65,11 @@
         public void Clear() => this.candles.Clear();
 
         public void Add(Candle candle) => this.candles.Add(candle);
+
+        public void WithExtra(int count)
+        {
+            this.ExtraCount = Math.Max(this.extraCount, count);
+        }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {

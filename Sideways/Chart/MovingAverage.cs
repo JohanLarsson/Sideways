@@ -31,7 +31,9 @@
             nameof(Period),
             typeof(int),
             typeof(MovingAverage),
-            new PropertyMetadata(default(int)));
+            new PropertyMetadata(
+                default(int),
+                (o, e) => ((MovingAverage)o).Candles.WithExtra((int)e.NewValue)));
 
         private readonly LayerVisual layer = new();
 
@@ -71,12 +73,6 @@
         protected override Visual GetVisualChild(int index) => index == 0
             ? this.layer
             : throw new ArgumentOutOfRangeException(nameof(index));
-
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            this.Candles.ExtraCount = Math.Max(this.Candles.ExtraCount, this.Period);
-            return finalSize;
-        }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
