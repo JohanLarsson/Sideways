@@ -29,7 +29,11 @@
                 5,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
-        public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(typeof(CandleSeries));
+        public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(
+            typeof(CandleSeries),
+            new FrameworkPropertyMetadata(
+                    default(DescendingCandles),
+                    (o, e) => ((CandleSeries)o).OnCandlesChanged((DescendingCandles)e.NewValue)));
 
         static CandleSeries()
         {
@@ -66,6 +70,10 @@
         {
             get => (DescendingCandles)this.GetValue(CandlesProperty);
             set => this.SetValue(CandlesProperty, value);
+        }
+
+        protected virtual void OnCandlesChanged(DescendingCandles newValue)
+        {
         }
     }
 }

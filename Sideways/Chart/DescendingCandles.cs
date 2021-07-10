@@ -11,42 +11,63 @@
     {
         private readonly List<Candle> candles = new();
 
-        private int visibleCount;
         private int extraCount;
+        private CandleSticks? candleSticks;
+        private FloatRange? priceRange;
+        private TimeRange? timeRange;
+        private int maxVolume;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public int Count => this.candles.Count;
 
+        public int VisibleCount => this.candleSticks is { RenderSize: { Width: > 0 and var width }, CandleWidth: > 0 and var candleWidth }
+            ? (int)Math.Ceiling(width / candleWidth)
+            : 0;
+
         public Candle? FirstVisible => this.candles.Count == 0 ? null : this.candles[Math.Min(this.candles.Count - 1, this.VisibleCount)];
 
-        public int VisibleCount
+        public FloatRange? PriceRange
         {
-            get => this.visibleCount;
-            set
+            get => this.priceRange;
+            private set
             {
-                if (value == this.visibleCount)
+                if (value == this.priceRange)
                 {
                     return;
                 }
 
-                this.visibleCount = value;
+                this.priceRange = value;
                 this.OnPropertyChanged();
-                this.OnPropertyChanged(nameof(this.FirstVisible));
             }
         }
 
-        public int ExtraCount
+        public TimeRange? TimeRange
         {
-            get => this.extraCount;
+            get => this.timeRange;
             private set
             {
-                if (value == this.extraCount)
+                if (value == this.timeRange)
                 {
                     return;
                 }
 
-                this.extraCount = value;
+                this.timeRange = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public int MaxVolume
+        {
+            get => this.maxVolume;
+            private set
+            {
+                if (value == this.maxVolume)
+                {
+                    return;
+                }
+
+                this.maxVolume = value;
                 this.OnPropertyChanged();
             }
         }
@@ -60,13 +81,67 @@
 
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)this.candles).GetEnumerator();
 
-        public void Clear() => this.candles.Clear();
+        public void Refresh(Candles? itemsSource, DateTimeOffset time, CandleInterval interval)
+        {
+            this.candles.Clear();
+            var visibleCount = this.VisibleCount;
+            if (visibleCount > 0 &&
+                itemsSource is { })
+            {
+                var min = float.MaxValue;
+                var max = float.MinValue;
+                var minTime = default(DateTimeOffset);
+                var vol = 0;
+                foreach (var candle in itemsSource.Descending(time, interval))
+                {
+                    this.candles.Add(candle);
+                    if (this.candles.Count <= visibleCount)
+                    {
+                        min = Math.Min(min, candle.Low);
+                        max = Math.Max(max, candle.High);
+                        vol = Math.Max(vol, candle.Volume);
+                        minTime = candle.Time;
+                    }
+
+                    if (this.candles.Count >= visibleCount + this.extraCount)
+                    {
+                        break;
+                    }
+                }
+
+                if (this.candles.Count > 0)
+                {
+                    this.PriceRange = new FloatRange(min, max);
+                    this.TimeRange = new TimeRange(minTime, time);
+                    this.MaxVolume = vol;
+                }
+                else
+                {
+                    this.PriceRange = null;
+                    this.TimeRange = null;
+                    this.MaxVolume = 0;
+                }
+            }
+            else
+            {
+                this.PriceRange = null;
+                this.TimeRange = null;
+                this.MaxVolume = 0;
+            }
+        }
 
         public void Add(Candle candle) => this.candles.Add(candle);
 
         public void WithExtra(int count)
         {
-            this.ExtraCount = Math.Max(this.extraCount, count);
+            this.extraCount = Math.Max(this.extraCount, count);
+        }
+
+        public void With(CandleSticks candleSticks)
+        {
+            this.candleSticks = candleSticks;
+            this.OnPropertyChanged(nameof(this.FirstVisible));
+            this.OnPropertyChanged(nameof(this.VisibleCount));
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

@@ -143,8 +143,6 @@
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            var candles = this.Candles;
-            candles.VisibleCount = 0;
             var rect = Rect.Empty;
             foreach (UIElement child in this.Children)
             {
@@ -226,42 +224,9 @@
         private void Refresh()
         {
             var candles = this.Candles;
-            candles.Clear();
-            if (candles.VisibleCount > 0 &&
-                this.ItemsSource is { } itemsSource)
-            {
-                var min = float.MaxValue;
-                var max = float.MinValue;
-                var maxVolume = 0;
-                foreach (var candle in itemsSource.Get(this.Time, this.CandleInterval)
-                                                  .Take(candles.VisibleCount + candles.ExtraCount))
-                {
-                    if (candles.Count <= candles.VisibleCount)
-                    {
-                        min = Math.Min(min, candle.Low);
-                        max = Math.Max(max, candle.High);
-                        maxVolume = Math.Max(maxVolume, candle.Volume);
-                    }
-
-                    candles.Add(candle);
-                }
-
-                if (candles.Count > 0)
-                {
-                    this.SetCurrentValue(PriceRangeProperty, new FloatRange(min, max));
-                    this.SetCurrentValue(MaxVolumeProperty, maxVolume);
-                }
-                else
-                {
-                    this.SetCurrentValue(PriceRangeProperty, null);
-                    this.SetCurrentValue(MaxVolumeProperty, 0);
-                }
-            }
-            else
-            {
-                this.SetCurrentValue(PriceRangeProperty, null);
-                this.SetCurrentValue(MaxVolumeProperty, 0);
-            }
+            candles.Refresh(this.ItemsSource, this.Time, this.CandleInterval);
+            this.SetCurrentValue(PriceRangeProperty, candles.PriceRange);
+            this.SetCurrentValue(MaxVolumeProperty, candles.MaxVolume);
         }
 
         private static class Scroll

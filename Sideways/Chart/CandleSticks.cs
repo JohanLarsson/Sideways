@@ -51,12 +51,6 @@
             ? this.layer
             : throw new ArgumentOutOfRangeException(nameof(index));
 
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            this.Candles.VisibleCount = (int)Math.Ceiling(finalSize.Width / this.CandleWidth);
-            return finalSize;
-        }
-
         protected override void OnRender(DrawingContext drawingContext)
         {
             using var context = this.layer.RenderOpen();
@@ -101,6 +95,12 @@
                     static Point Round(Point p) => new(Math.Round(p.X), Math.Round(p.Y));
                 }
             }
+        }
+
+        protected override void OnCandlesChanged(DescendingCandles newValue)
+        {
+            newValue.With(this);
+            base.OnCandlesChanged(newValue);
         }
     }
 }

@@ -56,7 +56,7 @@
                 if (main is { CurrentSymbol: { Symbol: { } symbol, Candles: { } candles } } &&
                     this.Current is { } simulation)
                 {
-                    var price = candles.Get(main.Time, CandleInterval.Day).First().Close;
+                    var price = candles.Descending(main.Time, CandleInterval.Day).First().Close;
                     var amount = Math.Min(simulation.Balance, simulation.Equity() / 10);
                     simulation.Buy(
                         symbol,
@@ -75,7 +75,7 @@
                 if (main is { CurrentSymbol: { Symbol: { } symbol, Candles: { } candles } } &&
                     this.Current is { } simulation)
                 {
-                    var price = candles.Get(main.Time, CandleInterval.Day).First().Close;
+                    var price = candles.Descending(main.Time, CandleInterval.Day).First().Close;
                     simulation.Sell(
                         symbol,
                         price,

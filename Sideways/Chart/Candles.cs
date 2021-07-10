@@ -144,7 +144,7 @@
             }
         }
 
-        public IEnumerable<Candle> Get(DateTimeOffset end, CandleInterval interval)
+        public IEnumerable<Candle> Descending(DateTimeOffset end, CandleInterval interval)
         {
             return interval switch
             {
