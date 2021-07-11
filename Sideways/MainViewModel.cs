@@ -4,6 +4,7 @@
     using System.Collections.Immutable;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Media;
     using System.Runtime.CompilerServices;
     using System.Windows;
     using System.Windows.Input;
@@ -221,7 +222,7 @@
                     }
                     else
                     {
-                        _ = MessageBox.Show("Bookmark already exists.", MessageBoxButton.OK, MessageBoxImage.Information);
+                        SystemSounds.Beep.Play();
                     }
 
                     break;
