@@ -260,6 +260,10 @@
                                     <RadioButton Content="YTD" IsChecked="{Binding YearToDate, UpdateSourceTrigger=PropertyChanged}" />
                                     <RadioButton Content="Month" IsChecked="{Binding LastMonth, UpdateSourceTrigger=PropertyChanged}" />
                                     <RadioButton Content="Week" IsChecked="{Binding LastWeek, UpdateSourceTrigger=PropertyChanged}" />
+                                    <RadioButton Content="{Binding Year1Text}" IsChecked="{Binding Year1, UpdateSourceTrigger=PropertyChanged}" />
+                                    <RadioButton Content="{Binding Year2Text}" IsChecked="{Binding Year2, UpdateSourceTrigger=PropertyChanged}" />
+                                    <RadioButton Content="{Binding Year3Text}" IsChecked="{Binding Year3, UpdateSourceTrigger=PropertyChanged}" />
+                                    <RadioButton Content="{Binding Year4Text}" IsChecked="{Binding Year4, UpdateSourceTrigger=PropertyChanged}" />
                                 </UniformGrid>
 
                                 <TextBlock Grid.Row="1"
