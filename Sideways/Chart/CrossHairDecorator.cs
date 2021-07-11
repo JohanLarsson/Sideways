@@ -20,11 +20,7 @@
                 FrameworkPropertyMetadataOptions.AffectsRender,
                 (o, _) => ((CrossHairDecorator)o).pen = null));
 
-        public static readonly DependencyProperty CandleWidthProperty = Chart.CandleWidthProperty.AddOwner(
-            typeof(CrossHairDecorator),
-            new FrameworkPropertyMetadata(
-                5,
-                FrameworkPropertyMetadataOptions.AffectsRender));
+        public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(typeof(CrossHairDecorator));
 
         private static readonly DependencyPropertyKey PositionPropertyKey = DependencyProperty.RegisterReadOnly(
             nameof(Position),
@@ -51,10 +47,12 @@
             set => this.SetValue(StrokeProperty, value);
         }
 
-        public int CandleWidth
+#pragma warning disable WPF0012 // CLR property type should match registered type.
+        public DescendingCandles Candles
+#pragma warning restore WPF0012 // CLR property type should match registered type.
         {
-            get => (int)this.GetValue(CandleWidthProperty);
-            set => this.SetValue(CandleWidthProperty, value);
+            get => (DescendingCandles)this.GetValue(CandlesProperty);
+            set => this.SetValue(CandlesProperty, value);
         }
 
         public Point? Position
@@ -149,7 +147,7 @@
             if (this.Stroke is { } stroke &&
                 position is { } p)
             {
-                p = new Point(CandlePosition.SnapX(p.X, this.ActualWidth, this.CandleWidth), p.Y);
+                p = this.Candles.SnapCenterX(p, this);
                 var renderSize = this.RenderSize;
                 this.pen ??= Brushes.CreatePen(stroke, 0.25);
                 drawingContext.DrawLine(this.pen, new Point(0, p.Y), new Point(renderSize.Width, p.Y));

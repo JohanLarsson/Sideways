@@ -6,13 +6,14 @@
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
+    using System.Windows;
 
     public class DescendingCandles : IReadOnlyList<Candle>, INotifyPropertyChanged
     {
         private readonly List<Candle> candles = new();
 
         private int extraCount;
-        private CandleSticks? candleSticks;
+        private CandleSticks candleSticks = null!;
         private FloatRange? priceRange;
         private TimeRange? timeRange;
         private int maxVolume;
@@ -128,9 +129,16 @@
             this.extraCount = Math.Max(this.extraCount, count);
         }
 
-        public void With(CandleSticks candleSticks)
+        public void With(CandleSticks newValue)
         {
-            this.candleSticks = candleSticks;
+            this.candleSticks = newValue;
+        }
+
+        public Point SnapCenterX(Point p, UIElement e)
+        {
+            var pt = this.candleSticks.TranslatePoint(p, e);
+            var snapped = new Point(CandlePosition.SnapX(pt.X, this.candleSticks!.ActualWidth, this.candleSticks.CandleWidth), pt.Y);
+            return e.TranslatePoint(snapped, this.candleSticks);
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
