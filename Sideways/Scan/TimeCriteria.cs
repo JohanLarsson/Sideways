@@ -8,13 +8,13 @@
         private DateTimeOffset? start = DateTimeOffset.Now.Date.AddMonths(-1);
         private DateTimeOffset? end;
 
-        public static string Year1Text => (DateTime.Today.Year - 1).ToString(CultureInfo.InvariantCulture);
+        public static string Year1Text { get; } = (DateTime.Today.Year - 1).ToString(CultureInfo.InvariantCulture);
 
-        public static string Year2Text => (DateTime.Today.Year - 2).ToString(CultureInfo.InvariantCulture);
+        public static string Year2Text { get; } = (DateTime.Today.Year - 2).ToString(CultureInfo.InvariantCulture);
 
-        public static string Year3Text => (DateTime.Today.Year - 3).ToString(CultureInfo.InvariantCulture);
+        public static string Year3Text { get; } = (DateTime.Today.Year - 3).ToString(CultureInfo.InvariantCulture);
 
-        public static string Year4Text => (DateTime.Today.Year - 4).ToString(CultureInfo.InvariantCulture);
+        public static string Year4Text { get; } = (DateTime.Today.Year - 4).ToString(CultureInfo.InvariantCulture);
 
         public override string Info => this switch
         {

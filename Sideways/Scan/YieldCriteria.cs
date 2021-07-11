@@ -8,9 +8,9 @@
         private Percent? min = new Percent(25);
         private Percent? max;
 
-        public static string TwentyFivePercentInFiveDaysText => InfoText(new Percent(25), null, 5);
+        public static string TwentyFivePercentInFiveDaysText { get; } = InfoText(new Percent(25), null, 5);
 
-        public static string FiftyPercentInFiftyDaysText => InfoText(new Percent(50), null, 50);
+        public static string FiftyPercentInFiftyDaysText { get; } = InfoText(new Percent(50), null, 50);
 
         public override string Info => InfoText(this.min, this.max, this.days);
 

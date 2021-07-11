@@ -72,7 +72,7 @@
 
                 return new Size(measureFormatted.Width, measureFormatted.Height);
 
-                FormattedText Format(string text) => new FormattedText(
+                FormattedText Format(string text) => new(
                     text,
                     CultureInfo.InvariantCulture,
                     FlowDirection.LeftToRight,
