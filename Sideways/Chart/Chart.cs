@@ -34,7 +34,8 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 CandleInterval.None,
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange,
+                (o, _) => (o as Chart)?.Refresh()));
 
         public static readonly DependencyProperty CandleWidthProperty = DependencyProperty.RegisterAttached(
             nameof(CandleWidth),
@@ -42,7 +43,8 @@
             typeof(Chart),
             new FrameworkPropertyMetadata(
                 5,
-                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange));
+                FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsArrange,
+                (o, _) => (o as Chart)?.Refresh()));
 
         public static readonly DependencyProperty PriceScaleProperty = DependencyProperty.RegisterAttached(
             nameof(PriceScale),
