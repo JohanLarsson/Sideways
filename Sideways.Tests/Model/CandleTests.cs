@@ -38,6 +38,37 @@
         }
 
         [Test]
+        public static void MergeWhenZeroVolume()
+        {
+            var c1 = new Candle(
+                new DateTimeOffset(2021, 05, 22, 09, 30, 00, 0, TimeSpan.Zero),
+                open: 0f,
+                high: 0f,
+                low: 0f,
+                close: 0f,
+                volume: 0);
+
+            var c2 = new Candle(
+                new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero),
+                open: 1.3f,
+                high: 1.4f,
+                low: 1.1f,
+                close: 1.2f,
+                volume: 1);
+
+            var expected = new Candle(
+                new DateTimeOffset(2021, 05, 22, 09, 31, 00, 0, TimeSpan.Zero),
+                open: 1.3f,
+                high: 1.4f,
+                low: 1.1f,
+                close: 1.2f,
+                volume: 1);
+
+            Assert.AreEqual(expected, c1.Merge(c2));
+            Assert.AreEqual(expected, c2.Merge(c1));
+        }
+
+        [Test]
         public static void Adjust()
         {
             var candle = new Candle(

@@ -25,15 +25,15 @@
         public IEnumerable<Candle> DescendingDays(DateTimeOffset end)
         {
             if (TradingDay.IsRegularHours(end) &&
-                this.DayRegularMinutes(end, this.minuteIndex) is { Length: > 0 } minutes)
+                this.DayRegularMinutes(end, this.minuteIndex) is { Length: > 0 } dayMinutes)
             {
-                if (minutes.Length == 1)
+                if (dayMinutes.Length == 1)
                 {
-                    yield return minutes[0];
+                    yield return dayMinutes[0];
                 }
                 else
                 {
-                    yield return Candle.Merge(minutes);
+                    yield return Candle.Merge(dayMinutes);
                 }
 
                 end = end.AddDays(-1);

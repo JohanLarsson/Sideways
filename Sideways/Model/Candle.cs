@@ -81,15 +81,28 @@
 
         public Candle Merge(Candle other)
         {
-            return other.Time <= this.Time
-                ? new(
+            if (other.Time <= this.Time)
+            {
+                if (this.Volume == 0)
+                {
+                    return other.WithTime(this.Time);
+                }
+
+                if (other.Volume == 0)
+                {
+                    return this;
+                }
+
+                return new(
                     time: this.Time,
                     open: other.Open,
                     high: Math.Max(this.High, other.High),
                     low: Math.Min(this.Low, other.Low),
                     close: this.Close,
-                    volume: this.Volume + other.Volume)
-                : other.Merge(this);
+                    volume: this.Volume + other.Volume);
+            }
+
+            return other.Merge(this);
         }
 
         public bool Equals(Candle other)
