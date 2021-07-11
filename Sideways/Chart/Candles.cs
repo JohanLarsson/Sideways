@@ -158,6 +158,10 @@
             };
         }
 
+        public DateTimeOffset FirstDay() => TradingDay.EndOfDay(this.days[0].Time);
+
+        public DateTimeOffset LastDay() => TradingDay.EndOfDay(this.days[^1].Time);
+
         public DateTimeOffset Skip(DateTimeOffset time, CandleInterval interval, int count)
         {
             return interval switch

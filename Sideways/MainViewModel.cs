@@ -43,23 +43,33 @@
                 }
             });
 
-            this.SkipLeftCommand = new RelayCommand(o =>
-            {
-                if (this is { currentSymbol: { Candles: { } candles } } &&
-                    o is CandleInterval interval)
-                {
-                    this.Time = candles.Skip(this.Time, interval, this.Animation.IsRunning ? -2 : -1);
-                }
-            });
+            this.MoveToEndCommand = new RelayCommand(
+                _ => this.Time = this.currentSymbol?.Candles?.LastDay() ?? this.time,
+                _ => this.currentSymbol is { Candles: { } });
 
-            this.SkipRightCommand = new RelayCommand(o =>
-            {
-                if (this is { currentSymbol: { Candles: { } candles } } &&
-                    o is CandleInterval interval)
+            this.SkipLeftCommand = new RelayCommand(
+                o =>
                 {
-                    this.Time = candles.Skip(this.Time, interval, 1);
-                }
-            });
+                    if (this is { currentSymbol: { Candles: { } candles } } &&
+                        o is CandleInterval interval)
+                    {
+                        this.Time = candles.Skip(this.Time, interval, this.Animation.IsRunning ? -2 : -1);
+                    }
+                },
+                o => this is { currentSymbol: { Candles: { } } } &&
+                     o is CandleInterval);
+
+            this.SkipRightCommand = new RelayCommand(
+                o =>
+                {
+                    if (this is { currentSymbol: { Candles: { } candles } } &&
+                        o is CandleInterval interval)
+                    {
+                        this.Time = candles.Skip(this.Time, interval, 1);
+                    }
+                },
+                o => this is { currentSymbol: { Candles: { } } } &&
+                     o is CandleInterval);
 
             _ = this.Downloader.RefreshSymbolDownloadsAsync();
 
@@ -125,6 +135,8 @@
         public ICommand AddBookmarkCommand { get; }
 
         public ICommand AddToWatchlistCommand { get; }
+
+        public ICommand MoveToEndCommand { get; }
 
         public ICommand SkipLeftCommand { get; }
 
