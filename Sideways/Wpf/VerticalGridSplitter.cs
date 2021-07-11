@@ -41,10 +41,10 @@
 
         static VerticalGridSplitter()
         {
-            CommandManager.RegisterClassCommandBinding(typeof(GridSplitter), new CommandBinding(TogglePreviousCommand, OnTogglePrevious, OnCanReset));
-            CommandManager.RegisterClassCommandBinding(typeof(GridSplitter), new CommandBinding(ToggleNextCommand, OnToggleNext, OnCanReset));
+            CommandManager.RegisterClassCommandBinding(typeof(GridSplitter), new CommandBinding(TogglePreviousCommand, OnTogglePrevious, OnCanToggle));
+            CommandManager.RegisterClassCommandBinding(typeof(GridSplitter), new CommandBinding(ToggleNextCommand, OnToggleNext, OnCanToggle));
 
-            static void OnCanReset(object sender, CanExecuteRoutedEventArgs e)
+            static void OnCanToggle(object sender, CanExecuteRoutedEventArgs e)
             {
                 e.CanExecute = sender is GridSplitter { IsEnabled: true } splitter &&
                                splitter.GetValue(OriginalDefinitionsProperty) is OriginalDefinitions;
@@ -63,7 +63,7 @@
                     }
                     else if (GetPreviousDefinition(splitter) is { } definition)
                     {
-                        definition.Width = new GridLength(0, GridUnitType.Pixel);
+                        definition.Width = new GridLength(0, GridUnitType.Star);
                     }
                 }
             }
@@ -80,7 +80,7 @@
                     }
                     else if (GetNextDefinition(splitter) is { } definition)
                     {
-                        definition.Width = new GridLength(0, GridUnitType.Pixel);
+                        definition.Width = new GridLength(0, GridUnitType.Star);
                     }
                 }
             }
@@ -145,7 +145,7 @@
             {
                 return (this.previousLength, this.nextLength) switch
                 {
-                    ({ IsStar: true }, { IsStar: true }) => Math.Abs((this.previousLength.Value / this.nextLength.Value) - (this.previous.ActualWidth / this.next.ActualWidth)) > 0.01,
+                    ({ IsStar: true }, { IsStar: true }) => Math.Abs((this.previousLength.Value / this.nextLength.Value) - (this.previous.ActualWidth / this.next.ActualWidth)) > 0.05,
                     ({ IsStar: true }, { IsAuto: true }) => !this.next.Width.IsAuto,
                     _ => throw new NotSupportedException("Only supporting a subset for now."),
                 };

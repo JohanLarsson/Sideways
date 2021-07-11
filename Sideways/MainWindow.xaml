@@ -192,13 +192,13 @@
 
         <Grid x:Name="Root" Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition x:Name="LeftColumn" Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="2*" />
+                <ColumnDefinition x:Name="MiddleColumn" Width="2*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition x:Name="RightColumn" Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition x:Name="ContextColumn" Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Grid x:Name="LeftPane" Grid.Column="0">
