@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections;
-    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
@@ -76,6 +75,15 @@
             new FrameworkPropertyMetadata(
                 default(int?),
                 FrameworkPropertyMetadataOptions.Inherits));
+
+        static Chart()
+        {
+            UseLayoutRoundingProperty.OverrideMetadata(
+                typeof(Chart),
+                new FrameworkPropertyMetadata(
+                    true,
+                    FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure));
+        }
 
         public Chart()
         {
