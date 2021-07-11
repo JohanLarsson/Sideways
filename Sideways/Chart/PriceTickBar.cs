@@ -29,6 +29,7 @@
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
         private StepAndFormat stepAndFormat;
+        private string measureText = "1000";
 
         public SolidColorBrush Fill
         {
@@ -53,19 +54,32 @@
             if (this.PriceRange is { Max: var max } range)
             {
                 this.stepAndFormat = StepAndFormat.Create(range, availableSize.Height);
-                var text = new FormattedText(
-                    max.ToString(this.stepAndFormat.Format, DateTimeFormatInfo.InvariantInfo),
+                var maxText = max.ToString(this.stepAndFormat.Format, DateTimeFormatInfo.InvariantInfo);
+                var typeface = new Typeface(
+                    TextElement.GetFontFamily(this),
+                    TextElement.GetFontStyle(this),
+                    TextElement.GetFontWeight(this),
+                    TextElement.GetFontStretch(this));
+                var fontSize = TextElement.GetFontSize(this);
+
+                var maxFormatted = Format(maxText);
+                var measureFormatted = Format(this.measureText);
+                if (maxFormatted.Width > measureFormatted.Width)
+                {
+                    this.measureText = maxText;
+                    return new Size(maxFormatted.Width, maxFormatted.Height);
+                }
+
+                return new Size(measureFormatted.Width, measureFormatted.Height);
+
+                FormattedText Format(string text) => new FormattedText(
+                    text,
                     CultureInfo.InvariantCulture,
                     FlowDirection.LeftToRight,
-                    new Typeface(
-                        TextElement.GetFontFamily(this),
-                        TextElement.GetFontStyle(this),
-                        TextElement.GetFontWeight(this),
-                        TextElement.GetFontStretch(this)),
-                    TextElement.GetFontSize(this),
+                    typeface,
+                    fontSize,
                     this.Fill,
                     96);
-                return new Size(text.Width, text.Height);
             }
 
             return default;
