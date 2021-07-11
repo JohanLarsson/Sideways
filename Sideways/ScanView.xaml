@@ -289,6 +289,7 @@
                         <DataTemplate DataType="{x:Type scan:YieldCriteria}">
                             <Grid>
                                 <Grid.RowDefinitions>
+                                    <RowDefinition />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
@@ -298,26 +299,34 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Grid.Row="0"
+                                <UniformGrid Grid.Row="0"
+                                             Grid.Column="0"
+                                             Grid.ColumnSpan="2"
+                                             Columns="2">
+                                    <RadioButton Content="{Binding TwentyFivePercentInFiveDaysText}" IsChecked="{Binding TwentyFivePercentInFiveDays, UpdateSourceTrigger=PropertyChanged}" />
+                                    <RadioButton Content="{Binding FiftyPercentInFiftyDaysText}" IsChecked="{Binding FiftyPercentInFiftyDays, UpdateSourceTrigger=PropertyChanged}" />
+                                </UniformGrid>
+
+                                <TextBlock Grid.Row="1"
                                            Grid.Column="0"
                                            Text="Days" />
-                                <TextBox Grid.Row="0"
+                                <TextBox Grid.Row="1"
                                          Grid.Column="1"
                                          Text="{Binding Days,
                                                         UpdateSourceTrigger=LostFocus}" />
 
-                                <TextBlock Grid.Row="1"
+                                <TextBlock Grid.Row="2"
                                            Grid.Column="0"
                                            Text="Min" />
-                                <TextBox Grid.Row="1"
+                                <TextBox Grid.Row="2"
                                          Grid.Column="1"
                                          Text="{Binding Min,
                                                         UpdateSourceTrigger=LostFocus}" />
 
-                                <TextBlock Grid.Row="2"
+                                <TextBlock Grid.Row="3"
                                            Grid.Column="0"
                                            Text="Max" />
-                                <TextBox Grid.Row="2"
+                                <TextBox Grid.Row="3"
                                          Grid.Column="1"
                                          Text="{Binding Max,
                                                         UpdateSourceTrigger=LostFocus}" />

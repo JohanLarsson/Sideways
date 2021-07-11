@@ -165,6 +165,10 @@
                 this.OnPropertyChanged(nameof(this.YearToDate));
                 this.OnPropertyChanged(nameof(this.LastMonth));
                 this.OnPropertyChanged(nameof(this.LastWeek));
+                this.OnPropertyChanged(nameof(this.Year1));
+                this.OnPropertyChanged(nameof(this.Year2));
+                this.OnPropertyChanged(nameof(this.Year3));
+                this.OnPropertyChanged(nameof(this.Year4));
             }
         }
 
@@ -184,6 +188,10 @@
                 this.OnPropertyChanged(nameof(this.YearToDate));
                 this.OnPropertyChanged(nameof(this.LastMonth));
                 this.OnPropertyChanged(nameof(this.LastWeek));
+                this.OnPropertyChanged(nameof(this.Year1));
+                this.OnPropertyChanged(nameof(this.Year2));
+                this.OnPropertyChanged(nameof(this.Year3));
+                this.OnPropertyChanged(nameof(this.Year4));
             }
         }
 

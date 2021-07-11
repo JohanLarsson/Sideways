@@ -8,15 +8,11 @@
         private Percent? min = new Percent(25);
         private Percent? max;
 
-        public override string Info => (this.min, this.max) switch
-        {
-            // ReSharper disable LocalVariableHidesMember
-            (min: { } min, max: { } max) => $"{min:#.#} ≤ {this.days} d ≤ {max:#.#}",
-            (min: null, max: { } max) => $"{this.days} d ≤ {max:#.#}",
-            (min: { } min, max: null) => $"{min:#.#} ≤ {this.days} d",
-            (null, null) => $"Yield *",
-            //// ReSharper restore LocalVariableHidesMember
-        };
+        public static string TwentyFivePercentInFiveDaysText => InfoText(new Percent(25), null, 5);
+
+        public static string FiftyPercentInFiftyDaysText => InfoText(new Percent(50), null, 50);
+
+        public override string Info => InfoText(this.min, this.max, this.days);
 
         public int Days
         {
@@ -30,8 +26,44 @@
 
                 this.days = value;
                 this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.TwentyFivePercentInFiveDays));
+                this.OnPropertyChanged(nameof(this.FiftyPercentInFiftyDays));
                 this.OnPropertyChanged(nameof(this.ExtraDays));
                 this.OnPropertyChanged(nameof(this.Info));
+            }
+        }
+
+        public bool TwentyFivePercentInFiveDays
+        {
+            get => this is { min: { Scalar: 25 }, max: null, days: 5 };
+            set
+            {
+                if (!value ||
+                    value == this.TwentyFivePercentInFiveDays)
+                {
+                    return;
+                }
+
+                this.Min = new Percent(25);
+                this.Max = null;
+                this.Days = 5;
+            }
+        }
+
+        public bool FiftyPercentInFiftyDays
+        {
+            get => this is { min: { Scalar: 50 }, max: null, days: 50 };
+            set
+            {
+                if (!value ||
+                    value == this.FiftyPercentInFiftyDays)
+                {
+                    return;
+                }
+
+                this.Min = new Percent(50);
+                this.Max = null;
+                this.Days = 50;
             }
         }
 
@@ -48,6 +80,8 @@
                 this.min = value;
                 this.OnPropertyChanged();
                 this.OnPropertyChanged(nameof(this.Info));
+                this.OnPropertyChanged(nameof(this.TwentyFivePercentInFiveDays));
+                this.OnPropertyChanged(nameof(this.FiftyPercentInFiftyDays));
             }
         }
 
@@ -64,6 +98,8 @@
                 this.max = value;
                 this.OnPropertyChanged();
                 this.OnPropertyChanged(nameof(this.Info));
+                this.OnPropertyChanged(nameof(this.TwentyFivePercentInFiveDays));
+                this.OnPropertyChanged(nameof(this.FiftyPercentInFiftyDays));
             }
         }
 
@@ -97,5 +133,15 @@
 
             throw new InvalidOperationException($"{nameof(YieldCriteria)} expected days >= 1.");
         }
+
+        private static string InfoText(Percent? minimum, Percent? maximum, int days) => (minimum, maximum) switch
+        {
+            // ReSharper disable LocalVariableHidesMember
+            (minimum: { } min, maximum: { } max) => $"{min:#.#} ≤ {days} d ≤ {max:#.#}",
+            (minimum: null, maximum: { } max) => $"{days} d ≤ {max:#.#}",
+            (minimum: { } min, maximum: null) => $"{min:#.#} ≤ {days} d",
+            (null, null) => $"Yield *",
+            //// ReSharper restore LocalVariableHidesMember
+        };
     }
 }
