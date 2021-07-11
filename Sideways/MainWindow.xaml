@@ -48,6 +48,11 @@
         <KeyBinding sideways:Priority.Over="{Binding ElementName=SymbolBox}"
                     Command="{Binding Animation.ToggleCommand}"
                     Gesture="Space" />
+
+        <KeyBinding sideways:Priority.Over="{Binding ElementName=SymbolBox}"
+                    Command="{Binding MoveToStartCommand}"
+                    Gesture="Home" />
+
         <KeyBinding sideways:Priority.Over="{Binding ElementName=SymbolBox}"
                     Command="{Binding MoveToEndCommand}"
                     Gesture="End" />

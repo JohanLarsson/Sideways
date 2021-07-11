@@ -43,6 +43,10 @@
                 }
             });
 
+            this.MoveToStartCommand = new RelayCommand(
+                _ => this.Time = this.currentSymbol?.Candles?.FirstDay() ?? this.time,
+                _ => this.currentSymbol is { Candles: { } });
+
             this.MoveToEndCommand = new RelayCommand(
                 _ => this.Time = this.currentSymbol?.Candles?.LastDay() ?? this.time,
                 _ => this.currentSymbol is { Candles: { } });
@@ -135,6 +139,8 @@
         public ICommand AddBookmarkCommand { get; }
 
         public ICommand AddToWatchlistCommand { get; }
+
+        public ICommand MoveToStartCommand { get; }
 
         public ICommand MoveToEndCommand { get; }
 
