@@ -132,8 +132,8 @@
             {
                 var valueRange = new ValueRange(priceRange, this.PriceScale);
                 this.rectangle.Arrange(new Rect(
-                    Point(measurement.From),
-                    Point(to)));
+                    Point(measurement.From) - new Vector(0.5 * candleWidth, 0),
+                    Point(to) + new Vector(0.5 * candleWidth, 0)));
                 this.child?.Arrange(new Rect(finalSize));
                 this.infoPresenter.Arrange(InfoRectangle());
 
@@ -148,7 +148,7 @@
                 {
                     var position = Point(to);
                     var desiredSize = this.infoPresenter.DesiredSize;
-                    return new Rect(Clamp(new Point(X(), Y())), desiredSize);
+                    return new Rect(Clamp(new Point(X() + (0.5 * candleWidth), Y())), desiredSize);
 
                     double X()
                     {
@@ -224,7 +224,7 @@
 
                 this.Measurement = measurement.WithEnd(
                     timeAndPrice,
-                    Math.Abs(fromIndex - IndexOf(timeAndPrice.Time)),
+                    Math.Abs(fromIndex - IndexOf(timeAndPrice.Time) + 1),
                     itemsSource.Adr(measurement.From.Time),
                     itemsSource.Atr(measurement.From.Time));
 

@@ -139,7 +139,7 @@
 
         public TimeAndPrice? TimeAndPrice(Point position, DescendingCandles candles)
         {
-            var i = (int)Math.Round((this.renderSize.Width - position.X) / this.candleWidth);
+            var i = (int)Math.Floor((this.renderSize.Width - position.X) / this.candleWidth);
             if (i >= 0 && i < candles.Count)
             {
                 return new TimeAndPrice(candles[i].Time, this.valueRange.ValueFromY(position.Y, this.renderSize.Height));
