@@ -21,12 +21,6 @@
 
         public int Count => this.candles.Count;
 
-        public int VisibleCount => this.candleSticks is { RenderSize: { Width: > 0 and var width }, CandleWidth: > 0 and var candleWidth }
-            ? (int)Math.Ceiling(width / candleWidth)
-            : 0;
-
-        public Candle? FirstVisible => this.candles.Count == 0 ? null : this.candles[Math.Min(this.candles.Count - 1, this.VisibleCount)];
-
         public FloatRange? PriceRange
         {
             get => this.priceRange;
@@ -84,7 +78,9 @@
         public void Refresh(Candles? itemsSource, DateTimeOffset time, CandleInterval interval)
         {
             this.candles.Clear();
-            var visibleCount = this.VisibleCount;
+            var visibleCount = this.candleSticks is { RenderSize: { Width: > 0 and var width }, CandleWidth: > 0 and var candleWidth }
+                ? (int)Math.Ceiling(width / candleWidth)
+                : 0;
             if (visibleCount > 0 &&
                 itemsSource is { })
             {
@@ -140,8 +136,6 @@
         public void With(CandleSticks candleSticks)
         {
             this.candleSticks = candleSticks;
-            this.OnPropertyChanged(nameof(this.FirstVisible));
-            this.OnPropertyChanged(nameof(this.VisibleCount));
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

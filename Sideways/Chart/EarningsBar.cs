@@ -85,16 +85,14 @@
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (this.Candles is { Count: > 0 } candles)
+            if (this.Candles is { Count: > 0, TimeRange: { } timeRange })
             {
                 var rect = Rect.Empty;
-                var time = this.Time;
                 foreach (ContentPresenter child in this.children)
                 {
                     if (child is { Content: EarningsViewModel { Date: var date } })
                     {
-                        if (date > candles.FirstVisible?.Time &&
-                            date <= time)
+                        if (timeRange.Contains(date))
                         {
                             child.Visibility = Visibility.Visible;
                             child.Measure(availableSize);
