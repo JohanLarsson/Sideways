@@ -7,7 +7,7 @@
     using System.Windows.Documents;
     using System.Windows.Media;
 
-    public class TimeTickBar : CandleSeries
+    public class TimeTickBar : CandlesElement
     {
         public static readonly DependencyProperty FillProperty = DependencyProperty.Register(
             nameof(Fill),

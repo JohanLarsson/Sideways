@@ -3,43 +3,43 @@
     using System;
     using System.Windows;
 
-    public abstract class CandleSeries : FrameworkElement
+    public abstract class CandlesElement : FrameworkElement
     {
         public static readonly DependencyProperty ItemsSourceProperty = Chart.ItemsSourceProperty.AddOwner(
-            typeof(CandleSeries),
+            typeof(CandlesElement),
             new FrameworkPropertyMetadata(
                 default(Candles),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
         public static readonly DependencyProperty TimeProperty = Chart.TimeProperty.AddOwner(
-            typeof(CandleSeries),
+            typeof(CandlesElement),
             new FrameworkPropertyMetadata(
                 DateTimeOffset.Now,
                 FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public static readonly DependencyProperty CandleIntervalProperty = Chart.CandleIntervalProperty.AddOwner(
-            typeof(CandleSeries),
+            typeof(CandlesElement),
             new FrameworkPropertyMetadata(
                 CandleInterval.None,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
         public static readonly DependencyProperty CandleWidthProperty = Chart.CandleWidthProperty.AddOwner(
-            typeof(CandleSeries),
+            typeof(CandlesElement),
             new FrameworkPropertyMetadata(
                 5,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
         public static readonly DependencyProperty CandlesProperty = Chart.CandlesProperty.AddOwner(
-            typeof(CandleSeries),
+            typeof(CandlesElement),
             new FrameworkPropertyMetadata(
                     default(DescendingCandles),
 #pragma warning disable WPF0022 // Cast value to correct type.
-                    (o, e) => ((CandleSeries)o).OnCandlesChanged((DescendingCandles)e.NewValue)));
+                    (o, e) => ((CandlesElement)o).OnCandlesChanged((DescendingCandles)e.NewValue)));
 #pragma warning restore WPF0022 // Cast value to correct type.
 
-        static CandleSeries()
+        static CandlesElement()
         {
-            ClipToBoundsProperty.OverrideMetadata(typeof(CandleSeries), new PropertyMetadata(true));
+            ClipToBoundsProperty.OverrideMetadata(typeof(CandlesElement), new PropertyMetadata(true));
         }
 
         public Candles? ItemsSource

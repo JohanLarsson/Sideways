@@ -4,7 +4,7 @@
     using System.Windows;
     using System.Windows.Media;
 
-    public class VWap : CandleSeries
+    public class VWap : CandlesElement
     {
         public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
             typeof(VWap),

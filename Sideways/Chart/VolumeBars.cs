@@ -4,7 +4,7 @@
     using System.Windows;
     using System.Windows.Media;
 
-    public class VolumeBars : CandleSeries
+    public class VolumeBars : CandlesElement
     {
         public static readonly DependencyProperty MaxVolumeProperty = Chart.MaxVolumeProperty.AddOwner(
             typeof(VolumeBars),

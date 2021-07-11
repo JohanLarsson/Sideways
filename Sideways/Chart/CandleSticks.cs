@@ -4,7 +4,7 @@
     using System.Windows;
     using System.Windows.Media;
 
-    public class CandleSticks : CandleSeries
+    public class CandleSticks : CandlesElement
     {
         public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
             typeof(CandleSticks),

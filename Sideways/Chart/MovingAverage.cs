@@ -4,7 +4,7 @@
     using System.Windows;
     using System.Windows.Media;
 
-    public class MovingAverage : CandleSeries
+    public class MovingAverage : CandlesElement
     {
         public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
             typeof(MovingAverage),

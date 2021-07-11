@@ -5,7 +5,7 @@
     using System.Windows;
     using System.Windows.Media;
 
-    public class ChartBackground : CandleSeries
+    public class ChartBackground : CandlesElement
     {
         public static readonly DependencyProperty SymbolProperty = DependencyProperty.Register(
             nameof(Symbol),

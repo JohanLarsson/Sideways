@@ -11,7 +11,7 @@
     using System.Windows.Shapes;
 
     [ContentProperty(nameof(Child))]
-    public class MeasureDecorator : CandleSeries
+    public class MeasureDecorator : CandlesElement
     {
         public static readonly DependencyProperty PriceRangeProperty = Chart.PriceRangeProperty.AddOwner(
             typeof(MeasureDecorator),
