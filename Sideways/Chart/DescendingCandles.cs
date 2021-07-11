@@ -81,13 +81,14 @@
             var visibleCount = this.candleSticks is { RenderSize: { Width: > 0 and var width }, CandleWidth: > 0 and var candleWidth }
                 ? (int)Math.Ceiling(width / candleWidth)
                 : 0;
+
+            var min = float.MaxValue;
+            var max = float.MinValue;
+            var minTime = default(DateTimeOffset);
+            var vol = 0;
             if (visibleCount > 0 &&
                 itemsSource is { })
             {
-                var min = float.MaxValue;
-                var max = float.MinValue;
-                var minTime = default(DateTimeOffset);
-                var vol = 0;
                 foreach (var candle in itemsSource.Descending(time, interval))
                 {
                     this.candles.Add(candle);
@@ -104,19 +105,13 @@
                         break;
                     }
                 }
+            }
 
-                if (this.candles.Count > 0)
-                {
-                    this.PriceRange = new FloatRange(min, max);
-                    this.TimeRange = new TimeRange(minTime, time);
-                    this.MaxVolume = vol;
-                }
-                else
-                {
-                    this.PriceRange = null;
-                    this.TimeRange = null;
-                    this.MaxVolume = 0;
-                }
+            if (this.candles.Count > 0)
+            {
+                this.PriceRange = new FloatRange(min, max);
+                this.TimeRange = new TimeRange(minTime, time);
+                this.MaxVolume = vol;
             }
             else
             {
