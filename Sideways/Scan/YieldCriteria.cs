@@ -11,9 +11,9 @@
         public override string Info => (this.min, this.max) switch
         {
             // ReSharper disable LocalVariableHidesMember
-            (min: { } min, max: { } max) => $"{min:#.#} ≤ y ≤ {max:#.#}",
-            (min: null, max: { } max) => $"y ≤ {max:#.#}",
-            (min: { } min, max: null) => $"{min:#.#} ≤ y",
+            (min: { } min, max: { } max) => $"{min:#.#} ≤ {this.days} d ≤ {max:#.#}",
+            (min: null, max: { } max) => $"{this.days} d ≤ {max:#.#}",
+            (min: { } min, max: null) => $"{min:#.#} ≤ {this.days} d",
             (null, null) => $"Yield *",
             //// ReSharper restore LocalVariableHidesMember
         };
