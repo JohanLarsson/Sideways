@@ -5,6 +5,7 @@
     using System.Collections.Immutable;
     using System.Linq;
     using System.Net.Http;
+    using System.Text;
     using System.Threading.Tasks;
     using NUnit.Framework;
 
@@ -39,12 +40,14 @@
             var days = Database.ReadDays(symbol, DateTimeOffset.Now.AddYears(-2), DateTimeOffset.Now.AddDays(-29)).Select(x => x.Time.Date);
             var minuteDays = Database.ReadMinutes(symbol, DateTimeOffset.Now.AddYears(-2), DateTimeOffset.Now.AddDays(-29)).Select(x => x.Time.Date).Distinct();
             if (minuteDays.Any() &&
-                days.SequenceEqual(minuteDays))
+                !Enumerable.SequenceEqual(days, minuteDays))
             {
-                foreach (var slice in Enum.GetValues<Slice>().Where(x => x == Slice.Year1Month1))
+                var downloads = new List<Slice>();
+                foreach (var slice in Enum.GetValues<Slice>().Where(x => x != Slice.Year1Month1))
                 {
                     if (ShouldDownload(slice))
                     {
+                        downloads.Add(slice);
                         var minutesDownload = new MinutesDownload(symbol, slice, Downloader);
                         await minutesDownload.ExecuteAsync();
                     }
@@ -52,14 +55,23 @@
                     bool ShouldDownload(Slice slice)
                     {
                         var sliceRange = TimeRange.FromSlice(slice);
-                        return SliceDays(days).SequenceEqual(SliceDays(minuteDays));
+                        return !Enumerable.SequenceEqual(SliceDays(days), SliceDays(minuteDays));
 
                         IEnumerable<DateTime> SliceDays(IEnumerable<DateTime> source)
                         {
                             var firstMinute = Settings.AlphaVantage.FirstMinutes.GetValueOrDefault(symbol);
-                            return source.Where(x => sliceRange.Contains(x) && x > firstMinute);
+                            return source.Where(x => sliceRange.Contains(x) && x.Date >= firstMinute.Date);
                         }
                     }
+                }
+
+                if (downloads.Count == 0)
+                {
+                    Assert.Pass("No holes!");
+                }
+                else
+                {
+                    Assert.Pass(string.Join(", ", downloads));
                 }
             }
             else
