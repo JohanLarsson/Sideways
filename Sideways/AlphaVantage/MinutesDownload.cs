@@ -65,6 +65,20 @@
                     return false;
                 }
 
+                if (settings.FirstMinutes.TryGetValue(symbol, out var firstMinute))
+                {
+                    if (sliceRange.Contains(firstMinute) &&
+                        existingMinutes.Min.Date == firstMinute.Date)
+                    {
+                        return false;
+                    }
+
+                    if (sliceRange.Max < firstMinute)
+                    {
+                        return false;
+                    }
+                }
+
                 return true;
             }
         }

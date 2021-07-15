@@ -41,6 +41,20 @@
         }
 
         [Test]
+        public static void FirstMinute()
+        {
+            var firstMinute = DateTimeOffset.Now.AddDays(-100);
+            var settings = new Settings(new AlphaVantageSettings(
+                AlphaVantageClientSettings,
+                symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
+                unlistedSymbols: ImmutableSortedSet<string>.Empty,
+                firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty.Add("HEPA", firstMinute)));
+            var existingDays = new TimeRange(new DateTimeOffset(2013, 4, 18, 0, 0, 0, 0, TimeSpan.Zero), DateTimeOffset.Now.AddDays(-50));
+            var existingMinutes = new TimeRange(firstMinute, DateTimeOffset.Now.AddDays(-50));
+            CollectionAssert.AreEqual(new Slice?[] { Slice.Year1Month1, Slice.Year1Month2 }, MinutesDownload.Create("HEPA", existingDays, existingMinutes, new Downloader(settings), settings.AlphaVantage).Select(x => x.Slice));
+        }
+
+        [Test]
         public static void WhenNoMinutesDownloaded()
         {
             var settings = new Settings(new AlphaVantageSettings(
