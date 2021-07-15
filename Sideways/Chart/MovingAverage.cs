@@ -1,6 +1,5 @@
 ﻿namespace Sideways
 {
-    using System;
     using System.Windows;
     using System.Windows.Media;
 
@@ -35,14 +34,7 @@
                 default(int),
                 (o, e) => ((MovingAverage)o).Candles.WithExtra((int)e.NewValue)));
 
-        private readonly LayerVisual layer = new();
-
         private Pen? pen;
-
-        public MovingAverage()
-        {
-            this.AddVisualChild(this.layer);
-        }
 
         public FloatRange? PriceRange
         {
@@ -68,15 +60,8 @@
             set => this.SetValue(PeriodProperty, value);
         }
 
-        protected override int VisualChildrenCount => 1;
-
-        protected override Visual GetVisualChild(int index) => index == 0
-            ? this.layer
-            : throw new ArgumentOutOfRangeException(nameof(index));
-
         protected override void OnRender(DrawingContext drawingContext)
         {
-            using var context = this.layer.RenderOpen();
             if (this.Stroke is { } stroke &&
                 this.PriceRange is { } priceRange)
             {
@@ -88,7 +73,7 @@
                     var p2 = new Point(position.Center, position.Y(a));
                     if (previous is { } p1)
                     {
-                        context.DrawLine(this.pen, p1, p2);
+                        drawingContext.DrawLine(this.pen, p1, p2);
                     }
 
                     previous = p2;
