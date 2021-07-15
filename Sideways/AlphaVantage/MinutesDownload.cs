@@ -34,12 +34,6 @@
                 return ImmutableArray<MinutesDownload>.Empty;
             }
 
-            if (settings.UnlistedSymbols.Contains(symbol) &&
-                existingDays.Max.Date == existingMinutes.Max.Date)
-            {
-                return ImmutableArray<MinutesDownload>.Empty;
-            }
-
             if (TradingDay.From(existingMinutes.Max) < TradingDay.LastComplete() &&
                 TradingDay.From(existingMinutes.Max.AddMonths(1)) >= TradingDay.LastComplete())
             {
@@ -74,6 +68,20 @@
                     }
 
                     if (sliceRange.Max < firstMinute)
+                    {
+                        return false;
+                    }
+                }
+
+                if (settings.UnlistedSymbols.Contains(symbol))
+                {
+                    if (sliceRange.Min > existingDays.Max.Date)
+                    {
+                        return false;
+                    }
+
+                    if (existingMinutes.Overlaps(sliceRange) &&
+                        existingDays.Max.Date == existingMinutes.Max.Date)
                     {
                         return false;
                     }
