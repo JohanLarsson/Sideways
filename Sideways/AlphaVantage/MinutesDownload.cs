@@ -46,40 +46,27 @@
                 return ImmutableArray.Create(new MinutesDownload(symbol, null, downloader));
             }
 
-            if (existingMinutes == default)
+            var builder = ImmutableArray.CreateBuilder<MinutesDownload>();
+            foreach (var slice in Enum.GetValues<Slice>())
             {
-                var builder = ImmutableArray.CreateBuilder<MinutesDownload>();
-                foreach (var slice in Enum.GetValues<Slice>())
+                if (ShouldDownload(slice))
                 {
-                    if (existingDays.Overlaps(TimeRange.FromSlice(slice)))
-                    {
-                        builder.Add(new MinutesDownload(symbol, slice, downloader));
-                    }
+                    builder.Add(new MinutesDownload(symbol, slice, downloader));
                 }
-
-                return builder.ToImmutable();
             }
 
-            if (TradingDay.From(existingMinutes.Min) > TradingDay.Max(TradingDay.From(existingDays.Min), TradingDay.From(TimeRange.FromSlice(AlphaVantage.Slice.Year2Month2).Min)))
+            return builder.ToImmutable();
+
+            bool ShouldDownload(Slice slice)
             {
-                var firstDay = settings.FirstMinutes.GetValueOrDefault(symbol);
-                var builder = ImmutableArray.CreateBuilder<MinutesDownload>();
-                foreach (var slice in Enum.GetValues<Slice>())
+                var sliceRange = TimeRange.FromSlice(slice);
+                if (existingMinutes.Contains(sliceRange))
                 {
-                    var sliceRange = TimeRange.FromSlice(slice);
-                    if (existingDays.Overlaps(sliceRange) &&
-                        existingMinutes.Min > sliceRange.Min &&
-                        sliceRange.Min > firstDay &&
-                        existingMinutes.Min > existingDays.Min)
-                    {
-                        builder.Add(new MinutesDownload(symbol, slice, downloader));
-                    }
+                    return false;
                 }
 
-                return builder.ToImmutable();
+                return true;
             }
-
-            return ImmutableArray<MinutesDownload>.Empty;
         }
 
         public async Task<int> ExecuteAsync()

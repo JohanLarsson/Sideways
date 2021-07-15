@@ -64,5 +64,31 @@
             var existingMinutes = new TimeRange(new DateTimeOffset(2018, 4, 18, 0, 0, 0, 0, TimeSpan.Zero), DateTimeOffset.Now.AddDays(-25));
             CollectionAssert.AreEqual(new Slice?[] { null }, MinutesDownload.Create("TSLA", existingDays, existingMinutes, new Downloader(settings), settings.AlphaVantage).Select(x => x.Slice));
         }
+
+        [Test]
+        public static void LastTwoMonths()
+        {
+            var settings = new Settings(new AlphaVantageSettings(
+                AlphaVantageClientSettings,
+                symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
+                unlistedSymbols: ImmutableSortedSet<string>.Empty,
+                firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty));
+            var existingDays = new TimeRange(new DateTimeOffset(2013, 4, 18, 0, 0, 0, 0, TimeSpan.Zero), DateTimeOffset.Now);
+            var existingMinutes = new TimeRange(new DateTimeOffset(2018, 4, 18, 0, 0, 0, 0, TimeSpan.Zero), DateTimeOffset.Now.AddDays(-35));
+            CollectionAssert.AreEqual(new Slice?[] { Slice.Year1Month1, Slice.Year1Month2 }, MinutesDownload.Create("TSLA", existingDays, existingMinutes, new Downloader(settings), settings.AlphaVantage).Select(x => x.Slice));
+        }
+
+        [Test]
+        public static void FirstTwoMonths()
+        {
+            var settings = new Settings(new AlphaVantageSettings(
+                AlphaVantageClientSettings,
+                symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
+                unlistedSymbols: ImmutableSortedSet<string>.Empty,
+                firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty));
+            var existingDays = new TimeRange(new DateTimeOffset(2013, 4, 18, 0, 0, 0, 0, TimeSpan.Zero), DateTimeOffset.Now);
+            var existingMinutes = new TimeRange(DateTimeOffset.Now.AddYears(-2).AddDays(50), DateTimeOffset.Now);
+            CollectionAssert.AreEqual(new Slice?[] { Slice.Year2Month11, Slice.Year2Month12 }, MinutesDownload.Create("TSLA", existingDays, existingMinutes, new Downloader(settings), settings.AlphaVantage).Select(x => x.Slice));
+        }
     }
 }
