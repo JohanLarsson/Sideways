@@ -104,5 +104,17 @@
             var existingMinutes = new TimeRange(DateTimeOffset.Now.AddYears(-2).AddDays(50), DateTimeOffset.Now);
             CollectionAssert.AreEqual(new Slice?[] { Slice.Year2Month11, Slice.Year2Month12 }, MinutesDownload.Create("TSLA", existingDays, existingMinutes, new Downloader(settings), settings.AlphaVantage).Select(x => x.Slice));
         }
+
+        [Test]
+        public static void WhenTwoMonthsOfDays()
+        {
+            var settings = new Settings(new AlphaVantageSettings(
+                AlphaVantageClientSettings,
+                symbolsWithMissingMinutes: ImmutableSortedSet<string>.Empty,
+                unlistedSymbols: ImmutableSortedSet<string>.Empty,
+                firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty));
+            var existingDays = new TimeRange(DateTimeOffset.Now.AddDays(-50), DateTimeOffset.Now);
+            CollectionAssert.AreEqual(new Slice?[] { Slice.Year1Month1, Slice.Year1Month2 }, MinutesDownload.Create("TSLA", existingDays, default, new Downloader(settings), settings.AlphaVantage).Select(x => x.Slice));
+        }
     }
 }

@@ -87,6 +87,11 @@
                     }
                 }
 
+                if (sliceRange.Max < existingDays.Min)
+                {
+                    return false;
+                }
+
                 return true;
             }
         }
