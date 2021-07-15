@@ -40,6 +40,12 @@
                 return ImmutableArray<MinutesDownload>.Empty;
             }
 
+            if (TradingDay.From(existingMinutes.Max) < TradingDay.LastComplete() &&
+                TradingDay.From(existingMinutes.Max.AddMonths(1)) >= TradingDay.LastComplete())
+            {
+                return ImmutableArray.Create(new MinutesDownload(symbol, null, downloader));
+            }
+
             if (existingMinutes == default)
             {
                 var builder = ImmutableArray.CreateBuilder<MinutesDownload>();
@@ -52,12 +58,6 @@
                 }
 
                 return builder.ToImmutable();
-            }
-
-            if (TradingDay.From(existingMinutes.Max) < TradingDay.LastComplete() &&
-                TradingDay.From(existingMinutes.Max.AddMonths(1)) >= TradingDay.LastComplete())
-            {
-                return ImmutableArray.Create(new MinutesDownload(symbol, null, downloader));
             }
 
             if (TradingDay.From(existingMinutes.Min) > TradingDay.Max(TradingDay.From(existingDays.Min), TradingDay.From(TimeRange.FromSlice(AlphaVantage.Slice.Year2Month2).Min)))
