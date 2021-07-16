@@ -281,7 +281,7 @@
                     return result;
                 }
 
-                result = Comparer<int>.Default.Compare(DaysOlderThan90(x), DaysOlderThan90(y));
+                result = Comparer<int>.Default.Compare(DaysOlderThan85(x), DaysOlderThan85(y));
                 if (result != 0)
                 {
                     return result;
@@ -311,15 +311,15 @@
                 {
                     if (x.ExistingMinutes == default)
                     {
-                        return 0;
+                        return 1;
                     }
 
                     return TradingDay.From(x.ExistingDays.Max) != TradingDay.From(x.ExistingMinutes.Max) ? 0 : 1;
                 }
 
-                static int DaysOlderThan90(SymbolDownloads x)
+                static int DaysOlderThan85(SymbolDownloads x)
                 {
-                    return (DateTimeOffset.Now - x.ExistingDays.Max).Days > 90 ? 0 : 1;
+                    return (DateTimeOffset.Now - x.ExistingDays.Max).Days > 85 ? 0 : 1;
                 }
 
                 static int FullMinuteDownload(SymbolDownloads x)
