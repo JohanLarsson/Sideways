@@ -51,7 +51,7 @@
                 firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty.Add("HEPA", firstMinute)));
             var existingDays = new TimeRange(new DateTimeOffset(2013, 4, 18, 0, 0, 0, 0, TimeSpan.Zero), DateTimeOffset.Now.AddDays(-50));
             var existingMinutes = new TimeRange(firstMinute, DateTimeOffset.Now.AddDays(-50));
-            CollectionAssert.AreEqual(new Slice?[] { Slice.Year1Month1, Slice.Year1Month2 }, MinutesDownload.Create("HEPA", existingDays, existingMinutes, new Downloader(settings), settings.AlphaVantage).Select(x => x.Slice));
+            CollectionAssert.AreEqual(new Slice?[] { Slice.Year1Month2, Slice.Year1Month1 }, MinutesDownload.Create("HEPA", existingDays, existingMinutes, new Downloader(settings), settings.AlphaVantage).Select(x => x.Slice));
         }
 
         [Test]
@@ -89,7 +89,7 @@
                 firstMinutes: ImmutableSortedDictionary<string, DateTimeOffset>.Empty));
             var existingDays = new TimeRange(new DateTimeOffset(2013, 4, 18, 0, 0, 0, 0, TimeSpan.Zero), DateTimeOffset.Now);
             var existingMinutes = new TimeRange(new DateTimeOffset(2018, 4, 18, 0, 0, 0, 0, TimeSpan.Zero), DateTimeOffset.Now.AddDays(-35));
-            CollectionAssert.AreEqual(new Slice?[] { Slice.Year1Month1, Slice.Year1Month2 }, MinutesDownload.Create("TSLA", existingDays, existingMinutes, new Downloader(settings), settings.AlphaVantage).Select(x => x.Slice));
+            CollectionAssert.AreEqual(new Slice?[] { Slice.Year1Month2, Slice.Year1Month1 }, MinutesDownload.Create("TSLA", existingDays, existingMinutes, new Downloader(settings), settings.AlphaVantage).Select(x => x.Slice));
         }
 
         [Test]

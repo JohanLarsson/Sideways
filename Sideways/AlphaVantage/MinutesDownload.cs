@@ -1,12 +1,17 @@
 ﻿namespace Sideways.AlphaVantage
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
     public class MinutesDownload : Download
     {
+        private static readonly ImmutableArray<Slice> AscendingSlices = Enum.GetValues<Slice>().OrderBy(x => TimeRange.FromSlice(x).Max).ToImmutableArray();
+        private static readonly ImmutableArray<Slice> DescendingSlices = AscendingSlices.Reverse().ToImmutableArray();
+
         private readonly Downloader downloader;
 
         public MinutesDownload(string symbol, Slice? slice, Downloader downloader)
@@ -41,7 +46,7 @@
             }
 
             var builder = ImmutableArray.CreateBuilder<MinutesDownload>();
-            foreach (var slice in Enum.GetValues<Slice>())
+            foreach (var slice in Slices())
             {
                 if (ShouldDownload(slice))
                 {
@@ -50,6 +55,28 @@
             }
 
             return builder.ToImmutable();
+
+            IEnumerable<Slice> Slices()
+            {
+                var effective = existingMinutes == default
+                    ? new TimeRange(DateTimeOffset.MaxValue, DateTimeOffset.MaxValue)
+                    : existingMinutes;
+                foreach (var slice in DescendingSlices)
+                {
+                    if (TimeRange.FromSlice(slice).Min < effective.Min)
+                    {
+                        yield return slice;
+                    }
+                }
+
+                foreach (var slice in AscendingSlices)
+                {
+                    if (TimeRange.FromSlice(slice).Max > effective.Max)
+                    {
+                        yield return slice;
+                    }
+                }
+            }
 
             bool ShouldDownload(Slice slice)
             {
