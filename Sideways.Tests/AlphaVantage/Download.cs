@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
+
     using NUnit.Framework;
 
     using Sideways.AlphaVantage;
@@ -36,10 +37,12 @@
         [TestCaseSource(nameof(Symbols))]
         public static async Task MinuteHoles(string symbol)
         {
-            var days = Database.ReadDays(symbol, DateTimeOffset.Now.AddYears(-2), DateTimeOffset.Now.AddDays(-29)).Select(x => x.Time.Date);
-            var minuteDays = Database.ReadMinutes(symbol, DateTimeOffset.Now.AddYears(-2), DateTimeOffset.Now.AddDays(-29)).Select(x => x.Time.Date).Distinct();
+            var start = DateTimeOffset.Now.AddYears(-2);
+            var end = DateTimeOffset.Now.AddMonths(-1);
+            var days = Database.ReadDays(symbol, start, end).Select(x => x.Time.Date);
+            var minuteDays = Database.ReadMinutes(symbol, start, end).Select(x => x.Time.Date).Distinct();
             if (minuteDays.Any() &&
-                !Enumerable.SequenceEqual(days, minuteDays))
+                !days.SequenceEqual(minuteDays))
             {
                 var downloads = new List<Slice>();
                 foreach (var slice in Enum.GetValues<Slice>().Where(x => x != Slice.Year1Month1))
@@ -54,7 +57,36 @@
                     bool ShouldDownload(Slice slice)
                     {
                         var sliceRange = TimeRange.FromSlice(slice);
-                        return !Enumerable.SequenceEqual(SliceDays(days), SliceDays(minuteDays));
+                        var missing = SliceDays(days).Except(SliceDays(minuteDays)).ToArray();
+                        if (missing.Length == 0)
+                        {
+                            return false;
+                        }
+
+                        for (var i = 0; i < missing.Length - 1; i++)
+                        {
+                            if (HasGap(missing[i], missing[i + 1]))
+                            {
+                                return false;
+                            }
+
+                            bool HasGap(DateTimeOffset first, DateTimeOffset second)
+                            {
+                                while (first < second)
+                                {
+                                    second = second.AddDays(-1);
+                                    if (second != first &&
+                                        TradingDay.IsMatch(second))
+                                    {
+                                        return true;
+                                    }
+                                }
+
+                                return false;
+                            }
+                        }
+
+                        return true;
 
                         IEnumerable<DateTime> SliceDays(IEnumerable<DateTime> source)
                         {
