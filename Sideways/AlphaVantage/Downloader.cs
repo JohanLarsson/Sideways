@@ -26,7 +26,7 @@
         public Downloader(Settings settings)
         {
             this.settings = settings;
-            this.symbolDownloads = ImmutableSortedSet.Create<SymbolDownloads>(new SymbolDownloadComparer(settings));
+            this.symbolDownloads = ImmutableSortedSet.Create<SymbolDownloads>(new SymbolDownloadComparer());
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.RefreshSymbolsCommand = new RelayCommand(_ => this.RefreshSymbolDownloadsAsync());
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -208,7 +208,7 @@
             this.SymbolDownloadState.End = DateTimeOffset.Now;
             this.CurrentSymbolDownload = null;
 
-            bool IsMatch(AlphaVantage.SymbolDownloads candidate)
+            bool IsMatch(SymbolDownloads candidate)
             {
                 return candidate is { State: { Status: DownloadStatus.Waiting } } &&
                        candidate.DownloadCommand.CanExecute(null) &&
@@ -258,13 +258,6 @@
 
         private sealed class SymbolDownloadComparer : IComparer<SymbolDownloads>
         {
-            private readonly Settings settings;
-
-            internal SymbolDownloadComparer(Settings settings)
-            {
-                this.settings = settings;
-            }
-
             public int Compare(SymbolDownloads? x, SymbolDownloads? y)
             {
                 if (ReferenceEquals(x, y))
@@ -282,7 +275,19 @@
                     return -1;
                 }
 
-                var result = Comparer<int>.Default.Compare(ExcludingMinutes(x), ExcludingMinutes(y));
+                var result = Comparer<int>.Default.Compare(DaysAndMinutesInSync(x), DaysAndMinutesInSync(y));
+                if (result != 0)
+                {
+                    return result;
+                }
+
+                result = Comparer<int>.Default.Compare(DaysOlderThan90(x), DaysOlderThan90(y));
+                if (result != 0)
+                {
+                    return result;
+                }
+
+                result = Comparer<int>.Default.Compare(FullMinuteDownload(x), FullMinuteDownload(y));
                 if (result != 0)
                 {
                     return result;
@@ -294,12 +299,6 @@
                     return -1 * result;
                 }
 
-                result = Comparer<int>.Default.Compare(DaysAndMinutesInSync(x), DaysAndMinutesInSync(y));
-                if (result != 0)
-                {
-                    return result;
-                }
-
                 result = Comparer<DateTimeOffset>.Default.Compare(x.ExistingDays.Max, y.ExistingDays.Max);
                 if (result != 0)
                 {
@@ -308,14 +307,24 @@
 
                 return string.Compare(x.Symbol, y.Symbol, StringComparison.OrdinalIgnoreCase);
 
-                int ExcludingMinutes(SymbolDownloads candidate)
-                {
-                    return this.settings.AlphaVantage.SymbolsWithMissingMinutes.Contains(candidate.Symbol) ? 1 : 0;
-                }
-
                 static int DaysAndMinutesInSync(SymbolDownloads x)
                 {
+                    if (x.ExistingMinutes == default)
+                    {
+                        return 0;
+                    }
+
                     return TradingDay.From(x.ExistingDays.Max) != TradingDay.From(x.ExistingMinutes.Max) ? 0 : 1;
+                }
+
+                static int DaysOlderThan90(SymbolDownloads x)
+                {
+                    return (DateTimeOffset.Now - x.ExistingDays.Max).Days > 90 ? 0 : 1;
+                }
+
+                static int FullMinuteDownload(SymbolDownloads x)
+                {
+                    return (DateTimeOffset.Now - x.ExistingMinutes.Max).Days is >= 28 and <= 30 ? 0 : 1;
                 }
             }
         }
