@@ -128,7 +128,7 @@
                 this.OnPropertyChanged(nameof(this.EightyPercentInEightyDays));
             }
         }
-        
+
         public Percent? Max
         {
             get => this.max;

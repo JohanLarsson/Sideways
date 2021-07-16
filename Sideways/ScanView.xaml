@@ -253,18 +253,53 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <UniformGrid Grid.Row="0"
-                                             Grid.Column="0"
-                                             Grid.ColumnSpan="2"
-                                             Columns="2">
-                                    <RadioButton Content="YTD" IsChecked="{Binding YearToDate, UpdateSourceTrigger=PropertyChanged}" />
-                                    <RadioButton Content="Month" IsChecked="{Binding LastMonth, UpdateSourceTrigger=PropertyChanged}" />
-                                    <RadioButton Content="Week" IsChecked="{Binding LastWeek, UpdateSourceTrigger=PropertyChanged}" />
-                                    <RadioButton Content="{Binding Year1Text}" IsChecked="{Binding Year1, UpdateSourceTrigger=PropertyChanged}" />
-                                    <RadioButton Content="{Binding Year2Text}" IsChecked="{Binding Year2, UpdateSourceTrigger=PropertyChanged}" />
-                                    <RadioButton Content="{Binding Year3Text}" IsChecked="{Binding Year3, UpdateSourceTrigger=PropertyChanged}" />
-                                    <RadioButton Content="{Binding Year4Text}" IsChecked="{Binding Year4, UpdateSourceTrigger=PropertyChanged}" />
-                                </UniformGrid>
+                                <Grid Grid.Row="0"
+                                      Grid.Column="0"
+                                      Grid.ColumnSpan="2"
+                                      Margin="12,0,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <RadioButton Grid.Row="0"
+                                                 Grid.Column="1"
+                                                 Content="Week"
+                                                 IsChecked="{Binding LastWeek,
+                                                                     UpdateSourceTrigger=PropertyChanged}" />
+                                    <RepeatButton Grid.Row="1"
+                                                  Grid.Column="0"
+                                                  Command="{Binding PreviousYearCommand}"
+                                                  Content="&lt;" />
+                                    <RadioButton Grid.Row="1"
+                                                 Grid.Column="1"
+                                                 Content="{Binding YearText}"
+                                                 IsChecked="{Binding Year,
+                                                                     UpdateSourceTrigger=PropertyChanged}" />
+                                    <RepeatButton Grid.Row="1"
+                                                  Grid.Column="2"
+                                                  Command="{Binding NextYearCommand}"
+                                                  Content="&gt;" />
+
+                                    <RepeatButton Grid.Row="2"
+                                                  Grid.Column="0"
+                                                  Command="{Binding PreviousMonthCommand}"
+                                                  Content="&lt;" />
+                                    <RadioButton Grid.Row="2"
+                                                 Grid.Column="1"
+                                                 Content="{Binding MonthText}"
+                                                 IsChecked="{Binding Month,
+                                                                     UpdateSourceTrigger=PropertyChanged}" />
+                                    <RepeatButton Grid.Row="2"
+                                                  Grid.Column="2"
+                                                  Command="{Binding NextMonthCommand}"
+                                                  Content="&gt;" />
+                                </Grid>
 
                                 <TextBlock Grid.Row="1"
                                            Grid.Column="0"
@@ -300,8 +335,8 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Row="0"
-                                             Grid.Column="0"
-                                             Grid.ColumnSpan="2">
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2">
                                     <RadioButton Content="{Binding FifteenPercentInThreeDaysText}" IsChecked="{Binding FifteenPercentInThreeDays, UpdateSourceTrigger=PropertyChanged}" />
                                     <RadioButton Content="{Binding TwentyFivePercentInFiveDaysText}" IsChecked="{Binding TwentyFivePercentInFiveDays, UpdateSourceTrigger=PropertyChanged}" />
                                     <RadioButton Content="{Binding FiftyPercentInFiftyDaysText}" IsChecked="{Binding FiftyPercentInFiftyDays, UpdateSourceTrigger=PropertyChanged}" />
