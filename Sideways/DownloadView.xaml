@@ -47,6 +47,19 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
+
+                <Button Command="{Binding TopUpCommand}" ToolTip="Download missing days for all symbols">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <ContentPresenter Margin="2,0"
+                                              Content="{Binding SymbolDownloadState.Status}"
+                                              ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}" />
+
+                            <TextBlock Text="Top up" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+
                 <TextBlock Text="{Binding SymbolDownloads.Count, StringFormat='Count: {0}'}" ToolTip="Download individual symbols" />
             </StackPanel>
 

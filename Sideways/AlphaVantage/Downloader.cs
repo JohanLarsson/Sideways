@@ -28,13 +28,15 @@
             this.settings = settings;
             this.symbolDownloads = ImmutableSortedSet.Create<SymbolDownloads>(new SymbolDownloadComparer());
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
             this.RefreshSymbolsCommand = new RelayCommand(_ => this.RefreshSymbolDownloadsAsync());
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.DownloadAllCommand = new RelayCommand(
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 _ => this.DownloadAllAsync(_ => true),
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 _ => this is { symbolDownloads: { IsEmpty: false }, symbolDownloadState: { Status: DownloadStatus.Waiting or DownloadStatus.Error } });
+            this.TopUpCommand = new RelayCommand(
+                _ => this.DownloadAllAsync(x => (DateTimeOffset.Now - x.ExistingDays.Max).Days > 85, preferDays: true),
+                _ => this is { symbolDownloads: { IsEmpty: false }, symbolDownloadState: { Status: DownloadStatus.Waiting or DownloadStatus.Error } });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -50,6 +52,8 @@
         public ICommand RefreshSymbolsCommand { get; }
 
         public ICommand DownloadAllCommand { get; }
+
+        public ICommand TopUpCommand { get; }
 
         public AlphaVantageClient Client
         {
@@ -190,13 +194,22 @@
             this.Downloads = this.Downloads.Add(download);
         }
 
-        public async Task DownloadAllAsync(Func<SymbolDownloads, bool> filter)
+        public async Task DownloadAllAsync(Func<SymbolDownloads, bool> filter, bool preferDays = false)
         {
             this.SymbolDownloadState.Start = DateTimeOffset.Now;
             while (this.symbolDownloads.FirstOrDefault(x => IsMatch(x)) is { } symbolDownload)
             {
                 this.CurrentSymbolDownload = symbolDownload;
-                await symbolDownload.DownloadAsync().ConfigureAwait(false);
+                if (preferDays &&
+                    symbolDownload is { DaysDownload: { } daysDownload, MinutesDownloads: { Length: 24 } })
+                {
+                    await daysDownload.ExecuteAsync().ConfigureAwait(false);
+                }
+                else
+                {
+                    await symbolDownload.DownloadAsync().ConfigureAwait(false);
+                }
+
                 if (symbolDownload.State is { Exception: { Message: { } message } } &&
                     message.Contains("Our standard API call frequency is 5 calls per minute and 500 calls per day.", StringComparison.Ordinal))
                 {
