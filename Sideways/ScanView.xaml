@@ -299,13 +299,14 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <UniformGrid Grid.Row="0"
+                                <StackPanel Grid.Row="0"
                                              Grid.Column="0"
-                                             Grid.ColumnSpan="2"
-                                             Columns="2">
+                                             Grid.ColumnSpan="2">
+                                    <RadioButton Content="{Binding FifteenPercentInThreeDaysText}" IsChecked="{Binding FifteenPercentInThreeDays, UpdateSourceTrigger=PropertyChanged}" />
                                     <RadioButton Content="{Binding TwentyFivePercentInFiveDaysText}" IsChecked="{Binding TwentyFivePercentInFiveDays, UpdateSourceTrigger=PropertyChanged}" />
                                     <RadioButton Content="{Binding FiftyPercentInFiftyDaysText}" IsChecked="{Binding FiftyPercentInFiftyDays, UpdateSourceTrigger=PropertyChanged}" />
-                                </UniformGrid>
+                                    <RadioButton Content="{Binding EightyPercentInEightyDaysText}" IsChecked="{Binding EightyPercentInEightyDays, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
 
                                 <TextBlock Grid.Row="1"
                                            Grid.Column="0"

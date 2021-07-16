@@ -8,9 +8,13 @@
         private Percent? min = new Percent(25);
         private Percent? max;
 
+        public static string FifteenPercentInThreeDaysText { get; } = InfoText(new Percent(15), null, 3);
+
         public static string TwentyFivePercentInFiveDaysText { get; } = InfoText(new Percent(25), null, 5);
 
         public static string FiftyPercentInFiftyDaysText { get; } = InfoText(new Percent(50), null, 50);
+
+        public static string EightyPercentInEightyDaysText { get; } = InfoText(new Percent(80), null, 80);
 
         public override string Info => InfoText(this.min, this.max, this.days);
 
@@ -26,10 +30,31 @@
 
                 this.days = value;
                 this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.FifteenPercentInThreeDays));
                 this.OnPropertyChanged(nameof(this.TwentyFivePercentInFiveDays));
                 this.OnPropertyChanged(nameof(this.FiftyPercentInFiftyDays));
                 this.OnPropertyChanged(nameof(this.ExtraDays));
                 this.OnPropertyChanged(nameof(this.Info));
+                this.OnPropertyChanged(nameof(this.EightyPercentInEightyDays));
+            }
+        }
+
+        public override int ExtraDays => this.Days;
+
+        public bool FifteenPercentInThreeDays
+        {
+            get => this is { min: { Scalar: 15 }, max: null, days: 3 };
+            set
+            {
+                if (!value ||
+                    value == this.FifteenPercentInThreeDays)
+                {
+                    return;
+                }
+
+                this.Min = new Percent(15);
+                this.Max = null;
+                this.Days = 3;
             }
         }
 
@@ -67,6 +92,23 @@
             }
         }
 
+        public bool EightyPercentInEightyDays
+        {
+            get => this is { min: { Scalar: 80 }, max: null, days: 80 };
+            set
+            {
+                if (!value ||
+                    value == this.EightyPercentInEightyDays)
+                {
+                    return;
+                }
+
+                this.Min = new Percent(80);
+                this.Max = null;
+                this.Days = 80;
+            }
+        }
+
         public Percent? Min
         {
             get => this.min;
@@ -80,11 +122,13 @@
                 this.min = value;
                 this.OnPropertyChanged();
                 this.OnPropertyChanged(nameof(this.Info));
+                this.OnPropertyChanged(nameof(this.FifteenPercentInThreeDays));
                 this.OnPropertyChanged(nameof(this.TwentyFivePercentInFiveDays));
                 this.OnPropertyChanged(nameof(this.FiftyPercentInFiftyDays));
+                this.OnPropertyChanged(nameof(this.EightyPercentInEightyDays));
             }
         }
-
+        
         public Percent? Max
         {
             get => this.max;
@@ -98,12 +142,12 @@
                 this.max = value;
                 this.OnPropertyChanged();
                 this.OnPropertyChanged(nameof(this.Info));
+                this.OnPropertyChanged(nameof(this.FifteenPercentInThreeDays));
                 this.OnPropertyChanged(nameof(this.TwentyFivePercentInFiveDays));
                 this.OnPropertyChanged(nameof(this.FiftyPercentInFiftyDays));
+                this.OnPropertyChanged(nameof(this.EightyPercentInEightyDays));
             }
         }
-
-        public override int ExtraDays => this.Days;
 
         public bool IsSatisfied(SortedCandles candles, int index)
         {
