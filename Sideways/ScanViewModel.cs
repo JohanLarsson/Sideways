@@ -172,7 +172,7 @@
             bool IsSatisfied(int index)
             {
                 return this.timeCriteria.IsSatisfied(days, index) &&
-                       this.hasMinutes.IsSatisfied(days, index - (this.yieldCriteria.IsActive ? this.yieldCriteria.Days : 0), firstMinute) &&
+                       this.hasMinutes.IsSatisfied(days, index, firstMinute) &&
                        this.yieldCriteria.IsSatisfied(days, index) &&
                        this.priceCriteria.IsSatisfied(days, index) &&
                        this.gapCriteria.IsSatisfied(days, index) &&
