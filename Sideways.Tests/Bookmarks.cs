@@ -276,5 +276,52 @@ namespace Sideways.Tests
                 JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
             Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
         }
+
+        [Test]
+        public static void InteractWithRisingMa50FromAbove()
+        {
+            var bookmarks = new List<Bookmark>();
+            foreach (var symbol in Database.ReadSymbols())
+            {
+                if (Database.FirstMinute(symbol) is { } firstMinute)
+                {
+                    var candles = Database.ReadDays(symbol, firstMinute.Date, DateTimeOffset.Now);
+                    for (var i = 60; i < candles.Count; i++)
+                    {
+                        if (candles[i].Close * candles[i].Volume > 10_000_000 &&
+                            candles[i].Low < candles[i - 1].Low &&
+                            candles.Slice(i, -50).Average(x => x.Close) is var ma50 &&
+                            ma50 > candles.Slice(i - 10, -50).Average(x => x.Close) &&
+                            candles[i - 1].Low > ma50 &&
+                            IsClose(candles[i], ma50) &&
+                            candles.Slice(i, -20).Adr().Scalar > 5)
+                        {
+                            bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
+                        }
+
+                        bool IsClose(Candle candle, float ma)
+                        {
+                            if (candle.Low < ma)
+                            {
+                                return true;
+                            }
+
+                            return Math.Abs(candle.Low - ma50) < 0.1f * candles.Slice(i, -20).Atr();
+                        }
+                    }
+                }
+            }
+
+            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "MA50_from_above.bookmarks"));
+            if (!Directory.Exists(file.DirectoryName))
+            {
+                Directory.CreateDirectory(file.DirectoryName!);
+            }
+
+            File.WriteAllText(
+                file.FullName,
+                JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
+            Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
+        }
     }
 }
