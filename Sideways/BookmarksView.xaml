@@ -12,6 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -53,7 +54,19 @@
             <TextBox MinWidth="30" Text="{Binding Offset}" />
         </StackPanel>
 
-        <DataGrid Grid.Row="2"
+        <TextBlock Grid.Row="2">
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0} of {1}">
+                    <Binding Converter="{x:Static sideways:AddOneConverter.Default}"
+                             ElementName="BookmarksDataGrid"
+                             Path="SelectedIndex" />
+                    <Binding ElementName="BookmarksDataGrid" Path="Items.Count" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+
+        <DataGrid Grid.Row="3"
+                  x:Name="BookmarksDataGrid"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   ItemsSource="{Binding SelectedBookmarkFile.Bookmarks}"

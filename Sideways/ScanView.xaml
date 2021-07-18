@@ -385,7 +385,7 @@
             <Button Command="{Binding ScanCommand}" Content="Run" />
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Visibility="{Binding ElementName=ResultsGrid, Path=HasItems, Converter={x:Static local:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}">
+        <StackPanel Grid.Row="1" Visibility="{Binding ElementName=ResultsDataGrid, Path=HasItems, Converter={x:Static local:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Offset: " />
                 <TextBox MinWidth="30" Text="{Binding Offset}" />
@@ -396,9 +396,9 @@
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0} of {1}">
                             <Binding Converter="{x:Static local:AddOneConverter.Default}"
-                                     ElementName="ResultsGrid"
+                                     ElementName="ResultsDataGrid"
                                      Path="SelectedIndex" />
-                            <Binding ElementName="ResultsGrid" Path="Items.Count" />
+                            <Binding ElementName="ResultsDataGrid" Path="Items.Count" />
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
@@ -414,10 +414,9 @@
                     </Button.ToolTip>
                 </Button>
             </StackPanel>
-
         </StackPanel>
 
-        <DataGrid x:Name="ResultsGrid"
+        <DataGrid x:Name="ResultsDataGrid"
                   Grid.Row="2"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
