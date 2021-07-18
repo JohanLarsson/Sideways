@@ -112,15 +112,12 @@
                 void DrawText(string text, double y)
                 {
                     drawingContext.DrawText(
-                        new FormattedText(
-                            text,
-                            CultureInfo.CurrentUICulture,
-                            FlowDirection.LeftToRight,
-                            typeface,
-                            fontSize,
-                            fill,
-                            96),
-                        new Point(0, y));
+                        text,
+                        typeface,
+                        fontSize,
+                        new Point(0, y),
+                        fill,
+                        VisualTreeHelper.GetDpi(this));
                 }
             }
         }

@@ -175,17 +175,13 @@
 
                 void DrawText(string text, double x)
                 {
-                    var formattedText = new FormattedText(
+                    drawingContext.DrawText(
                         text,
-                        CultureInfo.InvariantCulture,
-                        FlowDirection.LeftToRight,
                         typeface,
                         fontSize,
+                        new Point(x, 0),
                         fill,
-                        96);
-                    drawingContext.DrawText(
-                        formattedText,
-                        new Point(x, 0));
+                        VisualTreeHelper.GetDpi(this));
                 }
             }
         }
