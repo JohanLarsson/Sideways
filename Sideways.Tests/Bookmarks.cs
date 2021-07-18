@@ -290,9 +290,11 @@ namespace Sideways.Tests
                     {
                         if (candles[i].Close * candles[i].Volume > 10_000_000 &&
                             candles[i].Low < candles[i - 1].Low &&
+                            candles[i].High < candles[i - 1].High &&
                             candles.Slice(i, -50).Average(x => x.Close) is var ma50 &&
-                            ma50 > candles.Slice(i - 10, -50).Average(x => x.Close) &&
+                            ma50 - candles.Slice(i - 10, -50).Average(x => x.Close) > 0.1 * candles.Slice(i, -20).Atr() &&
                             candles[i - 1].Low > ma50 &&
+                            candles[i].Open > ma50 &&
                             IsClose(candles[i], ma50) &&
                             candles.Slice(i, -20).Adr().Scalar > 5)
                         {
