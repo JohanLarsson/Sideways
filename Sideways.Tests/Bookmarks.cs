@@ -277,6 +277,8 @@ namespace Sideways.Tests
             Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
         }
 
+        [TestCase(10)]
+        [TestCase(20)]
         [TestCase(50)]
         [TestCase(100)]
         [TestCase(150)]
@@ -289,13 +291,13 @@ namespace Sideways.Tests
                 if (Database.FirstMinute(symbol) is { } firstMinute)
                 {
                     var candles = Database.ReadDays(symbol, firstMinute.Date.AddDays(-period), DateTimeOffset.Now);
-                    for (var i = period + 10; i < candles.Count; i++)
+                    for (var i = period + 1; i < candles.Count; i++)
                     {
                         if (candles[i].Close * candles[i].Volume > 10_000_000 &&
                             candles[i].Low < candles[i - 1].Low &&
                             candles[i].High < candles[i - 1].High &&
                             candles.Slice(i, -period).Average(x => x.Close) is var ma &&
-                            ma - candles.Slice(i - 10, -period).Average(x => x.Close) > 0.1 * candles.Slice(i, -20).Atr() &&
+                            Percent.Change(candles.Slice(i - 1, -period).Average(x => x.Close), ma).Scalar > 0.1 &&
                             candles[i - 1].Low > ma &&
                             candles[i].Open > ma &&
                             IsClose(candles[i], ma) &&
@@ -362,6 +364,52 @@ namespace Sideways.Tests
             }
 
             var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "NR7.bookmarks"));
+            if (!Directory.Exists(file.DirectoryName))
+            {
+                Directory.CreateDirectory(file.DirectoryName!);
+            }
+
+            File.WriteAllText(
+                file.FullName,
+                JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
+            Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
+        }
+
+        [TestCase(10)]
+        [TestCase(20)]
+        public static void SurfRisingMovingAverage(int period)
+        {
+            var bookmarks = new List<Bookmark>();
+            foreach (var symbol in Database.ReadSymbols())
+            {
+                if (Database.FirstMinute(symbol) is { } firstMinute)
+                {
+                    var candles = Database.ReadDays(symbol, firstMinute.Date.AddDays(-period), DateTimeOffset.Now);
+                    for (var i = 20; i < candles.Count; i++)
+                    {
+                        if (candles[i].Close * candles[i].Volume > 10_000_000 &&
+                            candles[i].Low > candles[i - 1].Low &&
+                            Ma(i) is var ma &&
+                            Percent.Change(Ma(i - 1), ma).Scalar > 0.05 &&
+                            candles.Slice(i, -20).Atr() is var atr &&
+                            IsSurfing(candles[i], ma, atr) &&
+                            IsSurfing(candles[i - 1], Ma(i - 1), atr) &&
+                            candles.Slice(i, -20).Adr().Scalar > 5)
+                        {
+                            bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
+                        }
+
+                        float Ma(int index) => candles.Slice(index, -period).Average(x => x.Close);
+
+                        static bool IsSurfing(Candle candle, float ma, float atr)
+                        {
+                            return Math.Abs(candle.Low - ma) < 0.3f * atr;
+                        }
+                    }
+                }
+            }
+
+            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period}.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
