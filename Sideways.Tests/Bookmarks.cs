@@ -277,25 +277,28 @@ namespace Sideways.Tests
             Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
         }
 
-        [Test]
-        public static void InteractWithRisingMa50FromAbove()
+        [TestCase(50)]
+        [TestCase(100)]
+        [TestCase(150)]
+        [TestCase(200)]
+        public static void InteractWithRisingMovingAverageFromAbove(int period)
         {
             var bookmarks = new List<Bookmark>();
             foreach (var symbol in Database.ReadSymbols())
             {
                 if (Database.FirstMinute(symbol) is { } firstMinute)
                 {
-                    var candles = Database.ReadDays(symbol, firstMinute.Date, DateTimeOffset.Now);
-                    for (var i = 60; i < candles.Count; i++)
+                    var candles = Database.ReadDays(symbol, firstMinute.Date.AddDays(-period), DateTimeOffset.Now);
+                    for (var i = period + 10; i < candles.Count; i++)
                     {
                         if (candles[i].Close * candles[i].Volume > 10_000_000 &&
                             candles[i].Low < candles[i - 1].Low &&
                             candles[i].High < candles[i - 1].High &&
-                            candles.Slice(i, -50).Average(x => x.Close) is var ma50 &&
-                            ma50 - candles.Slice(i - 10, -50).Average(x => x.Close) > 0.1 * candles.Slice(i, -20).Atr() &&
-                            candles[i - 1].Low > ma50 &&
-                            candles[i].Open > ma50 &&
-                            IsClose(candles[i], ma50) &&
+                            candles.Slice(i, -period).Average(x => x.Close) is var ma &&
+                            ma - candles.Slice(i - 10, -period).Average(x => x.Close) > 0.1 * candles.Slice(i, -20).Atr() &&
+                            candles[i - 1].Low > ma &&
+                            candles[i].Open > ma &&
+                            IsClose(candles[i], ma) &&
                             candles.Slice(i, -20).Adr().Scalar > 5)
                         {
                             bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
@@ -308,13 +311,13 @@ namespace Sideways.Tests
                                 return true;
                             }
 
-                            return Math.Abs(candle.Low - ma50) < 0.1f * candles.Slice(i, -20).Atr();
+                            return Math.Abs(candle.Low - ma) < 0.1f * candles.Slice(i, -20).Atr();
                         }
                     }
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "MA50_from_above.bookmarks"));
+            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"MA{period}_from_above.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
