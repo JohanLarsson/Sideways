@@ -33,6 +33,7 @@
             typeof(CandlesElement),
             new FrameworkPropertyMetadata(
                     default(DescendingCandles),
+                    FrameworkPropertyMetadataOptions.AffectsRender,
 #pragma warning disable WPF0022 // Cast value to correct type.
                     (o, e) => ((CandlesElement)o).OnCandlesChanged((DescendingCandles)e.NewValue)));
 #pragma warning restore WPF0022 // Cast value to correct type.
