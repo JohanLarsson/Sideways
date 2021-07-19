@@ -62,6 +62,14 @@
                 default(DescendingCandles),
                 FrameworkPropertyMetadataOptions.Inherits));
 
+        public static readonly DependencyProperty TimeRangeProperty = DependencyProperty.RegisterAttached(
+            nameof(TimeRange),
+            typeof(TimeRange?),
+            typeof(Chart),
+            new FrameworkPropertyMetadata(
+                null,
+                FrameworkPropertyMetadataOptions.Inherits));
+
         public static readonly DependencyProperty PriceRangeProperty = DependencyProperty.RegisterAttached(
             nameof(PriceRange),
             typeof(FloatRange?),
@@ -131,6 +139,12 @@
         {
             get => (DescendingCandles)this.GetValue(CandlesProperty);
             set => this.SetValue(CandlesProperty, value);
+        }
+
+        public TimeRange? TimeRange
+        {
+            get => (TimeRange?)this.GetValue(TimeRangeProperty);
+            protected set => this.SetValue(TimeRangeProperty, value);
         }
 
         public FloatRange? PriceRange
@@ -235,6 +249,7 @@
         {
             var candles = this.Candles;
             candles.Refresh(this.ItemsSource, this.Time, this.CandleInterval);
+            this.SetCurrentValue(TimeRangeProperty, candles.TimeRange);
             this.SetCurrentValue(PriceRangeProperty, candles.PriceRange);
             this.SetCurrentValue(MaxVolumeProperty, candles.MaxVolume);
         }

@@ -17,10 +17,22 @@
                 Brushes.Gray,
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+        public static readonly DependencyProperty TimeRangeProperty = Chart.TimeRangeProperty.AddOwner(
+            typeof(TimeTickBar),
+            new FrameworkPropertyMetadata(
+                default(TimeRange?),
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         public SolidColorBrush Fill
         {
             get => (SolidColorBrush)this.GetValue(FillProperty);
             set => this.SetValue(FillProperty, value);
+        }
+
+        public TimeRange? TimeRange
+        {
+            get => (TimeRange?)this.GetValue(TimeRangeProperty);
+            protected set => this.SetValue(TimeRangeProperty, value);
         }
 
         protected override Size MeasureOverride(Size availableSize)
@@ -30,7 +42,8 @@
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (this.Candles is { Count: > 10 } candles)
+            if (this.TimeRange is { } &&
+                this.Candles is { Count: > 10 } candles)
             {
                 var typeface = new Typeface(
                     TextElement.GetFontFamily(this),

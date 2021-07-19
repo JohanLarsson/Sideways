@@ -45,6 +45,12 @@
                 default(ImmutableArray<QuarterlyEarning>),
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+        public static readonly DependencyProperty TimeRangeProperty = Chart.TimeRangeProperty.AddOwner(
+            typeof(ChartBackground),
+            new FrameworkPropertyMetadata(
+                default(TimeRange?),
+                FrameworkPropertyMetadataOptions.AffectsRender));
+
         private static readonly Pen PreMarketPen = Brushes.CreatePen(Brushes.PreMarket);
 
         private Pen? bookmarkPen;
@@ -82,8 +88,19 @@
             set => this.SetValue(EarningsProperty, value);
         }
 
+        public TimeRange? TimeRange
+        {
+            get => (TimeRange?)this.GetValue(TimeRangeProperty);
+            protected set => this.SetValue(TimeRangeProperty, value);
+        }
+
         protected override void OnRender(DrawingContext drawingContext)
         {
+            if (this.TimeRange is null)
+            {
+                return;
+            }
+
             var renderSize = this.RenderSize;
             var candles = this.Candles;
             var candleWidth = this.CandleWidth;
