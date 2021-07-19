@@ -328,5 +328,49 @@ namespace Sideways.Tests
                 JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
             Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
         }
+
+        [Test]
+        public static void Nr7()
+        {
+            var bookmarks = new List<Bookmark>();
+            foreach (var symbol in Database.ReadSymbols())
+            {
+                if (Database.FirstMinute(symbol) is { } firstMinute)
+                {
+                    var candles = Database.ReadDays(symbol, firstMinute.Date, DateTimeOffset.Now);
+                    for (var i = 20; i < candles.Count; i++)
+                    {
+                        if (candles[i].Close * candles[i].Volume > 10_000_000 &&
+                            candles[i].Low > candles[i - 1].Low &&
+                            candles[i].High < candles[i - 1].High &&
+                            Range(candles[i]) is var range &&
+                            range < Range(candles[i - 1]) &&
+                            range < Range(candles[i - 2]) &&
+                            range < Range(candles[i - 3]) &&
+                            range < Range(candles[i - 4]) &&
+                            range < Range(candles[i - 5]) &&
+                            range < Range(candles[i - 6]) &&
+                            range < Range(candles[i - 7]) &&
+                            candles.Slice(i, -20).Adr().Scalar > 5)
+                        {
+                            bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
+                        }
+
+                        static Percent Range(Candle c) => Percent.Change(c.Low, c.High);
+                    }
+                }
+            }
+
+            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "NR7.bookmarks"));
+            if (!Directory.Exists(file.DirectoryName))
+            {
+                Directory.CreateDirectory(file.DirectoryName!);
+            }
+
+            File.WriteAllText(
+                file.FullName,
+                JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
+            Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
+        }
     }
 }
