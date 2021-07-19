@@ -65,8 +65,8 @@
             </TextBlock.Text>
         </TextBlock>
 
-        <DataGrid Grid.Row="3"
-                  x:Name="BookmarksDataGrid"
+        <DataGrid x:Name="BookmarksDataGrid"
+                  Grid.Row="3"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   ItemsSource="{Binding SelectedBookmarkFile.Bookmarks}"
@@ -75,7 +75,9 @@
                 <CommandBinding CanExecute="OnCanDelete"
                                 Command="Delete"
                                 Executed="OnDelete" />
-                <CommandBinding CanExecute="OnCanCut" Command="Cut" Executed="OnCut"></CommandBinding>
+                <CommandBinding CanExecute="OnCanCut"
+                                Command="Cut"
+                                Executed="OnCut" />
             </DataGrid.CommandBindings>
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Symbol,
