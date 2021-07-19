@@ -123,6 +123,36 @@
             Database.WriteQuarterlyEarnings(earnings.Symbol, earnings.QuarterlyEarnings);
         }
 
+        [TestCaseSource(nameof(Symbols))]
+        public static async Task MissingMinutes(string symbol)
+        {
+            if (Settings.AlphaVantage.SymbolsWithMissingMinutes.Contains(symbol))
+            {
+                Assert.Pass("No minutes.");
+            }
+
+            if (Database.FirstMinute(symbol) is { })
+            {
+                Assert.Pass("Already downloadd.");
+            }
+
+            if (Database.ReadDays(symbol, DateTimeOffset.Now.AddMonths(-4), DateTimeOffset.Now) is {Count: > 20} days &&
+                SymbolDownloads.TryCreate(symbol, Database.DayRange(symbol), default, Downloader, Settings.AlphaVantage) is { } downloads)
+            {
+                if (days[..20].Adr().Scalar < 5)
+                {
+                    Assert.Inconclusive("Low ADR.");
+                }
+
+                await downloads.DownloadAsync().ConfigureAwait(false);
+                Assert.Pass("Downloaded.");
+            }
+            else
+            {
+                Assert.Inconclusive("No download.");
+            }
+        }
+
         private static IEnumerable<string> MissingSymbolsSource()
         {
             return Database.ReadListings()
