@@ -133,7 +133,7 @@
 
             if (Database.FirstMinute(symbol) is { })
             {
-                Assert.Pass("Already downloadd.");
+                Assert.Pass("Already downloaded.");
             }
 
             if (Database.ReadDays(symbol, DateTimeOffset.Now.AddMonths(-4), DateTimeOffset.Now) is {Count: > 20} days &&
@@ -145,6 +145,7 @@
                 }
 
                 await downloads.DownloadAsync().ConfigureAwait(false);
+                Assert.IsNull(downloads.State.Exception);
                 Assert.Pass("Downloaded.");
             }
             else
