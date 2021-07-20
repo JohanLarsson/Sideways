@@ -396,7 +396,7 @@ namespace Sideways.Tests
                             IsSurfing(candles[i - 1], Ma(i - 1), atr) &&
                             candles.Slice(i, -20).Adr().Scalar > 10)
                         {
-                            bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
+                            bookmarks.Add(new Bookmark(symbol, Time(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
                         }
 
                         float Ma(int index) => candles.Slice(index, -period).Average(x => x.Close);
@@ -404,6 +404,16 @@ namespace Sideways.Tests
                         static bool IsSurfing(Candle candle, float ma, float atr)
                         {
                             return Math.Abs(candle.Low - ma) < 0.3f * atr;
+                        }
+
+                        DateTimeOffset Time(DateTimeOffset day)
+                        {
+                            if (Database.ReadMinutes(symbol, day, TradingDay.EndOfDay(day)) is { Count: > 0 } minutes)
+                            {
+                                return minutes.Where(x => TradingDay.IsRegularHours(x.Time)).MinBy(x => x.Low).Time;
+                            }
+
+                            return TradingDay.StartOfRegularHours(day);
                         }
                     }
                 }
@@ -443,7 +453,7 @@ namespace Sideways.Tests
                             candles.Slice(i, -20).Adr().Scalar > 10 &&
                             Percent.Change(candles[i].Low, Candle.Merge(candles.Slice(i, 3)).High).Scalar > 20)
                         {
-                            bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
+                            bookmarks.Add(new Bookmark(symbol, Time(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
                         }
 
                         float Ma(int index) => candles.Slice(index, -period).Average(x => x.Close);
@@ -451,6 +461,16 @@ namespace Sideways.Tests
                         static bool IsSurfing(Candle candle, float ma, float atr)
                         {
                             return Math.Abs(candle.Low - ma) < 0.3f * atr;
+                        }
+
+                        DateTimeOffset Time(DateTimeOffset day)
+                        {
+                            if (Database.ReadMinutes(symbol, day, TradingDay.EndOfDay(day)) is { Count: > 0 } minutes)
+                            {
+                                return minutes.Where(x => TradingDay.IsRegularHours(x.Time)).MinBy(x => x.Low).Time;
+                            }
+
+                            return TradingDay.StartOfRegularHours(day);
                         }
                     }
                 }
@@ -490,7 +510,7 @@ namespace Sideways.Tests
                             candles.Slice(i, -20).Adr().Scalar > 10 &&
                             Percent.Change(candles[i].Low, Candle.Merge(candles.Slice(i, 3)).High).Scalar < 10)
                         {
-                            bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
+                            bookmarks.Add(new Bookmark(symbol, Time(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
                         }
 
                         float Ma(int index) => candles.Slice(index, -period).Average(x => x.Close);
@@ -498,6 +518,16 @@ namespace Sideways.Tests
                         static bool IsSurfing(Candle candle, float ma, float atr)
                         {
                             return Math.Abs(candle.Low - ma) < 0.3f * atr;
+                        }
+
+                        DateTimeOffset Time(DateTimeOffset day)
+                        {
+                            if (Database.ReadMinutes(symbol, day, TradingDay.EndOfDay(day)) is { Count: > 0 } minutes)
+                            {
+                                return minutes.Where(x => TradingDay.IsRegularHours(x.Time)).MinBy(x => x.Low).Time;
+                            }
+
+                            return TradingDay.StartOfRegularHours(day);
                         }
                     }
                 }

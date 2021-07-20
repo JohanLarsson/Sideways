@@ -71,5 +71,30 @@
                 yield return merged;
             }
         }
+
+        public static Candle MinBy(this IEnumerable<Candle> candles, Func<Candle, float> criteria)
+        {
+            using var e = candles.GetEnumerator();
+            if (e.MoveNext())
+            {
+                var item = e.Current;
+                var min = criteria(e.Current);
+                while (e.MoveNext())
+                {
+                    var candidate = criteria(e.Current);
+                    if (candidate < min)
+                    {
+                        min = candidate;
+                        item = e.Current;
+                    }
+                }
+
+                return item;
+            }
+            else
+            {
+                throw new InvalidOperationException("Empty sequence.");
+            }
+        }
     }
 }
