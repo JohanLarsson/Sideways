@@ -387,7 +387,7 @@ namespace Sideways.Tests
                 if (Database.FirstMinute(symbol) is { } firstMinute)
                 {
                     var candles = Database.ReadDays(symbol, firstMinute.Date.AddDays(-20), DateTimeOffset.Now);
-                    for (var i = 20; i < candles.Count; i++)
+                    for (var i = 20; i < candles.Count - 3; i++)
                     {
                         if (candles[i].Close * candles[i].Volume > 10_000_000 &&
                             candles[i].Low > candles[i - 1].Low &&
