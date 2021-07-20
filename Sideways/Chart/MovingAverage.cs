@@ -68,12 +68,15 @@
         protected override void OnRender(DrawingContext drawingContext)
         {
             if (this.Stroke is { } stroke &&
-                this.PriceRange is { } priceRange)
+                this.PriceRange is { } priceRange &&
+                this.Candles is { } candles &&
+                this.Period is > 0 and var period &&
+                candles.Count > period)
             {
                 this.pen ??= Brushes.CreatePen(stroke);
                 Point? previous = null;
                 var position = CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale));
-                foreach (var a in this.Candles.MovingAverage(this.Period, c => c.Close))
+                foreach (var a in candles.MovingAverage(period, c => c.Close))
                 {
                     var p2 = new Point(position.Center, position.Y(a));
                     if (previous is { } p1)
