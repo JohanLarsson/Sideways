@@ -76,15 +76,51 @@
                 this.pen ??= Brushes.CreatePen(stroke);
                 Point? previous = null;
                 var position = CandlePosition.RightToLeft(this.RenderSize, this.CandleWidth, new ValueRange(priceRange, this.PriceScale));
-                foreach (var a in candles.MovingAverage(period, c => c.Close))
+
+                var sum = 0f;
+                var buffer = new float[period];
+                var n = 0;
+                var span = candles.AsSpan();
+                var startAt = 0;
+                for (var i = 0; i < span.Length; i++)
                 {
-                    var p2 = new Point(position.Center, position.Y(a));
-                    if (previous is { } p1)
+                    var candle = span[i];
+                    if (candle.Volume > 0)
                     {
-                        drawingContext.DrawLine(this.pen, p1, p2);
+                        n++;
+                        var value = candle.Close;
+                        sum += value;
+                        buffer[n] = value;
+
+                        if (n == period - 1)
+                        {
+                            startAt = i;
+                            break;
+                        }
+                    }
+                }
+
+                for (var i = startAt; i < span.Length; i++)
+                {
+                    var candle = span[i];
+                    if (candle.Volume > 0)
+                    {
+                        n++;
+                        var value = candle.Close;
+                        sum += value;
+                        var index = n % period;
+                        sum -= buffer[index];
+                        var p2 = new Point(position.Center, position.Y(sum / period));
+                        if (previous is { } p1)
+                        {
+                            drawingContext.DrawLine(this.pen, p1, p2);
+                        }
+
+                        previous = p2;
+
+                        buffer[index] = value;
                     }
 
-                    previous = p2;
                     position = position.ShiftLeft();
                     if (position.Left < 0)
                     {
