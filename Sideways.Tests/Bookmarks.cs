@@ -380,6 +380,8 @@ namespace Sideways.Tests
         public static void SurfRisingMovingAverage(int period)
         {
             var bookmarks = new List<Bookmark>();
+            var bigMoves = new List<Bookmark>();
+            var smallMoves = new List<Bookmark>();
             foreach (var symbol in Database.ReadSymbols())
             {
                 if (Database.FirstMinute(symbol) is { } firstMinute)
@@ -396,7 +398,17 @@ namespace Sideways.Tests
                             IsSurfing(candles[i - 1], Ma(i - 1), atr) &&
                             candles.Slice(i, -20).Adr().Scalar > 10)
                         {
-                            bookmarks.Add(new Bookmark(symbol, Time(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
+                            var bookmark = new Bookmark(symbol, Time(candles[i].Time), ImmutableSortedSet<string>.Empty, null);
+                            bookmarks.Add(bookmark);
+                            switch (Percent.Change(candles[i].Low, Candle.Merge(candles.Slice(i, 3)).High).Scalar)
+                            {
+                                case > 20:
+                                    bigMoves.Add(bookmark);
+                                    break;
+                                case < 10:
+                                    smallMoves.Add(bookmark);
+                                    break;
+                            }
                         }
 
                         float Ma(int index) => candles.Slice(index, -period).Average(x => x.Close);
@@ -428,120 +440,15 @@ namespace Sideways.Tests
             File.WriteAllText(
                 file.FullName,
                 JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
-            Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
-        }
-
-        [TestCase(10)]
-        [TestCase(20)]
-        public static void SurfRisingMovingAverageBigMoveAfter(int period)
-        {
-            var bookmarks = new List<Bookmark>();
-            foreach (var symbol in Database.ReadSymbols())
-            {
-                if (Database.FirstMinute(symbol) is { } firstMinute)
-                {
-                    var candles = Database.ReadDays(symbol, firstMinute.Date.AddDays(-20), DateTimeOffset.Now);
-                    for (var i = 20; i < candles.Count - 3; i++)
-                    {
-                        if (candles[i].Close * candles[i].Volume > 10_000_000 &&
-                            candles[i].Low > candles[i - 1].Low &&
-                            Ma(i) is var ma &&
-                            Percent.Change(Ma(i - 1), ma).Scalar > 0.05 &&
-                            candles.Slice(i, -20).Atr() is var atr &&
-                            IsSurfing(candles[i], ma, atr) &&
-                            IsSurfing(candles[i - 1], Ma(i - 1), atr) &&
-                            candles.Slice(i, -20).Adr().Scalar > 10 &&
-                            Percent.Change(candles[i].Low, Candle.Merge(candles.Slice(i, 3)).High).Scalar > 20)
-                        {
-                            bookmarks.Add(new Bookmark(symbol, Time(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
-                        }
-
-                        float Ma(int index) => candles.Slice(index, -period).Average(x => x.Close);
-
-                        static bool IsSurfing(Candle candle, float ma, float atr)
-                        {
-                            return Math.Abs(candle.Low - ma) < 0.3f * atr;
-                        }
-
-                        DateTimeOffset Time(DateTimeOffset day)
-                        {
-                            if (Database.ReadMinutes(symbol, day, TradingDay.EndOfDay(day)) is { Count: > 0 } minutes)
-                            {
-                                return minutes.Where(x => TradingDay.IsRegularHours(x.Time)).MinBy(x => x.Low).Time;
-                            }
-
-                            return TradingDay.StartOfRegularHours(day);
-                        }
-                    }
-                }
-            }
-
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} big move after.bookmarks"));
-            if (!Directory.Exists(file.DirectoryName))
-            {
-                Directory.CreateDirectory(file.DirectoryName!);
-            }
 
             File.WriteAllText(
-                file.FullName,
-                JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
-            Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
-        }
-
-        [TestCase(10)]
-        [TestCase(20)]
-        public static void SurfRisingMovingAverageSmallMoveAfter(int period)
-        {
-            var bookmarks = new List<Bookmark>();
-            foreach (var symbol in Database.ReadSymbols())
-            {
-                if (Database.FirstMinute(symbol) is { } firstMinute)
-                {
-                    var candles = Database.ReadDays(symbol, firstMinute.Date.AddDays(-20), DateTimeOffset.Now);
-                    for (var i = 20; i < candles.Count - 3; i++)
-                    {
-                        if (candles[i].Close * candles[i].Volume > 10_000_000 &&
-                            candles[i].Low > candles[i - 1].Low &&
-                            Ma(i) is var ma &&
-                            Percent.Change(Ma(i - 1), ma).Scalar > 0.05 &&
-                            candles.Slice(i, -20).Atr() is var atr &&
-                            IsSurfing(candles[i], ma, atr) &&
-                            IsSurfing(candles[i - 1], Ma(i - 1), atr) &&
-                            candles.Slice(i, -20).Adr().Scalar > 10 &&
-                            Percent.Change(candles[i].Low, Candle.Merge(candles.Slice(i, 3)).High).Scalar < 10)
-                        {
-                            bookmarks.Add(new Bookmark(symbol, Time(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
-                        }
-
-                        float Ma(int index) => candles.Slice(index, -period).Average(x => x.Close);
-
-                        static bool IsSurfing(Candle candle, float ma, float atr)
-                        {
-                            return Math.Abs(candle.Low - ma) < 0.3f * atr;
-                        }
-
-                        DateTimeOffset Time(DateTimeOffset day)
-                        {
-                            if (Database.ReadMinutes(symbol, day, TradingDay.EndOfDay(day)) is { Count: > 0 } minutes)
-                            {
-                                return minutes.Where(x => TradingDay.IsRegularHours(x.Time)).MinBy(x => x.Low).Time;
-                            }
-
-                            return TradingDay.StartOfRegularHours(day);
-                        }
-                    }
-                }
-            }
-
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} small move after.bookmarks"));
-            if (!Directory.Exists(file.DirectoryName))
-            {
-                Directory.CreateDirectory(file.DirectoryName!);
-            }
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} big move after.bookmarks"),
+                JsonSerializer.Serialize(bigMoves, new JsonSerializerOptions { WriteIndented = true }));
 
             File.WriteAllText(
-                file.FullName,
-                JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} small move after.bookmarks"),
+                JsonSerializer.Serialize(smallMoves, new JsonSerializerOptions { WriteIndented = true }));
+
             Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
         }
     }
