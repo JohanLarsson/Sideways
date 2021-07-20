@@ -441,7 +441,7 @@ namespace Sideways.Tests
                             IsSurfing(candles[i], ma, atr) &&
                             IsSurfing(candles[i - 1], Ma(i - 1), atr) &&
                             candles.Slice(i, -20).Adr().Scalar > 10 &&
-                            Percent.Change(candles[i].Low, Candle.Merge(candles.Slice(i,3)).High).Scalar > 20)
+                            Percent.Change(candles[i].Low, Candle.Merge(candles.Slice(i, 3)).High).Scalar > 20)
                         {
                             bookmarks.Add(new Bookmark(symbol, TradingDay.EndOfDay(candles[i].Time), ImmutableSortedSet<string>.Empty, null));
                         }
