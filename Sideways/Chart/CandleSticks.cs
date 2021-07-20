@@ -59,23 +59,26 @@
                 var position = CandlePosition.RightToLeftPadded(this.RenderSize, this.CandleWidth, new ValueRange(range, this.PriceScale));
                 foreach (var candle in this.Candles)
                 {
-                    context.DrawLine(
-                        GetPen(candle),
-                        new Point(position.Center, position.Y(candle.Low)),
-                        new Point(position.Center, position.Y(candle.High)));
-                    var yOpen = (int)position.Y(candle.Open);
-                    var yClose = (int)position.Y(candle.Close);
-                    if (yOpen == yClose)
+                    if (candle is { Volume: > 0, Low: > 0 })
                     {
-                        yClose += 1;
-                    }
+                        context.DrawLine(
+                            GetPen(candle),
+                            new Point(position.Center, position.Y(candle.Low)),
+                            new Point(position.Center, position.Y(candle.High)));
+                        var yOpen = (int)position.Y(candle.Open);
+                        var yClose = (int)position.Y(candle.Close);
+                        if (yOpen == yClose)
+                        {
+                            yClose += 1;
+                        }
 
-                    context.DrawRectangle(
-                        Brushes.Get(candle),
-                        null,
-                        Rect(
-                            new Point(position.Left, yOpen),
-                            new Point(position.Right, yClose)));
+                        context.DrawRectangle(
+                            Brushes.Get(candle),
+                            null,
+                            Rect(
+                                new Point(position.Left, yOpen),
+                                new Point(position.Right, yClose)));
+                    }
 
                     position = position.ShiftLeft();
                     if (position.Left < 0)
