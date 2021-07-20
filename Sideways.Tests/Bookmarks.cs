@@ -449,6 +449,10 @@ namespace Sideways.Tests
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} small move after.bookmarks"),
                 JsonSerializer.Serialize(smallMoves, new JsonSerializerOptions { WriteIndented = true }));
 
+            Console.WriteLine($"Total: {bookmarks.Count}");
+            Console.WriteLine($" < 10%   {smallMoves.Count}");
+            Console.WriteLine($"10 - 20% {bookmarks.Count - smallMoves.Count - bigMoves.Count}");
+            Console.WriteLine($" > 20%   {bigMoves.Count}");
             Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
         }
     }
