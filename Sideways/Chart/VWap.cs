@@ -1,6 +1,5 @@
 ﻿namespace Sideways
 {
-    using System;
     using System.Windows;
     using System.Windows.Media;
 
@@ -27,14 +26,11 @@
                 FrameworkPropertyMetadataOptions.AffectsRender,
                 (d, e) => ((VWap)d).pen = null));
 
-        private readonly DrawingVisual drawing;
-
         private Pen? pen;
 
-        public VWap()
+        static VWap()
         {
-            this.drawing = new DrawingVisual();
-            this.AddVisualChild(this.drawing);
+            IsHitTestVisibleProperty.OverrideMetadata(typeof(VWap), new UIPropertyMetadata(false));
         }
 
         public FloatRange? PriceRange
@@ -55,15 +51,8 @@
             set => this.SetValue(StrokeProperty, value);
         }
 
-        protected override int VisualChildrenCount => 1;
-
-        protected override Visual GetVisualChild(int index) => index == 0
-            ? this.drawing
-            : throw new ArgumentOutOfRangeException(nameof(index));
-
         protected override void OnRender(DrawingContext drawingContext)
         {
-            using var context = this.drawing.RenderOpen();
             if (this.Stroke is { } stroke &&
                 this.ItemsSource is { } candles &&
                 this.PriceRange is { } priceRange)
@@ -76,7 +65,7 @@
                     var p2 = new Point(position.Center, position.Y(a));
                     if (previous is { } p1)
                     {
-                        context.DrawLine(
+                        drawingContext.DrawLine(
                             this.pen,
                             p1,
                             p2);

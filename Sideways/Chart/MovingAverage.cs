@@ -36,6 +36,11 @@
 
         private Pen? pen;
 
+        static MovingAverage()
+        {
+            IsHitTestVisibleProperty.OverrideMetadata(typeof(MovingAverage), new UIPropertyMetadata(false));
+        }
+
         public FloatRange? PriceRange
         {
             get => (FloatRange?)this.GetValue(PriceRangeProperty);

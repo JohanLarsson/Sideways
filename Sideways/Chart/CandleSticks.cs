@@ -24,6 +24,7 @@
         static CandleSticks()
         {
             RenderOptions.EdgeModeProperty.OverrideMetadata(typeof(CandleSticks), new UIPropertyMetadata(EdgeMode.Aliased));
+            IsHitTestVisibleProperty.OverrideMetadata(typeof(CandleSticks), new UIPropertyMetadata(false));
         }
 
         public FloatRange? PriceRange
