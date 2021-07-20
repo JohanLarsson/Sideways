@@ -94,7 +94,7 @@
 
                         if (n == period - 1)
                         {
-                            startAt = i;
+                            startAt = i + 1;
                             break;
                         }
                     }
