@@ -464,5 +464,95 @@ namespace Sideways.Tests
             Console.WriteLine($"10% - 30% {bigMoves.Count}");
             Console.WriteLine($"30% <     {hugeMoves.Count}");
         }
+
+        [TestCase(10)]
+        [TestCase(20)]
+        [TestCase(50)]
+        public static void Flags(int period)
+        {
+            var bookmarks = new List<Bookmark>();
+            var smallMoves = new List<Bookmark>();
+            var bigMoves = new List<Bookmark>();
+            var hugeMoves = new List<Bookmark>();
+
+            foreach (var symbol in Database.ReadSymbols())
+            {
+                if (Database.FirstMinute(symbol) is { } firstMinute)
+                {
+                    var candles = Database.ReadDays(symbol, firstMinute.Date.AddDays(-2 * period), DateTimeOffset.Now);
+                    for (var i = 2 * period; i < candles.Count - 3; i++)
+                    {
+                        if (candles[i].Close * candles[i].Volume > 10_000_000 &&
+                            Ma(i) is var ma &&
+                            Percent.Change(Ma(i - period), ma).Scalar > 0.1 * period &&
+                            candles.Slice(i, -20).Atr() is var atr &&
+                            Candle.Merge(candles.Slice(i, -5)) is var merged &&
+                            merged.High - merged.Low < 2 * atr &&
+                            IsSurfing(candles[i], ma, atr) &&
+                            candles.Slice(i, -20).Adr().Scalar > 10)
+                        {
+                            var bookmark = new Bookmark(symbol, Time(candles[i].Time), ImmutableSortedSet<string>.Empty, null);
+                            bookmarks.Add(bookmark);
+                            switch (Percent.Change(candles[i].Low, Candle.Merge(candles.Slice(i, 3)).High).Scalar)
+                            {
+                                case < 10:
+                                    smallMoves.Add(bookmark);
+                                    break;
+                                case > 10 and <= 30:
+                                    bigMoves.Add(bookmark);
+                                    break;
+                                case > 30:
+                                    hugeMoves.Add(bookmark);
+                                    break;
+                            }
+                        }
+
+                        float Ma(int index) => candles.Slice(index, -period).Average(x => x.Close);
+
+                        static bool IsSurfing(Candle candle, float ma, float atr)
+                        {
+                            return Math.Abs(candle.Low - ma) < 0.3f * atr;
+                        }
+
+                        DateTimeOffset Time(DateTimeOffset day)
+                        {
+                            if (Database.ReadMinutes(symbol, day, TradingDay.EndOfDay(day)) is { Count: > 0 } minutes)
+                            {
+                                return minutes.Where(x => TradingDay.IsRegularHours(x.Time)).MinBy(x => x.Low).Time;
+                            }
+
+                            return TradingDay.StartOfRegularHours(day);
+                        }
+                    }
+                }
+            }
+
+            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Flag MA{period}.bookmarks"));
+            if (!Directory.Exists(file.DirectoryName))
+            {
+                Directory.CreateDirectory(file.DirectoryName!);
+            }
+
+            File.WriteAllText(
+                file.FullName,
+                JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
+
+            File.WriteAllText(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Flag MA{period} small move after.bookmarks"),
+                JsonSerializer.Serialize(smallMoves, new JsonSerializerOptions { WriteIndented = true }));
+
+            File.WriteAllText(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Flag MA{period} big move after.bookmarks"),
+                JsonSerializer.Serialize(bigMoves, new JsonSerializerOptions { WriteIndented = true }));
+
+            File.WriteAllText(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Flag MA{period} huge move after.bookmarks"),
+                JsonSerializer.Serialize(hugeMoves, new JsonSerializerOptions { WriteIndented = true }));
+
+            Console.WriteLine($"Total: {bookmarks.Count}");
+            Console.WriteLine($"    < 10% {smallMoves.Count}");
+            Console.WriteLine($"10% - 30% {bigMoves.Count}");
+            Console.WriteLine($"30% <     {hugeMoves.Count}");
+        }
     }
 }
