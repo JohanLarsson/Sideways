@@ -136,7 +136,7 @@
                 Assert.Pass("Already downloaded.");
             }
 
-            if (Database.ReadDays(symbol, DateTimeOffset.Now.AddMonths(-6), DateTimeOffset.Now) is { Count: > 20 } days &&
+            if (Database.ReadDays(symbol, DateTimeOffset.Now.AddMonths(-8), DateTimeOffset.Now) is { Count: > 20 } days &&
                 SymbolDownloads.TryCreate(symbol, Database.DayRange(symbol), default, Downloader, Settings.AlphaVantage) is { } downloads)
             {
                 if (days[..20].Adr().Scalar < 5)

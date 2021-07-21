@@ -395,7 +395,6 @@ namespace Sideways.Tests
                         if (candles[i].Close * candles[i].Volume > 10_000_000 &&
                             candles[i].Low > candles[i - 1].Low &&
                             Ma(i) is var ma &&
-                            Percent.Change(Ma(i - period), ma).Scalar > 0.1 * period &&
                             candles.Slice(i, -20).Atr() is var atr &&
                             IsSurfing(candles[i], ma, atr) &&
                             IsSurfing(candles[i - 1], Ma(i - 1), atr) &&
@@ -460,9 +459,9 @@ namespace Sideways.Tests
                 JsonSerializer.Serialize(hugeMoves, new JsonSerializerOptions { WriteIndented = true }));
 
             Console.WriteLine($"Total: {bookmarks.Count}");
-            Console.WriteLine($"    < 10% {smallMoves.Count}");
-            Console.WriteLine($"10% - 30% {bigMoves.Count}");
-            Console.WriteLine($"30% <     {hugeMoves.Count}");
+            Console.WriteLine($"    < 10% {smallMoves.Count} ({100 * smallMoves.Count / (double)bookmarks.Count:F0}%)");
+            Console.WriteLine($"10% - 30% {bigMoves.Count} ({100 * bigMoves.Count / (double)bookmarks.Count:F0}%)");
+            Console.WriteLine($"30% <     {hugeMoves.Count} ({100 * hugeMoves.Count / (double)bookmarks.Count:F0}%)");
         }
 
         [TestCase(10)]
