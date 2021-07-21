@@ -377,11 +377,14 @@ namespace Sideways.Tests
 
         [TestCase(10)]
         [TestCase(20)]
+        [TestCase(50)]
         public static void SurfRisingMovingAverage(int period)
         {
             var bookmarks = new List<Bookmark>();
-            var bigMoves = new List<Bookmark>();
             var smallMoves = new List<Bookmark>();
+            var bigMoves = new List<Bookmark>();
+            var hugeMoves = new List<Bookmark>();
+
             foreach (var symbol in Database.ReadSymbols())
             {
                 if (Database.FirstMinute(symbol) is { } firstMinute)
@@ -402,11 +405,14 @@ namespace Sideways.Tests
                             bookmarks.Add(bookmark);
                             switch (Percent.Change(candles[i].Low, Candle.Merge(candles.Slice(i, 3)).High).Scalar)
                             {
-                                case > 20:
-                                    bigMoves.Add(bookmark);
-                                    break;
                                 case < 10:
                                     smallMoves.Add(bookmark);
+                                    break;
+                                case > 10 and <= 30:
+                                    bigMoves.Add(bookmark);
+                                    break;
+                                case > 30:
+                                    hugeMoves.Add(bookmark);
                                     break;
                             }
                         }
@@ -442,18 +448,21 @@ namespace Sideways.Tests
                 JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
 
             File.WriteAllText(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} small move after.bookmarks"),
+                JsonSerializer.Serialize(smallMoves, new JsonSerializerOptions { WriteIndented = true }));
+
+            File.WriteAllText(
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} big move after.bookmarks"),
                 JsonSerializer.Serialize(bigMoves, new JsonSerializerOptions { WriteIndented = true }));
 
             File.WriteAllText(
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} small move after.bookmarks"),
-                JsonSerializer.Serialize(smallMoves, new JsonSerializerOptions { WriteIndented = true }));
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} huge move after.bookmarks"),
+                JsonSerializer.Serialize(hugeMoves, new JsonSerializerOptions { WriteIndented = true }));
 
             Console.WriteLine($"Total: {bookmarks.Count}");
-            Console.WriteLine($" < 10%   {smallMoves.Count}");
-            Console.WriteLine($"10 - 20% {bookmarks.Count - smallMoves.Count - bigMoves.Count}");
-            Console.WriteLine($" > 20%   {bigMoves.Count}");
-            Assert.Pass($"Wrote {bookmarks.Count} bookmarks.");
+            Console.WriteLine($"    < 10% {smallMoves.Count}");
+            Console.WriteLine($"10% - 30% {bigMoves.Count}");
+            Console.WriteLine($"30% <     {hugeMoves.Count}");
         }
     }
 }
