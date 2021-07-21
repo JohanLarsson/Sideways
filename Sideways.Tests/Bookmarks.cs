@@ -381,6 +381,7 @@ namespace Sideways.Tests
         public static void SurfRisingMovingAverage(int period)
         {
             var bookmarks = new List<Bookmark>();
+            var stopOuts = new List<Bookmark>();
             var smallMoves = new List<Bookmark>();
             var bigMoves = new List<Bookmark>();
             var hugeMoves = new List<Bookmark>();
@@ -413,6 +414,11 @@ namespace Sideways.Tests
                                 case > 30:
                                     hugeMoves.Add(bookmark);
                                     break;
+                            }
+
+                            if (Candle.Merge(candles.Slice(i, 3)).Low < candles[i].Low)
+                            {
+                                stopOuts.Add(bookmark);
                             }
                         }
 
@@ -447,6 +453,10 @@ namespace Sideways.Tests
                 JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
 
             File.WriteAllText(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} stop out.bookmarks"),
+                JsonSerializer.Serialize(stopOuts, new JsonSerializerOptions { WriteIndented = true }));
+
+            File.WriteAllText(
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} small move after.bookmarks"),
                 JsonSerializer.Serialize(smallMoves, new JsonSerializerOptions { WriteIndented = true }));
 
@@ -459,6 +469,7 @@ namespace Sideways.Tests
                 JsonSerializer.Serialize(hugeMoves, new JsonSerializerOptions { WriteIndented = true }));
 
             Console.WriteLine($"Total: {bookmarks.Count}");
+            Console.WriteLine($"Stop out: {stopOuts.Count} ({100 * stopOuts.Count / (double)bookmarks.Count:F0}%)");
             Console.WriteLine($"    < 10% {smallMoves.Count} ({100 * smallMoves.Count / (double)bookmarks.Count:F0}%)");
             Console.WriteLine($"10% - 30% {bigMoves.Count} ({100 * bigMoves.Count / (double)bookmarks.Count:F0}%)");
             Console.WriteLine($"30% <     {hugeMoves.Count} ({100 * hugeMoves.Count / (double)bookmarks.Count:F0}%)");
