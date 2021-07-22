@@ -148,7 +148,9 @@
 
         public IEnumerable<Bookmark> Scan(string symbol, TimeRange? timeRange)
         {
-            var days = timeRange is { Min: var start, Max: var end } ? Database.ReadDays(symbol, start, end) : Database.ReadDays(symbol);
+            var days = timeRange is { Min: var start, Max: var end }
+                ? Database.ReadDays(symbol, start, TradingDay.EndOfDay(end))
+                : Database.ReadDays(symbol);
             var firstMinute = this.hasMinutes.IsActive ? Database.FirstMinute(symbol) : null;
             for (var i = 0; i < days.Count; i++)
             {
