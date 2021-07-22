@@ -120,7 +120,7 @@
                 }
             };
 
-            this.currentSymbol = SymbolViewModel.GetOrCreate("TSLA", this.Downloader);
+            this.currentSymbol = SymbolViewModel.GetOrCreate("QQQ", this.Downloader);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
