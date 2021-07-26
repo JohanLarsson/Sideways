@@ -5,13 +5,13 @@
 
     public readonly struct CandlePosition : IEquatable<CandlePosition>
     {
-        internal readonly double Left;
-        internal readonly double Right;
+        internal readonly int Left;
+        internal readonly int Right;
         private readonly int candleWidth;
         private readonly Size renderSize;
         private readonly ValueRange valueRange;
 
-        private CandlePosition(double left, double right, int candleWidth, Size renderSize, ValueRange valueRange)
+        private CandlePosition(int left, int right, int candleWidth, Size renderSize, ValueRange valueRange)
         {
             this.Left = left;
             this.Right = right;
@@ -20,7 +20,7 @@
             this.valueRange = valueRange;
         }
 
-        internal double Center => (this.Left + this.Right) / 2;
+        internal double Center => (this.Left + this.Right) / 2.0;
 
         public static bool operator ==(CandlePosition left, CandlePosition right)
         {
@@ -34,7 +34,7 @@
 
         public static CandlePosition RightToLeft(Size renderSize, int candleWidth, ValueRange valueRange, int leftPad = 0, int rightPad = 0)
         {
-            var right = renderSize.Width - rightPad;
+            var right = (int)renderSize.Width - rightPad;
             var left = right - candleWidth + rightPad + leftPad;
 
             return new(
