@@ -39,8 +39,10 @@
         {
             var start = DateTimeOffset.Now.AddYears(-2);
             var end = DateTimeOffset.Now.AddMonths(-1);
-            var days = Database.ReadDays(symbol, start, end).Select(x => x.Time.Date);
-            var minuteDays = Database.ReadMinutes(symbol, start, end).Select(x => x.Time.Date).Distinct();
+            var days = Database.ReadDays(symbol, start, end).Select(x => x.Time.Date).ToArray();
+            var minuteDays = Database.ReadMinutes(symbol, start, end).Select(x => x.Time.Date).Distinct().ToArray();
+            var firstMinute = Settings.AlphaVantage.FirstMinutes.GetValueOrDefault(symbol);
+
             if (minuteDays.Any() &&
                 !days.SequenceEqual(minuteDays))
             {
@@ -57,53 +59,32 @@
                     bool ShouldDownload(Slice slice)
                     {
                         var sliceRange = TimeRange.FromSlice(slice);
-                        var missing = SliceDays(days).Except(SliceDays(minuteDays)).ToArray();
-                        if (missing.Length == 0)
+
+                        if (days.Count(x => IsInSlice(x)) <= minuteDays.Count(x => IsInSlice(x)))
                         {
                             return false;
                         }
 
-                        for (var i = 0; i < missing.Length - 1; i++)
+                        var missing = days.Where(x => IsInSlice(x)).Except(minuteDays.Where(x => IsInSlice(x))).ToArray();
+                        if (missing.Length > 1)
                         {
-                            if (HasGap(missing[i], missing[i + 1]))
+                            for (var i = 0; i < missing.Length - 1; i++)
                             {
-                                return false;
-                            }
-
-                            bool HasGap(DateTimeOffset first, DateTimeOffset second)
-                            {
-                                while (first < second)
+                                if (Array.IndexOf(days, missing[i]) != Array.IndexOf(days, missing[i + 1]) - 1)
                                 {
-                                    second = second.AddDays(-1);
-                                    if (second != first &&
-                                        TradingDay.IsMatch(second))
-                                    {
-                                        return true;
-                                    }
+                                    // Not consecutive
+                                    return false;
                                 }
-
-                                return false;
                             }
                         }
 
                         return true;
 
-                        IEnumerable<DateTime> SliceDays(IEnumerable<DateTime> source)
-                        {
-                            var firstMinute = Settings.AlphaVantage.FirstMinutes.GetValueOrDefault(symbol);
-                            return source.Where(x => sliceRange.Contains(x) && x.Date >= firstMinute.Date);
-                        }
+                        bool IsInSlice(DateTimeOffset date) => sliceRange.Contains(date) && date.Date >= firstMinute.Date;
                     }
                 }
 
-                if (downloads.Count == 0)
-                {
-                    Assert.Pass("No holes!");
-                }
-                else
-                {
-                    Assert.Pass(string.Join(", ", downloads));
-                }
+                Assert.Pass(downloads.Count == 0 ? "No holes!" : string.Join(", ", downloads));
             }
             else
             {
