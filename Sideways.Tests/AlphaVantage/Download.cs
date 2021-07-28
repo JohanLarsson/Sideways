@@ -44,7 +44,8 @@
             var firstMinute = Settings.AlphaVantage.FirstMinutes.GetValueOrDefault(symbol);
 
             if (minuteDays.Any() &&
-                !days.SequenceEqual(minuteDays))
+                !days.SequenceEqual(minuteDays) &&
+                TimeRange.FromSlice(Slice.Year1Month1).Contains(minuteDays.Max()))
             {
                 var downloads = new List<Slice>();
                 foreach (var slice in Enum.GetValues<Slice>().Where(x => x != Slice.Year1Month1))
