@@ -337,7 +337,7 @@
 
                 static int FullMinuteDownload(SymbolDownloads x)
                 {
-                    return (DateTimeOffset.Now - x.ExistingMinutes.Max).Days % 30 < 2 ? 0 : 1;
+                    return (DateTimeOffset.Now - x.ExistingMinutes.Max).Days % 30 is < 4 and > 1 ? 0 : 1;
                 }
             }
         }
