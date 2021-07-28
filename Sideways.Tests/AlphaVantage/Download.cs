@@ -53,7 +53,7 @@
                     {
                         downloads.Add(slice);
                         var minutesDownload = new MinutesDownload(symbol, slice, Downloader);
-                        await minutesDownload.ExecuteAsync();
+                        Assert.NotZero(await minutesDownload.ExecuteAsync());
                     }
 
                     bool ShouldDownload(Slice slice)
