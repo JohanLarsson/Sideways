@@ -8,25 +8,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IDisposableAnalyzers" Version="3.4.13" PrivateAssets="all" />
+    <ProjectReference Include="..\Sideways\Sideways.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.7" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="16.10.56" PrivateAssets="all" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
+  </ItemGroup>
+
+  <!-- For faster command line builds as tooling does not work with Gu.Roslyn.Extensions. -->
+  <ItemGroup Condition="'$(BuildingInsideVisualStudio)' == 'true'">
+    <PackageReference Include="Gu.Analyzers" Version="1.8.5" PrivateAssets="all" />
+    <PackageReference Include="IDisposableAnalyzers" Version="3.4.13" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="16.10.56" PrivateAssets="all" />
+    <PackageReference Include="PropertyChangedAnalyzers" Version="3.2.2" PrivateAssets="all" />
     <PackageReference Include="ReflectionAnalyzers" Version="0.1.22-dev" PrivateAssets="all" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333" PrivateAssets="all" />
     <PackageReference Include="WpfAnalyzers" Version="3.5.4" PrivateAssets="all" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Sideways\Sideways.csproj" />
-  </ItemGroup>
-
-  <!-- Condition is required for usable CI logs and fast command-line builds until the Gu.Roslyn.Extensions version conflict between analyzers is resolved. -->
-  <ItemGroup Condition="'$(ContinuousIntegrationBuild)' != 'true'">
-    <PackageReference Include="Gu.Analyzers" Version="1.8.5" PrivateAssets="all" />
-    <PackageReference Include="PropertyChangedAnalyzers" Version="3.2.2" PrivateAssets="all" />
-  </ItemGroup>
-
 </Project>
