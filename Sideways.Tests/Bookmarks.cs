@@ -56,7 +56,7 @@ namespace Sideways.Tests
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Episodic pivot.bookmarks"));
+            var file = new FileInfo(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Episodic pivot.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
@@ -88,7 +88,7 @@ namespace Sideways.Tests
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Big green.bookmarks"));
+            var file = new FileInfo(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Big green.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
@@ -125,7 +125,7 @@ namespace Sideways.Tests
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Up three days.bookmarks"));
+            var file = new FileInfo(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Up three days.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
@@ -162,7 +162,7 @@ namespace Sideways.Tests
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Straight up two days.bookmarks"));
+            var file = new FileInfo(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Straight up two days.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
@@ -204,7 +204,7 @@ namespace Sideways.Tests
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Up then open above.bookmarks"));
+            var file = new FileInfo(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Up then open above.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
@@ -233,7 +233,7 @@ namespace Sideways.Tests
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Eight percent three days.bookmarks"));
+            var file = new FileInfo(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Eight percent three days.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
@@ -265,7 +265,7 @@ namespace Sideways.Tests
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Gap up.bookmarks"));
+            var file = new FileInfo(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "Gap up.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
@@ -319,7 +319,7 @@ namespace Sideways.Tests
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"MA{period}_from_above.bookmarks"));
+            var file = new FileInfo(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"MA{period}_from_above.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
@@ -363,7 +363,7 @@ namespace Sideways.Tests
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "NR7.bookmarks"));
+            var file = new FileInfo(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", "NR7.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
@@ -442,7 +442,7 @@ namespace Sideways.Tests
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period}.bookmarks"));
+            var file = new FileInfo(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period}.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
@@ -453,19 +453,19 @@ namespace Sideways.Tests
                 JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
 
             File.WriteAllText(
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} stop out.bookmarks"),
+                Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} stop out.bookmarks"),
                 JsonSerializer.Serialize(stopOuts, new JsonSerializerOptions { WriteIndented = true }));
 
             File.WriteAllText(
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} small move after.bookmarks"),
+                Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} small move after.bookmarks"),
                 JsonSerializer.Serialize(smallMoves, new JsonSerializerOptions { WriteIndented = true }));
 
             File.WriteAllText(
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} big move after.bookmarks"),
+                Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} big move after.bookmarks"),
                 JsonSerializer.Serialize(bigMoves, new JsonSerializerOptions { WriteIndented = true }));
 
             File.WriteAllText(
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} huge move after.bookmarks"),
+                Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Surf MA{period} huge move after.bookmarks"),
                 JsonSerializer.Serialize(hugeMoves, new JsonSerializerOptions { WriteIndented = true }));
 
             Console.WriteLine($"Total: {bookmarks.Count}");
@@ -537,7 +537,7 @@ namespace Sideways.Tests
                 }
             }
 
-            var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Flag MA{period}.bookmarks"));
+            var file = new FileInfo(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Flag MA{period}.bookmarks"));
             if (!Directory.Exists(file.DirectoryName))
             {
                 Directory.CreateDirectory(file.DirectoryName!);
@@ -548,15 +548,15 @@ namespace Sideways.Tests
                 JsonSerializer.Serialize(bookmarks, new JsonSerializerOptions { WriteIndented = true }));
 
             File.WriteAllText(
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Flag MA{period} small move after.bookmarks"),
+                Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Flag MA{period} small move after.bookmarks"),
                 JsonSerializer.Serialize(smallMoves, new JsonSerializerOptions { WriteIndented = true }));
 
             File.WriteAllText(
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Flag MA{period} big move after.bookmarks"),
+                Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Flag MA{period} big move after.bookmarks"),
                 JsonSerializer.Serialize(bigMoves, new JsonSerializerOptions { WriteIndented = true }));
 
             File.WriteAllText(
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Flag MA{period} huge move after.bookmarks"),
+                Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sideways", "Bookmarks", $"Flag MA{period} huge move after.bookmarks"),
                 JsonSerializer.Serialize(hugeMoves, new JsonSerializerOptions { WriteIndented = true }));
 
             Console.WriteLine($"Total: {bookmarks.Count}");

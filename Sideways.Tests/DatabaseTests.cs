@@ -14,7 +14,7 @@
     {
         private static readonly ImmutableArray<AdjustedCandle> DayCandles = ImmutableArray.Create(new AdjustedCandle(new DateTimeOffset(2021, 04, 15, 00, 00, 00, 0, TimeSpan.Zero), 1.2f, 2.3f, 3.4f, 4.5f, 5.6f, 7, 8.9f, 9.1f));
         private static readonly ImmutableArray<Candle> MinuteCandles = ImmutableArray.Create(new Candle(new DateTimeOffset(2021, 04, 15, 00, 00, 00, 0, TimeSpan.Zero), 1.2f, 2.3f, 3.4f, 4.5f, 6));
-        private static readonly FileInfo DbFile = new(Path.Combine(Path.GetTempPath(), "Sideways", "Database.sqlite3"));
+        private static readonly FileInfo DbFile = new(Path.Join(Path.GetTempPath(), "Sideways", "Database.sqlite3"));
 
         [Test]
         public static void Days()
