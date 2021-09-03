@@ -97,6 +97,8 @@
                     TextElement.GetFontWeight(this),
                     TextElement.GetFontStretch(this));
                 var fontSize = TextElement.GetFontSize(this);
+                var dpiScale = VisualTreeHelper.GetDpi(this);
+
                 var fill = this.Fill;
                 var value = range.Min + step - (range.Min % step);
                 var halfTextHeight = fontSize * fontFamily.LineSpacing / 2;
@@ -117,7 +119,7 @@
                         fontSize,
                         new Point(0, y),
                         fill,
-                        VisualTreeHelper.GetDpi(this));
+                        dpiScale);
                 }
             }
         }
