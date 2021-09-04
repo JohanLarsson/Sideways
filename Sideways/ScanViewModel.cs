@@ -59,6 +59,12 @@
             {
                 try
                 {
+                    if (this.isRunning)
+                    {
+                        this.isRunning = false;
+                        await Task.Delay(TimeSpan.FromMilliseconds(100)).ConfigureAwait(true);
+                    }
+
                     this.IsRunning = true;
                     this.results.Clear();
                     var timeRange = this.timeCriteria is { IsActive: true, Start: var start, End: var end }
@@ -69,9 +75,19 @@
                     var symbols = await Task.Run(() => Database.ReadSymbols()).ConfigureAwait(true);
                     foreach (var symbol in symbols)
                     {
+                        if (!this.isRunning)
+                        {
+                            return;
+                        }
+
                         var bookmarks = await Task.Run(() => this.Scan(symbol, timeRange)).ConfigureAwait(true);
                         foreach (var bookmark in bookmarks)
                         {
+                            if (!this.isRunning)
+                            {
+                                return;
+                            }
+
                             this.results.Add(bookmark);
                         }
                     }
@@ -155,6 +171,11 @@
             var firstMinute = this.hasMinutes.IsActive ? Database.FirstMinute(symbol) : null;
             for (var i = 0; i < days.Count; i++)
             {
+                if (!this.isRunning)
+                {
+                    yield break;
+                }
+
                 if (IsSatisfied(i))
                 {
                     if (this.yieldCriteria.IsActive &&
