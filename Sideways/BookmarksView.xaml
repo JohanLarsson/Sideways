@@ -54,16 +54,30 @@
             <TextBox MinWidth="30" Text="{Binding Offset}" />
         </StackPanel>
 
-        <TextBlock Grid.Row="2">
-            <TextBlock.Text>
-                <MultiBinding StringFormat="{}{0} of {1}">
-                    <Binding Converter="{x:Static sideways:AddOneConverter.Default}"
-                             ElementName="BookmarksDataGrid"
-                             Path="SelectedIndex" />
-                    <Binding ElementName="BookmarksDataGrid" Path="Items.Count" />
-                </MultiBinding>
-            </TextBlock.Text>
-        </TextBlock>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} of {1}">
+                        <Binding Converter="{x:Static sideways:AddOneConverter.Default}"
+                                 ElementName="BookmarksDataGrid"
+                                 Path="SelectedIndex" />
+                        <Binding ElementName="BookmarksDataGrid" Path="Items.Count" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
+            <Button Padding="4,0"
+                    Command="{Binding DownloadAllCommand}"
+                    Content="{Binding Downloader.SymbolDownloadState.Status}"
+                    ContentTemplateSelector="{StaticResource DownloadStatusIconSelector}"
+                    Focusable="False"
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip Content="{Binding Downloader.CurrentSymbolDownload}" ContentTemplate="{StaticResource SymbolDownloadsTemplate}" />
+                </Button.ToolTip>
+            </Button>
+        </StackPanel>
+
 
         <DataGrid x:Name="BookmarksDataGrid"
                   Grid.Row="3"

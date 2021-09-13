@@ -22,6 +22,7 @@
         {
             this.Settings = Settings.FromFile();
             this.Downloader = new(this.Settings);
+            this.Bookmarks = new BookmarksViewModel(this.Downloader);
             this.Scan = new ScanViewModel(this.Downloader);
             this.Simulation = new SimulationViewModel(this);
             this.Animation = new AnimationViewModel(this);
@@ -129,7 +130,7 @@
 
         public Settings Settings { get; }
 
-        public BookmarksViewModel Bookmarks { get; } = new();
+        public BookmarksViewModel Bookmarks { get; }
 
         public ScanViewModel Scan { get; }
 
