@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:sideways="clr-namespace:Sideways"
-             d:DataContext="{d:DesignInstance sideways:MainViewModel}"
+             xmlns:local="clr-namespace:Sideways"
+             d:DataContext="{d:DesignInstance local:MainViewModel}"
              d:DesignHeight="450"
              mc:Ignorable="d">
     <Grid>
@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
         <TextBlock Text="Watchlist" HorizontalAlignment="Center"/>
         <ListBox Grid.Row="1"
-                 sideways:Sort.Direction="Ascending"
+                 local:Sort.Direction="Ascending"
                  ItemsSource="{Binding WatchList}"
                  SelectedItem="{Binding CurrentSymbolText}" />
     </Grid>

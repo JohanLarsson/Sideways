@@ -1,10 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:sideways="clr-namespace:Sideways">
+                    xmlns:local="clr-namespace:Sideways">
     <Style TargetType="{x:Type ButtonBase}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="{x:Null}" />
-        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Text}" />
+        <Setter Property="Foreground" Value="{x:Static local:Brushes.Text}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -18,8 +18,8 @@
                     <Condition Property="IsMouseOver" Value="True" />
                 </MultiTrigger.Conditions>
                 <MultiTrigger.Setters>
-                    <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedText}" />
-                    <Setter Property="Background" Value="{x:Static sideways:Brushes.SelectedBackground}" />
+                    <Setter Property="Background" Value="{x:Static local:Brushes.SelectedText}" />
+                    <Setter Property="Background" Value="{x:Static local:Brushes.SelectedBackground}" />
                 </MultiTrigger.Setters>
             </MultiTrigger>
 
@@ -29,19 +29,19 @@
                     <Condition Property="IsPressed" Value="True" />
                 </MultiTrigger.Conditions>
                 <MultiTrigger.Setters>
-                    <Setter Property="Background" Value="{x:Static sideways:Brushes.Pressed}" />
+                    <Setter Property="Background" Value="{x:Static local:Brushes.Pressed}" />
                 </MultiTrigger.Setters>
             </MultiTrigger>
 
             <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="TextElement.Foreground" Value="{x:Static sideways:Brushes.DisabledText}" />
+                <Setter Property="TextElement.Foreground" Value="{x:Static local:Brushes.DisabledText}" />
                 <Setter Property="TextElement.FontStyle" Value="Oblique" />
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style BasedOn="{StaticResource {x:Type ButtonBase}}" TargetType="{x:Type Button}">
-        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.EnabledText}" />
+        <Setter Property="Foreground" Value="{x:Static local:Brushes.EnabledText}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -64,7 +64,7 @@
     </Style>
 
     <Style BasedOn="{StaticResource {x:Type ButtonBase}}" TargetType="{x:Type ToggleButton}">
-        <Setter Property="Foreground" Value="{x:Static sideways:Brushes.Text}" />
+        <Setter Property="Foreground" Value="{x:Static local:Brushes.Text}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RadioButton}">
@@ -86,7 +86,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Foreground" Value="{x:Static sideways:Brushes.SelectedText}" />
+                <Setter Property="Foreground" Value="{x:Static local:Brushes.SelectedText}" />
             </Trigger>
         </Style.Triggers>
     </Style>

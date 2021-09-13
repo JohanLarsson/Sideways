@@ -4,7 +4,7 @@
              xmlns:alphaVantage="clr-namespace:Sideways.AlphaVantage"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:sideways="clr-namespace:Sideways"
+             xmlns:local="clr-namespace:Sideways"
              d:DataContext="{d:DesignInstance alphaVantage:Downloader,
                                               IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
@@ -16,7 +16,7 @@
                 <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
                 <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
                 <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
-                <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
+                <TextBlock Foreground="{x:Static local:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
@@ -68,8 +68,8 @@
                       VirtualizingStackPanel.IsVirtualizing="True"
                       VirtualizingStackPanel.VirtualizationMode="Recycling">
                 <TreeView.ItemTemplateSelector>
-                    <sideways:SymbolDownloadTemplateSelector>
-                        <sideways:SymbolDownloadTemplateSelector.Symbol>
+                    <local:SymbolDownloadTemplateSelector>
+                        <local:SymbolDownloadTemplateSelector.Symbol>
                             <HierarchicalDataTemplate DataType="{x:Type alphaVantage:SymbolDownloads}" ItemsSource="{Binding AllDownloads}">
                                 <Button HorizontalContentAlignment="Left" Command="{Binding DownloadCommand}">
                                     <StackPanel Background="Transparent"
@@ -84,7 +84,7 @@
                                                     <TextBlock Text="{Binding State.Start, StringFormat='Start: {0:t}'}" />
                                                     <TextBlock Text="{Binding State.End, StringFormat='End: {0:t}'}" />
                                                     <TextBlock Text="{Binding State.Duration, StringFormat='Duration: {0:t}'}" />
-                                                    <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
+                                                    <TextBlock Foreground="{x:Static local:Brushes.Error}" Text="{Binding State.Exception.Message, StringFormat='Error: {0:t}'}" />
                                                 </StackPanel>
                                             </ToolTip>
                                         </StackPanel.ToolTip>
@@ -96,9 +96,9 @@
                                     </StackPanel>
                                 </Button>
                             </HierarchicalDataTemplate>
-                        </sideways:SymbolDownloadTemplateSelector.Symbol>
+                        </local:SymbolDownloadTemplateSelector.Symbol>
 
-                        <sideways:SymbolDownloadTemplateSelector.Days>
+                        <local:SymbolDownloadTemplateSelector.Days>
                             <DataTemplate DataType="{x:Type alphaVantage:DaysDownload}">
                                 <Button Command="{Binding DownloadCommand}">
                                     <StackPanel Background="Transparent"
@@ -115,9 +115,9 @@
                                     </StackPanel>
                                 </Button>
                             </DataTemplate>
-                        </sideways:SymbolDownloadTemplateSelector.Days>
+                        </local:SymbolDownloadTemplateSelector.Days>
 
-                        <sideways:SymbolDownloadTemplateSelector.Minutes>
+                        <local:SymbolDownloadTemplateSelector.Minutes>
                             <DataTemplate DataType="{x:Type alphaVantage:MinutesDownload}">
                                 <Button Command="{Binding DownloadCommand}">
                                     <StackPanel Background="Transparent"
@@ -134,9 +134,9 @@
                                     </StackPanel>
                                 </Button>
                             </DataTemplate>
-                        </sideways:SymbolDownloadTemplateSelector.Minutes>
+                        </local:SymbolDownloadTemplateSelector.Minutes>
 
-                        <sideways:SymbolDownloadTemplateSelector.Earnings>
+                        <local:SymbolDownloadTemplateSelector.Earnings>
                             <DataTemplate DataType="{x:Type alphaVantage:EarningsDownload}">
                                 <Button Command="{Binding DownloadCommand}">
                                     <StackPanel Background="Transparent"
@@ -153,8 +153,8 @@
                                     </StackPanel>
                                 </Button>
                             </DataTemplate>
-                        </sideways:SymbolDownloadTemplateSelector.Earnings>
-                    </sideways:SymbolDownloadTemplateSelector>
+                        </local:SymbolDownloadTemplateSelector.Earnings>
+                    </local:SymbolDownloadTemplateSelector>
                 </TreeView.ItemTemplateSelector>
             </TreeView>
         </Grid>

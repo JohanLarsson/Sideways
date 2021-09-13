@@ -4,15 +4,15 @@
         xmlns:alphaVantage="clr-namespace:Sideways.AlphaVantage"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:sideways="clr-namespace:Sideways"
+        xmlns:local="clr-namespace:Sideways"
         Title="Sideways"
-        d:DataContext="{d:DesignInstance sideways:MainViewModel,
+        d:DataContext="{d:DesignInstance local:MainViewModel,
                                          IsDesignTimeCreatable=False}"
-        sideways:SelectCommands.IsEnabled="True"
-        Background="{x:Static sideways:Brushes.Background}"
+        local:SelectCommands.IsEnabled="True"
+        Background="{x:Static local:Brushes.Background}"
         FocusManager.FocusedElement="{Binding ElementName=SymbolBox}"
         Loaded="OnLoaded"
-        TextElement.Foreground="{x:Static sideways:Brushes.Text}"
+        TextElement.Foreground="{x:Static local:Brushes.Text}"
         WindowState="Maximized"
         mc:Ignorable="d">
     <Window.Style>
@@ -45,38 +45,38 @@
     <Window.InputBindings>
         <KeyBinding Command="{Binding AddBookmarkCommand}" Gesture="Ctrl+B" />
         <KeyBinding Command="{Binding AddToWatchlistCommand}" Gesture="Ctrl+W" />
-        <KeyBinding sideways:Priority.Over="{Binding ElementName=SymbolBox}"
+        <KeyBinding local:Priority.Over="{Binding ElementName=SymbolBox}"
                     Command="{Binding Animation.ToggleCommand}"
                     Gesture="Space" />
 
-        <KeyBinding sideways:Priority.Over="{Binding ElementName=SymbolBox}"
+        <KeyBinding local:Priority.Over="{Binding ElementName=SymbolBox}"
                     Command="{Binding MoveToStartCommand}"
                     Gesture="Home" />
 
-        <KeyBinding sideways:Priority.Over="{Binding ElementName=SymbolBox}"
+        <KeyBinding local:Priority.Over="{Binding ElementName=SymbolBox}"
                     Command="{Binding MoveToEndCommand}"
                     Gesture="End" />
 
-        <KeyBinding sideways:Priority.Over="{Binding ElementName=SymbolBox}"
+        <KeyBinding local:Priority.Over="{Binding ElementName=SymbolBox}"
                     Command="Copy"
                     Gesture="Ctrl+C" />
 
         <KeyBinding Key="Left"
                     Command="{Binding SkipLeftCommand}"
-                    CommandParameter="{x:Static sideways:CandleInterval.Day}" />
+                    CommandParameter="{x:Static local:CandleInterval.Day}" />
 
         <KeyBinding Key="Left"
                     Command="{Binding SkipLeftCommand}"
-                    CommandParameter="{x:Static sideways:CandleInterval.Hour}"
+                    CommandParameter="{x:Static local:CandleInterval.Hour}"
                     Modifiers="Shift" />
 
         <KeyBinding Key="Right"
                     Command="{Binding SkipRightCommand}"
-                    CommandParameter="{x:Static sideways:CandleInterval.Day}" />
+                    CommandParameter="{x:Static local:CandleInterval.Day}" />
 
         <KeyBinding Key="Right"
                     Command="{Binding SkipRightCommand}"
-                    CommandParameter="{x:Static sideways:CandleInterval.Hour}"
+                    CommandParameter="{x:Static local:CandleInterval.Hour}"
                     Modifiers="Shift" />
 
     </Window.InputBindings>
@@ -107,7 +107,7 @@
                         <Setter Property="Height" Value="24" />
                         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
                         <Setter Property="GroupName" Value="NavigationButtons" />
-                        <Setter Property="sideways:Toggle.IsChecked" Value="True" />
+                        <Setter Property="local:Toggle.IsChecked" Value="True" />
                     </Style>
                 </StackPanel.Resources>
 
@@ -179,7 +179,7 @@
                 <Button x:Name="WindowMaximizeRestoreButton"
                         Click="OnClickMaximizeRestore"
                         Style="{StaticResource WindowButton}">
-                    <Path Data="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=WindowState, Converter={sideways:WindowStateToGeometryConverter MaximizeGeometry={StaticResource WindowMaximizeGeometry}, RestoreGeometry={StaticResource WindowRestoreGeometry}}}" Style="{StaticResource IconStyle}" />
+                    <Path Data="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=WindowState, Converter={local:WindowStateToGeometryConverter MaximizeGeometry={StaticResource WindowMaximizeGeometry}, RestoreGeometry={StaticResource WindowRestoreGeometry}}}" Style="{StaticResource IconStyle}" />
                 </Button>
 
                 <Button x:Name="WindowCloseButton"
@@ -204,13 +204,13 @@
             <Grid x:Name="LeftPane" Grid.Column="0">
                 <TextBlock HorizontalAlignment="Left"
                            VerticalAlignment="Top"
-                           Foreground="{x:Static sideways:Brushes.Gray}"
+                           Foreground="{x:Static local:Brushes.Gray}"
                            Text="W" />
-                <sideways:Chart x:Name="LeftChart"
+                <local:Chart x:Name="LeftChart"
                                 CandleInterval="Week"
                                 ItemsSource="{Binding CurrentSymbol.Candles}"
                                 Time="{Binding Time}">
-                    <sideways:CrossHairDecorator>
+                    <local:CrossHairDecorator>
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="5*" />
@@ -222,7 +222,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <sideways:ChartBackground Grid.Row="0"
+                            <local:ChartBackground Grid.Row="0"
                                                       Grid.RowSpan="3"
                                                       Grid.Column="0"
                                                       Bookmarks="{Binding Bookmarks.SelectedBookmarkFile.Bookmarks}"
@@ -233,42 +233,42 @@
 
                             <Grid Grid.Row="0" Grid.Column="0">
 
-                                <sideways:MovingAverage Period="10" Stroke="{x:Static sideways:Brushes.Ma10}" />
+                                <local:MovingAverage Period="10" Stroke="{x:Static local:Brushes.Ma10}" />
 
-                                <sideways:MovingAverage Period="20" Stroke="{x:Static sideways:Brushes.Ma20}" />
+                                <local:MovingAverage Period="20" Stroke="{x:Static local:Brushes.Ma20}" />
 
-                                <sideways:MeasureDecorator>
-                                    <sideways:CandleSticks />
-                                </sideways:MeasureDecorator>
+                                <local:MeasureDecorator>
+                                    <local:CandleSticks />
+                                </local:MeasureDecorator>
                             </Grid>
 
-                            <sideways:PriceTickBar Grid.Row="0" Grid.Column="1" />
+                            <local:PriceTickBar Grid.Row="0" Grid.Column="1" />
 
-                            <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+                            <local:TimeTickBar Grid.Row="1" Grid.Column="0" />
 
-                            <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
+                            <local:VolumeBars Grid.Row="2" Grid.Column="0" />
                         </Grid>
-                    </sideways:CrossHairDecorator>
-                </sideways:Chart>
+                    </local:CrossHairDecorator>
+                </local:Chart>
             </Grid>
 
             <GridSplitter Grid.Column="1"
                           Focusable="False"
                           IsHitTestVisible="{Binding ElementName=MiddlePane,
                                                      Path=ActualWidth,
-                                                     Converter={sideways:GreaterThanConverter 0}}"
+                                                     Converter={local:GreaterThanConverter 0}}"
                           Style="{StaticResource VerticalAxisGridSplitter}">
                 <GridSplitter.InputBindings>
-                    <MouseBinding Command="{x:Static sideways:VerticalGridSplitter.TogglePreviousCommand}" MouseAction="LeftDoubleClick" />
+                    <MouseBinding Command="{x:Static local:VerticalGridSplitter.TogglePreviousCommand}" MouseAction="LeftDoubleClick" />
                 </GridSplitter.InputBindings>
             </GridSplitter>
 
             <Grid x:Name="MiddlePane" Grid.Column="2">
-                <sideways:Chart x:Name="MiddleChart"
+                <local:Chart x:Name="MiddleChart"
                                 CandleInterval="Day"
                                 ItemsSource="{Binding CurrentSymbol.Candles}"
                                 Time="{Binding Time}">
-                    <sideways:CrossHairDecorator>
+                    <local:CrossHairDecorator>
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="5*" />
@@ -280,7 +280,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <sideways:ChartBackground Grid.Row="0"
+                            <local:ChartBackground Grid.Row="0"
                                                       Grid.RowSpan="3"
                                                       Grid.Column="0"
                                                       Bookmarks="{Binding Bookmarks.SelectedBookmarkFile.Bookmarks}"
@@ -292,50 +292,50 @@
 
                             <Grid Grid.Row="0" Grid.Column="0">
 
-                                <sideways:MovingAverage Period="10" Stroke="{x:Static sideways:Brushes.Ma10}" />
+                                <local:MovingAverage Period="10" Stroke="{x:Static local:Brushes.Ma10}" />
 
-                                <sideways:MovingAverage Period="20" Stroke="{x:Static sideways:Brushes.Ma20}" />
+                                <local:MovingAverage Period="20" Stroke="{x:Static local:Brushes.Ma20}" />
 
-                                <sideways:MovingAverage Period="50" Stroke="{x:Static sideways:Brushes.Ma50}" />
+                                <local:MovingAverage Period="50" Stroke="{x:Static local:Brushes.Ma50}" />
 
-                                <sideways:MovingAverage Period="100" Stroke="{x:Static sideways:Brushes.Ma100}" />
+                                <local:MovingAverage Period="100" Stroke="{x:Static local:Brushes.Ma100}" />
 
-                                <sideways:MovingAverage Period="150" Stroke="{x:Static sideways:Brushes.Ma150}" />
+                                <local:MovingAverage Period="150" Stroke="{x:Static local:Brushes.Ma150}" />
 
-                                <sideways:MovingAverage Period="200" Stroke="{x:Static sideways:Brushes.Ma200}" />
+                                <local:MovingAverage Period="200" Stroke="{x:Static local:Brushes.Ma200}" />
 
-                                <sideways:MeasureDecorator>
-                                    <sideways:MeasureDecorator.CommandBindings>
-                                        <CommandBinding Command="{x:Static sideways:Bookmark.AddCommand}" Executed="AddBookMark" />
-                                    </sideways:MeasureDecorator.CommandBindings>
-                                    <sideways:MeasureDecorator.InputBindings>
-                                        <MouseBinding Command="{x:Static sideways:Bookmark.AddCommand}" MouseAction="LeftDoubleClick" />
-                                    </sideways:MeasureDecorator.InputBindings>
-                                    <sideways:CandleSticks />
-                                </sideways:MeasureDecorator>
+                                <local:MeasureDecorator>
+                                    <local:MeasureDecorator.CommandBindings>
+                                        <CommandBinding Command="{x:Static local:Bookmark.AddCommand}" Executed="AddBookMark" />
+                                    </local:MeasureDecorator.CommandBindings>
+                                    <local:MeasureDecorator.InputBindings>
+                                        <MouseBinding Command="{x:Static local:Bookmark.AddCommand}" MouseAction="LeftDoubleClick" />
+                                    </local:MeasureDecorator.InputBindings>
+                                    <local:CandleSticks />
+                                </local:MeasureDecorator>
 
-                                <sideways:EarningsBar VerticalAlignment="Bottom" Earnings="{Binding CurrentSymbol.QuarterlyEarnings}" />
+                                <local:EarningsBar VerticalAlignment="Bottom" Earnings="{Binding CurrentSymbol.QuarterlyEarnings}" />
                             </Grid>
 
-                            <sideways:PriceTickBar Grid.Row="0" Grid.Column="1" />
+                            <local:PriceTickBar Grid.Row="0" Grid.Column="1" />
 
-                            <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+                            <local:TimeTickBar Grid.Row="1" Grid.Column="0" />
 
-                            <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
+                            <local:VolumeBars Grid.Row="2" Grid.Column="0" />
                         </Grid>
-                    </sideways:CrossHairDecorator>
-                </sideways:Chart>
+                    </local:CrossHairDecorator>
+                </local:Chart>
 
                 <StackPanel Margin="10,10"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Background="{x:Static sideways:Brushes.SemiTransparentBackground}">
+                            Background="{x:Static local:Brushes.SemiTransparentBackground}">
                     <StackPanel Orientation="Horizontal">
                         <ComboBox x:Name="SymbolBox"
                                   HorizontalAlignment="Left"
-                                  sideways:ComboBoxEx.IsSymbolSearch="True"
+                                  local:ComboBoxEx.IsSymbolSearch="True"
                                   FontSize="24"
-                                  Foreground="{x:Static sideways:Brushes.Gray}"
+                                  Foreground="{x:Static local:Brushes.Gray}"
                                   IsEditable="True"
                                   ItemsSource="{Binding Symbols}"
                                   SelectedItem="{Binding CurrentSymbolText}"
@@ -350,12 +350,12 @@
                                 Focusable="False"
                                 ToolTipService.ShowOnDisabled="True"
                                 Visibility="{Binding .,
-                                                     Converter={x:Static sideways:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
+                                                     Converter={x:Static local:NullToVisibilityConverter.CollapsedWhenNullElseVisible}}">
                             <Button.ToolTip>
                                 <ToolTip Content="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}" ContentTemplate="{StaticResource SymbolDownloadsTemplate}" />
                             </Button.ToolTip>
                             <Button.DataContext>
-                                <MultiBinding Converter="{x:Static sideways:SymbolDownloadConverter.Default}">
+                                <MultiBinding Converter="{x:Static local:SymbolDownloadConverter.Default}">
                                     <Binding Path="CurrentSymbol.Symbol" />
                                     <Binding Path="Downloader.SymbolDownloads" />
                                 </MultiBinding>
@@ -365,7 +365,7 @@
 
                     <TextBlock>
                         <TextBlock.Text>
-                            <MultiBinding Converter="{x:Static sideways:AdrConverter.Default}" StringFormat="ADR {0:F1}">
+                            <MultiBinding Converter="{x:Static local:AdrConverter.Default}" StringFormat="ADR {0:F1}">
                                 <Binding ElementName="MiddleChart" Path="ItemsSource" />
                                 <Binding ElementName="MiddleChart" Path="Time" />
                                 <Binding ElementName="MiddleChart" Path="PriceRange" />
@@ -375,7 +375,7 @@
 
                     <TextBlock>
                         <TextBlock.Text>
-                            <MultiBinding Converter="{x:Static sideways:AtrConverter.Default}" StringFormat="ATR {0:F1}$">
+                            <MultiBinding Converter="{x:Static local:AtrConverter.Default}" StringFormat="ATR {0:F1}$">
                                 <Binding ElementName="MiddleChart" Path="ItemsSource" />
                                 <Binding ElementName="MiddleChart" Path="Time" />
                                 <Binding ElementName="MiddleChart" Path="PriceRange" />
@@ -385,7 +385,7 @@
 
                     <TextBlock>
                         <TextBlock.Text>
-                            <MultiBinding Converter="{x:Static sideways:AverageDollarVolumeConverter.Default}" StringFormat="A$ {0}">
+                            <MultiBinding Converter="{x:Static local:AverageDollarVolumeConverter.Default}" StringFormat="A$ {0}">
                                 <Binding ElementName="MiddleChart" Path="Candles" />
                                 <Binding ElementName="MiddleChart" Path="Time" />
                                 <Binding ElementName="MiddleChart" Path="PriceRange" />
@@ -394,7 +394,7 @@
                     </TextBlock>
 
                     <TextBlock Text="{Binding Time, StringFormat='f'}" />
-                    <TextBlock Foreground="{x:Static sideways:Brushes.Error}" Text="{Binding CurrentSymbol.Exception.Message, FallbackValue=''}" />
+                    <TextBlock Foreground="{x:Static local:Brushes.Error}" Text="{Binding CurrentSymbol.Exception.Message, FallbackValue=''}" />
                 </StackPanel>
             </Grid>
 
@@ -402,16 +402,16 @@
                           Focusable="False"
                           Style="{StaticResource VerticalAxisGridSplitter}">
                 <GridSplitter.InputBindings>
-                    <MouseBinding Command="{x:Static sideways:VerticalGridSplitter.ToggleNextCommand}" MouseAction="LeftDoubleClick" />
+                    <MouseBinding Command="{x:Static local:VerticalGridSplitter.ToggleNextCommand}" MouseAction="LeftDoubleClick" />
                 </GridSplitter.InputBindings>
             </GridSplitter>
 
             <Grid x:Name="RightPane" Grid.Column="4">
-                <sideways:Chart x:Name="RightChart"
+                <local:Chart x:Name="RightChart"
                                 CandleInterval="Hour"
                                 ItemsSource="{Binding CurrentSymbol.Candles}"
                                 Time="{Binding Time}">
-                    <sideways:CrossHairDecorator>
+                    <local:CrossHairDecorator>
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="5*" />
@@ -423,7 +423,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <sideways:ChartBackground Grid.Row="0"
+                            <local:ChartBackground Grid.Row="0"
                                                       Grid.RowSpan="3"
                                                       Grid.Column="0"
                                                       Bookmarks="{Binding Bookmarks.SelectedBookmarkFile.Bookmarks}"
@@ -433,34 +433,34 @@
                                                                        Mode=OneWay}" />
 
                             <Grid Grid.Row="0" Grid.Column="0">
-                                <sideways:MovingAverage Period="10" Stroke="{x:Static sideways:Brushes.Ma10}" />
+                                <local:MovingAverage Period="10" Stroke="{x:Static local:Brushes.Ma10}" />
 
-                                <sideways:MovingAverage Period="20" Stroke="{x:Static sideways:Brushes.Ma20}" />
+                                <local:MovingAverage Period="20" Stroke="{x:Static local:Brushes.Ma20}" />
 
-                                <sideways:MovingAverage Period="50" Stroke="{x:Static sideways:Brushes.Ma50}" />
+                                <local:MovingAverage Period="50" Stroke="{x:Static local:Brushes.Ma50}" />
 
-                                <sideways:VWap Stroke="{x:Static sideways:Brushes.LightGray}" />
+                                <local:VWap Stroke="{x:Static local:Brushes.LightGray}" />
 
-                                <sideways:MeasureDecorator>
-                                    <sideways:MeasureDecorator.CommandBindings>
-                                        <CommandBinding Command="{x:Static sideways:Bookmark.AddCommand}" Executed="AddBookMark" />
-                                    </sideways:MeasureDecorator.CommandBindings>
-                                    <sideways:MeasureDecorator.InputBindings>
-                                        <MouseBinding Command="{x:Static sideways:Bookmark.AddCommand}" MouseAction="LeftDoubleClick" />
-                                    </sideways:MeasureDecorator.InputBindings>
+                                <local:MeasureDecorator>
+                                    <local:MeasureDecorator.CommandBindings>
+                                        <CommandBinding Command="{x:Static local:Bookmark.AddCommand}" Executed="AddBookMark" />
+                                    </local:MeasureDecorator.CommandBindings>
+                                    <local:MeasureDecorator.InputBindings>
+                                        <MouseBinding Command="{x:Static local:Bookmark.AddCommand}" MouseAction="LeftDoubleClick" />
+                                    </local:MeasureDecorator.InputBindings>
 
-                                    <sideways:CandleSticks />
-                                </sideways:MeasureDecorator>
+                                    <local:CandleSticks />
+                                </local:MeasureDecorator>
                             </Grid>
 
-                            <sideways:PriceTickBar Grid.Row="0" Grid.Column="1" />
+                            <local:PriceTickBar Grid.Row="0" Grid.Column="1" />
 
-                            <sideways:TimeTickBar Grid.Row="1" Grid.Column="0" />
+                            <local:TimeTickBar Grid.Row="1" Grid.Column="0" />
 
-                            <sideways:VolumeBars Grid.Row="2" Grid.Column="0" />
+                            <local:VolumeBars Grid.Row="2" Grid.Column="0" />
                         </Grid>
-                    </sideways:CrossHairDecorator>
-                </sideways:Chart>
+                    </local:CrossHairDecorator>
+                </local:Chart>
                 <StackPanel x:Name="IntradayIntervals"
                             Margin="12,12"
                             HorizontalAlignment="Left"
@@ -487,10 +487,10 @@
                                  Content="h"
                                  IsChecked="{Binding ElementName=RightChart,
                                                      Path=CandleInterval,
-                                                     Converter={x:Static sideways:CandleIntervalToBoolConverter.Hour}}" />
-                    <RadioButton Content="15 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.FifteenMinutes}}" />
-                    <RadioButton Content="5 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.FiveMinutes}}" />
-                    <RadioButton Content="1 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static sideways:CandleIntervalToBoolConverter.Minute}}" />
+                                                     Converter={x:Static local:CandleIntervalToBoolConverter.Hour}}" />
+                    <RadioButton Content="15 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static local:CandleIntervalToBoolConverter.FifteenMinutes}}" />
+                    <RadioButton Content="5 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static local:CandleIntervalToBoolConverter.FiveMinutes}}" />
+                    <RadioButton Content="1 m" IsChecked="{Binding ElementName=RightChart, Path=CandleInterval, Converter={x:Static local:CandleIntervalToBoolConverter.Minute}}" />
                 </StackPanel>
             </Grid>
 
@@ -498,44 +498,44 @@
                           Focusable="False"
                           IsHitTestVisible="{Binding ElementName=RightPane,
                                                      Path=ActualWidth,
-                                                     Converter={sideways:GreaterThanConverter 0}}"
+                                                     Converter={local:GreaterThanConverter 0}}"
                           Style="{StaticResource VerticalAxisGridSplitter}">
                 <GridSplitter.InputBindings>
-                    <MouseBinding Command="{x:Static sideways:VerticalGridSplitter.ToggleNextCommand}" MouseAction="LeftDoubleClick" />
+                    <MouseBinding Command="{x:Static local:VerticalGridSplitter.ToggleNextCommand}" MouseAction="LeftDoubleClick" />
                 </GridSplitter.InputBindings>
             </GridSplitter>
 
             <Grid x:Name="ContextPane" Grid.Column="6">
-                <sideways:SimulationView HorizontalAlignment="Right"
+                <local:SimulationView HorizontalAlignment="Right"
                                          DataContext="{Binding Simulation}"
                                          Visibility="{Binding ElementName=SimulationButton,
                                                               Path=IsChecked,
-                                                              Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+                                                              Converter={x:Static local:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
 
-                <sideways:BookmarksView HorizontalAlignment="Right"
+                <local:BookmarksView HorizontalAlignment="Right"
                                         DataContext="{Binding Bookmarks}"
                                         Visibility="{Binding ElementName=BookmarksButton,
                                                              Path=IsChecked,
-                                                             Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+                                                             Converter={x:Static local:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
 
-                <sideways:ScanView HorizontalAlignment="Right"
+                <local:ScanView HorizontalAlignment="Right"
                                    DataContext="{Binding Scan}"
                                    Visibility="{Binding ElementName=ScanButton,
                                                         Path=IsChecked,
-                                                        Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+                                                        Converter={x:Static local:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
 
-                <sideways:DownloadView Margin="6,0,0,0"
+                <local:DownloadView Margin="6,0,0,0"
                                        HorizontalAlignment="Right"
                                        DataContext="{Binding Downloader}"
                                        Visibility="{Binding ElementName=DownloadButton,
                                                             Path=IsChecked,
-                                                            Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+                                                            Converter={x:Static local:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
 
-                <sideways:SettingsView HorizontalAlignment="Right"
+                <local:SettingsView HorizontalAlignment="Right"
                                        DataContext="{Binding Settings}"
                                        Visibility="{Binding ElementName=SettingsButton,
                                                             Path=IsChecked,
-                                                            Converter={x:Static sideways:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
+                                                            Converter={x:Static local:BoolToVisibilityConverter.VisibleWhenTrueElseCollapsed}}" />
             </Grid>
         </Grid>
     </Grid>
