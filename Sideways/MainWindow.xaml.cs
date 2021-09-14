@@ -173,12 +173,6 @@
 
         private void OnClickClose(object sender, RoutedEventArgs e) => this.Close();
 
-        private void CanAddBookMark(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = this.DataContext is MainViewModel { Bookmarks: { SelectedBookmarkFile: not null } };
-            e.Handled = true;
-        }
-
         private void AddBookMark(object sender, ExecutedRoutedEventArgs e)
         {
             if (sender is MeasureDecorator decorator &&

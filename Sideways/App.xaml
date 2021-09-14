@@ -148,57 +148,6 @@
                 </Style.Triggers>
             </Style>
 
-            <local:DownloadStatusTemplateSelector x:Key="DownloadStatusIconSelector">
-                <local:DownloadStatusTemplateSelector.Unknown>
-                    <DataTemplate>
-                        <Path Data="{StaticResource QuestionGeometry}"
-                              Fill="{x:Static local:Brushes.DisabledText}"
-                              Style="{StaticResource IconStyle}" />
-                    </DataTemplate>
-                </local:DownloadStatusTemplateSelector.Unknown>
-
-                <local:DownloadStatusTemplateSelector.Waiting>
-                    <DataTemplate>
-                        <Path Data="{StaticResource ArrowDownGeometry}"
-                              Fill="{x:Static local:Brushes.DisabledText}"
-                              Style="{StaticResource IconStyle}" />
-                    </DataTemplate>
-                </local:DownloadStatusTemplateSelector.Waiting>
-
-                <local:DownloadStatusTemplateSelector.Running>
-                    <DataTemplate>
-                        <Grid>
-                            <Path Data="{StaticResource ArrowDownGeometry}"
-                                  Fill="{x:Static local:Brushes.Pressed}"
-                                  Style="{StaticResource IconStyle}" />
-
-                            <Rectangle Width="3"
-                                       Height="3"
-                                       local:Icon.IsPulsing="True"
-                                       Fill="{x:Static local:Brushes.DarkGray}"
-                                       Style="{StaticResource IconStyle}" />
-                        </Grid>
-                    </DataTemplate>
-                </local:DownloadStatusTemplateSelector.Running>
-
-                <local:DownloadStatusTemplateSelector.Completed>
-                    <DataTemplate>
-                        <Path Data="{StaticResource CheckGeometry}"
-                              Fill="{x:Static local:Brushes.Ma200}"
-                              Style="{StaticResource IconStyle}" />
-                    </DataTemplate>
-                </local:DownloadStatusTemplateSelector.Completed>
-
-                <local:DownloadStatusTemplateSelector.Error>
-                    <DataTemplate>
-                        <Path Margin="1"
-                              Data="{StaticResource CrossGeometry}"
-                              Fill="{x:Static local:Brushes.Ma50}"
-                              Style="{StaticResource IconStyle}" />
-                    </DataTemplate>
-                </local:DownloadStatusTemplateSelector.Error>
-            </local:DownloadStatusTemplateSelector>
-
             <DataTemplate DataType="{x:Type local:Measurement}">
                 <Grid Background="{x:Static local:Brushes.Background}">
                     <Grid.RowDefinitions>
@@ -348,6 +297,57 @@
                     </Grid>
                 </StackPanel>
             </DataTemplate>
+
+            <local:DownloadStatusTemplateSelector x:Key="DownloadStatusIconSelector">
+                <local:DownloadStatusTemplateSelector.Unknown>
+                    <DataTemplate>
+                        <Path Data="{StaticResource QuestionGeometry}"
+                              Fill="{x:Static local:Brushes.DisabledText}"
+                              Style="{StaticResource IconStyle}" />
+                    </DataTemplate>
+                </local:DownloadStatusTemplateSelector.Unknown>
+
+                <local:DownloadStatusTemplateSelector.Waiting>
+                    <DataTemplate>
+                        <Path Data="{StaticResource ArrowDownGeometry}"
+                              Fill="{x:Static local:Brushes.DisabledText}"
+                              Style="{StaticResource IconStyle}" />
+                    </DataTemplate>
+                </local:DownloadStatusTemplateSelector.Waiting>
+
+                <local:DownloadStatusTemplateSelector.Running>
+                    <DataTemplate>
+                        <Grid>
+                            <Path Data="{StaticResource ArrowDownGeometry}"
+                                  Fill="{x:Static local:Brushes.Pressed}"
+                                  Style="{StaticResource IconStyle}" />
+
+                            <Rectangle Width="3"
+                                       Height="3"
+                                       local:Icon.IsPulsing="True"
+                                       Fill="{x:Static local:Brushes.DarkGray}"
+                                       Style="{StaticResource IconStyle}" />
+                        </Grid>
+                    </DataTemplate>
+                </local:DownloadStatusTemplateSelector.Running>
+
+                <local:DownloadStatusTemplateSelector.Completed>
+                    <DataTemplate>
+                        <Path Data="{StaticResource CheckGeometry}"
+                              Fill="{x:Static local:Brushes.Ma200}"
+                              Style="{StaticResource IconStyle}" />
+                    </DataTemplate>
+                </local:DownloadStatusTemplateSelector.Completed>
+
+                <local:DownloadStatusTemplateSelector.Error>
+                    <DataTemplate>
+                        <Path Margin="1"
+                              Data="{StaticResource CrossGeometry}"
+                              Fill="{x:Static local:Brushes.Ma50}"
+                              Style="{StaticResource IconStyle}" />
+                    </DataTemplate>
+                </local:DownloadStatusTemplateSelector.Error>
+            </local:DownloadStatusTemplateSelector>
 
             <DataTemplate x:Key="SymbolDownloadsTemplate" DataType="{x:Type alphaVantage:SymbolDownloads}">
                 <StackPanel>
