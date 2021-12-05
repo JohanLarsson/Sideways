@@ -25,6 +25,12 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+    <Authors>Johan Larsson</Authors>
+    <Description>Small app for looking at stock charts</Description>
+  </PropertyGroup>
+  
   <!-- Required for ContinuousIntegrationBuild until the .NET 6 SDK -->
   <PropertyGroup>
     <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
