@@ -1,6 +1,6 @@
 # Sideways
 
-[![Build status badge](https://github.com/JohanLarsson/Sideways/workflows/CI/badge.svg)](https://github.com/JohanLarsson/Sideways/actions?query=workflow%3ACI "Build status")
+[![ci](https://github.com/JohanLarsson/Sideways/actions/workflows/CI.yml/badge.svg)](https://github.com/JohanLarsson/Sideways/actions/workflows/CI.yml)
 
 App for backtesting and viewing charts.
 
